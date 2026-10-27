@@ -1,0 +1,24 @@
+# Segredos
+.env
+.env.*
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Dados grandes / gerados
+data/raw/
+data/processed/
+*.faiss
+chroma/
+vectorstore/
+
+# Sistema / editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
