@@ -15,7 +15,7 @@ Projetar e desenvolver uma solução baseada em IA capaz de apoiar a tomada de d
 | Nome | GitHub | Papel |
 |------|--------|-------|
 | Guilherme Barros | @dida0982 | |
-| | | |
+| Isabel Azar  | @iAiBel | |
 | | | |
 | | | |
 
