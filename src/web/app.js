@@ -63,6 +63,7 @@ async function iniciar() {
   }
 
   carregarPrecos();
+  carregarStatusLLM();
 }
 
 // ---------- Cesta ----------
@@ -224,6 +225,67 @@ async function carregarPrecos() {
   }
   tabela.append(corpo);
 }
+
+// ---------- Conversar ----------
+const historico = [];
+const NOMES_FERRAMENTAS = {
+  montar_cesta: "montou a cesta", consultar_precos: "consultou preços",
+  avaliar_promocao: "avaliou a promoção", buscar_conhecimento: "buscou na base",
+};
+
+async function carregarStatusLLM() {
+  const s = await api("/api/llm");
+  $("#status-llm").textContent = s.ativo ? `LLM: ${s.modelo} (${s.provedor}, gratuito)` : "Modo sem LLM";
+}
+
+function adicionarMensagem(classe, texto) {
+  const msg = el("div", { class: `msg ${classe}` }, texto);
+  $("#mensagens").append(msg);
+  msg.scrollIntoView({ behavior: "smooth", block: "end" });
+  return msg;
+}
+
+async function enviarChat(texto) {
+  adicionarMensagem("usuario", texto);
+  const pensando = adicionarMensagem("assistente pensando", "Pensando… (o LLM local pode levar alguns segundos)");
+  const botao = $("#form-chat button");
+  botao.disabled = true;
+  try {
+    const r = await api("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mensagem: texto, historico: historico.slice(-6) }),
+    });
+    pensando.remove();
+    const msg = adicionarMensagem("assistente", r.resposta);
+    const itens = r.dados?.montar_cesta?.itens;
+    if (r.modo === "llm" && itens?.length) {
+      msg.append(el("ul", { class: "lista-msg" }, ...itens.map((i) => el("li", {}, i))));
+    }
+    const meta = [];
+    if (r.ferramentas_usadas.length) meta.push("A EconoMIA " + [...new Set(r.ferramentas_usadas)].map((f) => NOMES_FERRAMENTAS[f] ?? f).join(", "));
+    if (r.fontes.length) meta.push("Fontes: " + [...new Set(r.fontes.map((f) => f.fonte))].join("; "));
+    if (r.aviso) meta.push("⚠️ " + r.aviso);
+    if (meta.length) msg.append(el("span", { class: "meta-msg" }, meta.join(" · ")));
+    historico.push({ role: "user", content: texto }, { role: "assistant", content: r.resposta });
+  } catch (e) {
+    pensando.remove();
+    adicionarMensagem("assistente", "Desculpe, algo deu errado: " + e.message);
+  } finally {
+    botao.disabled = false;
+  }
+}
+
+$("#form-chat").addEventListener("submit", (evento) => {
+  evento.preventDefault();
+  const campo = evento.target.mensagem;
+  const texto = campo.value.trim();
+  if (!texto) return;
+  campo.value = "";
+  enviarChat(texto);
+});
+
+document.querySelectorAll(".sugestao").forEach((b) => b.addEventListener("click", () => enviarChat(b.textContent)));
 
 iniciar().catch((e) => {
   $("#erro").textContent = "Não foi possível conectar à API: " + e.message;

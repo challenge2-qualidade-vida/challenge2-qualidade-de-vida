@@ -17,8 +17,8 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 4 | API (backend) | Endpoints que o site chama | FastAPI + Uvicorn | ✅ Feito | [04](04-api.md) |
 | 5 | Site (frontend) | Tela: formulário de orçamento → cesta → comparação | HTML, CSS e JavaScript puros | ✅ Feito | [05](05-site.md) |
 | 6 | Base de conhecimento + RAG | Busca no Guia Alimentar e na TACO para fundamentar respostas | scikit-learn (TF-IDF, local) | ✅ Feito | [06](06-rag.md) |
-| 7 | LLM com ferramentas | Chat em linguagem natural que chama o otimizador | Gemini API (plano gratuito), Groq (plano gratuito) ou Ollama (local) — escolher no tópico | ⏳ Próximo | — |
-| 8 | Experimento LLM × LLM + RAG | Comparação com gabarito: correção, fundamentação, latência, custo | pytest + notebook Jupyter | ⬜ | — |
+| 7 | LLM com ferramentas | Chat em linguagem natural que chama o otimizador | Ollama local (padrão), Groq ou Gemini (planos gratuitos) | ✅ Feito | [07](07-llm-ferramentas.md) |
+| 8 | Experimento LLM × LLM + RAG | Comparação com gabarito: correção, fundamentação, latência, custo | pytest + notebook Jupyter | ⏳ Próximo | — |
 | 9 | Agentes | Orquestrador, Cifrão (preços), Miau-ricio (nutrição), Mia (verificação) | Mesmo LLM do tópico 7 | ⬜ | — |
 | 10 | Leitura da NFC-e (multimodal) | Recibaldo: lê o QR code do cupom e cadastra os preços | OpenCV / pyzbar + portal público da NFC-e | ⬜ | — |
 | 11 | Métricas e testes finais | Economia, aderência ao orçamento, adequação nutricional, precisão de preço | pytest + notebook | ⬜ | — |
@@ -59,6 +59,9 @@ src/economia/
   explicacao.py              explica o plano em frases        → tópico 3
   api.py                     API FastAPI + serve o site       → tópico 4
   rag.py                     busca na base de conhecimento    → tópico 6
+  llm.py                     cliente de LLM gratuito          → tópico 7
+  precos.py                  consulta de preços e promoções   → tópico 7
+  assistente.py              chat: LLM + ferramentas + RAG    → tópico 7
 src/web/
   index.html, estilo.css, app.js   o site                     → tópico 5
 tests/
@@ -67,6 +70,8 @@ tests/
   test_planejador.py         testes da comparação             → tópico 3
   test_api.py                testes da API                    → tópico 4
   test_rag.py                testes da busca                  → tópico 6
+  test_assistente.py         testes do chat (LLM falso)       → tópico 7
+  conftest.py                testes sem LLM de verdade        → tópico 7
 requirements.txt             dependências (todas gratuitas)
 pytest.ini                   configuração dos testes
 ```

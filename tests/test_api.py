@@ -47,6 +47,17 @@ def test_conhecimento_devolve_trechos_com_fonte(cliente):
     assert all(t["fonte"] for t in dados["trechos"])
 
 
+def test_chat_no_modo_sem_llm(cliente):
+    assert cliente.get("/api/llm").json()["ativo"] is False
+    dados = cliente.post("/api/chat", json={"mensagem": "Tenho R$ 800 para 4 pessoas no mês"}).json()
+    assert dados["modo"] == "sem_llm"
+    assert dados["ferramentas_usadas"] == ["montar_cesta"]
+
+
+def test_chat_rejeita_mensagem_vazia(cliente):
+    assert cliente.post("/api/chat", json={"mensagem": ""}).status_code == 422
+
+
 @pytest.mark.parametrize(
     "corpo",
     [

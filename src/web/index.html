@@ -18,6 +18,7 @@
     </div>
     <nav class="abas" role="tablist">
       <button class="aba ativa" data-aba="cesta" role="tab" aria-selected="true">Montar cesta</button>
+      <button class="aba" data-aba="chat" role="tab" aria-selected="false">Conversar</button>
       <button class="aba" data-aba="precos" role="tab" aria-selected="false">Preços</button>
     </nav>
   </header>
@@ -73,6 +74,28 @@
           <h2>Lista de compras</h2>
           <div id="itens"></div>
         </div>
+      </div>
+    </section>
+
+    <section id="aba-chat" class="painel" hidden>
+      <div class="cartao chat">
+        <div class="chat-topo">
+          <h2>Converse com a EconoMIA</h2>
+          <span id="status-llm" class="status-llm"></span>
+        </div>
+        <div id="mensagens" class="mensagens" aria-live="polite">
+          <div class="msg assistente">Oi! Me conte quanto você tem para as compras, quantas pessoas moram na casa e se há alguma restrição. Também posso dizer se uma promoção vale a pena ou tirar dúvidas sobre alimentação.</div>
+        </div>
+        <div class="sugestoes" id="sugestoes">
+          <button type="button" class="sugestao">Tenho R$ 600 para o mês, somos 4 pessoas</button>
+          <button type="button" class="sugestao">Arroz 5 kg por R$ 24,90 é uma boa promoção?</button>
+          <button type="button" class="sugestao">O que fazer com banana muito madura?</button>
+          <button type="button" class="sugestao">O que são alimentos ultraprocessados?</button>
+        </div>
+        <form id="form-chat" class="form-chat">
+          <input type="text" name="mensagem" maxlength="1000" placeholder="Escreva sua pergunta…" autocomplete="off" required>
+          <button type="submit" class="botao">Enviar</button>
+        </form>
       </div>
     </section>
 

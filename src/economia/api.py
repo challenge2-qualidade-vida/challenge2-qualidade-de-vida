@@ -16,6 +16,8 @@ from .dados import carregar, preco_por_kg
 from .explicacao import explicar
 from .metas import DIAS_POR_PERIODO, NOMES_RESTRICOES, RESTRICOES
 from .otimizador import Cesta, Pedido
+from .assistente import Assistente
+from .llm import cliente_do_ambiente
 from .planejador import planejar
 from .rag import BaseConhecimento
 
@@ -24,6 +26,17 @@ PASTA_WEB = Path(__file__).resolve().parents[1] / "web"
 app = FastAPI(title="EconoMIA", description="Cesta de compras econômica e equilibrada.", version="0.1.0")
 base = carregar()
 conhecimento = BaseConhecimento(base)
+assistente = Assistente(base, conhecimento, cliente_do_ambiente())
+
+
+class MensagemHistorico(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(..., max_length=4000)
+
+
+class PedidoChat(BaseModel):
+    mensagem: str = Field(..., min_length=1, max_length=1000)
+    historico: list[MensagemHistorico] = []
 
 
 class PedidoCesta(BaseModel):
@@ -114,6 +127,18 @@ def buscar_conhecimento(pergunta: str, k: int = 3):
             for r in conhecimento.buscar(pergunta, k=min(max(k, 1), 10))
         ],
     }
+
+
+@app.get("/api/llm")
+def status_llm():
+    c = assistente.cliente
+    return {"ativo": c is not None, "provedor": c.provedor if c else None, "modelo": c.modelo if c else None}
+
+
+@app.post("/api/chat")
+def chat(pedido: PedidoChat):
+    r = assistente.responder(pedido.mensagem, [h.model_dump() for h in pedido.historico])
+    return asdict(r)
 
 
 if PASTA_WEB.exists():

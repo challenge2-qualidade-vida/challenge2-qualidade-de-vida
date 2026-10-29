@@ -186,4 +186,21 @@ input, select {
 .mercado-titulo:first-child { margin-top: 0; }
 .nota { color: var(--suave); font-size: 0.9rem; margin-top: 0; }
 
+.chat-topo { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; justify-content: space-between; }
+.status-llm { font-size: 0.8rem; color: var(--suave); }
+.mensagens { display: flex; flex-direction: column; gap: 10px; max-height: 60vh; overflow-y: auto; padding: 4px 0 12px; }
+.msg { max-width: 85%; padding: 10px 14px; border-radius: var(--raio); white-space: pre-wrap; }
+.msg.usuario { align-self: flex-end; background: var(--marca); color: #fff; }
+.msg.assistente { align-self: flex-start; background: var(--fundo); border: 1px solid var(--borda); }
+.msg.pensando { color: var(--suave); font-style: italic; }
+.msg .meta-msg { display: block; margin-top: 8px; font-size: 0.75rem; color: var(--suave); white-space: normal; }
+.msg .lista-msg { margin: 8px 0 0; padding-left: 18px; font-size: 0.85rem; white-space: normal; }
+.sugestoes { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.sugestao {
+  font: inherit; font-size: 0.85rem; color: var(--texto); background: var(--cartao);
+  border: 1px solid var(--borda); border-radius: 999px; padding: 4px 12px; cursor: pointer;
+}
+.form-chat { display: flex; gap: 8px; }
+.form-chat input { flex: 1; min-width: 0; }
+
 .rodape { text-align: center; color: var(--suave); font-size: 0.8rem; padding: 24px 16px; }

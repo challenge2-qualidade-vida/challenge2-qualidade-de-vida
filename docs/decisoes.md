@@ -15,3 +15,7 @@ Registre aqui cada decisão importante e a justificativa (restrição do desafio
 | 29/10/2026 | Metas nutricionais pelos VD da ANVISA (IN 75/2020) e 400 g de FLV da OMS | Metas próprias do grupo | Fontes oficiais e verificáveis | Guilherme |
 | 29/10/2026 | Busca do RAG com TF-IDF (scikit-learn) | sentence-transformers + ChromaDB | Base pequena e de vocabulário controlado; leve, local, sem baixar modelo, cabe no plano gratuito de hospedagem. Reavaliar após o experimento do tópico 8 | Guilherme |
 | 29/10/2026 | Guia Alimentar resumido pelo grupo em .md, uma seção por assunto | Indexar o PDF inteiro | Trechos curtos e com fonte melhoram a busca; evita cópia extensa; precisa conferência com o original | Guilherme |
+| 29/10/2026 | LLM padrão: Ollama local (`qwen2.5:7b`), com Groq e Gemini como alternativas | Só APIs na nuvem | Gratuito sem limite, sem internet e sem enviar dados do usuário para fora; um cliente OpenAI-compatível atende os três | Guilherme |
+| 29/10/2026 | Um LLM que usa ferramentas (não 5 agentes) | Multiagente desde o início | Mais rápido e dentro dos limites gratuitos; agentes entram no tópico 9 só onde agregam | Guilherme |
+| 29/10/2026 | RAG antecipado (trechos anexados à pergunta) além da ferramenta de busca | Só ferramenta de busca | O modelo pequeno respondia de memória sem chamar a busca | Guilherme |
+| 29/10/2026 | Modo sem LLM de reserva | Mostrar erro quando o LLM falha | O app continua útil sem LLM e serve de linha de base no experimento | Guilherme |
