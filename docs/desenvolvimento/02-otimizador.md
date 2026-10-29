@@ -34,6 +34,7 @@ Um LLM pode inventar preço, errar soma e "esquecer" uma meta nutricional. O oti
 | Frutas, legumes e verduras | ≥ 400 g × pessoas × dias | OMS |
 | Variedade (energia) | nenhum alimento passa de 25% das kcal | parâmetro do grupo |
 | Variedade (FLV) | nenhuma fruta ou hortaliça passa de 40% da meta de FLV, o que obriga pelo menos 3 tipos | parâmetro do grupo |
+| Proteína de origem animal | ≥ 20% da proteína vem de carnes, ovos, peixe, leite ou queijo (se as restrições permitirem algum) | parâmetro do grupo, **acrescentado no tópico 11** |
 | Açúcar | ≤ 10% das kcal | OMS (açúcares livres) |
 | Óleos | ≤ 10% das kcal | parâmetro do grupo (o Guia Alimentar pede "pequenas quantidades") |
 | Restrições alimentares | alimentos com a tag da restrição ficam fora | escolha do usuário |
@@ -61,17 +62,17 @@ from economia.otimizador import Pedido, montar_cesta
 
 base = carregar()
 cesta = montar_cesta(base, Pedido(orcamento=800, pessoas=4, periodo="mes"), ("C",))
-cesta.custo_total            # 631.72
-cesta.custo_por_1000_kcal    # ≈ 2,63
+cesta.custo_total            # 708.31
+cesta.custo_por_1000_kcal    # ≈ 2,95
 ```
 
-Com os preços de exemplo, a cesta de 4 pessoas por um mês custa **R$ 664,16 no Mercado A, R$ 639,15 no B e R$ 631,72 no C**. Cada solução leva menos de 0,1 s.
+Com os preços de exemplo, a cesta de 4 pessoas por um mês custa **R$ 739,49 no Mercado A, R$ 711,42 no B e R$ 708,31 no C** (antes da meta de proteína animal do tópico 11, eram R$ 664,16, R$ 639,15 e R$ 631,72). Cada solução leva menos de 0,1 s.
 
 ## Limitações conhecidas
 
 - **Todas as pessoas contam como adultos** (2.000 kcal). Crianças e idosos têm necessidades diferentes. A explicação do app deixa isso claro, e o tema de "dieta individual" está fora do MVP.
 - **Só três nutrientes** (energia, proteína, fibra), mais frutas e hortaliças. Ferro, cálcio e vitaminas podem entrar depois, já que a TACO tem esses dados.
-- **O menor custo pode ser "monótono"**: com os preços de exemplo, a cesta quase não leva proteína animal, porque o feijão cumpre a meta de proteína mais barato. É nutricionalmente válido, mas talvez pouco realista para o gosto das famílias. Se a banca ou os testes com usuários apontarem isso, dá para adicionar uma meta mínima por grupo em `metas.py`.
+- ~~**O menor custo pode ser "monótono"**~~ **Resolvido no tópico 11:** as métricas mostraram que **100% das cestas saíam sem nenhuma proteína animal**, porque feijão e grãos cumprem energia, proteína e fibra mais barato. Isso deixa a cesta sem as principais fontes de vitamina B12 e cálcio, que o modelo não mede. Entrou a meta de ≥ 20% de proteína de origem animal, e a cesta ficou cerca de R$ 0,50 mais cara por pessoa por dia.
 - **Os valores nutricionais são do alimento cru** (TACO). É o certo para uma lista de compras, mas não reflete perdas no preparo.
 
 ## Testes

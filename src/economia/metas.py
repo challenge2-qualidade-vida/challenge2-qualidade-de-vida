@@ -17,6 +17,14 @@ FLV_G_POR_PESSOA_DIA = 400
 LIMITE_KCAL_POR_ALIMENTO = 0.25
 LIMITE_FLV_POR_ALIMENTO = 0.40
 
+# Pelo menos 20% da proteína de carnes, ovos, peixe, leite ou queijo (parâmetro
+# do grupo). Sem isso, a cesta mais barata saía 100% vegetal (feijão e grãos):
+# cumpre energia, proteína e fibra, mas fica sem as principais fontes de
+# vitamina B12 e cálcio, que o modelo não mede. Só vale se as restrições
+# deixarem algum desses alimentos disponível.
+PROTEINA_ANIMAL_MINIMA = 0.20
+GRUPOS_PROTEINA_ANIMAL = ("proteina_animal", "laticinios")
+
 # Açúcar: menos de 10% da energia (OMS, açúcares livres).
 # Óleos: 10% (parâmetro do grupo; o Guia Alimentar pede "pequenas quantidades").
 LIMITE_KCAL_POR_GRUPO = {"acucar": 0.10, "oleos": 0.10}

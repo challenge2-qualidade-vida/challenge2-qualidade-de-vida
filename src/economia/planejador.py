@@ -4,7 +4,7 @@ Roda o otimizador para cada mercado e para cada par de mercados e decide
 se a economia de ir a dois lugares paga o custo do deslocamento.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from itertools import combinations
 
 from .dados import Base
@@ -49,12 +49,24 @@ def planejar(base: Base, pedido: Pedido, custo_deslocamento: float = 0.0) -> Pla
     por_mercado = {m: montar_cesta(base, pedido, (m,)) for m in mercados}
     um = _mais_barata(por_mercado.values())
 
+    # Na opção de dois mercados, o deslocamento sai do mesmo orçamento.
+    pedido_par = pedido
+    if pedido.orcamento is not None:
+        pedido_par = replace(pedido, orcamento=pedido.orcamento - custo_deslocamento)
+    pares = []
+    if pedido_par.orcamento is None or pedido_par.orcamento > 0:
+        pares = [montar_cesta(base, pedido_par, par) for par in combinations(mercados, 2)]
     # Só conta como "dois mercados" se a solução usa de fato os dois.
-    pares = [montar_cesta(base, pedido, par) for par in combinations(mercados, 2)]
     dois = _mais_barata(c for c in pares if c is not None and len(c.mercados) == 2)
 
     if um is None and dois is None:
-        sem_limite = montar_cesta(base, pedido, tuple(mercados), respeitar_orcamento=False)
+        # Mínimo real: um mercado só, ou dois mercados mais o deslocamento.
+        opcoes = [c.custo_total for m in mercados if (c := montar_cesta(base, pedido, (m,), respeitar_orcamento=False))]
+        opcoes += [
+            c.custo_total + custo_deslocamento
+            for par in combinations(mercados, 2)
+            if (c := montar_cesta(base, pedido, par, respeitar_orcamento=False)) and len(c.mercados) == 2
+        ]
         return Plano(
             pedido=pedido,
             custo_deslocamento=custo_deslocamento,
@@ -62,7 +74,7 @@ def planejar(base: Base, pedido: Pedido, custo_deslocamento: float = 0.0) -> Pla
             um_mercado=None,
             dois_mercados=None,
             recomendacao=None,
-            minimo_necessario=sem_limite.custo_total if sem_limite else None,
+            minimo_necessario=round(min(opcoes), 2) if opcoes else None,
         )
 
     if um is None:

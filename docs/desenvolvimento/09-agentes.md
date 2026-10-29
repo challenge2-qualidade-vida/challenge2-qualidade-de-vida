@@ -22,7 +22,7 @@ Todos os agentes com LLM usam **o mesmo modelo gratuito**, cada um com seu promp
 | [src/economia/assistente.py](../../src/economia/assistente.py) | Agora aceita `prompt_sistema` e uma lista de `ferramentas` por agente, e registra `etapas` |
 | [src/economia/api.py](../../src/economia/api.py) | `/api/chat` usa o orquestrador; novo `POST /api/cardapio` |
 | [src/web/](../../src/web/) | Botão **Sugerir cardápio** na cesta; etapas dos agentes no chat |
-| [tests/test_agentes.py](../../tests/test_agentes.py) | 24 testes |
+| [tests/test_agentes.py](../../tests/test_agentes.py) | 23 testes |
 
 ## Como funciona
 

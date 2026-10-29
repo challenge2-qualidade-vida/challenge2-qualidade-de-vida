@@ -60,3 +60,20 @@ def test_formato_reais():
 
 def test_formato_data():
     assert data_br("2026-10-20") == "20/10/2026"
+
+
+def test_dois_mercados_com_deslocamento_cabe_no_orcamento(base):
+    sem_limite = planejar(base, Pedido(orcamento=None, pessoas=4), custo_deslocamento=10)
+    orcamento = sem_limite.dois_mercados.custo_total + 5   # comida cabe, comida + deslocamento não
+    plano = planejar(base, Pedido(orcamento=orcamento, pessoas=4), custo_deslocamento=10)
+    if plano.recomendacao == "dois":
+        assert plano.dois_mercados.custo_total + 10 <= orcamento
+    assert plano.cesta_recomendada is None or plano.cesta_recomendada.custo_total <= orcamento
+
+
+def test_minimo_necessario_e_maior_que_o_orcamento_e_suficiente(base):
+    plano = planejar(base, Pedido(orcamento=150, pessoas=4, periodo="semana"), custo_deslocamento=10)
+    assert plano.recomendacao is None
+    assert plano.minimo_necessario > 150
+    com_minimo = planejar(base, Pedido(orcamento=plano.minimo_necessario, pessoas=4, periodo="semana"), custo_deslocamento=10)
+    assert com_minimo.recomendacao is not None

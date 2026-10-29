@@ -106,6 +106,8 @@ O modo C continua como **reserva** para quando o LLM está fora do ar: é instan
 
 ## Limitações do experimento
 
+- O relatório foi gerado **antes** da meta de proteína animal do tópico 11, quando a cesta da pergunta f03 custava R$ 602,66. O gabarito em `perguntas.json` já foi atualizado para o valor atual (R$ 670,92), para as próximas rodadas.
+
 - **17 perguntas** é pouco para conclusões estatísticas. Os resultados mostram tendências claras (40% × 100% no conhecimento), mas o grupo deve ampliar o conjunto.
 - **Uma rodada por abordagem.** A temperatura 0 reduz a variação, mas não a elimina.
 - **Correção por palavras-chave** pode errar nos dois sentidos: aceitar uma resposta que tem o termo mas está errada, ou recusar uma resposta certa escrita com sinônimos. Revisar o CSV manualmente é o próximo passo.

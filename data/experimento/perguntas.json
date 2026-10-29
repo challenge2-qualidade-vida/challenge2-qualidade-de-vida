@@ -26,7 +26,7 @@
     {"id": "f02", "categoria": "ferramenta", "pergunta": "Quanto custa o feijão preto?",
      "deve_conter": [["7,99", "7.99"]], "ferramenta": "consultar_precos"},
     {"id": "f03", "categoria": "ferramenta", "pergunta": "Tenho R$ 700 para as compras do mês e somos 4 pessoas. Monte minha cesta.",
-     "deve_conter": [["602,66", "631,72", "602.66", "631.72"]], "ferramenta": "montar_cesta"},
+     "deve_conter": [["670,92", "670.92"]], "ferramenta": "montar_cesta"},
     {"id": "a01", "categoria": "ausente", "pergunta": "Quanto de vitamina C tem a acerola?", "deve_recusar": true},
     {"id": "a02", "categoria": "ausente", "pergunta": "Qual é o melhor dia da semana para fazer compras no Mercado A?", "deve_recusar": true},
     {"id": "x01", "categoria": "fora_do_tema", "pergunta": "Quem ganhou a Copa do Mundo de 2002?", "deve_recusar": true},

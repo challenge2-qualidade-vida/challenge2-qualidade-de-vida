@@ -21,8 +21,8 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 8 | Experimento LLM × LLM + RAG | Comparação com gabarito: correção, fundamentação, latência, custo | Script Python + pytest | ✅ Feito | [08](08-experimento-llm-rag.md) |
 | 9 | Agentes | Orquestrador, Cifrão (preços), Miau-ricio (nutrição), Mia (verificação) | Mesmo LLM do tópico 7; Orquestrador e Mia por regras | ✅ Feito | [09](09-agentes.md) |
 | 10 | Leitura da NFC-e (multimodal) | Recibaldo: lê o QR code do cupom e cadastra os preços | OpenCV + BeautifulSoup + consulta pública da SEFAZ-DF | ✅ Feito (falta validar com cupom real) | [10](10-nfce-multimodal.md) |
-| 11 | Métricas e testes finais | Economia, aderência ao orçamento, adequação nutricional, precisão de preço | Script Python + pytest | ⏳ Próximo | — |
-| 12 | Publicação | Site no ar para a banca testar | Render (plano gratuito) ou Hugging Face Spaces | ⬜ | — |
+| 11 | Métricas e testes finais | Economia, aderência ao orçamento, adequação nutricional, precisão de preço | Script Python + pytest | ✅ Feito (falta trabalho de campo: gôndola e usuários) | [11](11-metricas.md) |
+| 12 | Publicação | Site no ar para a banca testar | Render (plano gratuito) ou Hugging Face Spaces | ⏳ Próximo | — |
 
 A ordem segue o roadmap das semanas: tópicos 1–5 formam o núcleo do app (semanas 1–2), 6–8 cobrem RAG e o experimento (semanas 2–3), 9 os agentes (semana 4), 10 a multimodalidade (semana 5) e 11–12 a integração, os testes e a entrega (semanas 6–7).
 
@@ -51,6 +51,7 @@ data/
   alimentos/alimentos.json   nutrição por 100 g (TACO)        → tópico 1
   base-conhecimento/*.md     Guia Alimentar, critérios, receitas → tópico 6
   experimento/perguntas.json perguntas e gabarito             → tópico 8
+  experimento/cesta_referencia.json cesta estilo DIEESE        → tópico 11
   precos/precos.json         mercados, produtos e preços      → tópico 1
   precos/contribuicoes.json  preços enviados via NFC-e (fora do git) → tópico 10
 src/economia/
@@ -67,8 +68,10 @@ src/economia/
   avaliacao.py               critérios do experimento         → tópico 8
   agentes.py                 Orquestrador, Cifrão, Miau-ricio, Mia → tópico 9
   nfce.py                    Recibaldo: QR code da NFC-e      → tópico 10
+  metricas.py                métricas do projeto              → tópico 11
 experimentos/
   llm_x_rag.py               experimento LLM × LLM + RAG      → tópico 8
+  metricas.py                gera docs/semana-7/metricas.md   → tópico 11
 src/web/
   index.html, estilo.css, app.js   o site                     → tópico 5
 tests/

@@ -13,9 +13,11 @@ from scipy.optimize import Bounds, LinearConstraint, milp
 from .dados import Base, Preco, Produto, preco_por_kg
 from .metas import (
     DIAS_POR_PERIODO,
+    GRUPOS_PROTEINA_ANIMAL,
     LIMITE_FLV_POR_ALIMENTO,
     LIMITE_KCAL_POR_ALIMENTO,
     LIMITE_KCAL_POR_GRUPO,
+    PROTEINA_ANIMAL_MINIMA,
     metas_totais,
     tags_excluidas,
 )
@@ -128,6 +130,11 @@ def montar_cesta(base: Base, pedido: Pedido, mercados: tuple[str, ...], respeita
         if mascara.any():
             kcal_g = nutr["kcal"] * mascara
             restringir(kcal_g, maximo=max(limite * metas["kcal"], kcal_g.max()))
+
+    animal = np.array([a.grupo in GRUPOS_PROTEINA_ANIMAL for a in alimentos], dtype=float)
+    if animal.any():
+        # proteína animal ≥ 20% da proteína total  ⇔  Σ (animal − 0,2) × proteína × x ≥ 0
+        restringir((animal - PROTEINA_ANIMAL_MINIMA) * nutr["proteina_g"], minimo=0)
 
     if respeitar_orcamento and pedido.orcamento is not None:
         restringir(custo, maximo=pedido.orcamento)

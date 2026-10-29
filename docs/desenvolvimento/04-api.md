@@ -56,7 +56,7 @@ uvicorn economia.api:app --app-dir src --reload
 
 Entrada inválida devolve **HTTP 422** com a mensagem do erro, sem chegar ao otimizador.
 
-**Saída** (resposta real para a entrada acima, resumida):
+**Saída** (resposta real para a entrada acima, resumida, gerada no tópico 4; depois da meta de proteína animal do tópico 11 os valores mudaram: hoje a cesta recomendada custa R$ 670,92):
 
 ```json
 {

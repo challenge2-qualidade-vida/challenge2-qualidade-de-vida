@@ -25,3 +25,6 @@ Registre aqui cada decisão importante e a justificativa (restrição do desafio
 | 29/10/2026 | NFC-e pelo QR code + consulta pública da SEFAZ-DF | OCR da foto do cupom | Dados oficiais e sem erro de leitura; OCR de cupom erra muito | Guilherme |
 | 29/10/2026 | Só baixar páginas de *.fazenda.df.gov.br, validando cada redirecionamento | Seguir qualquer URL do QR code | Proteção contra SSRF: um QR malicioso não pode fazer o servidor acessar endereços internos | Guilherme |
 | 29/10/2026 | Usuário confere os itens antes de salvar; CPF nunca é lido | Salvar automático | Leitura incerta precisa de revisão (documento EconoMIA, 4.6); LGPD | Guilherme |
+| 29/10/2026 | Meta de ≥ 20% da proteína de origem animal (se as restrições permitirem) | Só energia, proteína e fibra | Métricas mostraram 100% das cestas sem proteína animal (sem fontes de B12 e cálcio, não modelados): risco de "otimização enganosa". Custo: +R$ 0,57 por pessoa/dia | Guilherme |
+| 29/10/2026 | Deslocamento sai do orçamento na opção de dois mercados | Orçamento só para a comida | Aderência ao orçamento estava em 87% | Guilherme |
+| 29/10/2026 | Cesta de referência com as quantidades do DIEESE e os preços da nossa base, e economia também "com a mesma energia" | Usar o custo publicado pelo DIEESE | Mesma fonte de preço nos dois lados; a referência DIEESE tem 155% da energia da meta | Guilherme |

@@ -27,6 +27,8 @@ Abra <http://localhost:8000>.
 
 ![Tela de montar cesta](img/05-tela-cesta.jpg)
 
+*Captura do tópico 5. Os valores mudaram com a meta de proteína animal do tópico 11, e a tela agora tem as abas Conversar e Enviar cupom.*
+
 1. **Aviso de dados de exemplo** no topo, enquanto os preços forem fictícios. O texto vem da própria base (`aviso` em `precos.json`), então some sozinho quando a coleta real entrar.
 2. **Formulário:** orçamento (vazio = sem limite), pessoas, período, custo para ir a um 2º mercado e as restrições alimentares (botões que podem ser marcados juntos).
 3. **Resumo em 3 cartões:** a melhor opção em um mercado, a melhor em dois mercados (com o deslocamento) e o custo por 1.000 kcal. A opção recomendada ganha borda verde e o selo **Recomendada**.

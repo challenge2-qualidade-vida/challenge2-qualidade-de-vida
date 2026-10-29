@@ -60,3 +60,21 @@ def test_so_compra_nos_mercados_pedidos(base):
 def test_restricao_desconhecida_gera_erro(base):
     with pytest.raises(ValueError):
         montar_cesta(base, Pedido(orcamento=None, pessoas=1, restricoes=("dieta_x",)), ("A",))
+
+
+def test_cesta_tem_pelo_menos_20_por_cento_de_proteina_animal(base):
+    from economia.metas import GRUPOS_PROTEINA_ANIMAL
+
+    cesta = montar_cesta(base, Pedido(orcamento=None, pessoas=4), ("A",))
+    animal = sum(
+        base.alimentos[i.alimento_id].proteina_g * base.produtos[i.produto_id].embalagem_g / 100 * i.quantidade
+        for i in cesta.itens if i.grupo in GRUPOS_PROTEINA_ANIMAL
+    )
+    assert animal >= 0.20 * cesta.obtido["proteina_g"] - 1e-6
+
+
+def test_sem_nenhuma_fonte_animal_a_cesta_continua_viavel(base):
+    pedido = Pedido(orcamento=None, pessoas=2, restricoes=("vegetariano", "sem_lactose", "sem_ovo"))
+    cesta = montar_cesta(base, pedido, ("A",))
+    assert cesta is not None
+    assert not any(i.grupo in ("proteina_animal", "laticinios") for i in cesta.itens)
