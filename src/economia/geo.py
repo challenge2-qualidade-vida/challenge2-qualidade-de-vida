@@ -29,7 +29,15 @@ REGIOES_DF = {
 }
 
 # Custo de carro por km rodado (parâmetro do grupo): gasolina ~R$ 6,50/L ÷ 10 km/L.
+# O usuário pode mudar nas Configurações do app.
 CUSTO_POR_KM = 0.65
+
+# Raio de busca: padrão de 10 km, ajustável de 1 a 100 km nas Configurações.
+RAIO_PADRAO_KM = 10
+RAIO_MINIMO_KM = 1
+RAIO_MAXIMO_KM = 100
+# O OpenStreetMap é um serviço gratuito e compartilhado: consultas acima de 10 km pesam demais.
+RAIO_MAXIMO_OSM_KM = 10
 
 # Alimentos proteicos que entram no ranking ("carne, frango, ..."), na ordem da tela.
 GRUPOS_PROTEICOS = ("proteina_animal", "laticinios", "leguminosas")
@@ -51,6 +59,8 @@ class MercadoProximo:
     regiao: str
     distancia_km: float
     custo_ida_volta: float
+    # Direção a partir do usuário (0 = norte, 90 = leste), para desenhar o radar na tela.
+    rumo_graus: float = 0.0
 
 
 def distancia_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
@@ -62,9 +72,18 @@ def distancia_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     return 2 * r * math.asin(math.sqrt(a))
 
 
-def custo_ida_volta(km: float) -> float:
+def custo_ida_volta(km: float, custo_por_km: float = CUSTO_POR_KM) -> float:
     """Custo estimado de ir e voltar de carro. Distância em linha reta × 1,3 ≈ distância pelas ruas."""
-    return round(km * 1.3 * 2 * CUSTO_POR_KM, 2)
+    return round(km * 1.3 * 2 * custo_por_km, 2)
+
+
+def rumo_graus(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """Direção do ponto 2 visto do ponto 1, em graus a partir do norte."""
+    p1, p2 = math.radians(lat1), math.radians(lat2)
+    dl = math.radians(lon2 - lon1)
+    x = math.sin(dl) * math.cos(p2)
+    y = math.cos(p1) * math.sin(p2) - math.sin(p1) * math.cos(p2) * math.cos(dl)
+    return round((math.degrees(math.atan2(x, y)) + 360) % 360, 1)
 
 
 def validar_coordenadas(lat: float, lon: float) -> None:
@@ -72,7 +91,7 @@ def validar_coordenadas(lat: float, lon: float) -> None:
         raise ValueError("Coordenadas inválidas.")
 
 
-def mercados_proximos(base: Base, lat: float, lon: float, raio_km: float) -> list[MercadoProximo]:
+def mercados_proximos(base: Base, lat: float, lon: float, raio_km: float, custo_por_km: float = CUSTO_POR_KM) -> list[MercadoProximo]:
     validar_coordenadas(lat, lon)
     proximos = []
     for m in base.mercados.values():
@@ -80,7 +99,10 @@ def mercados_proximos(base: Base, lat: float, lon: float, raio_km: float) -> lis
             continue
         d = distancia_km(lat, lon, m.lat, m.lon)
         if d <= raio_km:
-            proximos.append(MercadoProximo(m.id, m.nome, m.regiao, round(d, 1), custo_ida_volta(d)))
+            proximos.append(MercadoProximo(
+                m.id, m.nome, m.regiao, round(d, 1), custo_ida_volta(d, custo_por_km),
+                rumo_graus(lat, lon, m.lat, m.lon) if d > 0.05 else 0.0,
+            ))
     return sorted(proximos, key=lambda m: m.distancia_km)
 
 
@@ -144,6 +166,33 @@ def ranking_proteinas(base: Base, mercados: list[str]) -> dict:
     }
 
 
+def comparar_mercados(proximos: list[MercadoProximo], ranking: dict) -> list[dict]:
+    """Junta distância e preço: quem é o mais perto, o mais barato e o de melhor custo-benefício.
+
+    Preço = "carrinho de proteínas" (1 kg de cada alimento proteico que todos os
+    mercados do raio têm). Custo real = carrinho + ida e volta.
+    """
+    totais = ranking["carrinho"]["total_por_mercado"] if ranking else {}
+    tem_carrinho = bool(ranking and ranking["carrinho"]["itens"])
+    linhas = []
+    for m in proximos:
+        carrinho = totais.get(m.id) if tem_carrinho else None
+        linhas.append({
+            "id": m.id, "nome": m.nome, "regiao": m.regiao,
+            "distancia_km": m.distancia_km, "custo_ida_volta": m.custo_ida_volta, "rumo_graus": m.rumo_graus,
+            "carrinho_proteinas": carrinho,
+            "custo_real": round(carrinho + m.custo_ida_volta, 2) if carrinho is not None else None,
+            "selos": [],
+        })
+    if linhas:
+        min(linhas, key=lambda l: l["distancia_km"])["selos"].append("mais_perto")
+        com_preco = [l for l in linhas if l["carrinho_proteinas"] is not None]
+        if len(com_preco) > 1:
+            min(com_preco, key=lambda l: l["carrinho_proteinas"])["selos"].append("melhor_preco")
+            min(com_preco, key=lambda l: l["custo_real"])["selos"].append("melhor_custo_beneficio")
+    return linhas
+
+
 # ---------- OpenStreetMap ----------
 
 def consulta_overpass(lat: float, lon: float, raio_m: int) -> str:
@@ -183,7 +232,7 @@ def supermercados_osm(base: Base, lat: float, lon: float, raio_km: float) -> lis
     """Consulta o OpenStreetMap (gratuito). A posição é arredondada (~1 km) antes de sair do servidor."""
     validar_coordenadas(lat, lon)
     lat_r, lon_r = round(lat, 2), round(lon, 2)
-    raio_m = int(min(raio_km, 10) * 1000)
+    raio_m = int(min(raio_km, RAIO_MAXIMO_OSM_KM) * 1000)
     chave = (lat_r, lon_r, raio_m)
     if chave not in _cache_osm:
         erro: Exception | None = None

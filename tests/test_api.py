@@ -161,3 +161,30 @@ def test_osm_fora_do_ar_retorna_502(cliente, monkeypatch):
     monkeypatch.setattr(geo.httpx, "post", falha)
     r = cliente.get("/api/osm", params={"lat": -15.76, "lon": -47.88})
     assert r.status_code == 502
+
+
+def test_configuracoes_padrao(cliente):
+    c = cliente.get("/api/configuracoes").json()
+    assert c["raio_km"] == {"padrao": 10, "minimo": 1, "maximo": 100}
+
+
+def test_proximos_aceita_raio_de_1_a_100(cliente):
+    base = {"lat": -15.7617, "lon": -47.8825}
+    assert cliente.get("/api/proximos", params={**base, "raio_km": 100}).status_code == 200
+    assert cliente.get("/api/proximos", params={**base, "raio_km": 101}).status_code == 422
+    assert cliente.get("/api/proximos", params={**base, "raio_km": 0.5}).status_code == 422
+
+
+def test_proximos_informa_o_mais_proximo_fora_do_raio(cliente):
+    d = cliente.get("/api/proximos", params={"lat": -15.7617, "lon": -47.8825, "raio_km": 1}).json()
+    assert [m["id"] for m in d["mercados"]] == ["A"]
+    assert d["mais_proximo_fora_do_raio_km"] == pytest.approx(6.4, abs=0.2)
+    assert d["total_com_localizacao"] == 3
+
+
+def test_proximos_usa_o_custo_por_km_do_usuario(cliente):
+    params = {"lat": -15.7617, "lon": -47.8825, "raio_km": 10}
+    barato = cliente.get("/api/proximos", params={**params, "custo_por_km": 0.2}).json()
+    caro = cliente.get("/api/proximos", params={**params, "custo_por_km": 2.0}).json()
+    b, c = barato["mercados"][1]["custo_ida_volta"], caro["mercados"][1]["custo_ida_volta"]
+    assert c == pytest.approx(b * 10, rel=0.02)

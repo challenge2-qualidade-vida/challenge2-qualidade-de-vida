@@ -90,3 +90,55 @@ def test_ler_overpass():
     r = ler_overpass(dados, *ASA_NORTE, [Mercado("A", "Mercado A", "x")])
     assert [m["nome"] for m in r] == ["Mercado A", "Supermercado Novo"]   # sem nome e duplicado saem
     assert r[0]["tem_precos"] and not r[1]["tem_precos"]
+
+
+# ---------- Configurações de raio e custo-benefício ----------
+
+def test_rumo_para_o_leste_e_para_o_sul():
+    from economia.geo import rumo_graus
+
+    assert rumo_graus(0, 0, 0, 1) == pytest.approx(90, abs=0.5)
+    assert rumo_graus(0, 0, -1, 0) == pytest.approx(180, abs=0.5)
+
+
+def test_custo_ida_volta_com_custo_por_km_do_usuario():
+    assert custo_ida_volta(10, 1.0) == pytest.approx(26.0)
+
+
+def test_raio_de_1_a_100_km(base):
+    assert mercados_proximos(base, *ASA_NORTE, raio_km=1)[0].id == "A"
+    assert len(mercados_proximos(base, *ASA_NORTE, raio_km=100)) == 3
+
+
+def test_comparar_mercados_marca_perto_preco_e_custo_beneficio(base):
+    from economia.geo import comparar_mercados
+
+    perto = mercados_proximos(base, *ASA_NORTE, raio_km=100)
+    linhas = comparar_mercados(perto, ranking_proteinas(base, [m.id for m in perto]))
+    por_id = {l["id"]: l for l in linhas}
+    assert "mais_perto" in por_id["A"]["selos"]
+    melhor_preco = min(linhas, key=lambda l: l["carrinho_proteinas"])
+    assert "melhor_preco" in melhor_preco["selos"]
+    for l in linhas:
+        assert l["custo_real"] == pytest.approx(l["carrinho_proteinas"] + l["custo_ida_volta"])
+    assert sum("melhor_custo_beneficio" in l["selos"] for l in linhas) == 1
+
+
+def test_custo_beneficio_muda_com_o_custo_do_km(base):
+    from economia.geo import comparar_mercados
+
+    def vencedor(custo_km):
+        perto = mercados_proximos(base, *ASA_NORTE, raio_km=100, custo_por_km=custo_km)
+        linhas = comparar_mercados(perto, ranking_proteinas(base, [m.id for m in perto]))
+        return next(l["id"] for l in linhas if "melhor_custo_beneficio" in l["selos"])
+
+    # Com deslocamento caríssimo, o mais perto (A, 0 km) vence.
+    assert vencedor(5.0) == "A"
+
+
+def test_um_mercado_so_nao_ganha_selo_de_preco(base):
+    from economia.geo import comparar_mercados
+
+    perto = mercados_proximos(base, *ASA_NORTE, raio_km=1)
+    linhas = comparar_mercados(perto, ranking_proteinas(base, ["A"]))
+    assert linhas[0]["selos"] == ["mais_perto"]

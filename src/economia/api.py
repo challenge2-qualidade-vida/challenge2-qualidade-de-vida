@@ -222,7 +222,19 @@ def nfce_confirmar(pedido: ConfirmacaoNFCe):
 
 LAT = Query(..., ge=-90, le=90)
 LON = Query(..., ge=-180, le=180)
-RAIO = Query(10, gt=0, le=50, description="Raio em km")
+RAIO = Query(geo.RAIO_PADRAO_KM, ge=geo.RAIO_MINIMO_KM, le=geo.RAIO_MAXIMO_KM, description="Raio em km (1 a 100; padrão 10)")
+CUSTO_KM = Query(geo.CUSTO_POR_KM, ge=0, le=5, description="Custo do carro por km rodado, em R$")
+
+
+@app.get("/api/configuracoes")
+def configuracoes_padrao():
+    """Valores padrão e limites das Configurações do app."""
+    return {
+        "raio_km": {"padrao": geo.RAIO_PADRAO_KM, "minimo": geo.RAIO_MINIMO_KM, "maximo": geo.RAIO_MAXIMO_KM},
+        "custo_por_km": {"padrao": geo.CUSTO_POR_KM, "minimo": 0.2, "maximo": 2.0},
+        "raio_maximo_mapa_km": geo.RAIO_MAXIMO_OSM_KM,
+        "ordenacao": {"padrao": "custo_beneficio", "opcoes": ["distancia", "preco", "custo_beneficio"]},
+    }
 
 
 @app.get("/api/regioes")
@@ -231,15 +243,24 @@ def regioes():
 
 
 @app.get("/api/proximos")
-def proximos(lat: float = LAT, lon: float = LON, raio_km: float = RAIO):
-    """Mercados com preços perto do usuário e o ranking dos alimentos proteicos. A posição não é gravada."""
-    perto = geo.mercados_proximos(base, lat, lon, raio_km)
+def proximos(lat: float = LAT, lon: float = LON, raio_km: float = RAIO, custo_por_km: float = CUSTO_KM):
+    """Mercados com preços perto do usuário, ranking das proteínas e comparação distância × preço.
+
+    A posição não é gravada.
+    """
+    perto = geo.mercados_proximos(base, lat, lon, raio_km, custo_por_km)
     ids = [m.id for m in perto]
+    ranking = geo.ranking_proteinas(base, ids) if ids else None
+    com_local = [m for m in base.mercados.values() if m.lat is not None]
     return {
-        "mercados": [asdict(m) for m in perto],
+        "raio_km": raio_km,
+        "mercados": geo.comparar_mercados(perto, ranking),
+        "total_com_localizacao": len(com_local),
+        "mais_proximo_fora_do_raio_km": min(
+            (round(geo.distancia_km(lat, lon, m.lat, m.lon), 1) for m in com_local if m.id not in ids), default=None),
         "custo_segundo_mercado": geo.custo_segundo_mercado(perto),
-        "custo_por_km": geo.CUSTO_POR_KM,
-        "proteinas": geo.ranking_proteinas(base, ids) if ids else None,
+        "custo_por_km": custo_por_km,
+        "proteinas": ranking,
         "sem_localizacao": [m.nome for m in base.mercados.values() if m.lat is None],
     }
 
