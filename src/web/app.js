@@ -101,7 +101,7 @@ function atualizarInicio(plano, pedido) {
   const gasto = cesta.custo_total + (plano.recomendacao === "dois" ? plano.custo_deslocamento : 0);
   if (pedido.orcamento) {
     const sobra = pedido.orcamento - gasto;
-    falarMascote("😻", `Sua cesta coube no orçamento! Sobraram ${reais(sobra)} e todas as metas nutricionais foram cumpridas.`);
+    falarMascote("🎉", `Sua cesta coube no orçamento! Sobraram ${reais(sobra)} e todas as metas nutricionais foram cumpridas.`);
     const pct = Math.round((gasto / pedido.orcamento) * 100);
     const area = $("#anel-orcamento");
     area.style.setProperty("--pct", Math.min(pct, 100));
@@ -111,7 +111,7 @@ function atualizarInicio(plano, pedido) {
       el("b", {}, reais(gasto)), `de ${reais(pedido.orcamento)} · ${nomesMercados(cesta.mercados)}`,
     );
   } else {
-    falarMascote("😺", `Sua cesta custa ${reais(gasto)} e cumpre todas as metas nutricionais.`);
+    falarMascote("✨", `Sua cesta custa ${reais(gasto)} e cumpre todas as metas nutricionais.`);
     $("#anel-orcamento").style.setProperty("--pct", 100);
     $("#anel-orcamento-valor").textContent = reais(gasto);
     $("#inicio-legenda").replaceChildren(el("b", {}, "Sem limite"), nomesMercados(cesta.mercados));
@@ -581,16 +581,26 @@ async function carregarStatusLLM() {
   $("#status-llm").title = s.ativo ? `LLM ${s.modelo} via ${s.provedor} (gratuito)` : "Sem LLM: respostas por regras";
 }
 
-function adicionarMensagem(classe, texto) {
+const AVATARES = { "Cifrão": "cifrao", "Miau-ricio": "miauricio", "Recibaldo": "recibaldo" };
+
+function adicionarMensagem(classe, texto, gato) {
   const msg = el("div", { class: `msg ${classe}` }, texto);
-  $("#mensagens").append(msg);
-  msg.scrollIntoView({ behavior: "smooth", block: "end" });
+  const no = gato
+    ? el("div", { class: "linha-msg" }, el("img", { src: `img/${gato}.webp`, alt: "", class: "avatar" }), msg)
+    : msg;
+  $("#mensagens").append(no);
+  no.scrollIntoView({ behavior: "smooth", block: "end" });
   return msg;
+}
+
+function gatoDaResposta(etapas) {
+  const quem = (etapas ?? []).map((e) => e.agente).find((a) => AVATARES[a]);
+  return AVATARES[quem] ?? "mia";
 }
 
 async function enviarChat(texto) {
   adicionarMensagem("usuario", texto);
-  const pensando = adicionarMensagem("assistente pensando", "Pensando… (o LLM local pode levar alguns segundos)");
+  const pensando = adicionarMensagem("assistente pensando", "Pensando… (o LLM local pode levar alguns segundos)", "mia");
   const botao = $("#form-chat button");
   botao.disabled = true;
   try {
@@ -599,8 +609,8 @@ async function enviarChat(texto) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mensagem: texto, historico: historico.slice(-6) }),
     });
-    pensando.remove();
-    const msg = adicionarMensagem("assistente", semMarkdown(r.resposta));
+    pensando.closest(".linha-msg").remove();
+    const msg = adicionarMensagem("assistente", semMarkdown(r.resposta), gatoDaResposta(r.etapas));
     const itens = r.dados?.montar_cesta?.itens;
     if (r.modo === "llm" && itens?.length) {
       msg.append(el("ul", { class: "lista-msg" }, ...itens.map((i) => el("li", {}, i))));
@@ -613,8 +623,8 @@ async function enviarChat(texto) {
     if (meta.length) msg.append(el("span", { class: "meta-msg" }, meta.join(" · ")));
     historico.push({ role: "user", content: texto }, { role: "assistant", content: r.resposta });
   } catch (e) {
-    pensando.remove();
-    adicionarMensagem("assistente", "Desculpe, algo deu errado: " + e.message);
+    pensando.closest(".linha-msg").remove();
+    adicionarMensagem("assistente", "Desculpe, algo deu errado: " + e.message, "mia");
   } finally {
     botao.disabled = false;
   }
