@@ -16,7 +16,12 @@
   <div class="app">
     <header class="barra-topo">
       <div class="marca"><img src="img/logo-gato.webp" alt="" class="marca-gato"><img src="img/logo-nome.webp" alt="EconoMIA" class="marca-nome"></div>
-      <span id="status-llm" class="pilula"></span>
+      <div class="topo-direita">
+        <span id="status-llm" class="pilula"></span>
+        <button type="button" class="botao-icone" data-ir="config" aria-label="Configurações" title="Configurações">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        </button>
+      </div>
     </header>
 
     <div id="aviso-dados" class="aviso" hidden></div>
@@ -173,31 +178,33 @@
         <div class="cartao">
           <button type="button" id="botao-localizacao" class="botao largo">📍 Usar minha localização</button>
           <p class="nota centro">Sua localização é usada só para calcular distâncias e não é guardada.</p>
-          <div class="campos-lado">
-            <label class="campo">
-              <span class="rotulo">…ou escolha a região</span>
-              <select id="regiao"><option value="">—</option></select>
-            </label>
-            <label class="campo campo-curto">
-              <span class="rotulo">Raio (km)</span>
-              <input type="number" id="raio" min="1" max="50" value="10">
-            </label>
-          </div>
+          <label class="campo">
+            <span class="rotulo">…ou escolha a região</span>
+            <select id="regiao"><option value="">—</option></select>
+          </label>
+          <button type="button" class="raio-chip" data-ir="config">
+            <span>📏 Buscando num raio de <b id="raio-atual">10 km</b></span><span class="raio-chip-acao">Alterar</span>
+          </button>
           <div id="status-perto" class="nota"></div>
         </div>
 
         <div id="resultado-perto" hidden>
+          <h2 class="secao">🏪 Mercados no seu raio</h2>
+          <div class="segmentado segmentado-pequeno" role="radiogroup" aria-label="Ordenar mercados">
+            <label><input type="radio" name="ordem-perto" value="custo_beneficio"><span>Custo-benefício</span></label>
+            <label><input type="radio" name="ordem-perto" value="preco"><span>Menor preço</span></label>
+            <label><input type="radio" name="ordem-perto" value="distancia"><span>Mais perto</span></label>
+          </div>
+          <div id="lista-mercados" class="lista-mercados"></div>
+          <p class="nota">Preço = 1 kg de cada proteína que todos os mercados do raio têm. Custo real = preço + ida e volta de carro.</p>
+          <button type="button" id="botao-cesta-perto" class="botao largo">Montar cesta só com esses mercados</button>
+
+
           <h2 class="secao">🥩 Onde a proteína está mais barata</h2>
           <div id="resumo-proteinas" class="resumo"></div>
           <div class="cartao">
             <p class="nota">Menor preço por kg em cada mercado e quanto custam 100 g de proteína. Da proteína mais barata para a mais cara.</p>
             <div class="tabela-rolagem"><table class="tabela" id="tabela-proteinas"></table></div>
-          </div>
-
-          <h2 class="secao">🏪 Mercados com preços</h2>
-          <div class="cartao">
-            <div class="tabela-rolagem"><table class="tabela" id="tabela-proximos"></table></div>
-            <button type="button" id="botao-cesta-perto" class="botao largo">Montar cesta só com esses mercados</button>
           </div>
 
           <h2 class="secao">🗺️ Outros supermercados da região</h2>
@@ -207,6 +214,67 @@
             <div id="lista-osm"></div>
           </div>
         </div>
+      </section>
+
+      <!-- ================= CONFIGURAÇÕES ================= -->
+      <section id="aba-config" class="painel" hidden>
+        <div class="cabecalho-tela"><img src="img/mia.webp" alt=""><div><h1 class="titulo-tela">Configurações</h1><p class="nota">Ajuste a busca do seu jeito. Fica salvo neste aparelho.</p></div></div>
+
+        <div class="cartao">
+          <div class="cartao-cabecalho"><h2>📏 Raio de busca</h2><span class="valor-grande"><b id="cfg-raio-valor">10</b> km</span></div>
+          <input type="range" id="cfg-raio" class="deslizante" min="1" max="100" step="1" value="10" aria-label="Raio de busca em km">
+          <div class="escala"><span>1 km</span><span>25</span><span>50</span><span>75</span><span>100 km</span></div>
+          <div class="chips atalhos" id="cfg-raio-atalhos">
+            <button type="button" class="chip" data-km="2">2 km</button>
+            <button type="button" class="chip" data-km="5">5 km</button>
+            <button type="button" class="chip" data-km="10">10 km</button>
+            <button type="button" class="chip" data-km="25">25 km</button>
+            <button type="button" class="chip" data-km="50">50 km</button>
+            <button type="button" class="chip" data-km="100">100 km</button>
+          </div>
+          <div class="radar-area">
+            <svg id="radar" viewBox="0 0 240 240" role="img" aria-label="Prévia do raio de busca"></svg>
+            <div>
+              <p id="radar-resumo" class="radar-resumo"></p>
+              <p id="radar-ponto" class="nota"></p>
+              <p class="nota">A lista do mapa (OpenStreetMap) vai até 10 km, para não sobrecarregar o serviço gratuito.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="cartao">
+          <h2>📍 Ponto de partida padrão</h2>
+          <p class="nota">Usado quando você abre o Perto de mim sem compartilhar a localização.</p>
+          <select id="cfg-regiao" aria-label="Região padrão"><option value="">Perguntar sempre</option></select>
+        </div>
+
+        <div class="cartao">
+          <div class="cartao-cabecalho"><h2>🚗 Custo do deslocamento</h2><span class="valor-grande"><b id="cfg-custo-valor">R$ 0,65</b>/km</span></div>
+          <input type="range" id="cfg-custo-km" class="deslizante" min="0.2" max="2" step="0.05" value="0.65" aria-label="Custo por km rodado">
+          <div class="escala"><span>R$ 0,20</span><span>R$ 2,00</span></div>
+          <p class="nota">Gasolina ÷ consumo do carro. Ex.: R$ 6,50 ÷ 10 km/L = R$ 0,65 por km. Entra no "custo real" de cada mercado e no custo de ir a um 2º mercado.</p>
+        </div>
+
+        <div class="cartao">
+          <h2>🏷️ Ordenar mercados por</h2>
+          <div class="segmentado" role="radiogroup" aria-label="Ordenar mercados por">
+            <label><input type="radio" name="cfg-ordem" value="custo_beneficio"><span>Custo-benefício</span></label>
+            <label><input type="radio" name="cfg-ordem" value="preco"><span>Menor preço</span></label>
+            <label><input type="radio" name="cfg-ordem" value="distancia"><span>Mais perto</span></label>
+          </div>
+        </div>
+
+        <div class="cartao">
+          <h2>🎨 Aparência</h2>
+          <div class="segmentado" role="radiogroup" aria-label="Tema">
+            <label><input type="radio" name="cfg-tema" value="auto"><span>Automático</span></label>
+            <label><input type="radio" name="cfg-tema" value="light"><span>Claro</span></label>
+            <label><input type="radio" name="cfg-tema" value="dark"><span>Escuro</span></label>
+          </div>
+        </div>
+
+        <button type="button" id="cfg-restaurar" class="botao-secundario largo">Restaurar padrões</button>
+        <p class="nota centro">As configurações ficam só neste navegador. A sua localização nunca é guardada.</p>
       </section>
 
       <!-- ================= CONVERSAR ================= -->

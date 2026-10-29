@@ -140,6 +140,8 @@ async function iniciar() {
   mostrarDica();
   carregarPrecos();
   carregarStatusLLM();
+  aplicarConfig();
+  await carregarLimites();
   carregarRegioes();
 }
 
@@ -296,15 +298,194 @@ $("#botao-cardapio").addEventListener("click", async (evento) => {
   }
 });
 
+// ---------- Configurações ----------
+// Preferências do usuário, guardadas só neste navegador (localStorage).
+// A localização (GPS) nunca é guardada; só a região padrão, se a pessoa escolher.
+const CHAVE_CONFIG = "economia.config";
+const CONFIG_PADRAO = { raio_km: 10, custo_por_km: 0.65, ordem: "custo_beneficio", tema: "auto", regiao: "" };
+const LIMITES = { raio_min: 1, raio_max: 100 };
+let config = carregarConfig();
+
+function carregarConfig() {
+  try {
+    return { ...CONFIG_PADRAO, ...JSON.parse(localStorage.getItem(CHAVE_CONFIG) || "{}") };
+  } catch {
+    return { ...CONFIG_PADRAO };
+  }
+}
+
+function salvarConfig(mudancas) {
+  config = { ...config, ...mudancas };
+  try {
+    localStorage.setItem(CHAVE_CONFIG, JSON.stringify(config));
+  } catch {
+    /* navegação privada: vale só nesta sessão */
+  }
+  aplicarConfig();
+}
+
+const km = (v) => `${String(v).replace(".", ",")} km`;
+
+function aplicarConfig() {
+  if (config.tema === "auto") delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = config.tema;
+
+  const raio = $("#cfg-raio");
+  raio.value = config.raio_km;
+  raio.style.setProperty("--progresso", `${((config.raio_km - raio.min) / (raio.max - raio.min)) * 100}%`);
+  $("#cfg-raio-valor").textContent = config.raio_km;
+  document.querySelectorAll("#cfg-raio-atalhos .chip").forEach((c) => c.classList.toggle("ativo", Number(c.dataset.km) === config.raio_km));
+  $("#raio-atual").textContent = km(config.raio_km);
+
+  const custo = $("#cfg-custo-km");
+  custo.value = config.custo_por_km;
+  custo.style.setProperty("--progresso", `${((config.custo_por_km - custo.min) / (custo.max - custo.min)) * 100}%`);
+  $("#cfg-custo-valor").textContent = reais(config.custo_por_km);
+
+  document.querySelectorAll('input[name="cfg-ordem"], input[name="ordem-perto"]').forEach((i) => (i.checked = i.value === config.ordem));
+  document.querySelectorAll('input[name="cfg-tema"]').forEach((i) => (i.checked = i.value === config.tema));
+  $("#cfg-regiao").value = config.regiao;
+  desenharRadar();
+}
+
+async function carregarLimites() {
+  try {
+    const c = await api("/api/configuracoes");
+    LIMITES.raio_min = c.raio_km.minimo;
+    LIMITES.raio_max = c.raio_km.maximo;
+    $("#cfg-raio").min = c.raio_km.minimo;
+    $("#cfg-raio").max = c.raio_km.maximo;
+  } catch {
+    /* usa os limites padrão */
+  }
+}
+
+// Raio: o radar redesenha enquanto arrasta; a busca roda quando solta.
+$("#cfg-raio").addEventListener("input", (e) => {
+  config.raio_km = Number(e.target.value);
+  aplicarConfig();
+});
+$("#cfg-raio").addEventListener("change", (e) => {
+  salvarConfig({ raio_km: Number(e.target.value) });
+  rebuscar();
+});
+document.querySelectorAll("#cfg-raio-atalhos .chip").forEach((c) => c.addEventListener("click", () => {
+  salvarConfig({ raio_km: Number(c.dataset.km) });
+  rebuscar();
+}));
+$("#cfg-custo-km").addEventListener("input", (e) => {
+  config.custo_por_km = Number(e.target.value);
+  aplicarConfig();
+});
+$("#cfg-custo-km").addEventListener("change", (e) => {
+  salvarConfig({ custo_por_km: Number(e.target.value) });
+  rebuscar();
+});
+document.querySelectorAll('input[name="cfg-ordem"], input[name="ordem-perto"]').forEach((i) => i.addEventListener("change", () => {
+  salvarConfig({ ordem: i.value });
+  if (ultimoPerto) mostrarMercados(ultimoPerto);
+}));
+document.querySelectorAll('input[name="cfg-tema"]').forEach((i) => i.addEventListener("change", () => salvarConfig({ tema: i.value })));
+$("#cfg-regiao").addEventListener("change", (e) => {
+  salvarConfig({ regiao: e.target.value });
+  carregarRadar();
+});
+$("#cfg-restaurar").addEventListener("click", () => {
+  config = { ...CONFIG_PADRAO };
+  salvarConfig({});
+  carregarRadar();
+  rebuscar();
+});
+
+// ---------- Radar (prévia do raio) ----------
+let todosMercados = null;   // mercados com distância e direção a partir do ponto de partida (até 100 km)
+
+function pontoDePartida() {
+  if (posicao) return posicao;
+  if (config.regiao) {
+    const [lat, lon] = config.regiao.split(",").map(Number);
+    return { lat, lon, origem: $("#cfg-regiao").selectedOptions[0]?.textContent ?? "região padrão" };
+  }
+  return null;
+}
+
+async function carregarRadar() {
+  const p = pontoDePartida();
+  todosMercados = null;
+  if (p) {
+    try {
+      const r = await api(`/api/proximos?lat=${p.lat.toFixed(4)}&lon=${p.lon.toFixed(4)}&raio_km=${LIMITES.raio_max}&custo_por_km=${config.custo_por_km}`);
+      todosMercados = r.mercados;
+    } catch {
+      /* radar fica vazio */
+    }
+  }
+  desenharRadar();
+}
+
+function svg(tag, attrs = {}) {
+  const no = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const [k, v] of Object.entries(attrs)) no.setAttribute(k, v);
+  return no;
+}
+
+function desenharRadar() {
+  const area = $("#radar");
+  const p = pontoDePartida();
+  area.replaceChildren();
+  const c = 120;
+  const maxR = 104;
+  const longe = Math.max(config.raio_km, ...(todosMercados ?? []).map((m) => m.distancia_km)) * 1.08;
+  const r = Math.max(10, (config.raio_km / longe) * maxR);
+
+  area.append(
+    svg("circle", { cx: c, cy: c, r: maxR + 8, fill: "var(--fundo)" }),
+    ...[0.33, 0.66, 1].map((f) => svg("circle", { cx: c, cy: c, r: maxR * f, fill: "none", stroke: "var(--borda)", "stroke-dasharray": "3 4" })),
+    svg("circle", { cx: c, cy: c, r, fill: "color-mix(in srgb, var(--marca) 18%, transparent)", stroke: "var(--marca)", "stroke-width": 2 }),
+  );
+  let dentro = 0;
+  for (const m of todosMercados ?? []) {
+    const d = (m.distancia_km / longe) * maxR;
+    const ang = ((m.rumo_graus - 90) * Math.PI) / 180;
+    const noRaio = m.distancia_km <= config.raio_km;
+    if (noRaio) dentro += 1;
+    const ponto = svg("circle", {
+      cx: c + d * Math.cos(ang), cy: c + d * Math.sin(ang), r: 6,
+      fill: noRaio ? "var(--marca)" : "var(--suave)", stroke: "var(--cartao)", "stroke-width": 2,
+    });
+    const titulo = svg("title");
+    titulo.textContent = `${m.nome} — ${km(m.distancia_km)}`;
+    ponto.append(titulo);
+    area.append(ponto);
+  }
+  area.append(svg("circle", { cx: c, cy: c, r: 7, fill: "var(--azul)", stroke: "var(--cartao)", "stroke-width": 3 }));
+
+  if (!p) {
+    $("#radar-resumo").textContent = `Raio de ${km(config.raio_km)}`;
+    $("#radar-ponto").textContent = "Escolha um ponto de partida (localização ou região) para ver quantos mercados ficam no raio.";
+    return;
+  }
+  const total = todosMercados?.length ?? 0;
+  const fora = (todosMercados ?? []).filter((m) => m.distancia_km > config.raio_km).sort((a, b) => a.distancia_km - b.distancia_km);
+  $("#radar-resumo").textContent = `${dentro} de ${total} mercados com preço ficam no raio de ${km(config.raio_km)}`;
+  $("#radar-ponto").textContent = `Medido a partir de: ${p.origem}.` + (fora.length ? ` O próximo mercado fora do raio fica a ${km(fora[0].distancia_km)}.` : "");
+}
+
 // ---------- Perto de mim ----------
-let posicao = null;          // {lat, lon} só na memória da página
+let posicao = null;          // {lat, lon, origem} só na memória da página
 let mercadosPerto = null;    // ids usados ao montar a cesta
+let ultimoPerto = null;
 
 const NOMES_GRUPOS_PROTEINA = { proteina_animal: "Carnes e ovos", laticinios: "Leite e queijos", leguminosas: "Feijões" };
+const NOMES_SELOS = { mais_perto: "📍 Mais perto", melhor_preco: "💰 Menor preço", melhor_custo_beneficio: "⭐ Melhor custo-benefício" };
 
 async function carregarRegioes() {
   const regioes = await api("/api/regioes");
-  $("#regiao").append(...regioes.map((r) => el("option", { value: `${r.lat},${r.lon}` }, r.nome)));
+  const opcoes = () => regioes.map((r) => el("option", { value: `${r.lat},${r.lon}` }, r.nome));
+  $("#regiao").append(...opcoes());
+  $("#cfg-regiao").append(...opcoes());
+  $("#cfg-regiao").value = config.regiao;
+  carregarRadar();
 }
 
 $("#botao-localizacao").addEventListener("click", () => {
@@ -326,42 +507,79 @@ $("#regiao").addEventListener("change", (e) => {
   buscarPerto(lat, lon, e.target.selectedOptions[0].textContent);
 });
 
-$("#raio").addEventListener("change", () => posicao && buscarPerto(posicao.lat, posicao.lon, posicao.origem));
+// Ao abrir o Perto de mim sem posição, usa a região padrão das Configurações.
+document.querySelectorAll('[data-aba="perto"], [data-ir="perto"]').forEach((b) => b.addEventListener("click", () => {
+  if (!posicao && config.regiao) {
+    $("#regiao").value = config.regiao;
+    const [lat, lon] = config.regiao.split(",").map(Number);
+    buscarPerto(lat, lon, $("#regiao").selectedOptions[0]?.textContent ?? "região padrão");
+  }
+}));
+
+function rebuscar() {
+  if (posicao) buscarPerto(posicao.lat, posicao.lon, posicao.origem);
+}
 
 async function buscarPerto(lat, lon, origem) {
   posicao = { lat, lon, origem };
-  const raio = Number($("#raio").value) || 10;
-  $("#status-perto").textContent = `Buscando mercados a até ${raio} km de ${origem}…`;
+  const raio = config.raio_km;
+  $("#status-perto").textContent = `Buscando mercados a até ${km(raio)} de ${origem}…`;
   try {
-    const r = await api(`/api/proximos?lat=${lat.toFixed(4)}&lon=${lon.toFixed(4)}&raio_km=${raio}`);
+    const r = await api(`/api/proximos?lat=${lat.toFixed(4)}&lon=${lon.toFixed(4)}&raio_km=${raio}&custo_por_km=${config.custo_por_km}`);
     mostrarPerto(r, raio, origem);
+    carregarRadar();
   } catch (e) {
     $("#status-perto").textContent = "Erro: " + e.message;
   }
 }
 
+function ordenarMercados(lista) {
+  const chave = {
+    distancia: (m) => m.distancia_km,
+    preco: (m) => m.carrinho_proteinas ?? Infinity,
+    custo_beneficio: (m) => m.custo_real ?? Infinity,
+  }[config.ordem];
+  return [...lista].sort((a, b) => chave(a) - chave(b) || a.distancia_km - b.distancia_km);
+}
+
+function mostrarMercados(r) {
+  const destaque = { distancia: "mais_perto", preco: "melhor_preco", custo_beneficio: "melhor_custo_beneficio" }[config.ordem];
+  $("#lista-mercados").replaceChildren(...ordenarMercados(r.mercados).map((m) => {
+    const valor = config.ordem === "distancia"
+      ? el("div", { class: "mercado-valor" }, km(m.distancia_km), el("small", {}, "de distância"))
+      : config.ordem === "preco"
+        ? el("div", { class: "mercado-valor" }, m.carrinho_proteinas != null ? reais(m.carrinho_proteinas) : "—", el("small", {}, "carrinho de proteínas"))
+        : el("div", { class: "mercado-valor" }, m.custo_real != null ? reais(m.custo_real) : "—", el("small", {}, "custo real"));
+    return el("article", { class: "mercado" + (m.selos.includes(destaque) ? " destaque" : "") },
+      el("div", { class: "mercado-nome" }, m.nome),
+      valor,
+      el("div", { class: "mercado-local" }, m.regiao),
+      el("div", { class: "mercado-numeros" },
+        el("span", {}, "📍 ", el("b", {}, km(m.distancia_km))),
+        el("span", {}, "🚗 ida e volta ", el("b", {}, reais(m.custo_ida_volta))),
+        el("span", {}, "🛒 proteínas ", el("b", {}, m.carrinho_proteinas != null ? reais(m.carrinho_proteinas) : "—")),
+        el("span", {}, "= ", el("b", {}, m.custo_real != null ? reais(m.custo_real) : "—")),
+      ),
+      m.selos.length ? el("div", { class: "selos" }, ...m.selos.map((s) => el("span", { class: `selo-mercado selo-${s}` }, NOMES_SELOS[s]))) : "",
+    );
+  }));
+}
+
 function mostrarPerto(r, raio, origem) {
+  ultimoPerto = r;
   $("#lista-osm").replaceChildren();
   if (!r.mercados.length) {
-    $("#status-perto").textContent = `Nenhum mercado com preços a até ${raio} km de ${origem}. Aumente o raio ou envie um cupom de um mercado da sua região.`;
-    $("#resultado-perto").hidden = false;
-    $("#tabela-proximos").replaceChildren();
-    $("#tabela-proteinas").replaceChildren();
-    $("#resumo-proteinas").replaceChildren();
+    const dica = r.mais_proximo_fora_do_raio_km
+      ? ` O mercado mais próximo com preços fica a ${km(r.mais_proximo_fora_do_raio_km)}: aumente o raio nas Configurações.`
+      : " Envie um cupom de um mercado da sua região para ele aparecer aqui.";
+    $("#status-perto").textContent = `Nenhum mercado com preços a até ${km(raio)} de ${origem}.` + dica;
+    $("#resultado-perto").hidden = true;
     mercadosPerto = null;
     return;
   }
-  $("#status-perto").textContent = `${r.mercados.length} mercado(s) com preços a até ${raio} km de ${origem}. Custo de carro estimado em ${reais(r.custo_por_km)} por km.`;
+  $("#status-perto").textContent = `${r.mercados.length} de ${r.total_com_localizacao} mercados com preços ficam a até ${km(raio)} de ${origem}.`;
   mercadosPerto = { ids: r.mercados.map((m) => m.id), deslocamento: r.custo_segundo_mercado };
-
-  $("#tabela-proximos").replaceChildren(
-    el("thead", {}, el("tr", {}, el("th", {}, "Mercado"), el("th", {}, "Região"), el("th", { class: "num" }, "Distância"), el("th", { class: "num" }, "Ida e volta (carro)"))),
-    el("tbody", {}, ...r.mercados.map((m) => el("tr", {},
-      el("td", {}, m.nome), el("td", {}, m.regiao),
-      el("td", { class: "num" }, `${String(m.distancia_km).replace(".", ",")} km`),
-      el("td", { class: "num" }, reais(m.custo_ida_volta)),
-    ))),
-  );
+  mostrarMercados(r);
 
   const p = r.proteinas;
   const nome = (id) => mercados[id]?.nome ?? id;
@@ -406,7 +624,7 @@ $("#botao-cesta-perto").addEventListener("click", () => {
   if (!mercadosPerto) return;
   $("#form-cesta").custo_deslocamento.value = mercadosPerto.deslocamento.toFixed(2);
   irParaAba("cesta");
-  $("#filtro-mercados").textContent = `Usando só os mercados perto de você: ${mercadosPerto.ids.map((id) => mercados[id]?.nome ?? id).join(", ")}. `;
+  $("#filtro-mercados").textContent = `Usando só os mercados no seu raio de ${km(config.raio_km)}: ${mercadosPerto.ids.map((id) => mercados[id]?.nome ?? id).join(", ")}. `;
   $("#filtro-mercados").append(el("button", { type: "button", class: "sugestao", id: "limpar-filtro" }, "usar todos"));
   $("#filtro-mercados").hidden = false;
   $("#limpar-filtro").addEventListener("click", () => {
@@ -421,15 +639,16 @@ $("#botao-osm").addEventListener("click", async (evento) => {
   botao.disabled = true;
   $("#lista-osm").replaceChildren("Consultando o OpenStreetMap…");
   try {
-    const raio = Math.min(Number($("#raio").value) || 10, 10);
+    const raio = Math.min(config.raio_km, 10);
     const r = await api(`/api/osm?lat=${posicao.lat.toFixed(2)}&lon=${posicao.lon.toFixed(2)}&raio_km=${raio}`);
     if (!r.supermercados.length) {
       $("#lista-osm").replaceChildren("Nenhum supermercado encontrado no mapa nessa área.");
       return;
     }
     $("#lista-osm").replaceChildren(
+      el("p", { class: "nota" }, config.raio_km > 10 ? "Mostrando até 10 km (limite do mapa gratuito)." : ""),
       el("ul", { class: "explicacao" }, ...r.supermercados.slice(0, 20).map((m) => el("li", {},
-        `${m.nome} — ${String(m.distancia_km).replace(".", ",")} km `,
+        `${m.nome} — ${km(m.distancia_km)} `,
         el("span", { class: m.tem_precos ? "confianca-alta" : "confianca-revisar" }, m.tem_precos ? "tem preços" : "sem preços ainda"),
       ))),
       el("p", { class: "nota" }, `Fonte: ${r.fonte}. Conhece algum desses? `,
