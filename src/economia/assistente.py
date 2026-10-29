@@ -147,6 +147,12 @@ class Assistente:
                 resumo["alimentos"] = sorted({i.alimento.split(" (")[0] for i in cesta.itens})
                 resumo["fontes_preco"] = sorted({i.fonte_preco for i in cesta.itens})
                 resumo["itens"] = [f"{i.quantidade} x {i.produto} ({i.mercado}) = {reais(i.subtotal)}" for i in cesta.itens]
+                # Versão estruturada para a tela mostrar a foto de cada alimento.
+                resumo["itens_detalhe"] = [
+                    {"alimento_id": i.alimento_id, "produto": i.produto, "mercado": i.mercado,
+                     "quantidade": i.quantidade, "subtotal": i.subtotal}
+                    for i in cesta.itens
+                ]
             return resumo
         if nome == "consultar_precos":
             return consultar_precos(self.base, str(args.get("produto", "")))
@@ -195,7 +201,7 @@ class Assistente:
                 usadas.append(nome)
                 dados[nome] = resultado
                 # A lista de itens vai só para a tela; o LLM recebe o resumo.
-                para_llm = {k: v for k, v in resultado.items() if k != "itens"}
+                para_llm = {k: v for k, v in resultado.items() if k not in ("itens", "itens_detalhe")}
                 mensagens.append({
                     "role": "tool",
                     "tool_call_id": chamada.get("id", f"chamada_{i}"),

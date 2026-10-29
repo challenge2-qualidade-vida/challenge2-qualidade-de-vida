@@ -188,3 +188,21 @@ def test_proximos_usa_o_custo_por_km_do_usuario(cliente):
     caro = cliente.get("/api/proximos", params={**params, "custo_por_km": 2.0}).json()
     b, c = barato["mercados"][1]["custo_ida_volta"], caro["mercados"][1]["custo_ida_volta"]
     assert c == pytest.approx(b * 10, rel=0.02)
+
+
+def test_todo_alimento_tem_foto_e_credito(cliente):
+    from pathlib import Path
+
+    creditos = {c["alimento_id"]: c for c in cliente.get("/api/creditos").json()}
+    opcoes = cliente.get("/api/precos").json()["produtos"]
+    raiz = Path(__file__).resolve().parents[1] / "src" / "web"
+    for p in opcoes:
+        aid = p["alimento_id"]
+        assert (raiz / "img" / "alimentos" / f"{aid}.webp").exists(), aid
+        assert creditos[aid]["autor"] and creditos[aid]["licenca"] and creditos[aid]["pagina"], aid
+
+
+def test_cesta_no_chat_traz_alimento_para_a_foto(cliente):
+    dados = cliente.post("/api/chat", json={"mensagem": "Tenho R$ 800 para 4 pessoas no mês"}).json()
+    detalhe = dados["dados"]["montar_cesta"]["itens_detalhe"]
+    assert detalhe and all(i["alimento_id"] for i in detalhe)

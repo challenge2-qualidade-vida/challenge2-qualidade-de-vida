@@ -19,6 +19,13 @@ const NOMES_GRUPOS = {
 };
 
 let mercados = {};
+
+// Foto do alimento (Wikimedia Commons, licença livre; créditos nas Configurações).
+function fotoAlimento(id, classe = "foto-alimento") {
+  const img = el("img", { src: `img/alimentos/${id}.webp`, alt: "", class: classe, loading: "lazy", width: "240", height: "240" });
+  img.addEventListener("error", () => img.replaceWith(el("span", { class: `${classe} sem-foto`, "aria-hidden": "true" }, "🛒")));
+  return img;
+}
 let cestaAtual = null;
 
 function el(tag, attrs = {}, ...filhos) {
@@ -142,6 +149,7 @@ async function iniciar() {
   carregarStatusLLM();
   aplicarConfig();
   await carregarLimites();
+  carregarCreditos();
   carregarRegioes();
 }
 
@@ -231,6 +239,8 @@ function mostrarPlano(plano, pedido) {
   mostrarMetas(cesta);
   mostrarItens(cesta);
   cestaAtual = { alimentos: [...new Set(cesta.itens.map((i) => i.alimento.split(" (")[0]))], restricoes: pedido.restricoes };
+  const unicos = [...new Map(cesta.itens.map((i) => [i.alimento_id, i.alimento.split(" (")[0]])).entries()];
+  $("#ingredientes-cesta").replaceChildren(...unicos.map(([id, nome]) => el("span", { class: "ingrediente" }, fotoAlimento(id, "foto-ingrediente"), nome)));
   $("#cardapio").replaceChildren();
   $("#resultado").hidden = false;
   $("#resultado").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -263,7 +273,7 @@ function mostrarItens(cesta) {
     const itens = cesta.itens.filter((i) => i.mercado_id === id);
     area.append(el("h3", { class: "mercado-titulo" }, el("span", {}, `🏪 ${mercados[id].nome}`), el("span", {}, reais(cesta.custo_por_mercado[id]))));
     area.append(el("ul", { class: "itens-lista" }, ...itens.map((i) => el("li", { class: "item" },
-      el("span", { class: "item-emoji", "aria-hidden": "true" }, EMOJI_GRUPOS[i.grupo] ?? "🛒"),
+      fotoAlimento(i.alimento_id, "item-foto"),
       el("span", {},
         el("span", { class: "item-nome" }, i.produto),
         el("span", { class: "item-detalhe" }, `${i.quantidade} × ${reais(i.preco_unitario)} · ${reais(i.preco_kg)}/kg`),
@@ -346,6 +356,22 @@ function aplicarConfig() {
   document.querySelectorAll('input[name="cfg-tema"]').forEach((i) => (i.checked = i.value === config.tema));
   $("#cfg-regiao").value = config.regiao;
   desenharRadar();
+}
+
+async function carregarCreditos() {
+  try {
+    const lista = await api("/api/creditos");
+    $("#lista-creditos").replaceChildren(...lista.map((c) => el("li", {},
+      fotoAlimento(c.alimento_id, "foto-mini"),
+      el("span", {},
+        el("b", {}, c.alimento.split(" (")[0]),
+        el("small", {}, el("a", { href: c.pagina, target: "_blank", rel: "noopener" }, c.titulo), ` · ${c.autor} · `,
+          c.licenca_url ? el("a", { href: c.licenca_url, target: "_blank", rel: "noopener" }, c.licenca) : c.licenca),
+      ),
+    )));
+  } catch {
+    $("#lista-creditos").replaceChildren("Não foi possível carregar os créditos.");
+  }
 }
 
 async function carregarLimites() {
@@ -594,7 +620,8 @@ function mostrarPerto(r, raio, origem) {
   }
   const maisBarata = p.alimentos[0];
   if (maisBarata) {
-    resumo.push(el("div", { class: "cartao opcao" },
+    resumo.push(el("div", { class: "cartao opcao com-foto" },
+      fotoAlimento(maisBarata.alimento_id, "foto-destaque"),
       el("div", { class: "titulo" }, "Proteína mais barata"),
       el("div", { class: "valor" }, maisBarata.alimento),
       el("div", { class: "detalhe" }, `${reais(maisBarata.precos[maisBarata.melhor_mercado].custo_100g_proteina)} por 100 g de proteína no ${nome(maisBarata.melhor_mercado)}`),
@@ -606,7 +633,8 @@ function mostrarPerto(r, raio, origem) {
   $("#tabela-proteinas").replaceChildren(
     el("thead", {}, el("tr", {}, el("th", {}, "Alimento"), ...ids.map((id) => el("th", { class: "num" }, nome(id))), el("th", { class: "num" }, "Economia no melhor"))),
     el("tbody", {}, ...p.alimentos.map((a) => el("tr", {},
-      el("td", {}, a.alimento, el("span", { class: "fonte" }, `${NOMES_GRUPOS_PROTEINA[a.grupo]} · ${String(a.proteina_100g).replace(".", ",")} g de proteína/100 g`)),
+      el("td", {}, el("div", { class: "celula-produto" }, fotoAlimento(a.alimento_id, "foto-mini"),
+        el("span", {}, a.alimento, el("span", { class: "fonte" }, `${NOMES_GRUPOS_PROTEINA[a.grupo]} · ${String(a.proteina_100g).replace(".", ",")} g de proteína/100 g`)))),
       ...ids.map((id) => {
         const v = a.precos[id];
         if (!v) return el("td", { class: "num" }, "—");
@@ -718,17 +746,24 @@ function mostrarNota(nota) {
     const escolha = el("select", { "data-i": i }, el("option", { value: "" }, "— não usar —"),
       ...produtosBase.map((p) => el("option", { value: p.produto_id }, p.produto)));
     escolha.value = item.produto_id ?? "";
+    const foto = el("span", { class: "foto-cupom-item" });
+    const atualizarFoto = () => {
+      const aid = produtosBase.find((p) => p.produto_id === escolha.value)?.alimento_id;
+      foto.replaceChildren(aid ? fotoAlimento(aid, "foto-mini") : el("span", { class: "foto-mini sem-foto" }, "?"));
+    };
+    escolha.addEventListener("change", atualizarFoto);
     const preco = el("input", { type: "number", step: "0.01", min: "0.01", "data-i": i });
     preco.value = item.preco_embalagem ?? item.valor_unitario;
     corpo.append(el("tr", {},
       el("td", {}, marcar),
       el("td", {}, item.descricao, el("span", { class: "fonte" }, `${item.quantidade} ${item.unidade} × ${reais(item.valor_unitario)} = ${reais(item.valor_total)}`)),
-      el("td", {}, escolha),
+      el("td", {}, el("div", { class: "celula-produto" }, foto, escolha)),
       el("td", { class: "num" }, preco),
       el("td", { class: item.confianca === "alta" ? "confianca-alta" : "confianca-revisar" }, item.confianca === "alta" ? "certa" : "revisar"),
     ));
   });
   tabela.append(corpo);
+  corpo.querySelectorAll("select").forEach((s) => s.dispatchEvent(new Event("change")));
   $("#nota").hidden = false;
 }
 
@@ -760,7 +795,7 @@ $("#salvar-nota").addEventListener("click", async () => {
 // ---------- Preços ----------
 async function carregarPrecos() {
   const dados = await api("/api/precos");
-  produtosBase = dados.produtos.map((p) => ({ produto_id: p.produto_id, produto: p.produto }));
+  produtosBase = dados.produtos.map((p) => ({ produto_id: p.produto_id, produto: p.produto, alimento_id: p.alimento_id }));
   const ids = dados.mercados.map((m) => m.id);
   const tabela = $("#tabela-precos");
   tabela.replaceChildren(
@@ -770,7 +805,7 @@ async function carregarPrecos() {
   for (const p of dados.produtos) {
     const valores = ids.map((id) => p.precos[id]?.preco_kg).filter((v) => v !== undefined);
     const menor = Math.min(...valores);
-    const linha = el("tr", {}, el("td", {}, p.produto));
+    const linha = el("tr", {}, el("td", {}, el("div", { class: "celula-produto" }, fotoAlimento(p.alimento_id, "foto-mini"), el("span", {}, p.produto))));
     for (const id of ids) {
       const pr = p.precos[id];
       if (!pr) {
@@ -812,6 +847,27 @@ function adicionarMensagem(classe, texto, gato) {
   return msg;
 }
 
+// Alimentos recomendados ou com preço na resposta do chat, com foto.
+function cartoesDoChat(dados) {
+  const linhas = [];
+  for (const i of dados.montar_cesta?.itens_detalhe ?? []) {
+    linhas.push(el("li", {}, fotoAlimento(i.alimento_id, "foto-mini"),
+      el("span", {}, `${i.quantidade} × ${i.produto}`, el("small", {}, i.mercado)), el("b", {}, reais(i.subtotal))));
+  }
+  for (const p of dados.consultar_precos?.produtos ?? []) {
+    const melhor = p.ofertas[0];
+    linhas.push(el("li", {}, fotoAlimento(p.alimento_id, "foto-mini"),
+      el("span", {}, p.produto, el("small", {}, `${melhor.mercado} · ${reais(melhor.preco_kg)}/kg`)), el("b", {}, reais(melhor.preco))));
+  }
+  const promo = dados.avaliar_promocao;
+  if (promo?.alimento_id) {
+    const veredito = { vale_a_pena: "✅ vale a pena", empate: "➖ empate", nao_vale: "❌ não vale" }[promo.conclusao] ?? "";
+    linhas.push(el("li", {}, fotoAlimento(promo.alimento_id, "foto-mini"),
+      el("span", {}, promo.alimento, el("small", {}, `normal: ${reais(promo.melhor_preco_kg_normal)}/kg · ${veredito}`)), el("b", {}, `${reais(promo.preco_kg_promocao)}/kg`)));
+  }
+  return linhas.length ? el("ul", { class: "chat-itens" }, ...linhas) : null;
+}
+
 function gatoDaResposta(etapas) {
   const quem = (etapas ?? []).map((e) => e.agente).find((a) => AVATARES[a]);
   return AVATARES[quem] ?? "mia";
@@ -830,10 +886,8 @@ async function enviarChat(texto) {
     });
     pensando.closest(".linha-msg").remove();
     const msg = adicionarMensagem("assistente", semMarkdown(r.resposta), gatoDaResposta(r.etapas));
-    const itens = r.dados?.montar_cesta?.itens;
-    if (r.modo === "llm" && itens?.length) {
-      msg.append(el("ul", { class: "lista-msg" }, ...itens.map((i) => el("li", {}, i))));
-    }
+    const cartoes = cartoesDoChat(r.dados ?? {});
+    if (cartoes) msg.append(cartoes);
     const meta = [];
     if (r.ferramentas_usadas.length) meta.push("A EconoMIA " + [...new Set(r.ferramentas_usadas)].map((f) => NOMES_FERRAMENTAS[f] ?? f).join(", "));
     if (r.fontes.length) meta.push("Fontes: " + [...new Set(r.fontes.map((f) => f.fonte))].join("; "));

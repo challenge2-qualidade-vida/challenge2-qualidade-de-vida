@@ -166,6 +166,7 @@
           <div class="cartao" id="cartao-cardapio">
             <h2><img src="img/miauricio.webp" alt="" class="icone-titulo"> Cardápio com a sua cesta</h2>
             <p class="nota">O Miau-ricio sugere refeições usando só os alimentos da lista, e a Mia confere as suas restrições.</p>
+            <div id="ingredientes-cesta" class="ingredientes"></div>
             <button type="button" id="botao-cardapio" class="botao largo">Sugerir cardápio</button>
             <div id="cardapio" class="cardapio"></div>
           </div>
@@ -272,6 +273,12 @@
             <label><input type="radio" name="cfg-tema" value="dark"><span>Escuro</span></label>
           </div>
         </div>
+
+        <details class="cartao creditos">
+          <summary><h2>📷 Créditos das fotos dos alimentos</h2></summary>
+          <p class="nota">Fotos do Wikimedia Commons com licenças livres (CC0, domínio público, CC BY e CC BY-SA). Cada uma com autor e licença:</p>
+          <ul id="lista-creditos" class="lista-creditos"></ul>
+        </details>
 
         <button type="button" id="cfg-restaurar" class="botao-secundario largo">Restaurar padrões</button>
         <p class="nota centro">As configurações ficam só neste navegador. A sua localização nunca é guardada.</p>

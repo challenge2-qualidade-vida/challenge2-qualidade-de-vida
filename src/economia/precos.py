@@ -38,7 +38,7 @@ def consultar_precos(base: Base, termo: str) -> dict:
             if pr.produto == pid
         ]
         ofertas.sort(key=lambda o: o["preco_kg"])
-        produtos.append({"produto": produto.nome, "embalagem_g": produto.embalagem_g, "ofertas": ofertas})
+        produtos.append({"produto": produto.nome, "alimento_id": produto.alimento, "embalagem_g": produto.embalagem_g, "ofertas": ofertas})
     return {"termo": termo, "encontrados": len(produtos), "produtos": produtos}
 
 
@@ -73,6 +73,7 @@ def avaliar_promocao(base: Base, termo: str, preco: float, embalagem_g: float | 
     return {
         "conclusao": conclusao,
         "alimento": base.alimentos[alimento].nome,
+        "alimento_id": alimento,
         "preco_kg_promocao": round(preco_kg_promo, 2),
         "melhor_preco_kg_normal": round(melhor_kg, 2),
         "melhor_oferta_normal": {

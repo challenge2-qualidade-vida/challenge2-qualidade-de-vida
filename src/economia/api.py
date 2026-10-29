@@ -4,6 +4,7 @@ Rodar:  uvicorn economia.api:app --app-dir src --reload
 Docs automáticas: http://localhost:8000/docs
 """
 
+import json
 from dataclasses import asdict
 from pathlib import Path
 from typing import Literal
@@ -135,7 +136,8 @@ def precos():
         produto = base.produtos[pr.produto]
         linha = linhas.setdefault(
             produto.id,
-            {"produto_id": produto.id, "produto": produto.nome, "alimento": base.alimentos[produto.alimento].nome, "precos": {}},
+            {"produto_id": produto.id, "produto": produto.nome, "alimento_id": produto.alimento,
+             "alimento": base.alimentos[produto.alimento].nome, "precos": {}},
         )
         linha["precos"][pr.mercado] = {
             "preco": pr.preco,
@@ -149,6 +151,17 @@ def precos():
 @app.post("/api/cesta")
 def cesta(pedido: PedidoCesta):
     return montar_resposta(pedido)
+
+
+@app.get("/api/creditos")
+def creditos_imagens():
+    """Autor e licença de cada foto de alimento (Wikimedia Commons). As licenças CC exigem crédito."""
+    arquivo = Path(__file__).resolve().parents[2] / "data" / "alimentos" / "imagens.json"
+    dados = json.loads(arquivo.read_text(encoding="utf-8")) if arquivo.exists() else {}
+    return [
+        {"alimento_id": k, "alimento": base.alimentos[k].nome if k in base.alimentos else k, **v}
+        for k, v in dados.items()
+    ]
 
 
 @app.get("/api/conhecimento")
