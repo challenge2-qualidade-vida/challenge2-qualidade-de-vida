@@ -19,7 +19,7 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 6 | Base de conhecimento + RAG | Busca no Guia Alimentar e na TACO para fundamentar respostas | scikit-learn (TF-IDF, local) | ✅ Feito | [06](06-rag.md) |
 | 7 | LLM com ferramentas | Chat em linguagem natural que chama o otimizador | Ollama local (padrão), Groq ou Gemini (planos gratuitos) | ✅ Feito | [07](07-llm-ferramentas.md) |
 | 8 | Experimento LLM × LLM + RAG | Comparação com gabarito: correção, fundamentação, latência, custo | Script Python + pytest | ✅ Feito | [08](08-experimento-llm-rag.md) |
-| 9 | Agentes | Orquestrador, Cifrão (preços), Miau-ricio (nutrição), Mia (verificação) | Mesmo LLM do tópico 7 | ⏳ Próximo | — |
+| 9 | Agentes | Orquestrador, Cifrão (preços), Miau-ricio (nutrição), Mia (verificação) | Mesmo LLM do tópico 7; Orquestrador e Mia por regras | ✅ Feito | [09](09-agentes.md) |
 | 10 | Leitura da NFC-e (multimodal) | Recibaldo: lê o QR code do cupom e cadastra os preços | OpenCV / pyzbar + portal público da NFC-e | ⬜ | — |
 | 11 | Métricas e testes finais | Economia, aderência ao orçamento, adequação nutricional, precisão de preço | pytest + notebook | ⬜ | — |
 | 12 | Publicação | Site no ar para a banca testar | Render (plano gratuito) ou Hugging Face Spaces | ⬜ | — |
@@ -64,6 +64,7 @@ src/economia/
   precos.py                  consulta de preços e promoções   → tópico 7
   assistente.py              chat: LLM + ferramentas + RAG    → tópico 7
   avaliacao.py               critérios do experimento         → tópico 8
+  agentes.py                 Orquestrador, Cifrão, Miau-ricio, Mia → tópico 9
 experimentos/
   llm_x_rag.py               experimento LLM × LLM + RAG      → tópico 8
 src/web/
@@ -77,6 +78,7 @@ tests/
   test_assistente.py         testes do chat (LLM falso)       → tópico 7
   conftest.py                testes sem LLM de verdade        → tópico 7
   test_avaliacao.py          testes dos critérios             → tópico 8
+  test_agentes.py            testes dos agentes               → tópico 9
 requirements.txt             dependências (todas gratuitas)
 pytest.ini                   configuração dos testes
 ```

@@ -106,15 +106,28 @@ class RespostaChat:
     aviso: str | None = None
     # Resultados brutos das ferramentas, para a tela mostrar sem depender do texto do LLM.
     dados: dict = field(default_factory=dict)
+    # Passo a passo dos agentes (tópico 9), para transparência.
+    etapas: list[dict] = field(default_factory=list)
 
 
 class Assistente:
-    def __init__(self, base: Base, conhecimento: BaseConhecimento, cliente: ClienteLLM | None, usar_rag: bool = True):
+    def __init__(
+        self,
+        base: Base,
+        conhecimento: BaseConhecimento,
+        cliente: ClienteLLM | None,
+        usar_rag: bool = True,
+        prompt_sistema: str = PROMPT_SISTEMA,
+        ferramentas: list[str] | None = None,
+    ):
         self.base = base
         self.conhecimento = conhecimento
         self.cliente = cliente
         # False = abordagem A do experimento (LLM sem a base de conhecimento).
         self.usar_rag = usar_rag
+        self.prompt_sistema = prompt_sistema
+        # Nomes das ferramentas liberadas; None = todas. Cada agente recebe só as suas.
+        self.ferramentas = [f for f in FERRAMENTAS if ferramentas is None or f["function"]["name"] in ferramentas]
 
     # ---------- Ferramentas ----------
 
@@ -128,8 +141,11 @@ class Assistente:
             )
             plano = planejar(self.base, pedido, float(args.get("custo_deslocamento") or 0))
             cesta = plano.cesta_recomendada
-            resumo = {"explicacao": explicar(plano, self.base)}
+            resumo = {"explicacao": explicar(plano, self.base), "restricoes": list(pedido.restricoes)}
             if cesta:
+                resumo["custo_total"] = cesta.custo_total
+                resumo["alimentos"] = sorted({i.alimento.split(" (")[0] for i in cesta.itens})
+                resumo["fontes_preco"] = sorted({i.fonte_preco for i in cesta.itens})
                 resumo["itens"] = [f"{i.quantidade} x {i.produto} ({i.mercado}) = {reais(i.subtotal)}" for i in cesta.itens]
             return resumo
         if nome == "consultar_precos":
@@ -139,7 +155,7 @@ class Assistente:
         if nome == "buscar_conhecimento":
             resultados = self.conhecimento.buscar(str(args.get("pergunta", "")))
             for r in resultados:
-                fontes.append({"titulo": r.trecho.titulo, "fonte": r.trecho.fonte})
+                fontes.append({"titulo": r.trecho.titulo, "fonte": r.trecho.fonte, "texto": r.trecho.texto})
             return {"contexto": contexto_para_llm(resultados)}
         return {"erro": f"Ferramenta desconhecida: {nome}"}
 
@@ -148,22 +164,22 @@ class Assistente:
     def _responder_com_llm(self, mensagem: str, historico: list[dict]) -> RespostaChat:
         usadas, fontes, dados = [], [], {}
         conteudo = mensagem
-        ferramentas = FERRAMENTAS
+        ferramentas = self.ferramentas
         if self.usar_rag:
             # RAG clássico: os trechos vão junto com a pergunta, sem depender
             # de o modelo decidir chamar buscar_conhecimento.
             resultados = self.conhecimento.buscar(mensagem)
             if resultados:
-                fontes.extend({"titulo": r.trecho.titulo, "fonte": r.trecho.fonte} for r in resultados)
+                fontes.extend({"titulo": r.trecho.titulo, "fonte": r.trecho.fonte, "texto": r.trecho.texto} for r in resultados)
                 conteudo = (
                     f"{mensagem}\n\n---\nTrechos da base de conhecimento da EconoMIA "
                     f"(use se forem relevantes e cite [n]):\n{contexto_para_llm(resultados)}"
                 )
         else:
-            ferramentas = [f for f in FERRAMENTAS if f["function"]["name"] != "buscar_conhecimento"]
-        mensagens = [{"role": "system", "content": PROMPT_SISTEMA}, *historico, {"role": "user", "content": conteudo}]
+            ferramentas = [f for f in ferramentas if f["function"]["name"] != "buscar_conhecimento"]
+        mensagens = [{"role": "system", "content": self.prompt_sistema}, *historico, {"role": "user", "content": conteudo}]
         for _ in range(MAX_RODADAS_FERRAMENTAS):
-            msg = self.cliente.conversar(mensagens, ferramentas)
+            msg = self.cliente.conversar(mensagens, ferramentas or None)
             chamadas = msg.get("tool_calls") or []
             if not chamadas:
                 return RespostaChat(msg.get("content") or "", "llm", usadas, fontes, dados=dados)
@@ -213,7 +229,7 @@ class Assistente:
         texto = "Encontrei isto na base de conhecimento:\n\n" + "\n\n".join(
             f"[{i}] {r.trecho.titulo}\n{r.trecho.texto}" for i, r in enumerate(resultados, 1)
         )
-        fontes = [{"titulo": r.trecho.titulo, "fonte": r.trecho.fonte} for r in resultados]
+        fontes = [{"titulo": r.trecho.titulo, "fonte": r.trecho.fonte, "texto": r.trecho.texto} for r in resultados]
         return RespostaChat(texto, "sem_llm", ["buscar_conhecimento"], fontes)
 
     # ---------- Entrada ----------
@@ -264,7 +280,9 @@ def interpretar(mensagem: str) -> tuple[str, dict]:
     else:
         valor = None
 
-    if "promocao" in t or "oferta" in t or "vale a pena" in t:
+    # Só é pergunta de promoção se houver um preço para avaliar (o experimento
+    # do tópico 8 mostrou "quando vale a pena ir a dois mercados" caindo aqui).
+    if valor is not None and ("promocao" in t or "oferta" in t or "vale a pena" in t or "compensa" in t):
         produto = re.sub(r"r\$\s*\d[\d.,]*|\d[\d.,]*\s*(reais|kg|g|quilos?)", " ", t)
         produto = re.sub(r"[^a-z ]", " ", produto)
         produto = re.sub(r"\b(essa|esta|promocao|oferta|vale|a|pena|de|do|da|por|o|um|uma|kg|e|boa|no|na|mercado)\b", " ", produto)

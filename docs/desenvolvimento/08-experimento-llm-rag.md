@@ -102,6 +102,8 @@ Rodado em 29/10/2026, `ollama/qwen2.5:7b`. Relatório completo em [resultados-ll
 
 O modo C continua como **reserva** para quando o LLM está fora do ar: é instantâneo, gratuito e sempre fundamenta.
 
+> **Atualização (tópico 9):** com essas proteções, a abordagem **D — agentes** foi rodada nas mesmas 17 perguntas: correção de **94%**, fundamentação de **100%**, e a alucinação da acerola foi **bloqueada**. Detalhes em [09-agentes.md](09-agentes.md#resultado-no-experimento-abordagem-d). O relatório em `docs/semana-3/` já traz as quatro abordagens.
+
 ## Limitações do experimento
 
 - **17 perguntas** é pouco para conclusões estatísticas. Os resultados mostram tendências claras (40% × 100% no conhecimento), mas o grupo deve ampliar o conjunto.

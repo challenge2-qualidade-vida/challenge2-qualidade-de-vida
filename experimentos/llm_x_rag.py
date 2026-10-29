@@ -1,7 +1,8 @@
-"""Experimento do tópico 8: LLM sem RAG × LLM + RAG × sem LLM.
+"""Experimento do tópico 8: LLM sem RAG × LLM + RAG × sem LLM (+ agentes, tópico 9).
 
 Rodar (com o Ollama ligado):
-    .venv/bin/python experimentos/llm_x_rag.py
+    .venv/bin/python experimentos/llm_x_rag.py            # todas as abordagens
+    .venv/bin/python experimentos/llm_x_rag.py C D        # só C e D; as outras vêm do CSV anterior
     LLM_MODELO=qwen2.5:3b .venv/bin/python experimentos/llm_x_rag.py
 
 Gera docs/semana-3/resultados-llm-x-rag.md e docs/semana-3/resultados-llm-x-rag.csv.
@@ -16,6 +17,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(RAIZ / "src"))
 
+from economia.agentes import Orquestrador  # noqa: E402
 from economia.assistente import Assistente  # noqa: E402
 from economia.avaliacao import avaliar, carregar_perguntas  # noqa: E402
 from economia.dados import carregar  # noqa: E402
@@ -105,27 +107,49 @@ def main():
     bc = BaseConhecimento(base)
     perguntas = carregar_perguntas()
 
-    cliente_a, cliente_b = cliente_do_ambiente(), cliente_do_ambiente()
-    if cliente_a is None:
+    clientes = [cliente_do_ambiente() for _ in range(3)]
+    if clientes[0] is None:
         sys.exit("Nenhum LLM configurado. Ligue o Ollama ou defina LLM_PROVEDOR e LLM_API_KEY.")
-    for c in (cliente_a, cliente_b):
+    for c in clientes:
         c.temperatura = 0  # mais reprodutível
 
     abordagens = {
-        "A — LLM sem RAG": Assistente(base, bc, cliente_a, usar_rag=False),
-        "B — LLM + RAG": Assistente(base, bc, cliente_b, usar_rag=True),
+        "A — LLM sem RAG": Assistente(base, bc, clientes[0], usar_rag=False),
+        "B — LLM + RAG": Assistente(base, bc, clientes[1], usar_rag=True),
         "C — sem LLM": Assistente(base, bc, None),
+        "D — agentes (orquestrador + Mia)": Orquestrador(base, bc, clientes[2]),
     }
+    escolhidas = {a.upper() for a in sys.argv[1:]} or {n[0] for n in abordagens}
+
+    anteriores = []
+    arquivo_csv = SAIDA / "resultados-llm-x-rag.csv"
+    if arquivo_csv.exists() and len(escolhidas) < len(abordagens):
+        with open(arquivo_csv, encoding="utf-8") as f:
+            for l in csv.DictReader(f):
+                if l["abordagem"][0] not in escolhidas:
+                    for k in CRITERIOS:
+                        l[k] = None if l[k] == "" else int(l[k])
+                    for k in ("segundos",):
+                        l[k] = float(l[k])
+                    for k in ("tokens_entrada", "tokens_saida"):
+                        l[k] = int(l[k])
+                    anteriores.append(l)
+
     linhas = []
     for nome, assistente in abordagens.items():
-        linhas += rodar(nome, assistente, perguntas)
+        if nome[0] in escolhidas:
+            linhas += rodar(nome, assistente, perguntas)
+        else:
+            linhas += [l for l in anteriores if l["abordagem"] == nome]
+    linhas.sort(key=lambda l: l["abordagem"])
+    abordagens = {n: a for n, a in abordagens.items() if any(l["abordagem"] == n for l in linhas)}
 
     SAIDA.mkdir(parents=True, exist_ok=True)
     with open(SAIDA / "resultados-llm-x-rag.csv", "w", newline="", encoding="utf-8") as f:
         escritor = csv.DictWriter(f, fieldnames=list(linhas[0]))
         escritor.writeheader()
         escritor.writerows(linhas)
-    (SAIDA / "resultados-llm-x-rag.md").write_text(relatorio(linhas, list(abordagens), f"{cliente_a.provedor}/{cliente_a.modelo}"), encoding="utf-8")
+    (SAIDA / "resultados-llm-x-rag.md").write_text(relatorio(linhas, list(abordagens), f"{clientes[0].provedor}/{clientes[0].modelo}"), encoding="utf-8")
     print("Resultados em", SAIDA)
 
 
