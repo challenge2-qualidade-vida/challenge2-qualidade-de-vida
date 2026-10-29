@@ -18,8 +18,8 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 5 | Site (frontend) | Tela: formulário de orçamento → cesta → comparação | HTML, CSS e JavaScript puros | ✅ Feito | [05](05-site.md) |
 | 6 | Base de conhecimento + RAG | Busca no Guia Alimentar e na TACO para fundamentar respostas | scikit-learn (TF-IDF, local) | ✅ Feito | [06](06-rag.md) |
 | 7 | LLM com ferramentas | Chat em linguagem natural que chama o otimizador | Ollama local (padrão), Groq ou Gemini (planos gratuitos) | ✅ Feito | [07](07-llm-ferramentas.md) |
-| 8 | Experimento LLM × LLM + RAG | Comparação com gabarito: correção, fundamentação, latência, custo | pytest + notebook Jupyter | ⏳ Próximo | — |
-| 9 | Agentes | Orquestrador, Cifrão (preços), Miau-ricio (nutrição), Mia (verificação) | Mesmo LLM do tópico 7 | ⬜ | — |
+| 8 | Experimento LLM × LLM + RAG | Comparação com gabarito: correção, fundamentação, latência, custo | Script Python + pytest | ✅ Feito | [08](08-experimento-llm-rag.md) |
+| 9 | Agentes | Orquestrador, Cifrão (preços), Miau-ricio (nutrição), Mia (verificação) | Mesmo LLM do tópico 7 | ⏳ Próximo | — |
 | 10 | Leitura da NFC-e (multimodal) | Recibaldo: lê o QR code do cupom e cadastra os preços | OpenCV / pyzbar + portal público da NFC-e | ⬜ | — |
 | 11 | Métricas e testes finais | Economia, aderência ao orçamento, adequação nutricional, precisão de preço | pytest + notebook | ⬜ | — |
 | 12 | Publicação | Site no ar para a banca testar | Render (plano gratuito) ou Hugging Face Spaces | ⬜ | — |
@@ -50,6 +50,7 @@ Depois acesse <http://localhost:8000> (site) ou <http://localhost:8000/docs> (do
 data/
   alimentos/alimentos.json   nutrição por 100 g (TACO)        → tópico 1
   base-conhecimento/*.md     Guia Alimentar, critérios, receitas → tópico 6
+  experimento/perguntas.json perguntas e gabarito             → tópico 8
   precos/precos.json         mercados, produtos e preços      → tópico 1
 src/economia/
   dados.py                   carrega e valida as bases        → tópico 1
@@ -62,6 +63,9 @@ src/economia/
   llm.py                     cliente de LLM gratuito          → tópico 7
   precos.py                  consulta de preços e promoções   → tópico 7
   assistente.py              chat: LLM + ferramentas + RAG    → tópico 7
+  avaliacao.py               critérios do experimento         → tópico 8
+experimentos/
+  llm_x_rag.py               experimento LLM × LLM + RAG      → tópico 8
 src/web/
   index.html, estilo.css, app.js   o site                     → tópico 5
 tests/
@@ -72,6 +76,7 @@ tests/
   test_rag.py                testes da busca                  → tópico 6
   test_assistente.py         testes do chat (LLM falso)       → tópico 7
   conftest.py                testes sem LLM de verdade        → tópico 7
+  test_avaliacao.py          testes dos critérios             → tópico 8
 requirements.txt             dependências (todas gratuitas)
 pytest.ini                   configuração dos testes
 ```

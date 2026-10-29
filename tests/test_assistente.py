@@ -28,7 +28,7 @@ class LLMFalso:
         self.respostas = list(respostas)
         self.recebido = []
 
-    def conversar(self, mensagens, ferramentas=None, temperatura=0.2):
+    def conversar(self, mensagens, ferramentas=None):
         self.recebido.append({"mensagens": [dict(m) for m in mensagens], "ferramentas": ferramentas})
         return self.respostas.pop(0)
 

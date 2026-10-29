@@ -33,17 +33,25 @@ class ClienteLLM:
     modelo: str
     chave: str | None = None
     timeout: float = 120
+    temperatura: float = 0.2
+    # Tokens somados de todas as chamadas (para medir custo no experimento).
+    tokens_entrada: int = 0
+    tokens_saida: int = 0
 
-    def conversar(self, mensagens: list[dict], ferramentas: list[dict] | None = None, temperatura: float = 0.2) -> dict:
+    def conversar(self, mensagens: list[dict], ferramentas: list[dict] | None = None) -> dict:
         """Envia a conversa e devolve a mensagem do assistente (com ou sem tool_calls)."""
-        corpo = {"model": self.modelo, "messages": mensagens, "temperature": temperatura}
+        corpo = {"model": self.modelo, "messages": mensagens, "temperature": self.temperatura}
         if ferramentas:
             corpo["tools"] = ferramentas
         cabecalhos = {"Authorization": f"Bearer {self.chave}"} if self.chave else {}
         try:
             r = httpx.post(f"{self.url}/chat/completions", json=corpo, headers=cabecalhos, timeout=self.timeout)
             r.raise_for_status()
-            return r.json()["choices"][0]["message"]
+            dados = r.json()
+            uso = dados.get("usage") or {}
+            self.tokens_entrada += uso.get("prompt_tokens", 0)
+            self.tokens_saida += uso.get("completion_tokens", 0)
+            return dados["choices"][0]["message"]
         except (httpx.HTTPError, KeyError, IndexError, ValueError) as e:
             raise ErroLLM(f"{self.provedor}: {e}") from e
 
