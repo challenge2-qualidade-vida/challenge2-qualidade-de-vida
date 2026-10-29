@@ -56,7 +56,7 @@ uvicorn economia.api:app --app-dir src --reload
 
 Entrada inválida devolve **HTTP 422** com a mensagem do erro, sem chegar ao otimizador.
 
-**Saída (resumida):**
+**Saída** (resposta real para a entrada acima, resumida):
 
 ```json
 {
@@ -64,14 +64,15 @@ Entrada inválida devolve **HTTP 422** com a mensagem do erro, sem chegar ao oti
   "cesta_recomendada": {
     "mercados": ["B", "C"],
     "custo_total": 602.66,
-    "custo_por_mercado": {"B": 310.2, "C": 292.46},
-    "itens": [{"produto": "Feijão carioca — 1 kg", "mercado": "Mercado C", "quantidade": 18,
-               "preco_unitario": 7.49, "subtotal": 134.82, "preco_kg": 7.49,
-               "data_preco": "2026-10-20", "fonte_preco": "exemplo", "...": "..."}],
-    "obtido": {"kcal": 240210.0, "proteina_g": 6500.3, "fibra_g": 5100.2, "flv_g": 48000.0},
+    "custo_por_mercado": {"B": 332.68, "C": 269.98},
+    "itens": [{"produto_id": "acucar-1kg", "produto": "Açúcar cristal — 1 kg", "alimento": "Açúcar cristal",
+               "grupo": "acucar", "mercado_id": "B", "mercado": "Mercado B", "quantidade": 1,
+               "preco_unitario": 4.79, "subtotal": 4.79, "preco_kg": 4.79,
+               "data_preco": "2026-10-20", "fonte_preco": "exemplo"}, "..."],
+    "obtido": {"kcal": 240268.6, "proteina_g": 6244.0, "fibra_g": 4475.0, "flv_g": 48000.0},
     "metas":  {"kcal": 240000,   "proteina_g": 6000,   "fibra_g": 3000,   "flv_g": 48000},
     "custo_por_1000_kcal": 2.51,
-    "custo_por_g_proteina": 0.1
+    "custo_por_g_proteina": 0.097
   },
   "um_mercado": {"...": "mesma estrutura"},
   "dois_mercados": {"...": "mesma estrutura"},
