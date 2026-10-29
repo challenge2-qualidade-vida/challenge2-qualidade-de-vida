@@ -1,6 +1,10 @@
+<p align="center"><img src="src/web/img/logo.png" alt="EconoMIA" width="260"></p>
+
 # EconoMIA 🐈💰
 
 **Inteligência que faz render. Para o seu bolso não miar!**
+
+<p align="center"><img src="src/web/img/turma.png" alt="Mia, Recibaldo, Cifrão e Miau-ricio" width="600"></p>
 
 Challenge 2 — Big Idea: Qualidade de Vida
 Residência em IA Brasília (TIC em Trilhas / Mentes em Modo IA em Ação) — Turma 2
@@ -196,7 +200,7 @@ tests/                   testes e avaliação com métricas
 
 ## Desenvolvimento
 
-O passo a passo do que foi construído, como foi feito e como rodar está em [docs/desenvolvimento/](docs/desenvolvimento/README.md), com um arquivo por tópico (00 a 14). Tudo foi feito na branch `develop_gui`, usando só ferramentas gratuitas.
+O passo a passo do que foi construído, como foi feito e como rodar está em [docs/desenvolvimento/](docs/desenvolvimento/README.md), com um arquivo por tópico (00 a 15). Tudo foi feito na branch `develop_gui`, usando só ferramentas gratuitas.
 
 ```bash
 git checkout develop_gui
