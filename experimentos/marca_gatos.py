@@ -23,9 +23,13 @@ def sem_fundo(im, tolerancia=16, so_maior=True):
         nucleo = opaco & (rgb.min(axis=2) < 200)
         r2, n = ndimage.label(nucleo)
         maior = np.argmax(ndimage.sum(nucleo, r2, range(1, n + 1))) + 1
-        opaco = ndimage.binary_dilation(ndimage.binary_fill_holes(r2 == maior), iterations=2) & opaco
-    alfa = Image.fromarray((opaco * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.7))
-    a[..., 3] = np.array(alfa)
+        # Sem dilatar: a borda fica no contorno escuro do desenho, sem o halo creme do fundo.
+        opaco = ndimage.binary_fill_holes(r2 == maior) & opaco
+    alfa = np.array(Image.fromarray((opaco * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.6)))
+    a[..., 3] = alfa
+    # Pixels semitransparentes da borda: escurece para o tom do contorno (tira o brilho creme).
+    borda = (alfa > 0) & (alfa < 255)
+    a[..., :3][borda] = (a[..., :3][borda] * 0.45).astype(int)
     out = Image.fromarray(a.astype(np.uint8), "RGBA")
     return out.crop(out.getbbox())
 
