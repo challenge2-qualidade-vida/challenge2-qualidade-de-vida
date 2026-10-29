@@ -20,6 +20,7 @@
       <button class="aba ativa" data-aba="cesta" role="tab" aria-selected="true">Montar cesta</button>
       <button class="aba" data-aba="chat" role="tab" aria-selected="false">Conversar</button>
       <button class="aba" data-aba="precos" role="tab" aria-selected="false">Preços</button>
+      <button class="aba" data-aba="cupom" role="tab" aria-selected="false">Enviar cupom</button>
     </nav>
   </header>
 
@@ -74,6 +75,13 @@
           <h2>Lista de compras</h2>
           <div id="itens"></div>
         </div>
+
+        <div class="cartao" id="cartao-cardapio">
+          <h2>Cardápio com a sua cesta</h2>
+          <p class="nota">O Miau-ricio sugere refeições usando só os alimentos da lista, e a Mia confere as suas restrições.</p>
+          <button type="button" id="botao-cardapio" class="botao">Sugerir cardápio</button>
+          <div id="cardapio" class="cardapio"></div>
+        </div>
       </div>
     </section>
 
@@ -105,6 +113,29 @@
         <p class="nota">O menor preço por kg de cada produto aparece destacado. Cada preço mostra a data e a fonte.</p>
         <div class="tabela-rolagem">
           <table id="tabela-precos" class="tabela"></table>
+        </div>
+      </div>
+    </section>
+    <section id="aba-cupom" class="painel" hidden>
+      <div class="cartao">
+        <h2>Enviar cupom fiscal (NFC-e)</h2>
+        <p class="nota">O Recibaldo lê o <strong>QR code</strong> do cupom e busca a nota oficial na SEFAZ-DF. Você confere os itens antes de salvar, e os preços passam a valer para todos. Nenhum dado pessoal (CPF, nome) é lido ou guardado.</p>
+        <form id="form-cupom" class="campos">
+          <label>Foto do cupom (com o QR code visível)
+            <input type="file" name="arquivo" accept="image/*" capture="environment">
+          </label>
+          <label>…ou cole o link do QR code
+            <input type="url" name="url" placeholder="https://www.fazenda.df.gov.br/nfce/qrcode?p=…">
+          </label>
+          <div><button type="submit" class="botao">Ler cupom</button></div>
+        </form>
+        <div id="erro-cupom" class="erro" hidden></div>
+        <div id="nota" hidden>
+          <h3 id="nota-titulo" class="mercado-titulo"></h3>
+          <p class="nota">Marque os itens que estão certos. Itens sem correspondência ficam desmarcados: escolha o produto ou deixe de fora.</p>
+          <div class="tabela-rolagem"><table class="tabela" id="tabela-nota"></table></div>
+          <button type="button" id="salvar-nota" class="botao">Salvar preços conferidos</button>
+          <span id="status-nota" class="nota"></span>
         </div>
       </div>
     </section>

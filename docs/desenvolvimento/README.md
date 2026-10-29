@@ -20,8 +20,8 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 7 | LLM com ferramentas | Chat em linguagem natural que chama o otimizador | Ollama local (padrão), Groq ou Gemini (planos gratuitos) | ✅ Feito | [07](07-llm-ferramentas.md) |
 | 8 | Experimento LLM × LLM + RAG | Comparação com gabarito: correção, fundamentação, latência, custo | Script Python + pytest | ✅ Feito | [08](08-experimento-llm-rag.md) |
 | 9 | Agentes | Orquestrador, Cifrão (preços), Miau-ricio (nutrição), Mia (verificação) | Mesmo LLM do tópico 7; Orquestrador e Mia por regras | ✅ Feito | [09](09-agentes.md) |
-| 10 | Leitura da NFC-e (multimodal) | Recibaldo: lê o QR code do cupom e cadastra os preços | OpenCV / pyzbar + portal público da NFC-e | ⬜ | — |
-| 11 | Métricas e testes finais | Economia, aderência ao orçamento, adequação nutricional, precisão de preço | pytest + notebook | ⬜ | — |
+| 10 | Leitura da NFC-e (multimodal) | Recibaldo: lê o QR code do cupom e cadastra os preços | OpenCV + BeautifulSoup + consulta pública da SEFAZ-DF | ✅ Feito (falta validar com cupom real) | [10](10-nfce-multimodal.md) |
+| 11 | Métricas e testes finais | Economia, aderência ao orçamento, adequação nutricional, precisão de preço | Script Python + pytest | ⏳ Próximo | — |
 | 12 | Publicação | Site no ar para a banca testar | Render (plano gratuito) ou Hugging Face Spaces | ⬜ | — |
 
 A ordem segue o roadmap das semanas: tópicos 1–5 formam o núcleo do app (semanas 1–2), 6–8 cobrem RAG e o experimento (semanas 2–3), 9 os agentes (semana 4), 10 a multimodalidade (semana 5) e 11–12 a integração, os testes e a entrega (semanas 6–7).
@@ -52,6 +52,7 @@ data/
   base-conhecimento/*.md     Guia Alimentar, critérios, receitas → tópico 6
   experimento/perguntas.json perguntas e gabarito             → tópico 8
   precos/precos.json         mercados, produtos e preços      → tópico 1
+  precos/contribuicoes.json  preços enviados via NFC-e (fora do git) → tópico 10
 src/economia/
   dados.py                   carrega e valida as bases        → tópico 1
   metas.py                   metas nutricionais e restrições  → tópico 2
@@ -65,6 +66,7 @@ src/economia/
   assistente.py              chat: LLM + ferramentas + RAG    → tópico 7
   avaliacao.py               critérios do experimento         → tópico 8
   agentes.py                 Orquestrador, Cifrão, Miau-ricio, Mia → tópico 9
+  nfce.py                    Recibaldo: QR code da NFC-e      → tópico 10
 experimentos/
   llm_x_rag.py               experimento LLM × LLM + RAG      → tópico 8
 src/web/
@@ -79,6 +81,8 @@ tests/
   conftest.py                testes sem LLM de verdade        → tópico 7
   test_avaliacao.py          testes dos critérios             → tópico 8
   test_agentes.py            testes dos agentes               → tópico 9
+  test_nfce.py               testes da NFC-e                  → tópico 10
+  fixtures/nfce_exemplo.html nota fictícia para os testes     → tópico 10
 requirements.txt             dependências (todas gratuitas)
 pytest.ini                   configuração dos testes
 ```

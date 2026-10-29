@@ -5,12 +5,15 @@ durante a coleta de preços.
 """
 
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[2]
 ARQ_ALIMENTOS = RAIZ / "data" / "alimentos" / "alimentos.json"
 ARQ_PRECOS = RAIZ / "data" / "precos" / "precos.json"
+# Preços confirmados pelos usuários a partir de NFC-e (tópico 10).
+ARQ_CONTRIBUICOES = Path(os.environ.get("ECONOMIA_CONTRIBUICOES", RAIZ / "data" / "precos" / "contribuicoes.json"))
 
 
 @dataclass(frozen=True)
@@ -57,9 +60,22 @@ class Base:
     aviso: str
 
 
-def carregar(arq_alimentos: Path = ARQ_ALIMENTOS, arq_precos: Path = ARQ_PRECOS) -> Base:
+def carregar(arq_alimentos: Path = ARQ_ALIMENTOS, arq_precos: Path = ARQ_PRECOS, arq_contribuicoes: Path | None = None) -> Base:
     bruto_a = json.loads(arq_alimentos.read_text(encoding="utf-8"))
     bruto_p = json.loads(arq_precos.read_text(encoding="utf-8"))
+
+    arq_contribuicoes = arq_contribuicoes or ARQ_CONTRIBUICOES
+    if arq_contribuicoes.exists():
+        contrib = json.loads(arq_contribuicoes.read_text(encoding="utf-8"))
+        ids = {m["id"] for m in bruto_p["mercados"]}
+        bruto_p["mercados"] += [m for m in contrib["mercados"] if m["id"] not in ids]
+        # Mesmo produto no mesmo mercado: fica o preço mais recente.
+        recentes: dict[tuple, dict] = {}
+        for pr in bruto_p["precos"] + contrib["precos"]:
+            chave = (pr["produto"], pr["mercado"])
+            if chave not in recentes or pr["data"] >= recentes[chave]["data"]:
+                recentes[chave] = pr
+        bruto_p["precos"] = list(recentes.values())
 
     alimentos = {
         a["id"]: Alimento(

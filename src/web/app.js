@@ -17,6 +17,7 @@ const NOMES_GRUPOS = {
 };
 
 let mercados = {};
+let cestaAtual = null;
 
 function el(tag, attrs = {}, ...filhos) {
   const no = document.createElement(tag);
@@ -149,6 +150,8 @@ function mostrarPlano(plano, pedido) {
 
   mostrarMetas(cesta);
   mostrarItens(cesta);
+  cestaAtual = { alimentos: [...new Set(cesta.itens.map((i) => i.alimento.split(" (")[0]))], restricoes: pedido.restricoes };
+  $("#cardapio").replaceChildren();
   $("#resultado").hidden = false;
   $("#resultado").scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -197,9 +200,125 @@ function mostrarItens(cesta) {
   }
 }
 
+function textoEtapas(etapas) {
+  return (etapas ?? []).map((e) => `${e.agente}: ${e.acao}`).join(" → ");
+}
+
+$("#botao-cardapio").addEventListener("click", async (evento) => {
+  if (!cestaAtual) return;
+  const botao = evento.target;
+  const area = $("#cardapio");
+  botao.disabled = true;
+  area.replaceChildren("Montando o cardápio… (o LLM local pode levar alguns segundos)");
+  try {
+    const r = await api("/api/cardapio", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cestaAtual),
+    });
+    area.replaceChildren(r.resposta, el("span", { class: "meta-msg" }, textoEtapas(r.etapas)));
+  } catch (e) {
+    area.replaceChildren("Não foi possível montar o cardápio: " + e.message);
+  } finally {
+    botao.disabled = false;
+  }
+});
+
+// ---------- Enviar cupom (NFC-e) ----------
+let notaAtual = null;
+let produtosBase = [];
+
+$("#form-cupom").addEventListener("submit", async (evento) => {
+  evento.preventDefault();
+  const form = evento.target;
+  const arquivo = form.arquivo.files[0];
+  const url = form.url.value.trim();
+  $("#erro-cupom").hidden = true;
+  $("#nota").hidden = true;
+  if (!arquivo && !url) {
+    $("#erro-cupom").textContent = "Envie a foto do cupom ou cole o link do QR code.";
+    $("#erro-cupom").hidden = false;
+    return;
+  }
+  const botao = form.querySelector("button");
+  botao.disabled = true;
+  try {
+    let opcoes;
+    if (arquivo) {
+      const corpo = new FormData();
+      corpo.append("arquivo", arquivo);
+      opcoes = { method: "POST", body: corpo };
+    } else {
+      opcoes = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) };
+    }
+    notaAtual = await api(arquivo ? "/api/nfce/imagem" : "/api/nfce/url", opcoes);
+    mostrarNota(notaAtual);
+  } catch (e) {
+    $("#erro-cupom").textContent = e.message;
+    $("#erro-cupom").hidden = false;
+  } finally {
+    botao.disabled = false;
+  }
+});
+
+function mostrarNota(nota) {
+  $("#nota-titulo").textContent = `${nota.emitente} — ${dataBR(nota.data)}`;
+  $("#status-nota").textContent = "";
+  const tabela = $("#tabela-nota");
+  tabela.replaceChildren(el("thead", {}, el("tr", {},
+    el("th", {}, "Usar"), el("th", {}, "No cupom"), el("th", {}, "Produto da EconoMIA"),
+    el("th", { class: "num" }, "Preço da embalagem"), el("th", {}, "Leitura"),
+  )));
+  const corpo = el("tbody");
+  nota.itens.forEach((item, i) => {
+    const marcar = el("input", { type: "checkbox", "data-i": i });
+    marcar.checked = item.confianca === "alta";
+    const escolha = el("select", { "data-i": i }, el("option", { value: "" }, "— não usar —"),
+      ...produtosBase.map((p) => el("option", { value: p.produto_id }, p.produto)));
+    escolha.value = item.produto_id ?? "";
+    const preco = el("input", { type: "number", step: "0.01", min: "0.01", "data-i": i });
+    preco.value = item.preco_embalagem ?? item.valor_unitario;
+    corpo.append(el("tr", {},
+      el("td", {}, marcar),
+      el("td", {}, item.descricao, el("span", { class: "fonte" }, `${item.quantidade} ${item.unidade} × ${reais(item.valor_unitario)} = ${reais(item.valor_total)}`)),
+      el("td", {}, escolha),
+      el("td", { class: "num" }, preco),
+      el("td", { class: item.confianca === "alta" ? "confianca-alta" : "confianca-revisar" }, item.confianca === "alta" ? "certa" : "revisar"),
+    ));
+  });
+  tabela.append(corpo);
+  $("#nota").hidden = false;
+}
+
+$("#salvar-nota").addEventListener("click", async () => {
+  const linhas = [...document.querySelectorAll("#tabela-nota tbody tr")];
+  const itens = linhas
+    .filter((tr) => tr.querySelector("input[type=checkbox]").checked)
+    .map((tr) => ({ produto_id: tr.querySelector("select").value, preco: Number(tr.querySelector("input[type=number]").value) }))
+    .filter((i) => i.produto_id && i.preco > 0);
+  if (!itens.length) {
+    $("#status-nota").textContent = "Marque pelo menos um item com produto escolhido.";
+    return;
+  }
+  try {
+    const r = await api("/api/nfce/confirmar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ emitente: notaAtual.emitente, cnpj: notaAtual.cnpj, data: notaAtual.data, itens }),
+    });
+    $("#status-nota").textContent = `✅ ${r.salvos} preço(s) salvo(s). Obrigado por contribuir!`;
+    carregarPrecos();
+    const opcoes = await api("/api/opcoes");
+    mercados = Object.fromEntries(opcoes.mercados.map((m) => [m.id, m]));
+  } catch (e) {
+    $("#status-nota").textContent = "Não foi possível salvar: " + e.message;
+  }
+});
+
 // ---------- Preços ----------
 async function carregarPrecos() {
   const dados = await api("/api/precos");
+  produtosBase = dados.produtos.map((p) => ({ produto_id: p.produto_id, produto: p.produto }));
   const ids = dados.mercados.map((m) => m.id);
   const tabela = $("#tabela-precos");
   tabela.replaceChildren(
@@ -265,6 +384,7 @@ async function enviarChat(texto) {
     const meta = [];
     if (r.ferramentas_usadas.length) meta.push("A EconoMIA " + [...new Set(r.ferramentas_usadas)].map((f) => NOMES_FERRAMENTAS[f] ?? f).join(", "));
     if (r.fontes.length) meta.push("Fontes: " + [...new Set(r.fontes.map((f) => f.fonte))].join("; "));
+    if (r.etapas?.length) meta.push("Agentes: " + textoEtapas(r.etapas));
     if (r.aviso) meta.push("⚠️ " + r.aviso);
     if (meta.length) msg.append(el("span", { class: "meta-msg" }, meta.join(" · ")));
     historico.push({ role: "user", content: texto }, { role: "assistant", content: r.resposta });

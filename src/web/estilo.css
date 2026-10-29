@@ -203,4 +203,13 @@ input, select {
 .form-chat { display: flex; gap: 8px; }
 .form-chat input { flex: 1; min-width: 0; }
 
+.cardapio { white-space: pre-wrap; margin-top: 12px; }
+.cardapio .meta-msg { display: block; margin-top: 8px; font-size: 0.75rem; color: var(--suave); white-space: normal; }
+
+#form-cupom { align-items: end; margin-bottom: 12px; }
+#tabela-nota select, #tabela-nota input[type="number"] { width: 100%; min-width: 120px; }
+#salvar-nota { margin-top: 12px; }
+.confianca-alta { color: var(--ok); font-weight: 600; }
+.confianca-revisar { color: var(--marca-escura); font-weight: 600; }
+
 .rodape { text-align: center; color: var(--suave); font-size: 0.8rem; padding: 24px 16px; }

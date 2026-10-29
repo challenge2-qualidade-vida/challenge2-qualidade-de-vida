@@ -1,8 +1,15 @@
 # Todas as dependências são gratuitas e open source.
-fastapi==0.162.0        # API do backend (tópico 3)
-uvicorn==0.54.0         # servidor que roda a API (tópico 3)
-scipy==1.18.1           # otimizador da cesta, programação linear inteira (tópico 2)
-numpy==2.5.4            # usado pelo scipy
-scikit-learn==1.9.1     # busca TF-IDF do RAG (tópico 6)
-pytest==9.2.0           # testes
-httpx==0.28.1           # testes da API
+fastapi==0.162.0                  # API do backend (tópico 4)
+uvicorn==0.54.0                   # servidor que roda a API (tópico 4)
+python-multipart==0.0.32          # upload da foto do cupom (tópico 10)
+scipy==1.18.1                     # otimizador da cesta, programação linear inteira (tópico 2)
+numpy==2.5.4                      # usado pelo scipy e pelo opencv
+scikit-learn==1.9.1               # busca TF-IDF do RAG (tópico 6)
+httpx==0.28.1                     # cliente do LLM (tópico 7), consulta da NFC-e (tópico 10) e testes
+opencv-python-headless==5.0.0.93  # leitura do QR code da NFC-e (tópico 10)
+beautifulsoup4==4.15.0            # leitura da página da NFC-e (tópico 10)
+
+# Só para testes
+pytest==9.2.0
+qrcode==8.2                       # gera imagens de QR code nos testes da NFC-e
+pillow==13.0.0                    # usado pelo qrcode
