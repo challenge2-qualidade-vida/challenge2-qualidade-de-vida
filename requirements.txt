@@ -1,0 +1,7 @@
+# Todas as dependências são gratuitas e open source.
+fastapi==0.162.0        # API do backend (tópico 3)
+uvicorn==0.54.0         # servidor que roda a API (tópico 3)
+scipy==1.18.1           # otimizador da cesta, programação linear inteira (tópico 2)
+numpy==2.5.4            # usado pelo scipy
+pytest==9.2.0           # testes
+httpx==0.28.1           # testes da API

@@ -1,0 +1,338 @@
+{
+  "fonte": "Tabela TACO 4ª ed. (NEPA/Unicamp), valores por 100 g. Valores aproximados: conferir na tabela original antes da entrega.",
+  "alimentos": [
+    {
+      "id": "arroz",
+      "nome": "Arroz branco tipo 1 (cru)",
+      "grupo": "cereais",
+      "tags": [],
+      "por_100g": {
+        "kcal": 358,
+        "proteina_g": 7.2,
+        "fibra_g": 1.6
+      }
+    },
+    {
+      "id": "macarrao",
+      "nome": "Macarrão de trigo (cru)",
+      "grupo": "cereais",
+      "tags": [
+        "gluten"
+      ],
+      "por_100g": {
+        "kcal": 371,
+        "proteina_g": 10.0,
+        "fibra_g": 2.9
+      }
+    },
+    {
+      "id": "aveia",
+      "nome": "Aveia em flocos",
+      "grupo": "cereais",
+      "tags": [
+        "gluten"
+      ],
+      "por_100g": {
+        "kcal": 394,
+        "proteina_g": 13.9,
+        "fibra_g": 9.1
+      }
+    },
+    {
+      "id": "pao_frances",
+      "nome": "Pão francês",
+      "grupo": "cereais",
+      "tags": [
+        "gluten"
+      ],
+      "por_100g": {
+        "kcal": 300,
+        "proteina_g": 8.0,
+        "fibra_g": 2.3
+      }
+    },
+    {
+      "id": "farinha_mandioca",
+      "nome": "Farinha de mandioca",
+      "grupo": "tuberculos",
+      "tags": [],
+      "por_100g": {
+        "kcal": 361,
+        "proteina_g": 1.6,
+        "fibra_g": 6.4
+      }
+    },
+    {
+      "id": "feijao_carioca",
+      "nome": "Feijão carioca (cru)",
+      "grupo": "leguminosas",
+      "tags": [],
+      "por_100g": {
+        "kcal": 329,
+        "proteina_g": 20.0,
+        "fibra_g": 18.4
+      }
+    },
+    {
+      "id": "feijao_preto",
+      "nome": "Feijão preto (cru)",
+      "grupo": "leguminosas",
+      "tags": [],
+      "por_100g": {
+        "kcal": 324,
+        "proteina_g": 21.3,
+        "fibra_g": 21.8
+      }
+    },
+    {
+      "id": "lentilha",
+      "nome": "Lentilha (crua)",
+      "grupo": "leguminosas",
+      "tags": [],
+      "por_100g": {
+        "kcal": 339,
+        "proteina_g": 23.2,
+        "fibra_g": 16.9
+      }
+    },
+    {
+      "id": "ovo",
+      "nome": "Ovo de galinha inteiro (cru)",
+      "grupo": "proteina_animal",
+      "tags": [
+        "ovo"
+      ],
+      "por_100g": {
+        "kcal": 143,
+        "proteina_g": 13.0,
+        "fibra_g": 0
+      }
+    },
+    {
+      "id": "frango_peito",
+      "nome": "Frango, peito sem pele (cru)",
+      "grupo": "proteina_animal",
+      "tags": [
+        "carne"
+      ],
+      "por_100g": {
+        "kcal": 119,
+        "proteina_g": 21.5,
+        "fibra_g": 0
+      }
+    },
+    {
+      "id": "frango_coxa",
+      "nome": "Frango, coxa com pele (crua)",
+      "grupo": "proteina_animal",
+      "tags": [
+        "carne"
+      ],
+      "por_100g": {
+        "kcal": 161,
+        "proteina_g": 17.1,
+        "fibra_g": 0
+      }
+    },
+    {
+      "id": "patinho",
+      "nome": "Carne bovina, patinho moído (cru)",
+      "grupo": "proteina_animal",
+      "tags": [
+        "carne",
+        "carne_vermelha"
+      ],
+      "por_100g": {
+        "kcal": 133,
+        "proteina_g": 21.7,
+        "fibra_g": 0
+      }
+    },
+    {
+      "id": "lombo_porco",
+      "nome": "Carne suína, lombo (cru)",
+      "grupo": "proteina_animal",
+      "tags": [
+        "carne",
+        "carne_vermelha",
+        "carne_porco"
+      ],
+      "por_100g": {
+        "kcal": 176,
+        "proteina_g": 22.6,
+        "fibra_g": 0
+      }
+    },
+    {
+      "id": "sardinha",
+      "nome": "Sardinha em conserva em óleo",
+      "grupo": "proteina_animal",
+      "tags": [
+        "peixe"
+      ],
+      "por_100g": {
+        "kcal": 285,
+        "proteina_g": 15.9,
+        "fibra_g": 0
+      }
+    },
+    {
+      "id": "leite",
+      "nome": "Leite de vaca integral",
+      "grupo": "laticinios",
+      "tags": [
+        "lactose"
+      ],
+      "por_100g": {
+        "kcal": 61,
+        "proteina_g": 2.9,
+        "fibra_g": 0
+      }
+    },
+    {
+      "id": "mucarela",
+      "nome": "Queijo muçarela",
+      "grupo": "laticinios",
+      "tags": [
+        "lactose"
+      ],
+      "por_100g": {
+        "kcal": 330,
+        "proteina_g": 22.6,
+        "fibra_g": 0
+      }
+    },
+    {
+      "id": "batata",
+      "nome": "Batata inglesa (crua)",
+      "grupo": "tuberculos",
+      "tags": [],
+      "por_100g": {
+        "kcal": 64,
+        "proteina_g": 1.8,
+        "fibra_g": 1.2
+      }
+    },
+    {
+      "id": "mandioca",
+      "nome": "Mandioca (crua)",
+      "grupo": "tuberculos",
+      "tags": [],
+      "por_100g": {
+        "kcal": 151,
+        "proteina_g": 1.1,
+        "fibra_g": 1.9
+      }
+    },
+    {
+      "id": "cenoura",
+      "nome": "Cenoura (crua)",
+      "grupo": "flv",
+      "tags": [],
+      "por_100g": {
+        "kcal": 34,
+        "proteina_g": 1.3,
+        "fibra_g": 3.2
+      }
+    },
+    {
+      "id": "tomate",
+      "nome": "Tomate",
+      "grupo": "flv",
+      "tags": [],
+      "por_100g": {
+        "kcal": 15,
+        "proteina_g": 1.1,
+        "fibra_g": 1.2
+      }
+    },
+    {
+      "id": "cebola",
+      "nome": "Cebola",
+      "grupo": "flv",
+      "tags": [],
+      "por_100g": {
+        "kcal": 39,
+        "proteina_g": 1.7,
+        "fibra_g": 2.2
+      }
+    },
+    {
+      "id": "repolho",
+      "nome": "Repolho",
+      "grupo": "flv",
+      "tags": [],
+      "por_100g": {
+        "kcal": 17,
+        "proteina_g": 0.9,
+        "fibra_g": 1.9
+      }
+    },
+    {
+      "id": "abobora",
+      "nome": "Abóbora cabotiá (crua)",
+      "grupo": "flv",
+      "tags": [],
+      "por_100g": {
+        "kcal": 39,
+        "proteina_g": 1.7,
+        "fibra_g": 2.2
+      }
+    },
+    {
+      "id": "banana",
+      "nome": "Banana prata",
+      "grupo": "flv",
+      "tags": [],
+      "por_100g": {
+        "kcal": 98,
+        "proteina_g": 1.3,
+        "fibra_g": 2.0
+      }
+    },
+    {
+      "id": "laranja",
+      "nome": "Laranja pera",
+      "grupo": "flv",
+      "tags": [],
+      "por_100g": {
+        "kcal": 37,
+        "proteina_g": 1.0,
+        "fibra_g": 0.8
+      }
+    },
+    {
+      "id": "maca",
+      "nome": "Maçã fuji",
+      "grupo": "flv",
+      "tags": [],
+      "por_100g": {
+        "kcal": 56,
+        "proteina_g": 0.3,
+        "fibra_g": 1.3
+      }
+    },
+    {
+      "id": "oleo_soja",
+      "nome": "Óleo de soja",
+      "grupo": "oleos",
+      "tags": [],
+      "por_100g": {
+        "kcal": 884,
+        "proteina_g": 0,
+        "fibra_g": 0
+      }
+    },
+    {
+      "id": "acucar",
+      "nome": "Açúcar cristal",
+      "grupo": "acucar",
+      "tags": [],
+      "por_100g": {
+        "kcal": 387,
+        "proteina_g": 0.3,
+        "fibra_g": 0
+      }
+    }
+  ]
+}

@@ -4,4 +4,10 @@ Registre aqui cada decisão importante e a justificativa (restrição do desafio
 
 | Data | Decisão | Alternativas consideradas | Justificativa | Quem decidiu |
 |------|---------|---------------------------|---------------|--------------|
-| | | | | |
+| 29/10/2026 | Usar o nome e a narrativa da EconoMIA com o núcleo técnico do plano Cesta Inteligente | Manter só uma das propostas | As duas são a mesma ideia; a EconoMIA tem a marca e o problema, a Cesta Inteligente tem fonte de preços, otimizador e nutrição | Guilherme |
+| 29/10/2026 | Usar só ferramentas gratuitas | APIs e hospedagem pagas | Projeto acadêmico sem orçamento | Guilherme |
+| 29/10/2026 | Desenvolver na branch `develop_gui`, um tópico por vez, documentando em `docs/desenvolvimento/` | Desenvolver direto na `main` | Mantém a `main` estável e deixa cada passo explicado para o grupo e a banca | Guilherme |
+| 29/10/2026 | Backend em Python | Node.js | É a linguagem das bibliotecas de IA, RAG e otimização (SciPy) e a do perfil do grupo | Guilherme |
+| 29/10/2026 | Bases em JSON editável à mão | Banco de dados (SQLite, Postgres) | Poucos itens no MVP; o grupo edita a coleta sem instalar nada. Migrar para SQLite se a base crescer com a NFC-e | Guilherme |
+| 29/10/2026 | Separar alimento (nutrição) de produto (embalagem) | Um item por produto, com nutrição repetida | Permite comparar o preço por kg de embalagens diferentes do mesmo alimento | Guilherme |
+| 29/10/2026 | Preços de exemplo fictícios até a coleta | Esperar a coleta para começar | Permite desenvolver o otimizador já; os dados são marcados como `exemplo` e substituídos na semana 2 | Guilherme |
