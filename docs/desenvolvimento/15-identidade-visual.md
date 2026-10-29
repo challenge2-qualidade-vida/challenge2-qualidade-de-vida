@@ -63,3 +63,11 @@ No modo escuro, a palavra "EconoMIA" da logo é clareada por filtro CSS, para co
 | [src/web/estilo.css](../../src/web/estilo.css) | Paleta verde e dourada; estilos de mascote, avatares e cabeçalhos com personagem |
 | [src/web/app.js](../../src/web/app.js) | Selo de humor da Mia; avatar do gato que respondeu no chat (lido das etapas do orquestrador) |
 | [docs/marca/](../marca/) | Imagens originais do grupo |
+
+## Ajustes depois do primeiro teste (29/10/2026)
+
+| Problema visto | Causa | Correção |
+|----------------|-------|----------|
+| No "Conheça a turma", a foto de cada gato ocupava a largura toda e o texto ficava espremido ao lado | A regra `.turma img:first-child`, feita para a imagem da turma, também pegava a primeira imagem de cada item da lista | O cartão foi refeito como **grade 2×2 de personagens** (foto num selo creme, nome, função em destaque e descrição), e a imagem da turma tem classe própria (`.turma-banner`) |
+| Borda clara e serrilhada em volta dos gatos no modo escuro | O recorte "engordava" 2 px e trazia junto pixels do fundo creme | O recorte para no contorno escuro do desenho, e os pixels semitransparentes da borda são escurecidos (`marca_gatos.py`) |
+| Gato verde-escuro sumindo no fundo escuro | Pouco contraste | Personagens, avatares e cabeçalhos ficam sobre o **creme da marca**; nos cartões de ação, contorno creme sutil só no modo escuro |
