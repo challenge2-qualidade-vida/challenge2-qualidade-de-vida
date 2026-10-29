@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EconoMIA</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐈</text></svg>">
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="marca">
+      <span class="logo" aria-hidden="true">🐈💰</span>
+      <div>
+        <h1>EconoMIA</h1>
+        <p class="slogan">Inteligência que faz render. Para o seu bolso não miar!</p>
+      </div>
+    </div>
+    <nav class="abas" role="tablist">
+      <button class="aba ativa" data-aba="cesta" role="tab" aria-selected="true">Montar cesta</button>
+      <button class="aba" data-aba="precos" role="tab" aria-selected="false">Preços</button>
+    </nav>
+  </header>
+
+  <div id="aviso-dados" class="aviso" hidden></div>
+
+  <main>
+    <section id="aba-cesta" class="painel">
+      <form id="form-cesta" class="cartao formulario">
+        <h2>Quanto você tem para as compras?</h2>
+        <div class="campos">
+          <label>Orçamento (R$)
+            <input type="number" name="orcamento" min="1" step="0.01" value="800" placeholder="Sem limite">
+          </label>
+          <label>Pessoas na casa
+            <input type="number" name="pessoas" min="1" max="20" value="4" required>
+          </label>
+          <label>Período
+            <select name="periodo">
+              <option value="semana">1 semana</option>
+              <option value="quinzena">15 dias</option>
+              <option value="mes" selected>1 mês</option>
+            </select>
+          </label>
+          <label>Custo para ir a um 2º mercado (R$)
+            <input type="number" name="custo_deslocamento" min="0" step="0.01" value="10">
+          </label>
+        </div>
+        <fieldset class="restricoes">
+          <legend>Restrições alimentares</legend>
+          <div id="lista-restricoes"></div>
+        </fieldset>
+        <button type="submit" class="botao">Montar minha cesta</button>
+      </form>
+
+      <div id="carregando" class="carregando" hidden>Calculando a melhor cesta…</div>
+      <div id="erro" class="erro" hidden></div>
+
+      <div id="resultado" hidden>
+        <div class="resumo" id="resumo"></div>
+
+        <div class="cartao">
+          <h2>Por que essa cesta?</h2>
+          <ul id="explicacao" class="explicacao"></ul>
+        </div>
+
+        <div class="cartao">
+          <h2>Metas nutricionais</h2>
+          <div id="metas" class="metas"></div>
+        </div>
+
+        <div class="cartao">
+          <h2>Lista de compras</h2>
+          <div id="itens"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="aba-precos" class="painel" hidden>
+      <div class="cartao">
+        <h2>Comparação de preços</h2>
+        <p class="nota">O menor preço por kg de cada produto aparece destacado. Cada preço mostra a data e a fonte.</p>
+        <div class="tabela-rolagem">
+          <table id="tabela-precos" class="tabela"></table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    EconoMIA — Challenge 2, Residência em IA Brasília. Orientação para alimentação equilibrada da população geral; não substitui nutricionista.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+// EconoMIA — lógica do site. Conversa com a API em /api/...
+
+const reais = (v) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const dataBR = (iso) => iso.split("-").reverse().join("/");
+const $ = (seletor) => document.querySelector(seletor);
+
+const NOMES_METAS = {
+  kcal: ["Energia", "kcal"],
+  proteina_g: ["Proteína", "g"],
+  fibra_g: ["Fibra", "g"],
+  flv_g: ["Frutas e hortaliças", "g"],
+};
+const NOMES_GRUPOS = {
+  cereais: "Cereais e pães", tuberculos: "Raízes e tubérculos", leguminosas: "Feijões",
+  proteina_animal: "Carnes e ovos", laticinios: "Leite e queijos", flv: "Frutas e hortaliças",
+  oleos: "Óleos", acucar: "Açúcar",
+};
+
+let mercados = {};
+
+function el(tag, attrs = {}, ...filhos) {
+  const no = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") no.className = v;
+    else no.setAttribute(k, v);
+  }
+  for (const f of filhos) no.append(f);
+  return no;
+}
+
+async function api(caminho, opcoes) {
+  const r = await fetch(caminho, opcoes);
+  const corpo = await r.json();
+  if (!r.ok) throw new Error(typeof corpo.detail === "string" ? corpo.detail : "Verifique os campos do formulário.");
+  return corpo;
+}
+
+// ---------- Abas ----------
+document.querySelectorAll(".aba").forEach((botao) => {
+  botao.addEventListener("click", () => {
+    document.querySelectorAll(".aba").forEach((b) => {
+      b.classList.toggle("ativa", b === botao);
+      b.setAttribute("aria-selected", b === botao);
+    });
+    document.querySelectorAll(".painel").forEach((p) => (p.hidden = p.id !== `aba-${botao.dataset.aba}`));
+  });
+});
+
+// ---------- Início ----------
+async function iniciar() {
+  const opcoes = await api("/api/opcoes");
+  mercados = Object.fromEntries(opcoes.mercados.map((m) => [m.id, m]));
+
+  if (opcoes.aviso_dados) {
+    const aviso = $("#aviso-dados");
+    aviso.textContent = "⚠️ " + opcoes.aviso_dados;
+    aviso.hidden = false;
+  }
+
+  const lista = $("#lista-restricoes");
+  for (const r of opcoes.restricoes) {
+    lista.append(el("label", { class: "chip" }, el("input", { type: "checkbox", name: "restricoes", value: r.id }), r.nome));
+  }
+
+  carregarPrecos();
+}
+
+// ---------- Cesta ----------
+$("#form-cesta").addEventListener("submit", async (evento) => {
+  evento.preventDefault();
+  const form = new FormData(evento.target);
+  const orcamento = form.get("orcamento");
+  const pedido = {
+    orcamento: orcamento ? Number(orcamento) : null,
+    pessoas: Number(form.get("pessoas")),
+    periodo: form.get("periodo"),
+    restricoes: form.getAll("restricoes"),
+    custo_deslocamento: Number(form.get("custo_deslocamento") || 0),
+  };
+
+  const botao = evento.target.querySelector("button");
+  botao.disabled = true;
+  $("#carregando").hidden = false;
+  $("#erro").hidden = true;
+  $("#resultado").hidden = true;
+  try {
+    const plano = await api("/api/cesta", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(pedido),
+    });
+    mostrarPlano(plano, pedido);
+  } catch (e) {
+    $("#erro").textContent = "Não foi possível montar a cesta: " + e.message;
+    $("#erro").hidden = false;
+  } finally {
+    botao.disabled = false;
+    $("#carregando").hidden = true;
+  }
+});
+
+function nomesMercados(ids) {
+  return ids.map((id) => mercados[id]?.nome ?? id).join(" + ");
+}
+
+function cartaoOpcao(titulo, cesta, recomendada, extra) {
+  const c = el("div", { class: "cartao opcao" + (recomendada ? " recomendada" : "") });
+  if (recomendada) c.append(el("span", { class: "selo" }, "Recomendada"));
+  c.append(el("div", { class: "titulo" }, titulo));
+  if (!cesta) {
+    c.append(el("div", { class: "valor" }, "—"), el("div", { class: "detalhe" }, "Sem opção dentro do orçamento"));
+    return c;
+  }
+  c.append(
+    el("div", { class: "valor" }, reais(cesta.custo_total)),
+    el("div", { class: "detalhe" }, nomesMercados(cesta.mercados) + (extra ? ` · ${extra}` : "")),
+  );
+  return c;
+}
+
+function mostrarPlano(plano, pedido) {
+  const resumo = $("#resumo");
+  resumo.replaceChildren();
+  $("#explicacao").replaceChildren(...plano.explicacao.map((f) => el("li", {}, f)));
+
+  if (!plano.recomendacao) {
+    resumo.append(cartaoOpcao("Orçamento informado", null, false));
+    $("#metas").replaceChildren();
+    $("#itens").replaceChildren();
+    $("#resultado").hidden = false;
+    return;
+  }
+
+  resumo.append(cartaoOpcao("Em um só mercado", plano.um_mercado, plano.recomendacao === "um"));
+  const extra = plano.dois_mercados && pedido.custo_deslocamento > 0
+    ? `+ ${reais(pedido.custo_deslocamento)} de deslocamento`
+    : "";
+  resumo.append(cartaoOpcao("Dividindo em dois mercados", plano.dois_mercados, plano.recomendacao === "dois", extra));
+
+  const cesta = plano.cesta_recomendada;
+  resumo.append(
+    el("div", { class: "cartao opcao" },
+      el("div", { class: "titulo" }, "Custo por 1.000 kcal"),
+      el("div", { class: "valor" }, reais(cesta.custo_por_1000_kcal)),
+      el("div", { class: "detalhe" }, `${reais(cesta.custo_por_g_proteina)} por grama de proteína`),
+    ),
+  );
+
+  mostrarMetas(cesta);
+  mostrarItens(cesta);
+  $("#resultado").hidden = false;
+  $("#resultado").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function mostrarMetas(cesta) {
+  const linhas = Object.entries(NOMES_METAS).map(([chave, [nome, unidade]]) => {
+    const obtido = cesta.obtido[chave];
+    const meta = cesta.metas[chave];
+    const pct = Math.round((obtido / meta) * 100);
+    const barra = el("div", { class: "barra" }, el("span", { style: `width:${Math.min(pct, 100)}%` }));
+    return el("div", { class: "meta-linha" },
+      el("span", {}, nome),
+      barra,
+      el("span", { class: "num" }, `${pct}% da meta`),
+    );
+  });
+  $("#metas").replaceChildren(...linhas);
+}
+
+function mostrarItens(cesta) {
+  const area = $("#itens");
+  area.replaceChildren();
+  for (const id of cesta.mercados) {
+    const itens = cesta.itens.filter((i) => i.mercado_id === id);
+    area.append(el("h3", { class: "mercado-titulo" }, `${mercados[id].nome} — ${reais(cesta.custo_por_mercado[id])}`));
+    const tabela = el("table", { class: "tabela" });
+    tabela.append(
+      el("thead", {}, el("tr", {},
+        el("th", {}, "Produto"), el("th", {}, "Grupo"), el("th", { class: "num" }, "Qtd."),
+        el("th", { class: "num" }, "Preço"), el("th", { class: "num" }, "Preço/kg"), el("th", { class: "num" }, "Subtotal"),
+      )),
+    );
+    const corpo = el("tbody");
+    for (const i of itens) {
+      corpo.append(el("tr", {},
+        el("td", {}, i.produto, el("span", { class: "fonte" }, `Preço de ${dataBR(i.data_preco)} · fonte: ${i.fonte_preco}`)),
+        el("td", {}, NOMES_GRUPOS[i.grupo] ?? i.grupo),
+        el("td", { class: "num" }, String(i.quantidade)),
+        el("td", { class: "num" }, reais(i.preco_unitario)),
+        el("td", { class: "num" }, reais(i.preco_kg)),
+        el("td", { class: "num" }, reais(i.subtotal)),
+      ));
+    }
+    tabela.append(corpo);
+    area.append(el("div", { class: "tabela-rolagem" }, tabela));
+  }
+}
+
+// ---------- Preços ----------
+async function carregarPrecos() {
+  const dados = await api("/api/precos");
+  const ids = dados.mercados.map((m) => m.id);
+  const tabela = $("#tabela-precos");
+  tabela.replaceChildren(
+    el("thead", {}, el("tr", {}, el("th", {}, "Produto"), ...dados.mercados.map((m) => el("th", { class: "num" }, m.nome)))),
+  );
+  const corpo = el("tbody");
+  for (const p of dados.produtos) {
+    const valores = ids.map((id) => p.precos[id]?.preco_kg).filter((v) => v !== undefined);
+    const menor = Math.min(...valores);
+    const linha = el("tr", {}, el("td", {}, p.produto));
+    for (const id of ids) {
+      const pr = p.precos[id];
+      if (!pr) {
+        linha.append(el("td", { class: "num" }, "—"));
+        continue;
+      }
+      linha.append(el("td", { class: "num" + (pr.preco_kg === menor && valores.length > 1 ? " melhor" : "") },
+        reais(pr.preco),
+        el("span", { class: "fonte" }, `${reais(pr.preco_kg)}/kg · ${dataBR(pr.data)}`),
+      ));
+    }
+    corpo.append(linha);
+  }
+  tabela.append(corpo);
+}
+
+iniciar().catch((e) => {
+  $("#erro").textContent = "Não foi possível conectar à API: " + e.message;
+  $("#erro").hidden = false;
+});

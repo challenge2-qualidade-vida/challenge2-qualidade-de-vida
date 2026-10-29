@@ -15,8 +15,8 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 2 | Otimizador da cesta | Monta a cesta mais barata que cumpre orçamento, nutrição, variedade e restrições | SciPy (`milp`) | ✅ Feito | [02](02-otimizador.md) |
 | 3 | Comparação entre mercados | "1 mercado" vs. "2 mercados", com custo de deslocamento | SciPy | ✅ Feito | [03](03-comparacao-mercados.md) |
 | 4 | API (backend) | Endpoints que o site chama | FastAPI + Uvicorn | ✅ Feito | [04](04-api.md) |
-| 5 | Site (frontend) | Tela: formulário de orçamento → cesta → comparação | HTML, CSS e JavaScript puros | ⏳ Próximo | — |
-| 6 | Base de conhecimento + RAG | Busca no Guia Alimentar e na TACO para fundamentar respostas | sentence-transformers + ChromaDB (locais) | ⬜ | — |
+| 5 | Site (frontend) | Tela: formulário de orçamento → cesta → comparação | HTML, CSS e JavaScript puros | ✅ Feito | [05](05-site.md) |
+| 6 | Base de conhecimento + RAG | Busca no Guia Alimentar e na TACO para fundamentar respostas | sentence-transformers + ChromaDB (locais) | ⏳ Próximo | — |
 | 7 | LLM com ferramentas | Chat em linguagem natural que chama o otimizador | Gemini API (plano gratuito), Groq (plano gratuito) ou Ollama (local) — escolher no tópico | ⬜ | — |
 | 8 | Experimento LLM × LLM + RAG | Comparação com gabarito: correção, fundamentação, latência, custo | pytest + notebook Jupyter | ⬜ | — |
 | 9 | Agentes | Orquestrador, Cifrão (preços), Miau-ricio (nutrição), Mia (verificação) | Mesmo LLM do tópico 7 | ⬜ | — |
@@ -36,7 +36,13 @@ pip install -r requirements.txt
 pytest
 ```
 
-Ainda não há site para abrir: ele chega nos tópicos 4 e 5.
+Para abrir o site:
+
+```bash
+uvicorn economia.api:app --app-dir src --reload
+```
+
+Depois acesse <http://localhost:8000> (site) ou <http://localhost:8000/docs> (documentação da API).
 
 ## Estrutura do código
 
@@ -51,6 +57,8 @@ src/economia/
   planejador.py              1 mercado × 2 mercados           → tópico 3
   explicacao.py              explica o plano em frases        → tópico 3
   api.py                     API FastAPI + serve o site       → tópico 4
+src/web/
+  index.html, estilo.css, app.js   o site                     → tópico 5
 tests/
   test_dados.py              testes de integridade das bases  → tópico 1
   test_otimizador.py         testes do otimizador             → tópico 2
