@@ -11,3 +11,8 @@ Toda fonte usada no RAG deve ser listada aqui (restrição do desafio: "Utilizar
 | (gerado de data/alimentos/alimentos.json) | Tabela Brasileira de Composição de Alimentos (TACO), 4ª ed. | NEPA/Unicamp | 2011 | <https://nepa.unicamp.br/publicacoes/tabela-taco-pdf/> | Tabela oficial de composição de alimentos brasileiros |
 | — (usado em metas.py) | Instrução Normativa nº 75/2020 (valores diários de referência) | ANVISA | 2020 | <https://www.in.gov.br/en/web/dou/-/instrucao-normativa-in-n-75-de-8-de-outubro-de-2020-282071143> | Norma oficial de rotulagem nutricional |
 | — (usado em metas.py) | Recomendação de 400 g/dia de frutas e hortaliças | OMS | — | <https://www.who.int/news-room/fact-sheets/detail/healthy-diet> | Organização Mundial da Saúde |
+
+## Imagens
+
+- Fotos dos alimentos: Wikimedia Commons, licenças CC0, domínio público, CC BY e CC BY-SA. Autor e licença de cada uma em [docs/marca/creditos-fotos-alimentos.md](../../docs/marca/creditos-fotos-alimentos.md).
+- Logo e personagens: criados pelo grupo (docs/marca/).
