@@ -13,8 +13,8 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 0 | Organização e ambiente | Branch, ambiente Python, estrutura de pastas, testes | Git, Python 3, venv, pytest | ✅ Feito | [00](00-organizacao-e-ambiente.md) |
 | 1 | Base de dados | Alimentos com nutrição (TACO) e preços de 3 mercados de exemplo | JSON | ✅ Feito | [01](01-dados.md) |
 | 2 | Otimizador da cesta | Monta a cesta mais barata que cumpre orçamento, nutrição, variedade e restrições | SciPy (`milp`) | ✅ Feito | [02](02-otimizador.md) |
-| 3 | Comparação entre mercados | "1 mercado" vs. "2 mercados", com custo de deslocamento | SciPy | ⏳ Próximo | — |
-| 4 | API (backend) | Endpoints que o site chama | FastAPI + Uvicorn | ⬜ | — |
+| 3 | Comparação entre mercados | "1 mercado" vs. "2 mercados", com custo de deslocamento | SciPy | ✅ Feito | [03](03-comparacao-mercados.md) |
+| 4 | API (backend) | Endpoints que o site chama | FastAPI + Uvicorn | ⏳ Próximo | — |
 | 5 | Site (frontend) | Tela: formulário de orçamento → cesta → comparação | HTML, CSS e JavaScript puros | ⬜ | — |
 | 6 | Base de conhecimento + RAG | Busca no Guia Alimentar e na TACO para fundamentar respostas | sentence-transformers + ChromaDB (locais) | ⬜ | — |
 | 7 | LLM com ferramentas | Chat em linguagem natural que chama o otimizador | Gemini API (plano gratuito), Groq (plano gratuito) ou Ollama (local) — escolher no tópico | ⬜ | — |
@@ -48,9 +48,12 @@ src/economia/
   dados.py                   carrega e valida as bases        → tópico 1
   metas.py                   metas nutricionais e restrições  → tópico 2
   otimizador.py              monta a cesta mais barata        → tópico 2
+  planejador.py              1 mercado × 2 mercados           → tópico 3
+  explicacao.py              explica o plano em frases        → tópico 3
 tests/
   test_dados.py              testes de integridade das bases  → tópico 1
   test_otimizador.py         testes do otimizador             → tópico 2
+  test_planejador.py         testes da comparação             → tópico 3
 requirements.txt             dependências (todas gratuitas)
 pytest.ini                   configuração dos testes
 ```
