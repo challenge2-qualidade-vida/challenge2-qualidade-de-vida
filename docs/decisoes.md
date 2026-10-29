@@ -11,3 +11,5 @@ Registre aqui cada decisão importante e a justificativa (restrição do desafio
 | 29/10/2026 | Bases em JSON editável à mão | Banco de dados (SQLite, Postgres) | Poucos itens no MVP; o grupo edita a coleta sem instalar nada. Migrar para SQLite se a base crescer com a NFC-e | Guilherme |
 | 29/10/2026 | Separar alimento (nutrição) de produto (embalagem) | Um item por produto, com nutrição repetida | Permite comparar o preço por kg de embalagens diferentes do mesmo alimento | Guilherme |
 | 29/10/2026 | Preços de exemplo fictícios até a coleta | Esperar a coleta para começar | Permite desenvolver o otimizador já; os dados são marcados como `exemplo` e substituídos na semana 2 | Guilherme |
+| 29/10/2026 | Otimizador com programação linear inteira (SciPy `milp`/HiGHS) | Heurística gulosa; deixar o LLM montar a cesta | Garante o menor custo que cumpre todas as metas, é determinístico e auditável; o LLM erraria contas | Guilherme |
+| 29/10/2026 | Metas nutricionais pelos VD da ANVISA (IN 75/2020) e 400 g de FLV da OMS | Metas próprias do grupo | Fontes oficiais e verificáveis | Guilherme |
