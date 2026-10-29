@@ -43,8 +43,9 @@ def _mais_barata(cestas) -> Cesta | None:
     return min(validas, key=lambda c: c.custo_total, default=None)
 
 
-def planejar(base: Base, pedido: Pedido, custo_deslocamento: float = 0.0) -> Plano:
-    mercados = sorted(base.mercados)
+def planejar(base: Base, pedido: Pedido, custo_deslocamento: float = 0.0, mercados: list[str] | None = None) -> Plano:
+    """`mercados` limita a comparação (ex.: só os mercados perto do usuário). None = todos."""
+    mercados = sorted(m for m in (mercados or base.mercados) if m in base.mercados)
 
     por_mercado = {m: montar_cesta(base, pedido, (m,)) for m in mercados}
     um = _mais_barata(por_mercado.values())

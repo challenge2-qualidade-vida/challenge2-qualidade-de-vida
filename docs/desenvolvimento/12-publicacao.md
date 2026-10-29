@@ -12,7 +12,8 @@
 
 ### O que foi testado
 
-- `pip install -r requirements.txt` num **ambiente limpo**: instalou tudo, e os **127 testes passaram** nele.
+- `pip install -r requirements.txt` num **ambiente limpo**: instalou tudo, e os **127 testes** da época passaram nele.
+- A geolocalização do navegador exige **HTTPS** fora do `localhost`. O Render e o Hugging Face já dão HTTPS.
 - O **comando de produção** (`uvicorn ... --host 0.0.0.0 --port $PORT`, com `LLM_PROVEDOR=nenhum`) subiu, e responderam `/api/saude`, o site e o chat.
 - ⚠️ A **imagem Docker não foi construída** nesta máquina: o Docker está instalado, mas o serviço não estava rodando. Na primeira publicação, acompanhe o log de build da hospedagem.
 
@@ -58,7 +59,7 @@ Depois de publicar com Groq ou Gemini, vale rodar o experimento de novo com o me
 | Contribuições de NFC-e | Ficam em `contribuicoes.json`, no disco do servidor | No plano gratuito o disco **é apagado** a cada novo deploy ou reinício. Para guardar de verdade, usar um banco gratuito (ex.: SQLite num volume, ou o plano gratuito de um Postgres) |
 | Abuso do chat | Qualquer pessoa pode mandar muitas mensagens e gastar o limite gratuito do LLM | Para a apresentação, basta. Se ficar aberto ao público, adicionar um limite de requisições por IP |
 | Gravação sem login | Qualquer pessoa pode confirmar preços de NFC-e | Os dados vêm da nota oficial, mas o preço é editável na tela. Para produção, marcar contribuições editadas ou exigir login |
-| Privacidade | Nenhum dado pessoal é salvo; o orçamento só passa pela requisição | Manter assim; com o Gemini gratuito, avisar que as mensagens vão para o Google |
+| Privacidade | Nenhum dado pessoal é salvo; o orçamento e a localização só passam pela requisição | Manter assim; com o Gemini gratuito, avisar que as mensagens vão para o Google |
 
 ## Como rodar localmente (resumo final)
 
@@ -68,7 +69,7 @@ cd challenge2-qualidade-de-vida
 git checkout develop_gui
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-pytest                                                   # 127 testes
+pytest                                                   # 142 testes
 ollama pull qwen2.5:7b                                   # opcional: LLM local e gratuito
 uvicorn economia.api:app --app-dir src --reload          # http://localhost:8000
 ```

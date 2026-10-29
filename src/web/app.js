@@ -67,6 +67,7 @@ async function iniciar() {
 
   carregarPrecos();
   carregarStatusLLM();
+  carregarRegioes();
 }
 
 // ---------- Cesta ----------
@@ -81,6 +82,7 @@ $("#form-cesta").addEventListener("submit", async (evento) => {
     restricoes: form.getAll("restricoes"),
     custo_deslocamento: Number(form.get("custo_deslocamento") || 0),
   };
+  if (mercadosPerto) pedido.mercados = mercadosPerto.ids;
 
   const botao = evento.target.querySelector("button");
   botao.disabled = true;
@@ -221,6 +223,157 @@ $("#botao-cardapio").addEventListener("click", async (evento) => {
     area.replaceChildren(semMarkdown(r.resposta), el("span", { class: "meta-msg" }, textoEtapas(r.etapas)));
   } catch (e) {
     area.replaceChildren("Não foi possível montar o cardápio: " + e.message);
+  } finally {
+    botao.disabled = false;
+  }
+});
+
+// ---------- Perto de mim ----------
+let posicao = null;          // {lat, lon} só na memória da página
+let mercadosPerto = null;    // ids usados ao montar a cesta
+
+const NOMES_GRUPOS_PROTEINA = { proteina_animal: "Carnes e ovos", laticinios: "Leite e queijos", leguminosas: "Feijões" };
+
+function irParaAba(nome) {
+  document.querySelector(`.aba[data-aba="${nome}"]`).click();
+}
+
+async function carregarRegioes() {
+  const regioes = await api("/api/regioes");
+  $("#regiao").append(...regioes.map((r) => el("option", { value: `${r.lat},${r.lon}` }, r.nome)));
+}
+
+$("#botao-localizacao").addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    $("#status-perto").textContent = "Seu navegador não permite localização. Escolha a região.";
+    return;
+  }
+  $("#status-perto").textContent = "Pedindo permissão de localização…";
+  navigator.geolocation.getCurrentPosition(
+    (p) => buscarPerto(p.coords.latitude, p.coords.longitude, "sua localização"),
+    () => ($("#status-perto").textContent = "Não foi possível pegar a localização. Escolha a região."),
+    { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 },
+  );
+});
+
+$("#regiao").addEventListener("change", (e) => {
+  if (!e.target.value) return;
+  const [lat, lon] = e.target.value.split(",").map(Number);
+  buscarPerto(lat, lon, e.target.selectedOptions[0].textContent);
+});
+
+$("#raio").addEventListener("change", () => posicao && buscarPerto(posicao.lat, posicao.lon, posicao.origem));
+
+async function buscarPerto(lat, lon, origem) {
+  posicao = { lat, lon, origem };
+  const raio = Number($("#raio").value) || 10;
+  $("#status-perto").textContent = `Buscando mercados a até ${raio} km de ${origem}…`;
+  try {
+    const r = await api(`/api/proximos?lat=${lat.toFixed(4)}&lon=${lon.toFixed(4)}&raio_km=${raio}`);
+    mostrarPerto(r, raio, origem);
+  } catch (e) {
+    $("#status-perto").textContent = "Erro: " + e.message;
+  }
+}
+
+function mostrarPerto(r, raio, origem) {
+  $("#lista-osm").replaceChildren();
+  if (!r.mercados.length) {
+    $("#status-perto").textContent = `Nenhum mercado com preços a até ${raio} km de ${origem}. Aumente o raio ou envie um cupom de um mercado da sua região.`;
+    $("#resultado-perto").hidden = false;
+    $("#tabela-proximos").replaceChildren();
+    $("#tabela-proteinas").replaceChildren();
+    $("#resumo-proteinas").replaceChildren();
+    mercadosPerto = null;
+    return;
+  }
+  $("#status-perto").textContent = `${r.mercados.length} mercado(s) com preços a até ${raio} km de ${origem}. Custo de carro estimado em ${reais(r.custo_por_km)} por km.`;
+  mercadosPerto = { ids: r.mercados.map((m) => m.id), deslocamento: r.custo_segundo_mercado };
+
+  $("#tabela-proximos").replaceChildren(
+    el("thead", {}, el("tr", {}, el("th", {}, "Mercado"), el("th", {}, "Região"), el("th", { class: "num" }, "Distância"), el("th", { class: "num" }, "Ida e volta (carro)"))),
+    el("tbody", {}, ...r.mercados.map((m) => el("tr", {},
+      el("td", {}, m.nome), el("td", {}, m.regiao),
+      el("td", { class: "num" }, `${String(m.distancia_km).replace(".", ",")} km`),
+      el("td", { class: "num" }, reais(m.custo_ida_volta)),
+    ))),
+  );
+
+  const p = r.proteinas;
+  const nome = (id) => mercados[id]?.nome ?? id;
+  const resumo = [];
+  if (p.carrinho.melhor_mercado) {
+    resumo.push(el("div", { class: "cartao opcao recomendada" },
+      el("span", { class: "selo" }, "Melhor para proteínas"),
+      el("div", { class: "titulo" }, `1 kg de cada: ${p.carrinho.itens.join(", ")}`),
+      el("div", { class: "valor" }, nome(p.carrinho.melhor_mercado)),
+      el("div", { class: "detalhe" }, Object.entries(p.carrinho.total_por_mercado).map(([m, v]) => `${nome(m)}: ${reais(v)}`).join(" · ")),
+    ));
+  }
+  const maisBarata = p.alimentos[0];
+  if (maisBarata) {
+    resumo.push(el("div", { class: "cartao opcao" },
+      el("div", { class: "titulo" }, "Proteína mais barata"),
+      el("div", { class: "valor" }, maisBarata.alimento),
+      el("div", { class: "detalhe" }, `${reais(maisBarata.precos[maisBarata.melhor_mercado].custo_100g_proteina)} por 100 g de proteína no ${nome(maisBarata.melhor_mercado)}`),
+    ));
+  }
+  $("#resumo-proteinas").replaceChildren(...resumo);
+
+  const ids = mercadosPerto.ids;
+  $("#tabela-proteinas").replaceChildren(
+    el("thead", {}, el("tr", {}, el("th", {}, "Alimento"), ...ids.map((id) => el("th", { class: "num" }, nome(id))), el("th", { class: "num" }, "Economia no melhor"))),
+    el("tbody", {}, ...p.alimentos.map((a) => el("tr", {},
+      el("td", {}, a.alimento, el("span", { class: "fonte" }, `${NOMES_GRUPOS_PROTEINA[a.grupo]} · ${String(a.proteina_100g).replace(".", ",")} g de proteína/100 g`)),
+      ...ids.map((id) => {
+        const v = a.precos[id];
+        if (!v) return el("td", { class: "num" }, "—");
+        return el("td", { class: "num" + (id === a.melhor_mercado && Object.keys(a.precos).length > 1 ? " melhor" : "") },
+          `${reais(v.preco_kg)}/kg`,
+          el("span", { class: "fonte" }, `${reais(v.custo_100g_proteina)} por 100 g de proteína · ${dataBR(v.data)} · ${v.fonte}`));
+      }),
+      el("td", { class: "num" }, a.economia_vs_mais_caro_pct > 0 ? `${String(a.economia_vs_mais_caro_pct).replace(".", ",")}%` : "—"),
+    ))),
+  );
+  $("#resultado-perto").hidden = false;
+}
+
+$("#botao-cesta-perto").addEventListener("click", () => {
+  if (!mercadosPerto) return;
+  $("#form-cesta").custo_deslocamento.value = mercadosPerto.deslocamento.toFixed(2);
+  irParaAba("cesta");
+  $("#filtro-mercados").textContent = `Usando só os mercados perto de você: ${mercadosPerto.ids.map((id) => mercados[id]?.nome ?? id).join(", ")}. `;
+  $("#filtro-mercados").append(el("button", { type: "button", class: "sugestao", id: "limpar-filtro" }, "usar todos"));
+  $("#filtro-mercados").hidden = false;
+  $("#limpar-filtro").addEventListener("click", () => {
+    mercadosPerto = null;
+    $("#filtro-mercados").hidden = true;
+  });
+});
+
+$("#botao-osm").addEventListener("click", async (evento) => {
+  if (!posicao) return;
+  const botao = evento.target;
+  botao.disabled = true;
+  $("#lista-osm").replaceChildren("Consultando o OpenStreetMap…");
+  try {
+    const raio = Math.min(Number($("#raio").value) || 10, 10);
+    const r = await api(`/api/osm?lat=${posicao.lat.toFixed(2)}&lon=${posicao.lon.toFixed(2)}&raio_km=${raio}`);
+    if (!r.supermercados.length) {
+      $("#lista-osm").replaceChildren("Nenhum supermercado encontrado no mapa nessa área.");
+      return;
+    }
+    $("#lista-osm").replaceChildren(
+      el("ul", { class: "explicacao" }, ...r.supermercados.slice(0, 20).map((m) => el("li", {},
+        `${m.nome} — ${String(m.distancia_km).replace(".", ",")} km `,
+        el("span", { class: m.tem_precos ? "confianca-alta" : "confianca-revisar" }, m.tem_precos ? "tem preços" : "sem preços ainda"),
+      ))),
+      el("p", { class: "nota" }, `Fonte: ${r.fonte}. Conhece algum desses? `,
+        el("button", { type: "button", class: "sugestao", id: "ir-cupom" }, "Enviar um cupom")),
+    );
+    $("#ir-cupom").addEventListener("click", () => irParaAba("cupom"));
+  } catch (e) {
+    $("#lista-osm").replaceChildren(e.message);
   } finally {
     botao.disabled = false;
   }

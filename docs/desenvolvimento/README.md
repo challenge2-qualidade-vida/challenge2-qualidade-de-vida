@@ -23,6 +23,7 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 10 | Leitura da NFC-e (multimodal) | Recibaldo: lê o QR code do cupom e cadastra os preços | OpenCV + BeautifulSoup + consulta pública da SEFAZ-DF | ✅ Feito (falta validar com cupom real) | [10](10-nfce-multimodal.md) |
 | 11 | Métricas e testes finais | Economia, aderência ao orçamento, adequação nutricional, precisão de preço | Script Python + pytest | ✅ Feito (falta trabalho de campo: gôndola e usuários) | [11](11-metricas.md) |
 | 12 | Publicação | Site no ar para a banca testar | Docker + Render ou Hugging Face Spaces (planos gratuitos) | ✅ Preparado (publicar exige a conta do grupo) | [12](12-publicacao.md) |
+| 13 | Localização e proteínas | Mercados perto do usuário, custo de deslocamento, ranking das proteínas (carne, frango, ovos...), supermercados do OpenStreetMap | Geolocalização do navegador + OpenStreetMap (Overpass) | ✅ Feito | [13](13-localizacao-proteinas.md) |
 
 A ordem segue o roadmap das semanas: tópicos 1–5 formam o núcleo do app (semanas 1–2), 6–8 cobrem RAG e o experimento (semanas 2–3), 9 os agentes (semana 4), 10 a multimodalidade (semana 5) e 11–12 a integração, os testes e a entrega (semanas 6–7).
 
@@ -33,18 +34,19 @@ git checkout develop_gui
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-pytest                                               # 127 testes, ~8 s
+pytest                                               # 142 testes, ~8 s
 ollama pull qwen2.5:7b                               # opcional: LLM local e gratuito
 uvicorn economia.api:app --app-dir src --reload
 ```
 
 Depois acesse <http://localhost:8000> (site) ou <http://localhost:8000/docs> (documentação da API). Sem Ollama, o app funciona no modo sem LLM.
 
-## O site, em 5 abas de funcionalidade
+## O site, em 6 abas de funcionalidade
 
 | Onde | O que faz | Tópicos |
 |------|-----------|---------|
 | **Montar cesta** | Orçamento + pessoas + período + restrições → cesta mais barata que cumpre as metas, 1 × 2 mercados, explicação, metas, lista com preço/kg e fonte → **Sugerir cardápio** | 2, 3, 5, 9 |
+| **Perto de mim** | Localização (ou região) → mercados com preços no raio, distância, custo de ida e volta, **onde a proteína está mais barata**, supermercados do OpenStreetMap → montar a cesta só com os mercados próximos | 13 |
 | **Conversar** | Chat em linguagem natural; o Orquestrador escolhe o agente, e a Mia confere a resposta | 6, 7, 9 |
 | **Preços** | Tabela produto × mercado com preço por kg, data e fonte; menor preço destacado | 1, 4, 5 |
 | **Enviar cupom** | Foto do cupom → QR code → nota da SEFAZ-DF → conferir → preços entram na base | 10 |
@@ -52,7 +54,7 @@ Depois acesse <http://localhost:8000> (site) ou <http://localhost:8000/docs> (do
 
 ## O que falta (depende do grupo)
 
-1. **Coleta real de preços** em 3–4 mercados de Brasília → substituir os preços de exemplo ([01](01-dados.md#como-adicionar-a-coleta-real-de-preços)).
+1. **Coleta real de preços** em 3–4 mercados de Brasília, **com a latitude e a longitude de cada um** → substituir os preços de exemplo ([01](01-dados.md#como-adicionar-a-coleta-real-de-preços), [13](13-localizacao-proteinas.md#limitações)).
 2. **Conferir** os resumos do Guia Alimentar e os valores da TACO com os originais ([06](06-rag.md)).
 3. **Testar a NFC-e com um cupom real do DF** e ajustar o leitor, se o layout for diferente ([10](10-nfce-multimodal.md#️-limitação-importante-o-layout-real-da-sefaz-df)).
 4. **Verificação na gôndola** e **teste com usuários** (métricas 6 e 8, [11](11-metricas.md#o-que-falta-trabalho-de-campo-do-grupo)).
@@ -83,6 +85,7 @@ src/economia/
   agentes.py                 Orquestrador, Cifrão, Miau-ricio, Mia → tópico 9
   nfce.py                    Recibaldo: QR code da NFC-e      → tópico 10
   metricas.py                métricas do projeto              → tópico 11
+  geo.py                     localização e ranking de proteínas → tópico 13
 experimentos/
   llm_x_rag.py               experimento LLM × LLM + RAG      → tópico 8
   metricas.py                gera docs/semana-7/metricas.md   → tópico 11
@@ -99,6 +102,7 @@ tests/
   test_avaliacao.py          testes dos critérios             → tópico 8
   test_agentes.py            testes dos agentes               → tópico 9
   test_nfce.py               testes da NFC-e                  → tópico 10
+  test_geo.py                testes de localização            → tópico 13
   fixtures/nfce_exemplo.html nota fictícia para os testes     → tópico 10
 requirements.txt             dependências (todas gratuitas)
 Dockerfile, render.yaml      publicação gratuita              → tópico 12

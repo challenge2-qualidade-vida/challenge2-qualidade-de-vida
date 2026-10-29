@@ -18,6 +18,7 @@
     </div>
     <nav class="abas" role="tablist">
       <button class="aba ativa" data-aba="cesta" role="tab" aria-selected="true">Montar cesta</button>
+      <button class="aba" data-aba="perto" role="tab" aria-selected="false">Perto de mim</button>
       <button class="aba" data-aba="chat" role="tab" aria-selected="false">Conversar</button>
       <button class="aba" data-aba="precos" role="tab" aria-selected="false">Preços</button>
       <button class="aba" data-aba="cupom" role="tab" aria-selected="false">Enviar cupom</button>
@@ -52,6 +53,7 @@
           <legend>Restrições alimentares</legend>
           <div id="lista-restricoes"></div>
         </fieldset>
+        <p id="filtro-mercados" class="nota" hidden></p>
         <button type="submit" class="botao">Montar minha cesta</button>
       </form>
 
@@ -81,6 +83,45 @@
           <p class="nota">O Miau-ricio sugere refeições usando só os alimentos da lista, e a Mia confere as suas restrições.</p>
           <button type="button" id="botao-cardapio" class="botao">Sugerir cardápio</button>
           <div id="cardapio" class="cardapio"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="aba-perto" class="painel" hidden>
+      <div class="cartao">
+        <h2>Mercados perto de você</h2>
+        <p class="nota">Sua localização é usada só para calcular distâncias e não é guardada. Se preferir, escolha a região.</p>
+        <div class="campos">
+          <div><button type="button" id="botao-localizacao" class="botao">📍 Usar minha localização</button></div>
+          <label>…ou escolha a região
+            <select id="regiao"><option value="">—</option></select>
+          </label>
+          <label>Raio (km)
+            <input type="number" id="raio" min="1" max="50" value="10">
+          </label>
+        </div>
+        <div id="status-perto" class="nota" style="margin-top:12px"></div>
+      </div>
+
+      <div id="resultado-perto" hidden>
+        <div class="cartao">
+          <h2>Mercados com preços na EconoMIA</h2>
+          <div class="tabela-rolagem"><table class="tabela" id="tabela-proximos"></table></div>
+          <button type="button" id="botao-cesta-perto" class="botao" style="margin-top:12px">Montar cesta só com esses mercados</button>
+        </div>
+
+        <div class="cartao">
+          <h2>Onde a proteína está mais barata</h2>
+          <p class="nota">Menor preço por kg de cada alimento em cada mercado, e quanto custam 100 g de proteína. Ordenado da proteína mais barata para a mais cara.</p>
+          <div id="resumo-proteinas" class="resumo"></div>
+          <div class="tabela-rolagem"><table class="tabela" id="tabela-proteinas"></table></div>
+        </div>
+
+        <div class="cartao">
+          <h2>Outros supermercados da região</h2>
+          <p class="nota">Lista do OpenStreetMap. Os que ainda não têm preços na EconoMIA passam a ter quando alguém envia um cupom.</p>
+          <button type="button" id="botao-osm" class="botao">Buscar supermercados no mapa</button>
+          <div id="lista-osm" style="margin-top:12px"></div>
         </div>
       </div>
     </section>

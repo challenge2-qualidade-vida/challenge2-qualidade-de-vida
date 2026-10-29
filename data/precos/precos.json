@@ -4,17 +4,23 @@
     {
       "id": "A",
       "nome": "Mercado A",
-      "regiao": "Asa Norte (exemplo)"
+      "regiao": "Asa Norte (exemplo)",
+      "lat": -15.7617,
+      "lon": -47.8825
     },
     {
       "id": "B",
       "nome": "Mercado B",
-      "regiao": "Asa Sul (exemplo)"
+      "regiao": "Asa Sul (exemplo)",
+      "lat": -15.816,
+      "lon": -47.903
     },
     {
       "id": "C",
       "nome": "Mercado C",
-      "regiao": "Guará (exemplo)"
+      "regiao": "Guará (exemplo)",
+      "lat": -15.823,
+      "lon": -47.979
     }
   ],
   "produtos": [

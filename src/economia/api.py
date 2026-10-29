@@ -8,11 +8,12 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Literal
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+import httpx
+from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import nfce
+from . import geo, nfce
 from .agentes import Orquestrador
 from .dados import carregar, preco_por_kg
 from .explicacao import explicar
@@ -75,6 +76,7 @@ class PedidoCesta(BaseModel):
     periodo: Literal["semana", "quinzena", "mes"] = "mes"
     restricoes: list[str] = []
     custo_deslocamento: float = Field(0, ge=0, description="Custo de ir a um segundo mercado, em R$.")
+    mercados: list[str] | None = Field(None, description="Só estes mercados (ex.: os próximos do usuário). Vazio = todos.")
 
 
 def cesta_json(cesta: Cesta | None) -> dict | None:
@@ -92,7 +94,9 @@ def montar_resposta(pedido: PedidoCesta) -> dict:
     if invalidas:
         raise HTTPException(422, f"Restrição desconhecida: {', '.join(sorted(invalidas))}")
     p = Pedido(pedido.orcamento, pedido.pessoas, pedido.periodo, tuple(pedido.restricoes))
-    plano = planejar(base, p, pedido.custo_deslocamento)
+    if pedido.mercados is not None and not set(pedido.mercados) & base.mercados.keys():
+        raise HTTPException(422, "Nenhum dos mercados informados existe na base.")
+    plano = planejar(base, p, pedido.custo_deslocamento, pedido.mercados)
     return {
         "recomendacao": plano.recomendacao,
         "cesta_recomendada": cesta_json(plano.cesta_recomendada),
@@ -212,6 +216,41 @@ def nfce_confirmar(pedido: ConfirmacaoNFCe):
     n = nfce.salvar_contribuicao(pedido.emitente, pedido.cnpj, pedido.data, [i.model_dump() for i in pedido.itens])
     recarregar_base()
     return {"salvos": n}
+
+
+# ---------- Localização (tópico 13) ----------
+
+LAT = Query(..., ge=-90, le=90)
+LON = Query(..., ge=-180, le=180)
+RAIO = Query(10, gt=0, le=50, description="Raio em km")
+
+
+@app.get("/api/regioes")
+def regioes():
+    return [{"id": k, "nome": n, "lat": la, "lon": lo} for k, (n, la, lo) in geo.REGIOES_DF.items()]
+
+
+@app.get("/api/proximos")
+def proximos(lat: float = LAT, lon: float = LON, raio_km: float = RAIO):
+    """Mercados com preços perto do usuário e o ranking dos alimentos proteicos. A posição não é gravada."""
+    perto = geo.mercados_proximos(base, lat, lon, raio_km)
+    ids = [m.id for m in perto]
+    return {
+        "mercados": [asdict(m) for m in perto],
+        "custo_segundo_mercado": geo.custo_segundo_mercado(perto),
+        "custo_por_km": geo.CUSTO_POR_KM,
+        "proteinas": geo.ranking_proteinas(base, ids) if ids else None,
+        "sem_localizacao": [m.nome for m in base.mercados.values() if m.lat is None],
+    }
+
+
+@app.get("/api/osm")
+def osm(lat: float = LAT, lon: float = LON, raio_km: float = RAIO):
+    """Supermercados reais perto do usuário, pelo OpenStreetMap (gratuito)."""
+    try:
+        return {"supermercados": geo.supermercados_osm(base, lat, lon, raio_km), "fonte": "© colaboradores do OpenStreetMap"}
+    except (httpx.HTTPError, ValueError) as e:
+        raise HTTPException(502, f"Não foi possível consultar o OpenStreetMap agora: {e}") from e
 
 
 if PASTA_WEB.exists():

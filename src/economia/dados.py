@@ -32,6 +32,9 @@ class Mercado:
     id: str
     nome: str
     regiao: str
+    # Localização (graus). None = sem localização (ex.: mercado vindo de NFC-e).
+    lat: float | None = None
+    lon: float | None = None
 
 
 @dataclass(frozen=True)

@@ -122,3 +122,42 @@ def test_nfce_processa_nota_e_confirma_precos(cliente, monkeypatch):
 def test_nfce_confirmar_recusa_produto_desconhecido(cliente):
     r = cliente.post("/api/nfce/confirmar", json={"emitente": "X", "data": "2026-10-27", "itens": [{"produto_id": "caviar", "preco": 10}]})
     assert r.status_code == 422
+
+
+def test_proximos_traz_mercados_e_ranking(cliente):
+    dados = cliente.get("/api/proximos", params={"lat": -15.7617, "lon": -47.8825, "raio_km": 8}).json()
+    assert [m["id"] for m in dados["mercados"]] == ["A", "B"]
+    assert dados["custo_segundo_mercado"] > 0
+    assert dados["proteinas"]["alimentos"]
+
+
+def test_proximos_sem_mercado_no_raio(cliente):
+    dados = cliente.get("/api/proximos", params={"lat": -16.0190, "lon": -48.0660, "raio_km": 2}).json()
+    assert dados["mercados"] == [] and dados["proteinas"] is None
+
+
+def test_proximos_valida_coordenadas(cliente):
+    assert cliente.get("/api/proximos", params={"lat": 100, "lon": 0}).status_code == 422
+
+
+def test_cesta_so_com_mercados_escolhidos(cliente):
+    dados = cliente.post("/api/cesta", json={"pessoas": 2, "mercados": ["A"]}).json()
+    assert dados["cesta_recomendada"]["mercados"] == ["A"]
+    assert cliente.post("/api/cesta", json={"pessoas": 2, "mercados": ["Z"]}).status_code == 422
+
+
+def test_regioes(cliente):
+    assert any(r["id"] == "taguatinga" for r in cliente.get("/api/regioes").json())
+
+
+def test_osm_fora_do_ar_retorna_502(cliente, monkeypatch):
+    import httpx
+
+    from economia import geo
+
+    def falha(*a, **k):
+        raise httpx.ConnectError("sem rede")
+
+    monkeypatch.setattr(geo.httpx, "post", falha)
+    r = cliente.get("/api/osm", params={"lat": -15.76, "lon": -47.88})
+    assert r.status_code == 502
