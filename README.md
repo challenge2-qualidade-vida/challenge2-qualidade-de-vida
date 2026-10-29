@@ -196,14 +196,21 @@ tests/                   testes e avaliação com métricas
 
 ## Desenvolvimento
 
-O passo a passo do que foi construído, como foi feito e como rodar está em [docs/desenvolvimento/](docs/desenvolvimento/README.md). O projeto avança um tópico por vez, na branch `develop_gui`, usando só ferramentas gratuitas.
+O passo a passo do que foi construído, como foi feito e como rodar está em [docs/desenvolvimento/](docs/desenvolvimento/README.md), com um arquivo por tópico (00 a 12). Tudo foi feito na branch `develop_gui`, usando só ferramentas gratuitas.
 
 ```bash
 git checkout develop_gui
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-pytest
+pytest                                          # 127 testes
+ollama pull qwen2.5:7b                          # opcional: LLM local e gratuito
+uvicorn economia.api:app --app-dir src --reload # http://localhost:8000
 ```
+
+**Resultados principais** (com preços de exemplo):
+
+- **Experimento LLM × RAG** ([relatório](docs/semana-3/resultados-llm-x-rag.md)): correção de 59% (LLM sozinho) → 94% (LLM + RAG) → **94% com os agentes**, que também bloqueiam fontes inventadas.
+- **Métricas** ([relatório](docs/semana-7/metricas.md)): 100% das cestas dentro do orçamento, 100% cumprindo as metas nutricionais, custo de R$ 2,86 por 1.000 kcal (referência estilo DIEESE: R$ 6,75).
 
 ## Como trabalhar no repositório
 
