@@ -93,6 +93,7 @@ D empata com B na correção, mas **remove a alucinação mais grave** (fonte fa
 
 - A Mia confere números e fontes, **não o sentido** da frase. Uma afirmação errada, sem número e citando um trecho real, passa.
 - O roteamento por palavras-chave pode mandar uma pergunta para o agente errado se ela misturar assuntos ("quanto custa uma refeição saudável?"). O agente ainda responde, só que com as ferramentas de outro.
+- O cardápio leva cerca de 40 s com o `qwen2.5:7b` local. O modelo às vezes responde em Markdown (`###`, `**`), então o site remove essas marcações antes de mostrar.
 - O cardápio depende do LLM seguir a regra "só alimentos da lista". A Mia confere as restrições, mas não se apareceu um ingrediente que não foi comprado.
 
 ## Testes

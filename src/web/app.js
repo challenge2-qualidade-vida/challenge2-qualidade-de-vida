@@ -3,6 +3,8 @@
 const reais = (v) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const dataBR = (iso) => iso.split("-").reverse().join("/");
 const $ = (seletor) => document.querySelector(seletor);
+// O LLM às vezes responde em Markdown; a tela mostra texto simples.
+const semMarkdown = (t) => t.replace(/^#{1,6}\s*/gm, "").replace(/\*\*(.+?)\*\*/g, "$1").replace(/^\s*[-*]\s+/gm, "• ");
 
 const NOMES_METAS = {
   kcal: ["Energia", "kcal"],
@@ -216,7 +218,7 @@ $("#botao-cardapio").addEventListener("click", async (evento) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(cestaAtual),
     });
-    area.replaceChildren(r.resposta, el("span", { class: "meta-msg" }, textoEtapas(r.etapas)));
+    area.replaceChildren(semMarkdown(r.resposta), el("span", { class: "meta-msg" }, textoEtapas(r.etapas)));
   } catch (e) {
     area.replaceChildren("Não foi possível montar o cardápio: " + e.message);
   } finally {
@@ -376,7 +378,7 @@ async function enviarChat(texto) {
       body: JSON.stringify({ mensagem: texto, historico: historico.slice(-6) }),
     });
     pensando.remove();
-    const msg = adicionarMensagem("assistente", r.resposta);
+    const msg = adicionarMensagem("assistente", semMarkdown(r.resposta));
     const itens = r.dados?.montar_cesta?.itens;
     if (r.modo === "llm" && itens?.length) {
       msg.append(el("ul", { class: "lista-msg" }, ...itens.map((i) => el("li", {}, i))));

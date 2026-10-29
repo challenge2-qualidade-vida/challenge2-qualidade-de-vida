@@ -8,6 +8,8 @@ O agente **Recibaldo**: a pessoa tira uma **foto do cupom fiscal**, o app lê o 
 
 É a parte **multimodal** do projeto (semana 5): a entrada é uma **imagem**.
 
+![Aba Enviar cupom](img/10-tela-cupom.jpg)
+
 | Arquivo | Conteúdo |
 |---------|----------|
 | [src/economia/nfce.py](../../src/economia/nfce.py) | QR code, validação da URL e da chave, leitura da página, associação com a base, gravação |
