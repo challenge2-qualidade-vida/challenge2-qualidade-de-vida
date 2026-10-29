@@ -2,189 +2,264 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ff8a3d">
   <title>EconoMIA</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐈</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
-  <header class="topo">
-    <div class="marca">
-      <span class="logo" aria-hidden="true">🐈💰</span>
-      <div>
-        <h1>EconoMIA</h1>
-        <p class="slogan">Inteligência que faz render. Para o seu bolso não miar!</p>
-      </div>
-    </div>
-    <nav class="abas" role="tablist">
-      <button class="aba ativa" data-aba="cesta" role="tab" aria-selected="true">Montar cesta</button>
-      <button class="aba" data-aba="perto" role="tab" aria-selected="false">Perto de mim</button>
-      <button class="aba" data-aba="chat" role="tab" aria-selected="false">Conversar</button>
-      <button class="aba" data-aba="precos" role="tab" aria-selected="false">Preços</button>
-      <button class="aba" data-aba="cupom" role="tab" aria-selected="false">Enviar cupom</button>
-    </nav>
-  </header>
+  <div class="app">
+    <header class="barra-topo">
+      <div class="marca"><span aria-hidden="true">🐈</span> Econo<b>MIA</b></div>
+      <span id="status-llm" class="pilula"></span>
+    </header>
 
-  <div id="aviso-dados" class="aviso" hidden></div>
+    <div id="aviso-dados" class="aviso" hidden></div>
 
-  <main>
-    <section id="aba-cesta" class="painel">
-      <form id="form-cesta" class="cartao formulario">
-        <h2>Quanto você tem para as compras?</h2>
-        <div class="campos">
-          <label>Orçamento (R$)
-            <input type="number" name="orcamento" min="1" step="0.01" value="800" placeholder="Sem limite">
-          </label>
-          <label>Pessoas na casa
-            <input type="number" name="pessoas" min="1" max="20" value="4" required>
-          </label>
-          <label>Período
-            <select name="periodo">
-              <option value="semana">1 semana</option>
-              <option value="quinzena">15 dias</option>
-              <option value="mes" selected>1 mês</option>
-            </select>
-          </label>
-          <label>Custo para ir a um 2º mercado (R$)
-            <input type="number" name="custo_deslocamento" min="0" step="0.01" value="10">
-          </label>
+    <main>
+      <!-- ================= INÍCIO ================= -->
+      <section id="aba-inicio" class="painel">
+        <div class="mascote-cartao">
+          <div class="mascote" id="mascote" aria-hidden="true">😺</div>
+          <div class="balao" id="balao">Oi! Eu sou a Mia. Vamos fazer o seu dinheiro do mercado render mais, sem comer pior?</div>
         </div>
-        <fieldset class="restricoes">
-          <legend>Restrições alimentares</legend>
-          <div id="lista-restricoes"></div>
-        </fieldset>
-        <p id="filtro-mercados" class="nota" hidden></p>
-        <button type="submit" class="botao">Montar minha cesta</button>
-      </form>
 
-      <div id="carregando" class="carregando" hidden>Calculando a melhor cesta…</div>
-      <div id="erro" class="erro" hidden></div>
+        <div class="cartao" id="inicio-resumo" hidden>
+          <div class="cartao-cabecalho">
+            <h2>Sua última cesta</h2>
+            <button type="button" class="link" data-ir="cesta">ver lista</button>
+          </div>
+          <div class="anel-linha">
+            <div class="anel anel-grande" id="anel-orcamento"><div class="anel-centro"><b id="anel-orcamento-valor"></b><small>do orçamento</small></div></div>
+            <div class="anel-legenda" id="inicio-legenda"></div>
+          </div>
+          <div class="mini-aneis" id="inicio-metas"></div>
+        </div>
 
-      <div id="resultado" hidden>
-        <div class="resumo" id="resumo"></div>
+        <h2 class="secao">O que você quer fazer?</h2>
+        <div class="acoes">
+          <button type="button" class="acao acao-laranja" data-ir="cesta"><span class="acao-emoji">🛒</span><b>Montar cesta</b><small>Com o seu orçamento</small></button>
+          <button type="button" class="acao acao-verde" data-ir="perto"><span class="acao-emoji">📍</span><b>Perto de mim</b><small>Proteína mais barata</small></button>
+          <button type="button" class="acao acao-roxo" data-pergunta="Essa promoção vale a pena? "><span class="acao-emoji">🏷️</span><b>Promoção vale?</b><small>Pergunte para a Mia</small></button>
+          <button type="button" class="acao acao-azul" data-ir="cupom"><span class="acao-emoji">🧾</span><b>Enviar cupom</b><small>Ajude com preços</small></button>
+        </div>
 
+        <div class="cartao dica">
+          <span class="dica-emoji" aria-hidden="true">💡</span>
+          <div>
+            <b>Dica do dia</b>
+            <p id="dica-texto"></p>
+            <small id="dica-fonte" class="suave"></small>
+          </div>
+        </div>
+
+        <button type="button" class="botao-secundario largo" data-ir="precos">📊 Ver tabela de preços</button>
+      </section>
+
+      <!-- ================= CESTA ================= -->
+      <section id="aba-cesta" class="painel" hidden>
+        <h1 class="titulo-tela">Montar cesta</h1>
+        <form id="form-cesta" class="cartao formulario">
+          <label class="campo">
+            <span class="rotulo">💰 Quanto você tem para as compras?</span>
+            <span class="moeda"><span>R$</span><input type="number" name="orcamento" min="1" step="0.01" value="800" placeholder="sem limite" inputmode="decimal"></span>
+          </label>
+
+          <div class="campo">
+            <span class="rotulo">👥 Pessoas na casa</span>
+            <div class="contador">
+              <button type="button" class="contador-botao" data-passo="-1" aria-label="Menos uma pessoa">−</button>
+              <input type="number" name="pessoas" min="1" max="20" value="4" required aria-label="Pessoas na casa">
+              <button type="button" class="contador-botao" data-passo="1" aria-label="Mais uma pessoa">+</button>
+            </div>
+          </div>
+
+          <div class="campo">
+            <span class="rotulo">📅 Para quanto tempo?</span>
+            <div class="segmentado" role="radiogroup">
+              <label><input type="radio" name="periodo" value="semana"><span>1 semana</span></label>
+              <label><input type="radio" name="periodo" value="quinzena"><span>15 dias</span></label>
+              <label><input type="radio" name="periodo" value="mes" checked><span>1 mês</span></label>
+            </div>
+          </div>
+
+          <fieldset class="campo restricoes">
+            <legend class="rotulo">🥗 Alguma restrição?</legend>
+            <div id="lista-restricoes" class="chips"></div>
+          </fieldset>
+
+          <details class="mais-opcoes">
+            <summary>Mais opções</summary>
+            <label class="campo">
+              <span class="rotulo">🚗 Custo para ir a um 2º mercado</span>
+              <span class="moeda"><span>R$</span><input type="number" name="custo_deslocamento" min="0" step="0.01" value="10" inputmode="decimal"></span>
+            </label>
+          </details>
+
+          <p id="filtro-mercados" class="nota" hidden></p>
+          <button type="submit" class="botao largo">Montar minha cesta</button>
+        </form>
+
+        <div id="carregando" class="carregando" hidden><span class="pulando">🐈</span> Calculando a melhor cesta…</div>
+        <div id="erro" class="erro" hidden></div>
+
+        <div id="resultado" hidden>
+          <div class="resumo" id="resumo"></div>
+
+          <div class="cartao">
+            <h2>🎯 Metas nutricionais</h2>
+            <div id="metas" class="mini-aneis"></div>
+          </div>
+
+          <div class="cartao">
+            <h2>🐾 Por que essa cesta?</h2>
+            <ul id="explicacao" class="explicacao"></ul>
+          </div>
+
+          <div class="cartao">
+            <h2>📝 Lista de compras</h2>
+            <div id="itens"></div>
+          </div>
+
+          <div class="cartao" id="cartao-cardapio">
+            <h2>🍽️ Cardápio com a sua cesta</h2>
+            <p class="nota">O Miau-ricio sugere refeições usando só os alimentos da lista, e a Mia confere as suas restrições.</p>
+            <button type="button" id="botao-cardapio" class="botao largo">Sugerir cardápio</button>
+            <div id="cardapio" class="cardapio"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PERTO DE MIM ================= -->
+      <section id="aba-perto" class="painel" hidden>
+        <h1 class="titulo-tela">Perto de mim</h1>
         <div class="cartao">
-          <h2>Por que essa cesta?</h2>
-          <ul id="explicacao" class="explicacao"></ul>
+          <button type="button" id="botao-localizacao" class="botao largo">📍 Usar minha localização</button>
+          <p class="nota centro">Sua localização é usada só para calcular distâncias e não é guardada.</p>
+          <div class="campos-lado">
+            <label class="campo">
+              <span class="rotulo">…ou escolha a região</span>
+              <select id="regiao"><option value="">—</option></select>
+            </label>
+            <label class="campo campo-curto">
+              <span class="rotulo">Raio (km)</span>
+              <input type="number" id="raio" min="1" max="50" value="10">
+            </label>
+          </div>
+          <div id="status-perto" class="nota"></div>
         </div>
 
-        <div class="cartao">
-          <h2>Metas nutricionais</h2>
-          <div id="metas" class="metas"></div>
-        </div>
-
-        <div class="cartao">
-          <h2>Lista de compras</h2>
-          <div id="itens"></div>
-        </div>
-
-        <div class="cartao" id="cartao-cardapio">
-          <h2>Cardápio com a sua cesta</h2>
-          <p class="nota">O Miau-ricio sugere refeições usando só os alimentos da lista, e a Mia confere as suas restrições.</p>
-          <button type="button" id="botao-cardapio" class="botao">Sugerir cardápio</button>
-          <div id="cardapio" class="cardapio"></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="aba-perto" class="painel" hidden>
-      <div class="cartao">
-        <h2>Mercados perto de você</h2>
-        <p class="nota">Sua localização é usada só para calcular distâncias e não é guardada. Se preferir, escolha a região.</p>
-        <div class="campos">
-          <div><button type="button" id="botao-localizacao" class="botao">📍 Usar minha localização</button></div>
-          <label>…ou escolha a região
-            <select id="regiao"><option value="">—</option></select>
-          </label>
-          <label>Raio (km)
-            <input type="number" id="raio" min="1" max="50" value="10">
-          </label>
-        </div>
-        <div id="status-perto" class="nota" style="margin-top:12px"></div>
-      </div>
-
-      <div id="resultado-perto" hidden>
-        <div class="cartao">
-          <h2>Mercados com preços na EconoMIA</h2>
-          <div class="tabela-rolagem"><table class="tabela" id="tabela-proximos"></table></div>
-          <button type="button" id="botao-cesta-perto" class="botao" style="margin-top:12px">Montar cesta só com esses mercados</button>
-        </div>
-
-        <div class="cartao">
-          <h2>Onde a proteína está mais barata</h2>
-          <p class="nota">Menor preço por kg de cada alimento em cada mercado, e quanto custam 100 g de proteína. Ordenado da proteína mais barata para a mais cara.</p>
+        <div id="resultado-perto" hidden>
+          <h2 class="secao">🥩 Onde a proteína está mais barata</h2>
           <div id="resumo-proteinas" class="resumo"></div>
-          <div class="tabela-rolagem"><table class="tabela" id="tabela-proteinas"></table></div>
-        </div>
+          <div class="cartao">
+            <p class="nota">Menor preço por kg em cada mercado e quanto custam 100 g de proteína. Da proteína mais barata para a mais cara.</p>
+            <div class="tabela-rolagem"><table class="tabela" id="tabela-proteinas"></table></div>
+          </div>
 
+          <h2 class="secao">🏪 Mercados com preços</h2>
+          <div class="cartao">
+            <div class="tabela-rolagem"><table class="tabela" id="tabela-proximos"></table></div>
+            <button type="button" id="botao-cesta-perto" class="botao largo">Montar cesta só com esses mercados</button>
+          </div>
+
+          <h2 class="secao">🗺️ Outros supermercados da região</h2>
+          <div class="cartao">
+            <p class="nota">Lista do OpenStreetMap. Os que ainda não têm preços passam a ter quando alguém envia um cupom.</p>
+            <button type="button" id="botao-osm" class="botao-secundario largo">Buscar supermercados no mapa</button>
+            <div id="lista-osm"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= CONVERSAR ================= -->
+      <section id="aba-chat" class="painel" hidden>
+        <h1 class="titulo-tela">Conversar com a Mia</h1>
+        <div class="chat">
+          <div id="mensagens" class="mensagens" aria-live="polite">
+            <div class="msg assistente">Oi! 😺 Me conte quanto você tem para as compras, quantas pessoas moram na casa e se há alguma restrição. Também digo se uma promoção vale a pena e tiro dúvidas sobre alimentação.</div>
+          </div>
+          <div class="sugestoes" id="sugestoes">
+            <button type="button" class="sugestao">Tenho R$ 600 para o mês, somos 4 pessoas</button>
+            <button type="button" class="sugestao">Arroz 5 kg por R$ 24,90 é uma boa promoção?</button>
+            <button type="button" class="sugestao">O que fazer com banana muito madura?</button>
+            <button type="button" class="sugestao">O que são alimentos ultraprocessados?</button>
+          </div>
+          <form id="form-chat" class="form-chat">
+            <input type="text" name="mensagem" maxlength="1000" placeholder="Escreva sua pergunta…" autocomplete="off" required>
+            <button type="submit" class="botao botao-redondo" aria-label="Enviar">➤</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ================= PREÇOS ================= -->
+      <section id="aba-precos" class="painel" hidden>
+        <h1 class="titulo-tela">Tabela de preços</h1>
         <div class="cartao">
-          <h2>Outros supermercados da região</h2>
-          <p class="nota">Lista do OpenStreetMap. Os que ainda não têm preços na EconoMIA passam a ter quando alguém envia um cupom.</p>
-          <button type="button" id="botao-osm" class="botao">Buscar supermercados no mapa</button>
-          <div id="lista-osm" style="margin-top:12px"></div>
+          <p class="nota">O menor preço por kg de cada produto aparece em verde. Cada preço mostra a data e a fonte.</p>
+          <div class="tabela-rolagem">
+            <table id="tabela-precos" class="tabela"></table>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="aba-chat" class="painel" hidden>
-      <div class="cartao chat">
-        <div class="chat-topo">
-          <h2>Converse com a EconoMIA</h2>
-          <span id="status-llm" class="status-llm"></span>
+      <!-- ================= CUPOM ================= -->
+      <section id="aba-cupom" class="painel" hidden>
+        <h1 class="titulo-tela">Enviar cupom</h1>
+        <div class="cartao">
+          <p class="nota">O Recibaldo lê o <b>QR code</b> do cupom e busca a nota oficial na SEFAZ-DF. Você confere antes de salvar, e os preços passam a valer para todos. Nenhum dado pessoal (CPF, nome) é lido ou guardado.</p>
+          <form id="form-cupom">
+            <label class="foto-cupom">
+              <input type="file" name="arquivo" accept="image/*" capture="environment">
+              <span class="foto-emoji" aria-hidden="true">📷</span>
+              <b>Tirar foto do cupom</b>
+              <small id="nome-arquivo">com o QR code visível</small>
+            </label>
+            <label class="campo">
+              <span class="rotulo">…ou cole o link do QR code</span>
+              <input type="url" name="url" placeholder="https://www.fazenda.df.gov.br/nfce/qrcode?p=…">
+            </label>
+            <button type="submit" class="botao largo">Ler cupom</button>
+          </form>
+          <div id="erro-cupom" class="erro" hidden></div>
         </div>
-        <div id="mensagens" class="mensagens" aria-live="polite">
-          <div class="msg assistente">Oi! Me conte quanto você tem para as compras, quantas pessoas moram na casa e se há alguma restrição. Também posso dizer se uma promoção vale a pena ou tirar dúvidas sobre alimentação.</div>
-        </div>
-        <div class="sugestoes" id="sugestoes">
-          <button type="button" class="sugestao">Tenho R$ 600 para o mês, somos 4 pessoas</button>
-          <button type="button" class="sugestao">Arroz 5 kg por R$ 24,90 é uma boa promoção?</button>
-          <button type="button" class="sugestao">O que fazer com banana muito madura?</button>
-          <button type="button" class="sugestao">O que são alimentos ultraprocessados?</button>
-        </div>
-        <form id="form-chat" class="form-chat">
-          <input type="text" name="mensagem" maxlength="1000" placeholder="Escreva sua pergunta…" autocomplete="off" required>
-          <button type="submit" class="botao">Enviar</button>
-        </form>
-      </div>
-    </section>
-
-    <section id="aba-precos" class="painel" hidden>
-      <div class="cartao">
-        <h2>Comparação de preços</h2>
-        <p class="nota">O menor preço por kg de cada produto aparece destacado. Cada preço mostra a data e a fonte.</p>
-        <div class="tabela-rolagem">
-          <table id="tabela-precos" class="tabela"></table>
-        </div>
-      </div>
-    </section>
-    <section id="aba-cupom" class="painel" hidden>
-      <div class="cartao">
-        <h2>Enviar cupom fiscal (NFC-e)</h2>
-        <p class="nota">O Recibaldo lê o <strong>QR code</strong> do cupom e busca a nota oficial na SEFAZ-DF. Você confere os itens antes de salvar, e os preços passam a valer para todos. Nenhum dado pessoal (CPF, nome) é lido ou guardado.</p>
-        <form id="form-cupom" class="campos">
-          <label>Foto do cupom (com o QR code visível)
-            <input type="file" name="arquivo" accept="image/*" capture="environment">
-          </label>
-          <label>…ou cole o link do QR code
-            <input type="url" name="url" placeholder="https://www.fazenda.df.gov.br/nfce/qrcode?p=…">
-          </label>
-          <div><button type="submit" class="botao">Ler cupom</button></div>
-        </form>
-        <div id="erro-cupom" class="erro" hidden></div>
-        <div id="nota" hidden>
+        <div id="nota" class="cartao" hidden>
           <h3 id="nota-titulo" class="mercado-titulo"></h3>
           <p class="nota">Marque os itens que estão certos. Itens sem correspondência ficam desmarcados: escolha o produto ou deixe de fora.</p>
           <div class="tabela-rolagem"><table class="tabela" id="tabela-nota"></table></div>
-          <button type="button" id="salvar-nota" class="botao">Salvar preços conferidos</button>
-          <span id="status-nota" class="nota"></span>
+          <button type="button" id="salvar-nota" class="botao largo">Salvar preços conferidos</button>
+          <p id="status-nota" class="nota"></p>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
 
-  <footer class="rodape">
-    EconoMIA — Challenge 2, Residência em IA Brasília. Orientação para alimentação equilibrada da população geral; não substitui nutricionista.
-  </footer>
+      <footer class="rodape">
+        EconoMIA · Challenge 2, Residência em IA Brasília.<br>Orientação para alimentação equilibrada da população geral; não substitui nutricionista.
+      </footer>
+    </main>
+
+    <!-- ================= NAVEGAÇÃO ================= -->
+    <nav class="nav-baixo" role="tablist" aria-label="Navegação principal">
+      <button class="aba ativa" data-aba="inicio" role="tab" aria-selected="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span>Início</span>
+      </button>
+      <button class="aba" data-aba="cesta" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.2a1 1 0 0 0 1 .8h8.9a1 1 0 0 0 1-.8L20 7H6.2"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/></svg><span>Cesta</span>
+      </button>
+      <button class="aba aba-central" data-aba="cupom" role="tab" aria-selected="false" aria-label="Enviar cupom">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+      </button>
+      <button class="aba" data-aba="perto" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Perto</span>
+      </button>
+      <button class="aba" data-aba="chat" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span>Mia</span>
+      </button>
+    </nav>
+  </div>
 
   <script src="app.js"></script>
 </body>

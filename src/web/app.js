@@ -38,16 +38,87 @@ async function api(caminho, opcoes) {
   return corpo;
 }
 
-// ---------- Abas ----------
-document.querySelectorAll(".aba").forEach((botao) => {
-  botao.addEventListener("click", () => {
-    document.querySelectorAll(".aba").forEach((b) => {
-      b.classList.toggle("ativa", b === botao);
-      b.setAttribute("aria-selected", b === botao);
-    });
-    document.querySelectorAll(".painel").forEach((p) => (p.hidden = p.id !== `aba-${botao.dataset.aba}`));
+// ---------- Navegação ----------
+function irParaAba(nome) {
+  document.querySelectorAll(".aba").forEach((b) => {
+    const ativa = b.dataset.aba === nome;
+    b.classList.toggle("ativa", ativa);
+    b.setAttribute("aria-selected", ativa);
   });
-});
+  document.querySelectorAll(".painel").forEach((p) => (p.hidden = p.id !== `aba-${nome}`));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.querySelectorAll(".aba").forEach((b) => b.addEventListener("click", () => irParaAba(b.dataset.aba)));
+document.querySelectorAll("[data-ir]").forEach((b) => b.addEventListener("click", () => irParaAba(b.dataset.ir)));
+document.querySelectorAll("[data-pergunta]").forEach((b) => b.addEventListener("click", () => {
+  irParaAba("chat");
+  const campo = $("#form-chat").mensagem;
+  campo.value = b.dataset.pergunta;
+  campo.focus();
+}));
+
+// Contador de pessoas (− / +)
+document.querySelectorAll(".contador-botao").forEach((b) => b.addEventListener("click", () => {
+  const campo = $("#form-cesta").pessoas;
+  campo.value = Math.min(20, Math.max(1, Number(campo.value || 1) + Number(b.dataset.passo)));
+}));
+
+// ---------- Mascote e dica do dia ----------
+const DICAS = [
+  ["Compare o preço por quilo, não o da embalagem: o pacote maior nem sempre compensa.", "Critérios da EconoMIA"],
+  ["Arroz com feijão é uma combinação completa: as proteínas dos dois se complementam.", "Guia Alimentar para a População Brasileira"],
+  ["Frutas e legumes da estação costumam ser mais baratos e mais saborosos.", "Guia Alimentar para a População Brasileira"],
+  ["O ovo é uma das proteínas mais baratas e pode substituir a carne em várias refeições.", "Guia Alimentar para a População Brasileira"],
+  ["Banana muito madura vira vitamina, mingau ou bolo. Não precisa ir para o lixo!", "Aproveitamento de alimentos (EconoMIA)"],
+  ["Planeje as refeições antes de ir ao mercado e nunca faça compras com fome.", "Critérios da EconoMIA"],
+  ["Prefira alimentos in natura ou minimamente processados aos ultraprocessados.", "Guia Alimentar: a regra de ouro"],
+];
+
+function mostrarDica() {
+  const [texto, fonte] = DICAS[new Date().getDate() % DICAS.length];
+  $("#dica-texto").textContent = texto;
+  $("#dica-fonte").textContent = "Fonte: " + fonte;
+}
+
+function falarMascote(rosto, frase) {
+  $("#mascote").textContent = rosto;
+  $("#balao").textContent = frase;
+}
+
+function anel(pct, cor) {
+  const a = el("div", { class: "anel", style: `--pct:${Math.min(Math.max(pct, 0), 100)};--cor:${cor}` });
+  return a;
+}
+
+function atualizarInicio(plano, pedido) {
+  if (!plano.recomendacao) {
+    falarMascote("😿", `Com ${reais(pedido.orcamento)} não dá para cumprir as metas. Precisaria de ${reais(plano.minimo_necessario ?? 0)}. Vamos tentar um período menor?`);
+    $("#inicio-resumo").hidden = true;
+    return;
+  }
+  const cesta = plano.cesta_recomendada;
+  const gasto = cesta.custo_total + (plano.recomendacao === "dois" ? plano.custo_deslocamento : 0);
+  if (pedido.orcamento) {
+    const sobra = pedido.orcamento - gasto;
+    falarMascote("😻", `Sua cesta coube no orçamento! Sobraram ${reais(sobra)} e todas as metas nutricionais foram cumpridas.`);
+    const pct = Math.round((gasto / pedido.orcamento) * 100);
+    const area = $("#anel-orcamento");
+    area.style.setProperty("--pct", Math.min(pct, 100));
+    area.style.setProperty("--cor", "var(--marca)");
+    $("#anel-orcamento-valor").textContent = `${pct}%`;
+    $("#inicio-legenda").replaceChildren(
+      el("b", {}, reais(gasto)), `de ${reais(pedido.orcamento)} · ${nomesMercados(cesta.mercados)}`,
+    );
+  } else {
+    falarMascote("😺", `Sua cesta custa ${reais(gasto)} e cumpre todas as metas nutricionais.`);
+    $("#anel-orcamento").style.setProperty("--pct", 100);
+    $("#anel-orcamento-valor").textContent = reais(gasto);
+    $("#inicio-legenda").replaceChildren(el("b", {}, "Sem limite"), nomesMercados(cesta.mercados));
+  }
+  $("#inicio-metas").replaceChildren(...aneisMetas(cesta));
+  $("#inicio-resumo").hidden = false;
+}
 
 // ---------- Início ----------
 async function iniciar() {
@@ -56,7 +127,8 @@ async function iniciar() {
 
   if (opcoes.aviso_dados) {
     const aviso = $("#aviso-dados");
-    aviso.textContent = "⚠️ " + opcoes.aviso_dados;
+    aviso.textContent = "⚠️ Preços de exemplo: os mercados e valores ainda são fictícios.";
+    aviso.title = opcoes.aviso_dados;
     aviso.hidden = false;
   }
 
@@ -65,6 +137,7 @@ async function iniciar() {
     lista.append(el("label", { class: "chip" }, el("input", { type: "checkbox", name: "restricoes", value: r.id }), r.nome));
   }
 
+  mostrarDica();
   carregarPrecos();
   carregarStatusLLM();
   carregarRegioes();
@@ -84,7 +157,7 @@ $("#form-cesta").addEventListener("submit", async (evento) => {
   };
   if (mercadosPerto) pedido.mercados = mercadosPerto.ids;
 
-  const botao = evento.target.querySelector("button");
+  const botao = evento.target.querySelector("button[type=submit]");
   botao.disabled = true;
   $("#carregando").hidden = false;
   $("#erro").hidden = true;
@@ -96,6 +169,7 @@ $("#form-cesta").addEventListener("submit", async (evento) => {
       body: JSON.stringify(pedido),
     });
     mostrarPlano(plano, pedido);
+    atualizarInicio(plano, pedido);
   } catch (e) {
     $("#erro").textContent = "Não foi possível montar a cesta: " + e.message;
     $("#erro").hidden = false;
@@ -145,7 +219,7 @@ function mostrarPlano(plano, pedido) {
 
   const cesta = plano.cesta_recomendada;
   resumo.append(
-    el("div", { class: "cartao opcao" },
+    el("div", { class: "cartao opcao largura-toda" },
       el("div", { class: "titulo" }, "Custo por 1.000 kcal"),
       el("div", { class: "valor" }, reais(cesta.custo_por_1000_kcal)),
       el("div", { class: "detalhe" }, `${reais(cesta.custo_por_g_proteina)} por grama de proteína`),
@@ -160,47 +234,41 @@ function mostrarPlano(plano, pedido) {
   $("#resultado").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-function mostrarMetas(cesta) {
-  const linhas = Object.entries(NOMES_METAS).map(([chave, [nome, unidade]]) => {
-    const obtido = cesta.obtido[chave];
-    const meta = cesta.metas[chave];
-    const pct = Math.round((obtido / meta) * 100);
-    const barra = el("div", { class: "barra" }, el("span", { style: `width:${Math.min(pct, 100)}%` }));
-    return el("div", { class: "meta-linha" },
-      el("span", {}, nome),
-      barra,
-      el("span", { class: "num" }, `${pct}% da meta`),
-    );
+const CORES_METAS = { kcal: "var(--marca)", proteina_g: "var(--roxo)", fibra_g: "var(--azul)", flv_g: "var(--verde)" };
+
+function aneisMetas(cesta) {
+  return Object.entries(NOMES_METAS).map(([chave, [nome]]) => {
+    const pct = Math.round((cesta.obtido[chave] / cesta.metas[chave]) * 100);
+    const a = anel(pct, CORES_METAS[chave]);
+    a.append(el("div", { class: "anel-centro" }, el("b", {}, `${pct}%`)));
+    return el("div", { class: "mini-anel" }, a, el("span", {}, nome));
   });
-  $("#metas").replaceChildren(...linhas);
 }
+
+function mostrarMetas(cesta) {
+  $("#metas").replaceChildren(...aneisMetas(cesta));
+}
+
+const EMOJI_GRUPOS = {
+  cereais: "🍚", tuberculos: "🥔", leguminosas: "🫘", proteina_animal: "🍗",
+  laticinios: "🥛", flv: "🥕", oleos: "🫒", acucar: "🍬",
+};
 
 function mostrarItens(cesta) {
   const area = $("#itens");
   area.replaceChildren();
   for (const id of cesta.mercados) {
     const itens = cesta.itens.filter((i) => i.mercado_id === id);
-    area.append(el("h3", { class: "mercado-titulo" }, `${mercados[id].nome} — ${reais(cesta.custo_por_mercado[id])}`));
-    const tabela = el("table", { class: "tabela" });
-    tabela.append(
-      el("thead", {}, el("tr", {},
-        el("th", {}, "Produto"), el("th", {}, "Grupo"), el("th", { class: "num" }, "Qtd."),
-        el("th", { class: "num" }, "Preço"), el("th", { class: "num" }, "Preço/kg"), el("th", { class: "num" }, "Subtotal"),
-      )),
-    );
-    const corpo = el("tbody");
-    for (const i of itens) {
-      corpo.append(el("tr", {},
-        el("td", {}, i.produto, el("span", { class: "fonte" }, `Preço de ${dataBR(i.data_preco)} · fonte: ${i.fonte_preco}`)),
-        el("td", {}, NOMES_GRUPOS[i.grupo] ?? i.grupo),
-        el("td", { class: "num" }, String(i.quantidade)),
-        el("td", { class: "num" }, reais(i.preco_unitario)),
-        el("td", { class: "num" }, reais(i.preco_kg)),
-        el("td", { class: "num" }, reais(i.subtotal)),
-      ));
-    }
-    tabela.append(corpo);
-    area.append(el("div", { class: "tabela-rolagem" }, tabela));
+    area.append(el("h3", { class: "mercado-titulo" }, el("span", {}, `🏪 ${mercados[id].nome}`), el("span", {}, reais(cesta.custo_por_mercado[id]))));
+    area.append(el("ul", { class: "itens-lista" }, ...itens.map((i) => el("li", { class: "item" },
+      el("span", { class: "item-emoji", "aria-hidden": "true" }, EMOJI_GRUPOS[i.grupo] ?? "🛒"),
+      el("span", {},
+        el("span", { class: "item-nome" }, i.produto),
+        el("span", { class: "item-detalhe" }, `${i.quantidade} × ${reais(i.preco_unitario)} · ${reais(i.preco_kg)}/kg`),
+        el("span", { class: "item-detalhe" }, `Preço de ${dataBR(i.data_preco)} · fonte: ${i.fonte_preco}`),
+      ),
+      el("span", { class: "item-valor" }, reais(i.subtotal), el("small", {}, NOMES_GRUPOS[i.grupo] ?? i.grupo)),
+    ))));
   }
 }
 
@@ -233,10 +301,6 @@ let posicao = null;          // {lat, lon} só na memória da página
 let mercadosPerto = null;    // ids usados ao montar a cesta
 
 const NOMES_GRUPOS_PROTEINA = { proteina_animal: "Carnes e ovos", laticinios: "Leite e queijos", leguminosas: "Feijões" };
-
-function irParaAba(nome) {
-  document.querySelector(`.aba[data-aba="${nome}"]`).click();
-}
 
 async function carregarRegioes() {
   const regioes = await api("/api/regioes");
@@ -383,6 +447,10 @@ $("#botao-osm").addEventListener("click", async (evento) => {
 let notaAtual = null;
 let produtosBase = [];
 
+$("#form-cupom").arquivo.addEventListener("change", (e) => {
+  $("#nome-arquivo").textContent = e.target.files[0]?.name ?? "com o QR code visível";
+});
+
 $("#form-cupom").addEventListener("submit", async (evento) => {
   evento.preventDefault();
   const form = evento.target;
@@ -509,7 +577,8 @@ const NOMES_FERRAMENTAS = {
 
 async function carregarStatusLLM() {
   const s = await api("/api/llm");
-  $("#status-llm").textContent = s.ativo ? `LLM: ${s.modelo} (${s.provedor}, gratuito)` : "Modo sem LLM";
+  $("#status-llm").textContent = s.ativo ? `🤖 ${s.modelo} · grátis` : "🤖 modo sem LLM";
+  $("#status-llm").title = s.ativo ? `LLM ${s.modelo} via ${s.provedor} (gratuito)` : "Sem LLM: respostas por regras";
 }
 
 function adicionarMensagem(classe, texto) {

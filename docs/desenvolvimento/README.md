@@ -24,6 +24,7 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 11 | Métricas e testes finais | Economia, aderência ao orçamento, adequação nutricional, precisão de preço | Script Python + pytest | ✅ Feito (falta trabalho de campo: gôndola e usuários) | [11](11-metricas.md) |
 | 12 | Publicação | Site no ar para a banca testar | Docker + Render ou Hugging Face Spaces (planos gratuitos) | ✅ Preparado (publicar exige a conta do grupo) | [12](12-publicacao.md) |
 | 13 | Localização e proteínas | Mercados perto do usuário, custo de deslocamento, ranking das proteínas (carne, frango, ovos...), supermercados do OpenStreetMap | Geolocalização do navegador + OpenStreetMap (Overpass) | ✅ Feito | [13](13-localizacao-proteinas.md) |
+| 14 | Interface de app (UX) | Visual de celular inspirado em apps de nutrição com mascote: navegação embaixo, tela Início com mascote e anéis, cartões, chips | HTML, CSS e JS puros + fonte Nunito (Google Fonts) | ✅ Feito | [14](14-interface-app.md) |
 
 A ordem segue o roadmap das semanas: tópicos 1–5 formam o núcleo do app (semanas 1–2), 6–8 cobrem RAG e o experimento (semanas 2–3), 9 os agentes (semana 4), 10 a multimodalidade (semana 5) e 11–12 a integração, os testes e a entrega (semanas 6–7).
 
@@ -41,10 +42,15 @@ uvicorn economia.api:app --app-dir src --reload
 
 Depois acesse <http://localhost:8000> (site) ou <http://localhost:8000/docs> (documentação da API). Sem Ollama, o app funciona no modo sem LLM.
 
-## O site, em 6 abas de funcionalidade
+## O site
+
+Navegação embaixo: **Início · Cesta · 📷 Cupom · Perto · Mia** (a tabela de preços abre pelo Início). Visual descrito no [tópico 14](14-interface-app.md).
+
+### Funcionalidades
 
 | Onde | O que faz | Tópicos |
 |------|-----------|---------|
+| **Início** | Mascote que reage ao resultado, anel do orçamento usado e das metas, ações rápidas e dica do dia | 14 |
 | **Montar cesta** | Orçamento + pessoas + período + restrições → cesta mais barata que cumpre as metas, 1 × 2 mercados, explicação, metas, lista com preço/kg e fonte → **Sugerir cardápio** | 2, 3, 5, 9 |
 | **Perto de mim** | Localização (ou região) → mercados com preços no raio, distância, custo de ida e volta, **onde a proteína está mais barata**, supermercados do OpenStreetMap → montar a cesta só com os mercados próximos | 13 |
 | **Conversar** | Chat em linguagem natural; o Orquestrador escolhe o agente, e a Mia confere a resposta | 6, 7, 9 |
