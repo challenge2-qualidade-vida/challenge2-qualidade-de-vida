@@ -41,6 +41,12 @@ def test_cesta_com_orcamento_insuficiente(cliente):
     assert dados["minimo_necessario"] > 50
 
 
+def test_conhecimento_devolve_trechos_com_fonte(cliente):
+    dados = cliente.get("/api/conhecimento", params={"pergunta": "essa promoção vale a pena?"}).json()
+    assert dados["trechos"]
+    assert all(t["fonte"] for t in dados["trechos"])
+
+
 @pytest.mark.parametrize(
     "corpo",
     [

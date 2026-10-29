@@ -16,8 +16,8 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 3 | Comparação entre mercados | "1 mercado" vs. "2 mercados", com custo de deslocamento | SciPy | ✅ Feito | [03](03-comparacao-mercados.md) |
 | 4 | API (backend) | Endpoints que o site chama | FastAPI + Uvicorn | ✅ Feito | [04](04-api.md) |
 | 5 | Site (frontend) | Tela: formulário de orçamento → cesta → comparação | HTML, CSS e JavaScript puros | ✅ Feito | [05](05-site.md) |
-| 6 | Base de conhecimento + RAG | Busca no Guia Alimentar e na TACO para fundamentar respostas | sentence-transformers + ChromaDB (locais) | ⏳ Próximo | — |
-| 7 | LLM com ferramentas | Chat em linguagem natural que chama o otimizador | Gemini API (plano gratuito), Groq (plano gratuito) ou Ollama (local) — escolher no tópico | ⬜ | — |
+| 6 | Base de conhecimento + RAG | Busca no Guia Alimentar e na TACO para fundamentar respostas | scikit-learn (TF-IDF, local) | ✅ Feito | [06](06-rag.md) |
+| 7 | LLM com ferramentas | Chat em linguagem natural que chama o otimizador | Gemini API (plano gratuito), Groq (plano gratuito) ou Ollama (local) — escolher no tópico | ⏳ Próximo | — |
 | 8 | Experimento LLM × LLM + RAG | Comparação com gabarito: correção, fundamentação, latência, custo | pytest + notebook Jupyter | ⬜ | — |
 | 9 | Agentes | Orquestrador, Cifrão (preços), Miau-ricio (nutrição), Mia (verificação) | Mesmo LLM do tópico 7 | ⬜ | — |
 | 10 | Leitura da NFC-e (multimodal) | Recibaldo: lê o QR code do cupom e cadastra os preços | OpenCV / pyzbar + portal público da NFC-e | ⬜ | — |
@@ -49,6 +49,7 @@ Depois acesse <http://localhost:8000> (site) ou <http://localhost:8000/docs> (do
 ```
 data/
   alimentos/alimentos.json   nutrição por 100 g (TACO)        → tópico 1
+  base-conhecimento/*.md     Guia Alimentar, critérios, receitas → tópico 6
   precos/precos.json         mercados, produtos e preços      → tópico 1
 src/economia/
   dados.py                   carrega e valida as bases        → tópico 1
@@ -57,6 +58,7 @@ src/economia/
   planejador.py              1 mercado × 2 mercados           → tópico 3
   explicacao.py              explica o plano em frases        → tópico 3
   api.py                     API FastAPI + serve o site       → tópico 4
+  rag.py                     busca na base de conhecimento    → tópico 6
 src/web/
   index.html, estilo.css, app.js   o site                     → tópico 5
 tests/
@@ -64,6 +66,7 @@ tests/
   test_otimizador.py         testes do otimizador             → tópico 2
   test_planejador.py         testes da comparação             → tópico 3
   test_api.py                testes da API                    → tópico 4
+  test_rag.py                testes da busca                  → tópico 6
 requirements.txt             dependências (todas gratuitas)
 pytest.ini                   configuração dos testes
 ```

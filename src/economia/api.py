@@ -17,11 +17,13 @@ from .explicacao import explicar
 from .metas import DIAS_POR_PERIODO, NOMES_RESTRICOES, RESTRICOES
 from .otimizador import Cesta, Pedido
 from .planejador import planejar
+from .rag import BaseConhecimento
 
 PASTA_WEB = Path(__file__).resolve().parents[1] / "web"
 
 app = FastAPI(title="EconoMIA", description="Cesta de compras econômica e equilibrada.", version="0.1.0")
 base = carregar()
+conhecimento = BaseConhecimento(base)
 
 
 class PedidoCesta(BaseModel):
@@ -100,6 +102,18 @@ def precos():
 @app.post("/api/cesta")
 def cesta(pedido: PedidoCesta):
     return montar_resposta(pedido)
+
+
+@app.get("/api/conhecimento")
+def buscar_conhecimento(pergunta: str, k: int = 3):
+    """Busca na base de conhecimento (Guia Alimentar, TACO, critérios do grupo)."""
+    return {
+        "pergunta": pergunta,
+        "trechos": [
+            {"id": r.trecho.id, "titulo": r.trecho.titulo, "texto": r.trecho.texto, "fonte": r.trecho.fonte, "similaridade": r.similaridade}
+            for r in conhecimento.buscar(pergunta, k=min(max(k, 1), 10))
+        ],
+    }
 
 
 if PASTA_WEB.exists():
