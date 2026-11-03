@@ -169,7 +169,7 @@ h2 { font-size: 1.08rem; font-weight: 800; }
   animation: respirar 3.2s ease-in-out infinite;
   transform-origin: bottom center;
 }
-.mascote img { width: 100%; height: auto; display: block; filter: drop-shadow(0 6px 10px rgba(70, 55, 8, 0.18)); }
+.mascote :is(img, canvas) { width: 100%; height: auto; display: block; filter: drop-shadow(0 6px 10px rgba(70, 55, 8, 0.18)); }
 .humor {
   position: absolute;
   top: -4px;
@@ -221,7 +221,7 @@ h2 { font-size: 1.08rem; font-weight: 800; }
 .acao:hover .acao-gato { transform: translateY(-4px) rotate(-3deg); }
 
 .cabecalho-tela { display: flex; align-items: center; gap: 12px; margin: 4px 0 12px; }
-.cabecalho-tela img { height: 72px; width: 72px; object-fit: contain; object-position: bottom; flex: none; background: #f6efe2; border-radius: 50%; padding: 6px 6px 0; }
+.cabecalho-tela :is(img, canvas) { height: 72px; width: 72px; object-fit: contain; object-position: bottom; flex: none; background: #f6efe2; border-radius: 50%; padding: 6px 6px 0; }
 .cabecalho-tela .titulo-tela { margin: 0; }
 .cabecalho-tela .nota { margin: 2px 0 0; }
 .icone-titulo { height: 30px; width: auto; vertical-align: middle; }
@@ -259,7 +259,7 @@ h2 { font-size: 1.08rem; font-weight: 800; }
   margin-bottom: 6px;
   box-shadow: inset 0 -6px 12px rgba(70, 55, 8, 0.08);
 }
-.personagem-foto img { width: 82%; height: auto; margin-bottom: -6px; }
+.personagem-foto :is(img, canvas) { width: 82%; height: auto; margin-bottom: -6px; }
 .personagem h3 { margin: 0; font-size: 1rem; font-weight: 800; }
 .papel {
   font-size: 0.7rem;
@@ -572,17 +572,17 @@ input:focus, select:focus { outline: none; border-color: var(--marca); }
 
 .rodape { text-align: center; color: var(--suave); font-size: 0.72rem; padding: 20px 8px 8px; }
 
-/* Modo escuro: contorno creme sutil para os gatos verde-escuros não sumirem no fundo. */
+/* Modo escuro: contorno creme sutil para os gatos de pelo preto não sumirem no fundo. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .acao-gato,
-  :root:not([data-theme="light"]) .mascote img,
+  :root:not([data-theme="light"]) .mascote :is(img, canvas),
   :root:not([data-theme="light"]) .foto-gato,
   :root:not([data-theme="light"]) .icone-titulo {
     filter: drop-shadow(0 0 1px rgba(246, 239, 226, 0.9)) drop-shadow(0 0 6px rgba(246, 239, 226, 0.18));
   }
 }
 :root[data-theme="dark"] .acao-gato,
-:root[data-theme="dark"] .mascote img,
+:root[data-theme="dark"] .mascote :is(img, canvas),
 :root[data-theme="dark"] .foto-gato,
 :root[data-theme="dark"] .icone-titulo {
   filter: drop-shadow(0 0 1px rgba(246, 239, 226, 0.9)) drop-shadow(0 0 6px rgba(246, 239, 226, 0.18));
@@ -933,7 +933,7 @@ h1, h2, h3, .titulo-tela, .botao-hero { font-family: "Fredoka", "Nunito", system
 }
 #ancora-cesta-hero { position: absolute; right: 4%; bottom: 4%; width: 52%; height: 72%; }
 
-.acao-gato, .mascote img, .cabecalho-tela > img { will-change: transform; }
+.acao-gato, .mascote :is(img, canvas), .cabecalho-tela > :is(img, canvas) { will-change: transform; }
 .mascote { perspective: 500px; }
 
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.22s; }
