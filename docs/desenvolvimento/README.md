@@ -32,6 +32,7 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 19 | Trocar item e o que tenho em casa | Refaz a cesta sem um alimento ou descontando o que já existe em casa, mantendo as metas | SciPy (`milp`) | ✅ Feito | [19](19-trocar-e-em-casa.md) |
 | 20 | App instalável e proteção | PWA, última cesta no aparelho, apagar dados, limite por IP, testes no GitHub | Service worker, localStorage, GitHub Actions | ✅ Feito | [20](20-pwa-e-protecao.md) |
 | 21 | Conferência das fontes | TACO, DIEESE e Guia Alimentar comparados com o original; teste com preços reais do Procon | pypdf (fora do projeto), Python | ✅ Feito | [21](21-conferencia-das-fontes.md) |
+| 22 | Entregáveis finais | Documentos das semanas, relatório final e apresentação | Markdown, Slides | ✅ Feito | [22](22-entregaveis-finais.md) |
 
 A ordem segue o roadmap das semanas: tópicos 1–5 formam o núcleo do app (semanas 1–2), 6–8 cobrem RAG e o experimento (semanas 2–3), 9 os agentes (semana 4), 10 a multimodalidade (semana 5) e 11–12 a integração, os testes e a entrega (semanas 6–7).
 
@@ -58,7 +59,7 @@ Navegação embaixo: **Início · Cesta · 📷 Cupom · Perto · Mia** (a tabel
 | Onde | O que faz | Tópicos |
 |------|-----------|---------|
 | **Início** | Mascote que reage ao resultado, anel do orçamento usado e das metas, ações rápidas e dica do dia | 14 |
-| **Montar cesta** | Orçamento + pessoas + período + restrições → cesta mais barata que cumpre as metas, 1 × 2 mercados, explicação, metas, lista com preço/kg e fonte → **Sugerir cardápio** | 2, 3, 5, 9 |
+| **Montar cesta** | Orçamento + pessoas + período + restrições + o que há em casa → cesta mais barata que cumpre as metas, 1 × 2 mercados, explicação, metas, lista com preço/kg e fonte, **Trocar** item → **Sugerir cardápio** | 2, 3, 5, 18, 19 |
 | **Perto de mim** | Localização (ou região) → mercados com preços no raio, distância, custo de ida e volta, **onde a proteína está mais barata**, supermercados do OpenStreetMap → montar a cesta só com os mercados próximos | 13 |
 | **Conversar** | Chat em linguagem natural; o Orquestrador escolhe o agente, e a Mia confere a resposta | 6, 7, 9 |
 | **Preços** | Tabela produto × mercado com preço por kg, data e fonte; menor preço destacado | 1, 4, 5 |
@@ -66,6 +67,8 @@ Navegação embaixo: **Início · Cesta · 📷 Cupom · Perto · Mia** (a tabel
 | `/docs` | Documentação interativa da API (Swagger) | 4 |
 
 ## O que falta (depende do grupo)
+
+O código e os documentos estão prontos. O que resta exige ida a campo, pessoas ou a conta do grupo. Resumo no [relatório final](../semana-7/relatorio-final.md#5-o-que-falta-e-depende-do-grupo).
 
 1. **Coleta real de preços** em 3–4 mercados de Brasília, **com a latitude e a longitude de cada um** → substituir os preços de exemplo ([01](01-dados.md#como-adicionar-a-coleta-real-de-preços), [13](13-localizacao-proteinas.md#limitações)).
 2. **Revisar** as receitas e conferir o valor do leite na TBCA ([21](21-conferencia-das-fontes.md#o-que-continua-pendente)).

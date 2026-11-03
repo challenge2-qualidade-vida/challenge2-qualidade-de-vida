@@ -43,12 +43,12 @@ A IA não decide pelo usuário nem promete o menor gasto possível em todos os c
 3. **Cardápio a partir da cesta**: refeições possíveis com o que foi comprado.
 4. **Explicação da escolha**: "escolhi frango em vez de carne porque cabe no orçamento e mantém a proteína". Toda recomendação mostra o critério e a fonte do preço.
 
-### Diferenciais (se der tempo)
+### Diferenciais
 
-- **"Essa promoção vale a pena?"**: compara o preço por unidade de medida, o histórico e o que já está na lista.
-- **Substituições inteligentes**: "feijão carioca subiu 30%, troque por feijão preto ou lentilha, com valor nutricional parecido".
-- **"O que tem em casa?" / aproveitamento**: o usuário informa o que sobrou e a IA sugere receitas, priorizando o que precisa ser usado primeiro e o que falta comprar.
-- **Histórico de preços**: variações ao longo do tempo, só quando houver dados suficientes (sem afirmar que "terça é sempre o melhor dia").
+- ✅ **"Essa promoção vale a pena?"**: compara o preço por unidade de medida, o histórico e o que já está na lista.
+- ✅ **Substituições inteligentes**: o botão Trocar refaz a cesta sem o alimento, mantendo as metas.
+- ✅ **"O que tem em casa?" / aproveitamento**: o que há em casa conta para as metas e entra no cardápio, usando antes o que estraga.
+- ⏳ **Histórico de preços** (depende de coletas reais): variações ao longo do tempo, só quando houver dados suficientes (sem afirmar que "terça é sempre o melhor dia").
 
 ### Fora do MVP
 
@@ -115,6 +115,10 @@ Começamos com **um LLM que usa ferramentas**. Cinco agentes mais um orquestrado
 | **Recibaldo** | Lê o QR code da NFC-e e cadastra os preços | Semana 5 |
 
 Todos usam o mesmo LLM, com instruções e ferramentas diferentes. O planejamento da lista fica com o orquestrador + otimizador, sem agente próprio.
+
+## Entrega final
+
+**[Relatório final](docs/semana-7/relatorio-final.md)**: resultados, limitações e o que ainda depende do grupo.
 
 ## Riscos
 
@@ -185,7 +189,7 @@ docs/                    documentação e entregáveis de cada semana
   challenge2_resumo.xlsx resumo do desafio
 data/base-conhecimento/  Guia Alimentar, TACO e demais fontes do RAG (ver FONTES.md)
 src/                     código da aplicação (otimizador, RAG, agentes, interface)
-notebooks/               experimentos e análises (ex.: LLM × RAG)
+experimentos/            scripts que geram os resultados (LLM × RAG, métricas, sensibilidade)
 tests/                   testes e avaliação com métricas
 ```
 
@@ -200,7 +204,7 @@ tests/                   testes e avaliação com métricas
 
 ## Desenvolvimento
 
-O passo a passo do que foi construído, como foi feito e como rodar está em [docs/desenvolvimento/](docs/desenvolvimento/README.md), com um arquivo por tópico (00 a 21). Tudo foi feito na branch `develop_gui`, usando só ferramentas gratuitas.
+O passo a passo do que foi construído, como foi feito e como rodar está em [docs/desenvolvimento/](docs/desenvolvimento/README.md), com um arquivo por tópico (00 a 22). Tudo foi feito na branch `develop_gui`, usando só ferramentas gratuitas.
 
 ```bash
 git checkout develop_gui
