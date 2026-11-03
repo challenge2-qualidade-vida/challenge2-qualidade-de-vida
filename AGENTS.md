@@ -24,6 +24,16 @@ Se a tarefa for uma funcionalidade e não houver spec, escreva a spec e os cená
 
 As escolhas do RAG (LLM, embeddings, banco vetorial, framework) estão em definição na #13. Não introduza uma biblioteca nova sem registrar a decisão em `docs/decisoes.md`.
 
+## Decisões
+
+Toda vez que uma decisão for tomada ou proposta (biblioteca, LLM, banco, arquitetura, regra de negócio, convenção, ferramenta):
+
+1. **Pergunte a justificativa** à pessoa. Não escreva a justificativa por conta própria.
+2. **Registre** em `docs/decisoes.md`, com alternativas, justificativa, quem decidiu e validação **Pendente**. Sem justificativa, o status é **Sem justificativa** e a decisão fica pendente.
+3. **Proponha a validação** da justificativa por pesquisa, feita por IA (com os links citados) ou manualmente pela equipe. Depois, marque a validação como **Validada** (com as fontes) ou **Contestada** (mostrando o que foi encontrado e perguntando se a decisão continua).
+
+No Claude Code, esse fluxo está na skill [registrar-decisao](.claude/skills/registrar-decisao/SKILL.md).
+
 ## Regras de código
 
 - **Idioma:** código em português (classes, funções, variáveis, módulos), seguindo a coluna "Nome no código" do modelo de domínio. Sem acentos nos identificadores (`Orcamento`, `preco_por_unidade`). Comentários e docstrings em português.

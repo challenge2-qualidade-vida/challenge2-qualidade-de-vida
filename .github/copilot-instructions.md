@@ -11,3 +11,4 @@ As instruções completas do projeto estão em [AGENTS.md](../AGENTS.md). Resumo
 - Commits em Conventional Commits, em português, sem `Co-Authored-By`.
 - Branch `tipo/numero-da-issue-descricao`, com a issue existente.
 - Nunca escrever chaves de API, senhas ou dados pessoais.
+- Quando uma decisão for tomada, perguntar a justificativa à pessoa, registrar em `docs/decisoes.md` e propor a validação por pesquisa (IA ou manual).

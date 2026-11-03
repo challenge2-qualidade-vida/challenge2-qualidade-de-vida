@@ -18,4 +18,4 @@ Refs #
 - [ ] Testes e cenários BDD passando
 - [ ] Termos do modelo de domínio usados no código
 - [ ] Sem chaves de API, senhas ou dados pessoais
-- [ ] Decisões técnicas novas registradas em `docs/decisoes.md`
+- [ ] Decisões técnicas novas registradas em `docs/decisoes.md`, com justificativa

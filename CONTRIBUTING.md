@@ -49,6 +49,6 @@ Sem linhas `Co-Authored-By` de ferramentas de IA.
 - Não subir chaves de API, senhas ou arquivos `.env` (já estão no `.gitignore`, e o gitleaks bloqueia no commit).
 - Não subir dados pessoais reais (LGPD). Use dados públicos ou anonimizados.
 - Toda fonte usada na base de conhecimento deve ser registrada em `data/base-conhecimento/FONTES.md`.
-- Decisões técnicas importantes vão em `docs/decisoes.md`, com a justificativa.
+- Decisões técnicas importantes vão em `docs/decisoes.md`, sempre com a justificativa, que depois é validada por pesquisa (manual ou com IA).
 - Termos novos do negócio entram primeiro no [modelo de domínio](docs/arquitetura/modelo-de-dominio.md).
 - Nada de push direto na `main`, squash ou rebase no merge.

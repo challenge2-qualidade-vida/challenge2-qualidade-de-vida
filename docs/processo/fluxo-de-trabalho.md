@@ -44,6 +44,16 @@ Os assistentes de IA (Claude Code, GitHub Copilot, Cursor, Codex) leem as instru
 - **Revisar antes de commitar.** Quem commita é responsável pelo código, inclusive o gerado por IA.
 - **Não colocar dados sensíveis no prompt.** Chaves de API, dados pessoais e notas fiscais reais com CPF ficam fora.
 
+## Decisões
+
+Toda decisão (biblioteca, LLM, banco, arquitetura, regra de negócio, convenção, ferramenta) entra em [docs/decisoes.md](../decisoes.md) com a justificativa:
+
+1. **Justificativa.** Quem decide explica o porquê. Os assistentes de IA perguntam a justificativa em vez de escrevê-la; sem ela, a decisão fica como **Sem justificativa**.
+2. **Registro.** A decisão entra na tabela com validação **Pendente**.
+3. **Validação.** A justificativa é pesquisada, manualmente ou com IA, em documentação oficial, artigos e benchmarks. O resultado é **Validada**, com as fontes, ou **Contestada**, e então a equipe decide se mantém, revê ou troca a decisão.
+
+No Claude Code, a skill `registrar-decisao` (`.claude/skills/registrar-decisao/`) conduz esse fluxo.
+
 ## Convenções
 
 ### Branches
@@ -129,5 +139,5 @@ Uma tarefa está pronta quando:
 - [ ] Os testes e os cenários BDD passam
 - [ ] O código usa os termos do modelo de domínio
 - [ ] Não há segredos nem dados pessoais no repositório
-- [ ] As decisões técnicas novas estão em `docs/decisoes.md`
+- [ ] As decisões técnicas novas estão em `docs/decisoes.md`, com justificativa
 - [ ] O PR foi aprovado e entrou na `main` com merge commit
