@@ -11,6 +11,7 @@ from typing import Literal
 
 import httpx
 from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -34,6 +35,7 @@ base = carregar()
 conhecimento = BaseConhecimento(base)
 orquestrador = Orquestrador(base, conhecimento, cliente_do_ambiente())
 limitador = limitador_do_ambiente()
+app.add_middleware(GZipMiddleware, minimum_size=1024)   # o Three.js cai de 550 KB para cerca de 140 KB
 
 
 @app.middleware("http")
