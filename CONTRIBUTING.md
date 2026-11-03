@@ -25,7 +25,7 @@ O fluxo completo, com SDD, BDD e DDD, está em [docs/processo/fluxo-de-trabalho.
    ```bash
    git commit -m "feat(rag): adiciona rota de perguntas sobre receitas"
    ```
-5. **Pull request.** Abra para a `main` usando o modelo de PR, com `Closes #N`, e peça revisão.
+5. **Pull request.** Abra para a `main` usando o modelo de PR, com `Closes #N` para a tarefa e `Refs #N` para o épico, e peça revisão.
 6. **Merge.** Depois de 1 aprovação e com o CI passando, use **Create a merge commit**.
 
 ## Nome das branches

@@ -41,7 +41,7 @@ As escolhas do RAG (LLM, embeddings, banco vetorial, framework) estão em defini
 - **Branch:** `tipo/numero-da-issue-descricao` (ex.: `feat/24-endpoint-rag`). Criar com `scripts/nova-branch.sh`. A issue precisa existir e estar aberta. Se não existir, avise a pessoa desenvolvedora que a issue deve ser criada antes e não crie a branch.
 - **Commits:** Conventional Commits em português: `tipo(escopo): descrição`. Tipos: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `ci`, `perf`, `build`, `style`, `revert`.
 - **Coautoria:** não adicionar linhas `Co-Authored-By` nem menções a ferramentas de IA em commits, PRs ou issues.
-- **Pull request:** título no padrão dos commits, descrição pelo modelo de PR, com `Closes #N`.
+- **Pull request:** título no padrão dos commits, descrição pelo modelo de PR, com `Closes #N` para a tarefa. Épicos (issues com sub-issues) são citados com `Refs #N`, nunca com `Closes`: o épico é fechado manualmente quando todas as sub-issues estiverem concluídas.
 - **Merge:** sempre merge commit. Nunca squash nem rebase na `main`. Nunca fazer push direto na `main`.
 
 ## O que não fazer

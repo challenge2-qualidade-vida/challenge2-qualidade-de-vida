@@ -31,7 +31,7 @@ flowchart LR
 5. **Revisão da spec.** Um commit `docs(spec): ...` com a spec e os cenários, revisado por outra pessoa antes da implementação. Pode ser um PR próprio ou os primeiros commits do PR da funcionalidade.
 6. **Implementação.** O código segue a spec. Se a implementação revelar algo que a spec não previa, a spec é atualizada no mesmo PR.
 7. **Testes.** Testes de unidade para as regras de domínio e passos BDD (`tests/bdd/`) para os cenários.
-8. **Pull request.** Usa o modelo de PR, com `Closes #N`.
+8. **Pull request.** Usa o modelo de PR, com `Closes #N` para a tarefa e `Refs #N` para o épico.
 9. **Merge.** Sempre com **merge commit**. Squash e rebase não são usados.
 
 ## Uso de IA na codificação
@@ -86,9 +86,14 @@ Para entrar na `main`, um PR precisa de:
 - **1 aprovação** de outra pessoa da equipe
 - **CI passando:** convenções, lint, testes e cenários BDD
 - **Issue vinculada** com `Closes #N` na descrição
+- **Épico não fechado pelo PR:** épicos (issues com sub-issues) entram como `Refs #N`. O CI recusa `Closes` em épico
 - **Spec atualizada** quando o PR for de funcionalidade (`feat`) e alterar `src/`
 
 O título do PR segue o mesmo padrão dos commits.
+
+### Épicos
+
+O GitHub não fecha o épico quando as sub-issues terminam, e o CI impede que um PR feche o épico com `Closes`. Quando todas as sub-issues estiverem concluídas, alguém da equipe (de preferência quem cuida do Scrum) fecha o épico manualmente.
 
 ### Merge
 

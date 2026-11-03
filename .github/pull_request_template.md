@@ -1,4 +1,7 @@
 Closes #
+Refs #
+
+<!-- Closes: a tarefa que este PR conclui. Refs: o épico da tarefa (épicos nunca são fechados por PR). -->
 
 ## O que muda
 
