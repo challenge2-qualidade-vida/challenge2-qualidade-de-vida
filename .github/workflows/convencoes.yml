@@ -1,0 +1,73 @@
+name: Convenções
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  branch:
+    name: Branch ligada a uma issue
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Conferir nome da branch e issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          BRANCH: ${{ github.head_ref }}
+        run: scripts/verificar-branch.sh "$BRANCH"
+
+  commits:
+    name: Mensagens de commit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Conferir Conventional Commits
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          TOPO: ${{ github.event.pull_request.head.sha }}
+        run: scripts/verificar-commits.sh "$BASE" "$TOPO"
+
+  pull-request:
+    name: Título, issue e spec
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Conferir título no padrão dos commits
+        env:
+          TITULO: ${{ github.event.pull_request.title }}
+        run: |
+          padrao='^(feat|fix|docs|refactor|test|chore|ci|perf|build|style|revert)(\([a-z0-9-]+\))?!?: .+'
+          if [[ ! $TITULO =~ $padrao ]]; then
+            echo "::error::Título do PR fora do padrão tipo(escopo): descrição"
+            exit 1
+          fi
+      - name: Conferir issue vinculada
+        env:
+          CORPO: ${{ github.event.pull_request.body }}
+        run: |
+          if ! grep -Eiq '(close[sd]?|fix(e[sd])?|resolve[sd]?) #[0-9]+' <<<"$CORPO"; then
+            echo "::error::A descrição do PR precisa vincular uma issue (ex.: Closes #24)"
+            exit 1
+          fi
+      - name: Conferir spec em PR de funcionalidade
+        env:
+          BRANCH: ${{ github.head_ref }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          TOPO: ${{ github.event.pull_request.head.sha }}
+        run: |
+          [[ $BRANCH == feat/* ]] || exit 0
+          alterados=$(git diff --name-only "$BASE...$TOPO")
+          if grep -q '^src/' <<<"$alterados" && ! grep -q '^specs/' <<<"$alterados"; then
+            echo "::error::PR de funcionalidade que altera src/ precisa criar ou atualizar a spec em specs/"
+            exit 1
+          fi
