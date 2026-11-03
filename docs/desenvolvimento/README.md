@@ -33,6 +33,7 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 20 | App instalável e proteção | PWA, última cesta no aparelho, apagar dados, limite por IP, testes no GitHub | Service worker, localStorage, GitHub Actions | ✅ Feito | [20](20-pwa-e-protecao.md) |
 | 21 | Conferência das fontes | TACO, DIEESE e Guia Alimentar comparados com o original; teste com preços reais do Procon | pypdf (fora do projeto), Python | ✅ Feito | [21](21-conferencia-das-fontes.md) |
 | 22 | Entregáveis finais | Documentos das semanas, relatório final e apresentação | Markdown, Slides | ✅ Feito | [22](22-entregaveis-finais.md) |
+| 23 | Layout responsivo | Celular, tablet e computador, com navegação lateral e colunas em telas grandes | CSS puro | ✅ Feito | [23](23-layout-responsivo.md) |
 
 A ordem segue o roadmap das semanas: tópicos 1–5 formam o núcleo do app (semanas 1–2), 6–8 cobrem RAG e o experimento (semanas 2–3), 9 os agentes (semana 4), 10 a multimodalidade (semana 5) e 11–12 a integração, os testes e a entrega (semanas 6–7).
 
@@ -52,7 +53,7 @@ Depois acesse <http://localhost:8000> (site) ou <http://localhost:8000/docs> (do
 
 ## O site
 
-Navegação embaixo: **Início · Cesta · 📷 Cupom · Perto · Mia** (a tabela de preços abre pelo Início; as **Configurações** pela engrenagem ⚙️ no topo). Visual descrito no [tópico 14](14-interface-app.md).
+Navegação embaixo no celular e na lateral no computador: **Início · Cesta · 📷 Cupom · Perto · Mia** (a tabela de preços abre pelo Início; as **Configurações** pela engrenagem ⚙️ no topo). Visual descrito no [tópico 14](14-interface-app.md).
 
 ### Funcionalidades
 

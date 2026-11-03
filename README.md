@@ -210,7 +210,7 @@ tests/                   testes e avaliação com métricas
 
 ## Desenvolvimento
 
-O passo a passo do que foi construído, como foi feito e como rodar está em [docs/desenvolvimento/](docs/desenvolvimento/README.md), com um arquivo por tópico (00 a 22). Tudo foi feito na branch `develop_gui`, usando só ferramentas gratuitas.
+O passo a passo do que foi construído, como foi feito e como rodar está em [docs/desenvolvimento/](docs/desenvolvimento/README.md), com um arquivo por tópico (00 a 23). Tudo foi feito na branch `develop_gui`, usando só ferramentas gratuitas.
 
 ```bash
 git checkout develop_gui
