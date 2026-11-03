@@ -147,6 +147,12 @@ Todos usam o mesmo LLM, com instruções e ferramentas diferentes. O planejament
 | 7 | **Qualidade das respostas (LLM × RAG)** | Correção, fundamentação, tratamento de incerteza, latência e custo (experimento da semana 3) |
 | 8 | **Utilidade percebida** | % de usuários de teste que consideram as recomendações úteis e conseguem montar a cesta |
 
+## Links do projeto
+
+- **Organização:** https://github.com/challenge2-qualidade-vida
+- **Repositório:** https://github.com/challenge2-qualidade-vida/challenge2-qualidade-de-vida
+- **Quadro de tarefas (GitHub Projects):** https://github.com/orgs/challenge2-qualidade-vida/projects/1
+
 ## Equipe
 
 | Nome | GitHub | Papel |
