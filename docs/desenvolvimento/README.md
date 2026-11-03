@@ -35,6 +35,7 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 22 | Entregáveis finais | Documentos das semanas, relatório final e apresentação | Markdown, Slides | ✅ Feito | [22](22-entregaveis-finais.md) |
 | 23 | Layout responsivo | Celular, tablet e computador, com navegação lateral e colunas em telas grandes | CSS puro | ✅ Feito | [23](23-layout-responsivo.md) |
 | 24 | Visual com 3D e animações | Moedas que viram comida, cesta 3D com os alimentos calculados, radar, cupom e opção de desligar | Three.js, GSAP e Lenis | ✅ Feito (falta testar em celular real) | [24](24-visual-3d.md) |
+| 25 | Gatos em 3D e cores novas | Mia com pelo, respirando e olhando para o cursor; paleta mostarda e creme | Blender (Cycles), `<canvas>`, CSS | 🟡 Mia pronta, aguardando aprovação; faltam os outros três gatos | [25](25-gatos-3d.md) |
 
 A ordem segue o roadmap das semanas: tópicos 1–5 formam o núcleo do app (semanas 1–2), 6–8 cobrem RAG e o experimento (semanas 2–3), 9 os agentes (semana 4), 10 a multimodalidade (semana 5) e 11–12 a integração, os testes e a entrega (semanas 6–7).
 
@@ -115,6 +116,7 @@ src/web/
   index.html, estilo.css, app.js   o site                     → tópico 5
   manifest.webmanifest, sw.js      app instalável             → tópico 20
   cena3d.js, animacoes.js, vendor/ 3D e animações             → tópico 24
+  gatos.js, img/gatos3d/           gatos em 3D                → tópico 25
 tests/
   test_dados.py              testes de integridade das bases  → tópico 1
   test_otimizador.py         testes do otimizador             → tópico 2
