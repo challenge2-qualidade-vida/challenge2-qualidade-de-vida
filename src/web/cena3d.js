@@ -19,13 +19,13 @@ function efeitosPermitidos() {
 
 // Cores dos alimentos e da marca.
 const COR = {
-  ouro: 0xf2b33d, mata: 0x2e8b57, floresta: 0x0f3d2a, creme: 0xf6efe2, tomate: 0xd93b2b, laranja: 0xf08a24,
+  ouro: 0xf5cf5f, mata: 0x6f8f4f, floresta: 0x463708, creme: 0xfaf5ea, tomate: 0xd93b2b, laranja: 0xf08a24,
   banana: 0xf5cf3a, terra: 0x9a6b3f, cebola: 0xb98a5a, folha: 0x6fb34a, abobora: 0xd97b1f, pacote: 0xe9e2d0,
   feijao: 0x6d3f25, preto: 0x2a2a33, macarrao: 0xe8c04f, carne: 0xa8413a, frango: 0xe0b483, lata: 0xb9c2c9, leite: 0xf4f6f4,
 };
 
 const FUNDO_MOEDA = (ctx, t) => {
-  ctx.fillStyle = "#f2b33d"; ctx.fillRect(0, 0, t, t);
+  ctx.fillStyle = "#f5cf5f"; ctx.fillRect(0, 0, t, t);
   ctx.strokeStyle = "#c98f1c"; ctx.lineWidth = t * 0.05;
   ctx.beginPath(); ctx.arc(t / 2, t / 2, t * 0.4, 0, 7); ctx.stroke();
   ctx.fillStyle = "#b87f12"; ctx.font = `800 ${t * 0.55}px Nunito, sans-serif`;
@@ -73,7 +73,7 @@ async function iniciar() {
   ceu.width = 64; ceu.height = 32;
   const c = ceu.getContext("2d");
   const grad = c.createLinearGradient(0, 0, 0, 32);
-  grad.addColorStop(0, "#fff4d6"); grad.addColorStop(0.5, "#7fb892"); grad.addColorStop(1, "#0f3d2a");
+  grad.addColorStop(0, "#fff4d6"); grad.addColorStop(0.5, "#d9b64f"); grad.addColorStop(1, "#463708");
   c.fillStyle = grad; c.fillRect(0, 0, 64, 32);
   const texturaCeu = new THREE.CanvasTexture(ceu);
   texturaCeu.mapping = THREE.EquirectangularReflectionMapping;
@@ -81,7 +81,7 @@ async function iniciar() {
   const pmrem = new THREE.PMREMGenerator(renderer);
   cena.environment = pmrem.fromEquirectangular(texturaCeu).texture;
   pmrem.dispose();
-  cena.add(new THREE.HemisphereLight(0xfff4d6, 0x4a7a5e, 2));
+  cena.add(new THREE.HemisphereLight(0xfff4d6, 0x97791f, 2));
   const sol = new THREE.DirectionalLight(0xfff4d6, 2.6);
   sol.position.set(4, 8, 8);
   cena.add(sol);

@@ -38,7 +38,7 @@
 
   // Os gatos acompanham o mouse, com perspectiva.
   if (ponteiroFino) {
-    const gatos = gsap.utils.toArray(".hero-gato, .mascote img, .acao-gato, .cabecalho-tela > img");
+    const gatos = gsap.utils.toArray(".mascote img, .acao-gato, .cabecalho-tela > img");
     addEventListener("pointermove", (e) => {
       const x = e.clientX / innerWidth - 0.5, y = e.clientY / innerHeight - 0.5;
       gatos.forEach((g) => {

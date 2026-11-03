@@ -257,6 +257,15 @@ def test_efeitos_ficam_no_site_e_vao_comprimidos(cliente):
         assert cliente.get("/" + arquivo).status_code == 200
 
 
+def test_mia_tem_imagem_parada_e_grade_de_poses(cliente):
+    pagina = cliente.get("/").text
+    assert 'src="img/gatos3d/mia-frente.webp"' in pagina
+    assert 'data-grade="img/gatos3d/mia.webp"' in pagina
+    assert "gatos.js" in pagina
+    for arquivo in ("gatos.js", "img/gatos3d/mia-frente.webp", "img/gatos3d/mia.webp"):
+        assert cliente.get("/" + arquivo).status_code == 200
+
+
 def test_site_nao_baixa_o_3d_de_cara(cliente):
     # O Three.js só vem por import dinâmico, depois de decidir se o aparelho aguenta.
     assert "three.min.js" not in cliente.get("/").text
