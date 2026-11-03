@@ -78,6 +78,8 @@ O experimento do [tópico 8](08-experimento-llm-rag.md) foi rodado de novo com a
 
 (O C subiu de 76% para 82% com a correção do `interpretar` feita neste tópico.)
 
+> **Nova rodada em 03/11/2026**, depois das correções dos tópicos 18 e 21: A 59%, B 94%, C 82% e D 94%. A fundamentação do D caiu de 100% para 90% (n=10), mostrando que o modelo local varia de uma rodada para outra. Com só 17 perguntas, pequenas diferenças não são conclusivas.
+
 **O que mudou de B para D nos casos críticos:**
 
 | Pergunta | B — LLM + RAG | D — agentes |

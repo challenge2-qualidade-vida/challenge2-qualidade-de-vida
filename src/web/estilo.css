@@ -740,6 +740,6 @@ input:focus, select:focus { outline: none; border-color: var(--marca); }
 .em-casa-linha { display: grid; grid-template-columns: 1fr 90px; gap: 8px; align-items: end; margin-bottom: 10px; }
 .em-casa-linha .botao-secundario { grid-column: 1 / -1; }
 .em-casa-linha select, .em-casa-linha input { width: 100%; min-width: 0; }
-.chip-remover { font: inherit; cursor: pointer; }
+.chip-remover { font: inherit; color: var(--texto); background: var(--fundo); cursor: pointer; }
 .item-trocar { display: inline-block; margin-top: 4px; padding: 3px 10px; font: inherit; font-size: 0.78rem; font-weight: 700; color: var(--marca); background: transparent; border: 1px solid var(--borda); border-radius: 999px; cursor: pointer; }
 .item-trocar:focus-visible { outline: 2px solid var(--marca); }
