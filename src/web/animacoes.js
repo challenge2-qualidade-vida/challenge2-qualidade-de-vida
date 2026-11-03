@@ -36,17 +36,6 @@
       .from("#palco-hero .hero-gato", { y: 180, rotate: -14, scale: 0.75, duration: 0.95, ease: "elastic.out(1, 0.65)" }, "-=0.6");
   }
 
-  // Os gatos acompanham o mouse, com perspectiva.
-  if (ponteiroFino) {
-    const gatos = gsap.utils.toArray(".mascote img, .acao-gato, .cabecalho-tela > img");
-    addEventListener("pointermove", (e) => {
-      const x = e.clientX / innerWidth - 0.5, y = e.clientY / innerHeight - 0.5;
-      gatos.forEach((g) => {
-        if (g.offsetParent) gsap.to(g, { rotateY: x * 26, rotateX: -y * 18, transformPerspective: 500, duration: 0.6, overwrite: "auto" });
-      });
-    }, { passive: true });
-  }
-
   // A turma entra girando conforme a rolagem.
   gsap.utils.toArray(".personagem").forEach((p, i) => {
     gsap.from(p, {
@@ -73,7 +62,7 @@
     gsap.from("#itens .item", {
       x: -24, opacity: 0, duration: 0.42, stagger: 0.035, delay: 0.35, ease: "power2.out", clearProps: "transform,opacity",
     });
-    gsap.fromTo("#aba-cesta .cabecalho-tela > img", { y: 0 }, { y: -24, duration: 0.24, yoyo: true, repeat: 3, ease: "power1.out" });
+    gsap.fromTo("#aba-cesta .cabecalho-tela > :is(img, canvas)", { y: 0 }, { y: -24, duration: 0.24, yoyo: true, repeat: 3, ease: "power1.out" });
   });
 
   // Cardápio: cada refeição entra na ordem do dia.
