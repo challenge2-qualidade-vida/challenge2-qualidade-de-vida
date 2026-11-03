@@ -238,7 +238,7 @@ function mostrarPlano(plano, pedido) {
 
   mostrarMetas(cesta);
   mostrarItens(cesta);
-  cestaAtual = { alimentos: [...new Set(cesta.itens.map((i) => i.alimento.split(" (")[0]))], restricoes: pedido.restricoes };
+  cestaAtual = { alimentos: [...new Set(cesta.itens.map((i) => i.alimento_id))], restricoes: pedido.restricoes };
   const unicos = [...new Map(cesta.itens.map((i) => [i.alimento_id, i.alimento.split(" (")[0]])).entries()];
   $("#ingredientes-cesta").replaceChildren(...unicos.map(([id, nome]) => el("span", { class: "ingrediente" }, fotoAlimento(id, "foto-ingrediente"), nome)));
   $("#cardapio").replaceChildren();
@@ -288,19 +288,40 @@ function textoEtapas(etapas) {
   return (etapas ?? []).map((e) => `${e.agente}: ${e.acao}`).join(" → ");
 }
 
+function blocosCardapio(r) {
+  const plano = r.dados?.cardapio;
+  if (!plano) return [semMarkdown(r.resposta)];
+  const blocos = [];
+  if (r.dados.comentario) blocos.push(el("p", { class: "cardapio-comentario" }, semMarkdown(r.dados.comentario)));
+  plano.dias.forEach((refeicoes, n) => {
+    blocos.push(el("section", { class: "cardapio-dia" },
+      el("h4", {}, `Dia ${n + 1}`),
+      ...refeicoes.map((x) => el("div", { class: "cardapio-refeicao" },
+        el("span", { class: "cardapio-tipo" }, x.titulo),
+        el("strong", {}, r.dados.nomes_receitas[x.receita]),
+        el("span", { class: "cardapio-fotos" }, ...x.alimentos.slice(0, 5).map((a) => fotoAlimento(a, "foto-ingrediente"))),
+        el("span", { class: "item-detalhe" }, x.ingredientes.join(", ")),
+        el("span", { class: "cardapio-preparo" }, x.preparo),
+      )),
+    ));
+  });
+  if (plano.nao_usados.length) blocos.push(el("p", { class: "nota" }, `Ficaram para os outros dias: ${plano.nao_usados.join(", ")}.`));
+  return blocos;
+}
+
 $("#botao-cardapio").addEventListener("click", async (evento) => {
   if (!cestaAtual) return;
   const botao = evento.target;
   const area = $("#cardapio");
   botao.disabled = true;
-  area.replaceChildren("Montando o cardápio… (o LLM local pode levar alguns segundos)");
+  area.replaceChildren("Montando o cardápio…");
   try {
     const r = await api("/api/cardapio", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(cestaAtual),
+      body: JSON.stringify({ ...cestaAtual, dias: Number($("#cardapio-dias").value) }),
     });
-    area.replaceChildren(semMarkdown(r.resposta), el("span", { class: "meta-msg" }, textoEtapas(r.etapas)));
+    area.replaceChildren(...blocosCardapio(r), el("span", { class: "meta-msg" }, textoEtapas(r.etapas)));
   } catch (e) {
     area.replaceChildren("Não foi possível montar o cardápio: " + e.message);
   } finally {

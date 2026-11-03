@@ -53,6 +53,7 @@ class PedidoChat(BaseModel):
 class PedidoCardapio(BaseModel):
     alimentos: list[str] = Field(..., min_length=1, max_length=40)
     restricoes: list[str] = []
+    dias: int = Field(3, ge=1, le=7)
 
 
 class PedidoNFCeURL(BaseModel):
@@ -190,8 +191,11 @@ def chat(pedido: PedidoChat):
 
 @app.post("/api/cardapio")
 def cardapio(pedido: PedidoCardapio):
-    """Miau-ricio sugere refeições com os alimentos da cesta; Mia confere as restrições."""
-    return asdict(orquestrador.cardapio(pedido.alimentos, pedido.restricoes))
+    """Miau-ricio monta refeições só com os alimentos da cesta; Mia confere o resultado."""
+    invalidas = set(pedido.restricoes) - RESTRICOES.keys()
+    if invalidas:
+        raise HTTPException(422, f"Restrição desconhecida: {', '.join(sorted(invalidas))}")
+    return asdict(orquestrador.cardapio(pedido.alimentos, pedido.restricoes, pedido.dias))
 
 
 def _processar_url(url: str) -> dict:

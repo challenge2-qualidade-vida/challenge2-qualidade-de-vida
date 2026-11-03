@@ -726,3 +726,13 @@ input:focus, select:focus { outline: none; border-color: var(--marca); }
 .lista-creditos small { display: block; color: var(--suave); font-size: 0.72rem; word-break: break-word; }
 .lista-creditos a { color: var(--marca-escura); }
 .foto-cupom-item { display: inline-flex; }
+
+/* Cardápio estruturado (tópico 18) */
+.campo-cardapio { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 12px 0; font-weight: 700; }
+.cardapio-comentario { font-weight: 700; margin: 0 0 12px; }
+.cardapio-dia { margin-top: 14px; }
+.cardapio-dia h4 { margin: 0 0 8px; }
+.cardapio-refeicao { display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-top: 1px solid var(--borda); white-space: normal; }
+.cardapio-tipo { font-size: .8rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--marca); }
+.cardapio-fotos { display: flex; gap: 4px; flex-wrap: wrap; }
+.cardapio-preparo { font-size: .9rem; }

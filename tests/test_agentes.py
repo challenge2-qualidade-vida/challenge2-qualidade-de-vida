@@ -121,17 +121,32 @@ def test_sem_llm_usa_reserva_e_mia(base, bc):
 
 # ---------- Cardápio ----------
 
-def test_cardapio_sem_llm_traz_receitas_da_base(base, bc):
+def test_cardapio_sem_llm_usa_receitas_cadastradas(base, bc):
     r = Orquestrador(base, bc, None).cardapio(["arroz", "feijão carioca", "lentilha", "cenoura", "abóbora"], [])
     assert "sopa de lentilha" in r.resposta.lower()
-    assert r.fontes
+    assert r.dados["cardapio"]["dias"]
+    assert r.modo == "sem_llm"
 
 
-def test_cardapio_com_llm_e_mia_alerta_restricao(base, bc):
-    llm = LLMFalso([{"content": "Dia 1 almoço: arroz, feijão e frango."}])
+def test_cardapio_mia_descarta_comentario_com_alimento_fora_da_cesta(base, bc):
+    llm = LLMFalso([{"content": "Que tal acrescentar frango ao arroz?"}])
     r = Orquestrador(base, bc, llm).cardapio(["arroz", "feijão carioca"], ["vegetariano"])
-    assert "alimentos que você não come" in r.resposta
-    assert "arroz, feijão carioca" in llm.recebido[0]["mensagens"][-1]["content"]
+    assert "frango" not in r.resposta.lower()
+    assert any("descartou" in e["acao"] for e in r.etapas)
+
+
+def test_cardapio_mia_descarta_alimento_cru(base, bc):
+    llm = LLMFalso([{"content": "No jantar, feijão carioca cru."}])
+    r = Orquestrador(base, bc, llm).cardapio(["arroz", "feijão carioca"], [])
+    assert " cru" not in r.resposta.lower()
+    assert any("descartou" in e["acao"] for e in r.etapas)
+
+
+def test_cardapio_mantem_comentario_correto_do_llm(base, bc):
+    llm = LLMFalso([{"content": "Cozinhe o feijão de uma vez e guarde na geladeira."}])
+    r = Orquestrador(base, bc, llm).cardapio(["arroz", "feijão carioca"], [])
+    assert r.resposta.startswith("Cozinhe o feijão de uma vez")
+    assert r.dados["comentario"]
 
 
 # ---------- Ajustes motivados pelo experimento (tópico 8) ----------
