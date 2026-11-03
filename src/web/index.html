@@ -44,7 +44,7 @@
         </div>
 
         <div class="mascote-cartao">
-          <div class="mascote"><img src="img/mia.webp" alt="Mia, a gata da EconoMIA"><span class="humor" id="mascote" aria-hidden="true">✨</span></div>
+          <div class="mascote"><img src="img/mia.webp" data-gato="mia" alt="Mia, a gata da EconoMIA"><span class="humor" id="mascote" aria-hidden="true">✨</span></div>
           <div class="balao" id="balao">Oi! Eu sou a Mia. Vamos fazer o seu dinheiro do mercado render mais, sem comer pior?</div>
         </div>
 
@@ -62,10 +62,10 @@
 
         <h2 class="secao">O que você quer fazer?</h2>
         <div class="acoes">
-          <button type="button" class="acao acao-laranja" data-ir="cesta"><img src="img/miauricio.webp" alt="" class="acao-gato"><b>Montar cesta</b><small>O Miau-ricio planeja</small></button>
-          <button type="button" class="acao acao-verde" data-ir="perto"><img src="img/cifrao.webp" alt="" class="acao-gato"><b>Perto de mim</b><small>O Cifrão acha ofertas</small></button>
-          <button type="button" class="acao acao-roxo" data-pergunta="Essa promoção vale a pena? "><img src="img/mia.webp" alt="" class="acao-gato"><b>Promoção vale?</b><small>Pergunte para a Mia</small></button>
-          <button type="button" class="acao acao-azul" data-ir="cupom"><img src="img/recibaldo.webp" alt="" class="acao-gato"><b>Enviar cupom</b><small>O Recibaldo confere</small></button>
+          <button type="button" class="acao acao-laranja" data-ir="cesta"><img src="img/miauricio.webp" data-gato="miauricio" alt="" class="acao-gato"><b>Montar cesta</b><small>O Miau-ricio planeja</small></button>
+          <button type="button" class="acao acao-verde" data-ir="perto"><img src="img/cifrao.webp" data-gato="cifrao" alt="" class="acao-gato"><b>Perto de mim</b><small>O Cifrão acha ofertas</small></button>
+          <button type="button" class="acao acao-roxo" data-pergunta="Essa promoção vale a pena? "><img src="img/mia.webp" data-gato="mia" alt="" class="acao-gato"><b>Promoção vale?</b><small>Pergunte para a Mia</small></button>
+          <button type="button" class="acao acao-azul" data-ir="cupom"><img src="img/recibaldo.webp" data-gato="recibaldo" alt="" class="acao-gato"><b>Enviar cupom</b><small>O Recibaldo confere</small></button>
         </div>
 
         <section class="cartao turma" aria-labelledby="titulo-turma">
@@ -74,25 +74,25 @@
           <p class="nota">Quatro agentes de IA, cada um com uma missão.</p>
           <div class="personagens">
             <article class="personagem">
-              <div class="personagem-foto"><img src="img/mia.webp" alt=""></div>
+              <div class="personagem-foto"><img src="img/mia.webp" data-gato="mia" alt=""></div>
               <h3>Mia</h3>
               <span class="papel">Verificação</span>
               <p>A parceira inteligente: confere cada resposta para você economizar, planejar e viver melhor.</p>
             </article>
             <article class="personagem">
-              <div class="personagem-foto"><img src="img/cifrao.webp" alt=""></div>
+              <div class="personagem-foto"><img src="img/cifrao.webp" data-gato="cifrao" alt=""></div>
               <h3>Cifrão</h3>
               <span class="papel">Preços e ofertas</span>
               <p>O gato da rua que sabe onde tem as melhores ofertas e faz o seu dinheiro render.</p>
             </article>
             <article class="personagem">
-              <div class="personagem-foto"><img src="img/miauricio.webp" alt=""></div>
+              <div class="personagem-foto"><img src="img/miauricio.webp" data-gato="miauricio" alt=""></div>
               <h3>Miau-ricio</h3>
               <span class="papel">Cesta e receitas</span>
               <p>O estrategista que planeja cada compra, cada receita e cada conquista.</p>
             </article>
             <article class="personagem">
-              <div class="personagem-foto"><img src="img/recibaldo.webp" alt=""></div>
+              <div class="personagem-foto"><img src="img/recibaldo.webp" data-gato="recibaldo" alt=""></div>
               <h3>Recibaldo</h3>
               <span class="papel">Cupom fiscal</span>
               <p>O fiscal dos gastos: lê o seu cupom e garante que cada centavo valeu.</p>
@@ -114,7 +114,7 @@
 
       <!-- ================= CESTA ================= -->
       <section id="aba-cesta" class="painel" hidden>
-        <div class="cabecalho-tela"><img src="img/miauricio.webp" alt=""><div><h1 class="titulo-tela">Montar cesta</h1><p class="nota">O Miau-ricio monta a cesta mais barata que cumpre as metas.</p></div></div>
+        <div class="cabecalho-tela"><img src="img/miauricio.webp" data-gato="miauricio" alt=""><div><h1 class="titulo-tela">Montar cesta</h1><p class="nota">O Miau-ricio monta a cesta mais barata que cumpre as metas.</p></div></div>
         <form id="form-cesta" class="cartao formulario">
           <label class="campo">
             <span class="rotulo">💰 Quanto você tem para as compras?</span>
@@ -215,7 +215,7 @@
 
       <!-- ================= PERTO DE MIM ================= -->
       <section id="aba-perto" class="painel" hidden>
-        <div class="cabecalho-tela"><img src="img/cifrao.webp" alt=""><div><h1 class="titulo-tela">Perto de mim</h1><p class="nota">O Cifrão mostra onde a proteína está mais barata.</p></div></div>
+        <div class="cabecalho-tela"><img src="img/cifrao.webp" data-gato="cifrao" alt=""><div><h1 class="titulo-tela">Perto de mim</h1><p class="nota">O Cifrão mostra onde a proteína está mais barata.</p></div></div>
         <div id="palco-perto" class="palco" aria-hidden="true"></div>
         <div class="cartao">
           <button type="button" id="botao-localizacao" class="botao largo">📍 Usar minha localização</button>
@@ -260,7 +260,7 @@
 
       <!-- ================= CONFIGURAÇÕES ================= -->
       <section id="aba-config" class="painel" hidden>
-        <div class="cabecalho-tela"><img src="img/mia.webp" alt=""><div><h1 class="titulo-tela">Configurações</h1><p class="nota">Ajuste a busca do seu jeito. Fica salvo neste aparelho.</p></div></div>
+        <div class="cabecalho-tela"><img src="img/mia.webp" data-gato="mia" alt=""><div><h1 class="titulo-tela">Configurações</h1><p class="nota">Ajuste a busca do seu jeito. Fica salvo neste aparelho.</p></div></div>
 
         <div class="cartao">
           <div class="cartao-cabecalho"><h2>📏 Raio de busca</h2><span class="valor-grande"><b id="cfg-raio-valor">10</b> km</span></div>
@@ -342,7 +342,7 @@
 
       <!-- ================= CONVERSAR ================= -->
       <section id="aba-chat" class="painel" hidden>
-        <div class="cabecalho-tela"><img src="img/mia.webp" alt=""><div><h1 class="titulo-tela">Conversar</h1><p class="nota">A Mia chama o Cifrão ou o Miau-ricio e confere a resposta.</p></div></div>
+        <div class="cabecalho-tela"><img src="img/mia.webp" data-gato="mia" alt=""><div><h1 class="titulo-tela">Conversar</h1><p class="nota">A Mia chama o Cifrão ou o Miau-ricio e confere a resposta.</p></div></div>
         <div class="chat">
           <div id="mensagens" class="mensagens" aria-live="polite">
             <div class="linha-msg"><img src="img/mia.webp" alt="" class="avatar"><div class="msg assistente">Oi! Me conte quanto você tem para as compras, quantas pessoas moram na casa e se há alguma restrição. Também digo se uma promoção vale a pena e tiro dúvidas sobre alimentação.</div></div>
@@ -374,14 +374,14 @@
 
       <!-- ================= CUPOM ================= -->
       <section id="aba-cupom" class="painel" hidden>
-        <div class="cabecalho-tela"><img src="img/recibaldo.webp" alt=""><div><h1 class="titulo-tela">Enviar cupom</h1><p class="nota">O Recibaldo lê o cupom e confere cada item.</p></div></div>
+        <div class="cabecalho-tela"><img src="img/recibaldo.webp" data-gato="recibaldo" alt=""><div><h1 class="titulo-tela">Enviar cupom</h1><p class="nota">O Recibaldo lê o cupom e confere cada item.</p></div></div>
         <div id="palco-cupom" class="palco" aria-hidden="true"></div>
         <div class="cartao">
           <p class="nota">O Recibaldo lê o <b>QR code</b> do cupom e busca a nota oficial na SEFAZ-DF. Você confere antes de salvar, e os preços passam a valer para todos. Nenhum dado pessoal (CPF, nome) é lido ou guardado.</p>
           <form id="form-cupom">
             <label class="foto-cupom">
               <input type="file" name="arquivo" accept="image/*" capture="environment">
-              <img src="img/recibaldo.webp" alt="" class="foto-gato">
+              <img src="img/recibaldo.webp" data-gato="recibaldo" alt="" class="foto-gato">
               <b>Tirar foto do cupom</b>
               <small id="nome-arquivo">com o QR code visível</small>
             </label>
