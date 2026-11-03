@@ -57,7 +57,7 @@ Depois de publicar com Groq ou Gemini, vale rodar o experimento de novo com o me
 |-------|----------|-------------|
 | Preços de exemplo | O site mostra o aviso no topo | Trocar pela coleta real (tópico 1, "Como adicionar a coleta real") |
 | Contribuições de NFC-e | Ficam em `contribuicoes.json`, no disco do servidor | No plano gratuito o disco **é apagado** a cada novo deploy ou reinício. Para guardar de verdade, usar um banco gratuito (ex.: SQLite num volume, ou o plano gratuito de um Postgres) |
-| Abuso do chat | Qualquer pessoa pode mandar muitas mensagens e gastar o limite gratuito do LLM | Para a apresentação, basta. Se ficar aberto ao público, adicionar um limite de requisições por IP |
+| Abuso do chat | Qualquer pessoa pode mandar muitas mensagens e gastar o limite gratuito do LLM | Resolvido em parte: limite por IP ([tópico 20](20-pwa-e-protecao.md)). Vários IPs ainda podem gastar a cota |
 | Gravação sem login | Qualquer pessoa pode confirmar preços de NFC-e | Os dados vêm da nota oficial, mas o preço é editável na tela. Para produção, marcar contribuições editadas ou exigir login |
 | Privacidade | Nenhum dado pessoal é salvo; o orçamento e a localização só passam pela requisição | Manter assim; com o Gemini gratuito, avisar que as mensagens vão para o Google |
 

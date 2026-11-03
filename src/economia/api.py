@@ -11,6 +11,7 @@ from typing import Literal
 
 import httpx
 from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -19,6 +20,7 @@ from .agentes import Orquestrador
 from .cardapio import NOMES
 from .dados import carregar, preco_por_kg
 from .explicacao import explicar
+from .limites import limitador_do_ambiente
 from .llm import cliente_do_ambiente
 from .metas import DIAS_POR_PERIODO, NOMES_RESTRICOES, RESTRICOES
 from .otimizador import Cesta, Pedido
@@ -31,11 +33,18 @@ app = FastAPI(title="EconoMIA", description="Cesta de compras econômica e equil
 base = carregar()
 conhecimento = BaseConhecimento(base)
 orquestrador = Orquestrador(base, conhecimento, cliente_do_ambiente())
+limitador = limitador_do_ambiente()
 
 
 @app.middleware("http")
-async def revalidar_site(request: Request, call_next):
-    """Faz o navegador conferir se o site mudou; senão, ele continua com o app.js antigo depois de uma atualização."""
+async def limitar_e_revalidar(request: Request, call_next):
+    """Aplica o limite por IP e faz o navegador conferir se o site mudou.
+
+    Sem a revalidação, ele continua com o app.js antigo depois de uma atualização.
+    """
+    ip = request.client.host if request.client else "desconhecido"
+    if limitador and not limitador.permitir(ip, request.url.path):
+        return JSONResponse({"detail": "Muitas tentativas em pouco tempo. Aguarde um minuto e tente de novo."}, status_code=429)
     resposta = await call_next(request)
     if not request.url.path.startswith("/api/"):
         resposta.headers["Cache-Control"] = "no-cache"

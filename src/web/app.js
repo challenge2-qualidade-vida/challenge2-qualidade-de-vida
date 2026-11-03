@@ -98,9 +98,32 @@ function anel(pct, cor) {
   return a;
 }
 
+// Última cesta (tópico 20): guardada só neste aparelho, para o Início continuar preenchido.
+const CHAVE_CESTA = "economia-ultima-cesta";
+
+function guardarUltimaCesta(plano, pedido) {
+  try {
+    localStorage.setItem(CHAVE_CESTA, JSON.stringify({ plano, pedido, quando: new Date().toISOString() }));
+  } catch { /* navegação privada: o app segue funcionando sem guardar */ }
+}
+
+function restaurarUltimaCesta() {
+  try {
+    const salvo = JSON.parse(localStorage.getItem(CHAVE_CESTA));
+    // Preço muda: mostrar uma cesta antiga como se fosse atual enganaria.
+    if (!salvo?.plano?.recomendacao || !salvo.plano.cesta_recomendada.mercados.every((m) => mercados[m])) return;
+    mostrarPlano(salvo.plano, { em_casa: [], ...salvo.pedido }, false);
+    atualizarInicio(salvo.plano, salvo.pedido);
+    const dias = Math.floor((Date.now() - new Date(salvo.quando)) / 86400000);
+    if (dias >= 1) falarMascote("📅", `Sua última cesta é de ${new Date(salvo.quando).toLocaleDateString("pt-BR")}. Os preços podem ter mudado: monte de novo para conferir.`);
+  } catch { /* dado guardado inválido: começa do zero */ }
+}
+
 function atualizarInicio(plano, pedido) {
   if (!plano.recomendacao) {
-    falarMascote("😿", `Com ${reais(pedido.orcamento)} não dá para cumprir as metas. Precisaria de ${reais(plano.minimo_necessario ?? 0)}. Vamos tentar um período menor?`);
+    falarMascote("😿", pedido.orcamento && plano.minimo_necessario
+      ? `Com ${reais(pedido.orcamento)} não dá para cumprir as metas. Precisaria de ${reais(plano.minimo_necessario)}. Vamos tentar um período menor?`
+      : "Com essas escolhas não dá para cumprir as metas. Vamos rever as restrições ou os alimentos que saíram da cesta?");
     $("#inicio-resumo").hidden = true;
     return;
   }
@@ -147,6 +170,7 @@ async function iniciar() {
     lista.append(el("label", { class: "chip" }, el("input", { type: "checkbox", name: "restricoes", value: r.id }), r.nome));
   }
 
+  restaurarUltimaCesta();
   mostrarDica();
   carregarPrecos();
   carregarStatusLLM();
@@ -226,6 +250,7 @@ $("#form-cesta").addEventListener("submit", async (evento) => {
     });
     mostrarPlano(plano, pedido);
     atualizarInicio(plano, pedido);
+    guardarUltimaCesta(plano, pedido);
   } catch (e) {
     $("#erro").textContent = "Não foi possível montar a cesta: " + e.message;
     $("#erro").hidden = false;
@@ -254,15 +279,18 @@ function cartaoOpcao(titulo, cesta, recomendada, extra) {
   return c;
 }
 
-function mostrarPlano(plano, pedido) {
+function mostrarPlano(plano, pedido, rolar = true) {
   const resumo = $("#resumo");
   resumo.replaceChildren();
   $("#explicacao").replaceChildren(...plano.explicacao.map((f) => el("li", {}, f)));
 
+  const areaCardapio = $("#botao-cardapio").closest(".cartao");
+  areaCardapio.hidden = !plano.recomendacao;
   if (!plano.recomendacao) {
     resumo.append(cartaoOpcao("Orçamento informado", null, false));
     $("#metas").replaceChildren();
     $("#itens").replaceChildren();
+    cestaAtual = null;
     $("#resultado").hidden = false;
     return;
   }
@@ -290,7 +318,7 @@ function mostrarPlano(plano, pedido) {
   $("#ingredientes-cesta").replaceChildren(...unicos.map(([id, nome]) => el("span", { class: "ingrediente" }, fotoAlimento(id, "foto-ingrediente"), nome)));
   $("#cardapio").replaceChildren();
   $("#resultado").hidden = false;
-  $("#resultado").scrollIntoView({ behavior: "smooth", block: "start" });
+  if (rolar) $("#resultado").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 const CORES_METAS = { kcal: "var(--marca)", proteina_g: "var(--roxo)", fibra_g: "var(--azul)", flv_g: "var(--verde)" };
@@ -491,6 +519,13 @@ $("#cfg-regiao").addEventListener("change", (e) => {
   salvarConfig({ regiao: e.target.value });
   carregarRadar();
 });
+$("#cfg-apagar").addEventListener("click", () => {
+  try {
+    localStorage.clear();
+  } catch { /* nada guardado */ }
+  location.reload();
+});
+
 $("#cfg-restaurar").addEventListener("click", () => {
   config = { ...CONFIG_PADRAO };
   salvarConfig({});
@@ -988,6 +1023,10 @@ $("#form-chat").addEventListener("submit", (evento) => {
 });
 
 document.querySelectorAll(".sugestao").forEach((b) => b.addEventListener("click", () => enviarChat(b.textContent)));
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch(() => { /* o site funciona sem o modo offline */ });
+}
 
 iniciar().catch((e) => {
   $("#erro").textContent = "Não foi possível conectar à API: " + e.message;

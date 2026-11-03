@@ -30,6 +30,7 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 17 | Fotos dos alimentos | Foto real de licença livre em todo alimento recomendado ou com preço (lista, preços, ranking, chat, cardápio, cupom), com créditos | Wikimedia Commons (API) + Pillow | ✅ Feito | [17](17-fotos-alimentos.md) |
 | 18 | Cardápio seguro | Refeições montadas por código, só com o que está na cesta, sem alimento cru; cartões por dia | Python + JSON de receitas | ✅ Feito | [18](18-cardapio-seguro.md) |
 | 19 | Trocar item e o que tenho em casa | Refaz a cesta sem um alimento ou descontando o que já existe em casa, mantendo as metas | SciPy (`milp`) | ✅ Feito | [19](19-trocar-e-em-casa.md) |
+| 20 | App instalável e proteção | PWA, última cesta no aparelho, apagar dados, limite por IP, testes no GitHub | Service worker, localStorage, GitHub Actions | ✅ Feito | [20](20-pwa-e-protecao.md) |
 
 A ordem segue o roadmap das semanas: tópicos 1–5 formam o núcleo do app (semanas 1–2), 6–8 cobrem RAG e o experimento (semanas 2–3), 9 os agentes (semana 4), 10 a multimodalidade (semana 5) e 11–12 a integração, os testes e a entrega (semanas 6–7).
 
@@ -40,7 +41,7 @@ git checkout develop_gui
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-pytest                                               # 214 testes, ~12 s
+pytest                                               # 218 testes, ~12 s
 ollama pull qwen2.5:7b                               # opcional: LLM local e gratuito
 uvicorn economia.api:app --app-dir src --reload
 ```
@@ -99,11 +100,13 @@ src/economia/
   metricas.py                métricas do projeto              → tópico 11
   cardapio.py                cardápio a partir da cesta       → tópico 18
   geo.py                     localização e ranking de proteínas → tópico 13
+  limites.py                 limite de requisições por IP     → tópico 20
 experimentos/
   llm_x_rag.py               experimento LLM × LLM + RAG      → tópico 8
   metricas.py                gera docs/semana-7/metricas.md   → tópico 11
 src/web/
   index.html, estilo.css, app.js   o site                     → tópico 5
+  manifest.webmanifest, sw.js      app instalável             → tópico 20
 tests/
   test_dados.py              testes de integridade das bases  → tópico 1
   test_otimizador.py         testes do otimizador             → tópico 2

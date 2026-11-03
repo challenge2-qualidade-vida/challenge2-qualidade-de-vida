@@ -235,3 +235,12 @@ def test_cesta_recusa_alimento_desconhecido(cliente):
 def test_opcoes_lista_alimentos(cliente):
     alimentos = cliente.get("/api/opcoes").json()["alimentos"]
     assert {"id": "arroz", "nome": "arroz"} in alimentos
+
+
+def test_site_e_instalavel(cliente):
+    manifesto = cliente.get("/manifest.webmanifest")
+    assert manifesto.status_code == 200
+    assert {"192x192", "512x512"} == {i["sizes"] for i in manifesto.json()["icons"]}
+    for icone in manifesto.json()["icons"]:
+        assert cliente.get("/" + icone["src"]).status_code == 200
+    assert "javascript" in cliente.get("/sw.js").headers["content-type"]

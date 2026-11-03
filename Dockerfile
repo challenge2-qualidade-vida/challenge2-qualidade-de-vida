@@ -19,4 +19,4 @@ RUN useradd --create-home economia && chown -R economia /app
 USER economia
 
 EXPOSE 8000
-CMD ["sh", "-c", "uvicorn economia.api:app --app-dir src --host 0.0.0.0 --port ${PORT}"]
+CMD ["sh", "-c", "uvicorn economia.api:app --app-dir src --host 0.0.0.0 --port ${PORT} --proxy-headers --forwarded-allow-ips='*'"]
