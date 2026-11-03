@@ -21,7 +21,7 @@ RAIZ = Path(__file__).resolve().parents[1]
 PASTA = RAIZ / "src" / "web" / "img" / "alimentos"
 ARQ_CREDITOS = RAIZ / "data" / "alimentos" / "imagens.json"
 API = "https://commons.wikimedia.org/w/api.php"
-CABECALHO = {"User-Agent": "EconoMIA/0.1 (https://github.com/dida0982/challenge2-qualidade-de-vida) python-httpx"}
+CABECALHO = {"User-Agent": "EconoMIA/0.1 (https://github.com/challenge2-qualidade-vida/challenge2-qualidade-de-vida) python-httpx"}
 
 # Busca no Commons e qual opção usar (0 = primeira). As opções foram escolhidas
 # olhando uma folha com as 6 primeiras fotos livres de cada busca: a primeira
