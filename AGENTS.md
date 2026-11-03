@@ -30,7 +30,7 @@ Toda vez que uma decisão for tomada ou proposta (biblioteca, LLM, banco, arquit
 
 1. **Pergunte a justificativa** à pessoa. Não escreva a justificativa por conta própria.
 2. **Registre** em `docs/decisoes.md`, com alternativas, justificativa, quem decidiu e validação **Pendente**. Sem justificativa, o status é **Sem justificativa** e a decisão fica pendente.
-3. **Proponha a validação** da justificativa por pesquisa, feita por IA (com os links citados) ou manualmente pela equipe. Depois, marque a validação como **Validada** (com as fontes) ou **Contestada** (mostrando o que foi encontrado e perguntando se a decisão continua).
+3. **Proponha a validação** da justificativa por pesquisa, feita por IA (com os links citados) ou manualmente pela equipe. Justificativa confirmada pela pessoa, ainda sem pesquisa, fica como **Confirmada**. Depois da pesquisa, marque a validação como **Validada** (com as fontes) ou **Contestada** (mostrando o que foi encontrado e perguntando se a decisão continua).
 
 No Claude Code, esse fluxo está na skill [registrar-decisao](.claude/skills/registrar-decisao/SKILL.md).
 

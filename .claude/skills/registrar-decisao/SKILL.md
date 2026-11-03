@@ -24,7 +24,7 @@ Toda decisão do projeto precisa de uma justificativa dada pela equipe. Sem just
 5. **Propor a validação.** Pergunte se a justificativa deve ser validada agora e por qual caminho:
    - **IA:** pesquisa em documentação oficial, artigos e benchmarks, citando os links encontrados;
    - **Manual:** a equipe pesquisa e informa as fontes depois.
-6. **Atualizar a validação.** Depois da pesquisa, troque o status da coluna de validação:
+6. **Atualizar a validação.** Se a pessoa revisar e confirmar a justificativa, sem pesquisa ainda, o status é **Confirmada**. Depois da pesquisa, troque o status da coluna de validação:
    - **Validada**, com as fontes (links ou referências);
    - **Contestada**, quando a pesquisa contradiz a justificativa. Nesse caso, mostre o que foi encontrado e pergunte se a decisão será mantida, revista ou trocada. Não altere a decisão sem a confirmação da pessoa.
 
