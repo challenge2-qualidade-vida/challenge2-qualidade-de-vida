@@ -104,7 +104,7 @@ O método resiste a preços reais, mas **estes não são preços do DF**, e 16 a
 | Leite atribuído à TACO, que não publica o valor | Conferência com o original | Fonte própria declarada |
 | Frases atribuídas ao Guia sem respaldo | Conferência com o original | Texto corrigido ou removido |
 
-**Testes automatizados:** 220 passando, sem chamar LLM nem internet. Eles não pegaram o erro do feijão cru porque usam um LLM falso; o erro apareceu no teste com o LLM real, e essa diferença é um aprendizado do projeto.
+**Testes automatizados:** 222 passando, sem chamar LLM nem internet. Eles não pegaram o erro do feijão cru porque usam um LLM falso; o erro apareceu no teste com o LLM real, e essa diferença é um aprendizado do projeto.
 
 ## 4. Riscos e limitações
 

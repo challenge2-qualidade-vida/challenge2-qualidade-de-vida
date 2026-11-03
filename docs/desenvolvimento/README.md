@@ -34,6 +34,7 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 21 | Conferência das fontes | TACO, DIEESE e Guia Alimentar comparados com o original; teste com preços reais do Procon | pypdf (fora do projeto), Python | ✅ Feito | [21](21-conferencia-das-fontes.md) |
 | 22 | Entregáveis finais | Documentos das semanas, relatório final e apresentação | Markdown, Slides | ✅ Feito | [22](22-entregaveis-finais.md) |
 | 23 | Layout responsivo | Celular, tablet e computador, com navegação lateral e colunas em telas grandes | CSS puro | ✅ Feito | [23](23-layout-responsivo.md) |
+| 24 | Visual com 3D e animações | Moedas que viram comida, cesta 3D com os alimentos calculados, radar, cupom e opção de desligar | Three.js, GSAP e Lenis | ✅ Feito (falta testar em celular real) | [24](24-visual-3d.md) |
 
 A ordem segue o roadmap das semanas: tópicos 1–5 formam o núcleo do app (semanas 1–2), 6–8 cobrem RAG e o experimento (semanas 2–3), 9 os agentes (semana 4), 10 a multimodalidade (semana 5) e 11–12 a integração, os testes e a entrega (semanas 6–7).
 
@@ -44,7 +45,7 @@ git checkout develop_gui
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-pytest                                               # 220 testes, ~12 s
+pytest                                               # 222 testes, ~8 s
 ollama pull qwen2.5:7b                               # opcional: LLM local e gratuito
 uvicorn economia.api:app --app-dir src --reload
 ```
@@ -113,6 +114,7 @@ experimentos/
 src/web/
   index.html, estilo.css, app.js   o site                     → tópico 5
   manifest.webmanifest, sw.js      app instalável             → tópico 20
+  cena3d.js, animacoes.js, vendor/ 3D e animações             → tópico 24
 tests/
   test_dados.py              testes de integridade das bases  → tópico 1
   test_otimizador.py         testes do otimizador             → tópico 2
