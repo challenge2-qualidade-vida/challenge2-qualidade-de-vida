@@ -31,6 +31,10 @@ class Pedido:
     pessoas: int
     periodo: str = "mes"
     restricoes: tuple[str, ...] = ()
+    # Alimentos que o usuário não quer nesta cesta (botão "Trocar").
+    sem_alimentos: tuple[str, ...] = ()
+    # O que já tem em casa: (alimento, gramas). Conta para as metas e não custa nada.
+    em_casa: tuple[tuple[str, float], ...] = ()
 
     @property
     def dias(self) -> int:
@@ -63,23 +67,45 @@ class Cesta:
     metas: dict[str, float]
     dentro_do_orcamento: bool
     custo_por_mercado: dict[str, float] = field(default_factory=dict)
+    # Parte de `obtido` que veio do que o usuário já tinha em casa.
+    em_casa: dict[str, float] = field(default_factory=dict)
+
+    def _comprado(self, nutriente: str) -> float:
+        return self.obtido[nutriente] - self.em_casa.get(nutriente, 0)
 
     @property
     def custo_por_1000_kcal(self) -> float:
-        return self.custo_total / self.obtido["kcal"] * 1000
+        return self.custo_total / self._comprado("kcal") * 1000 if self._comprado("kcal") > 0 else 0.0
 
     @property
     def custo_por_g_proteina(self) -> float:
-        return self.custo_total / self.obtido["proteina_g"]
+        return self.custo_total / self._comprado("proteina_g") if self._comprado("proteina_g") > 0 else 0.0
 
 
-def _ofertas(base: Base, mercados: tuple[str, ...], excluidas: set[str]) -> list[tuple[Produto, Preco]]:
+def _nutrientes_em_casa(base: Base, pedido: Pedido, excluidas: set[str]) -> tuple[dict[str, float], float]:
+    """Nutrientes do que já está em casa e o saldo de proteína animal (ver a meta de 20%)."""
+    total = {n: 0.0 for n in NUTRIENTES} | {"flv_g": 0.0}
+    saldo_animal = 0.0
+    for alimento_id, g in pedido.em_casa:
+        a = base.alimentos[alimento_id]
+        if excluidas & set(a.tags):
+            continue
+        total["kcal"] += a.kcal * g / 100
+        total["proteina_g"] += a.proteina_g * g / 100
+        total["fibra_g"] += a.fibra_g * g / 100
+        if a.grupo == "flv":
+            total["flv_g"] += g
+        saldo_animal += ((a.grupo in GRUPOS_PROTEINA_ANIMAL) - PROTEINA_ANIMAL_MINIMA) * a.proteina_g * g / 100
+    return total, saldo_animal
+
+
+def _ofertas(base: Base, mercados: tuple[str, ...], excluidas: set[str], sem_alimentos: tuple[str, ...] = ()) -> list[tuple[Produto, Preco]]:
     ofertas = []
     for pr in base.precos:
         if pr.mercado not in mercados:
             continue
         produto = base.produtos[pr.produto]
-        if excluidas & set(base.alimentos[produto.alimento].tags):
+        if produto.alimento in sem_alimentos or excluidas & set(base.alimentos[produto.alimento].tags):
             continue
         ofertas.append((produto, pr))
     return ofertas
@@ -90,7 +116,9 @@ def montar_cesta(base: Base, pedido: Pedido, mercados: tuple[str, ...], respeita
     if pedido.pessoas < 1:
         raise ValueError("pessoas deve ser pelo menos 1")
     metas = metas_totais(pedido.pessoas, pedido.dias)
-    ofertas = _ofertas(base, mercados, tags_excluidas(list(pedido.restricoes)))
+    excluidas = tags_excluidas(list(pedido.restricoes))
+    casa, saldo_animal = _nutrientes_em_casa(base, pedido, excluidas)
+    ofertas = _ofertas(base, mercados, excluidas, pedido.sem_alimentos)
     if not ofertas:
         return None
 
@@ -112,8 +140,8 @@ def montar_cesta(base: Base, pedido: Pedido, mercados: tuple[str, ...], respeita
         maximos.append(maximo)
 
     for n in NUTRIENTES:
-        restringir(nutr[n], minimo=metas[n])
-    restringir(flv, minimo=metas["flv_g"])
+        restringir(nutr[n], minimo=metas[n] - casa[n])
+    restringir(flv, minimo=metas["flv_g"] - casa["flv_g"])
 
     # Variedade. O limite nunca fica abaixo de uma embalagem, senão cestas
     # pequenas (1 pessoa, 1 semana) ficariam impossíveis de montar.
@@ -134,7 +162,7 @@ def montar_cesta(base: Base, pedido: Pedido, mercados: tuple[str, ...], respeita
     animal = np.array([a.grupo in GRUPOS_PROTEINA_ANIMAL for a in alimentos], dtype=float)
     if animal.any():
         # proteína animal ≥ 20% da proteína total  ⇔  Σ (animal − 0,2) × proteína × x ≥ 0
-        restringir((animal - PROTEINA_ANIMAL_MINIMA) * nutr["proteina_g"], minimo=0)
+        restringir((animal - PROTEINA_ANIMAL_MINIMA) * nutr["proteina_g"], minimo=-saldo_animal)
 
     if respeitar_orcamento and pedido.orcamento is not None:
         restringir(custo, maximo=pedido.orcamento)
@@ -174,8 +202,8 @@ def montar_cesta(base: Base, pedido: Pedido, mercados: tuple[str, ...], respeita
     itens.sort(key=lambda i: (i.mercado_id, i.grupo, i.produto))
 
     total = round(float(custo @ qtd), 2)
-    obtido = {n: float(nutr[n] @ qtd) for n in NUTRIENTES}
-    obtido["flv_g"] = float(flv @ qtd)
+    obtido = {n: float(nutr[n] @ qtd) + casa[n] for n in NUTRIENTES}
+    obtido["flv_g"] = float(flv @ qtd) + casa["flv_g"]
     por_mercado: dict[str, float] = {}
     for i in itens:
         por_mercado[i.mercado_id] = round(por_mercado.get(i.mercado_id, 0) + i.subtotal, 2)
@@ -188,4 +216,5 @@ def montar_cesta(base: Base, pedido: Pedido, mercados: tuple[str, ...], respeita
         metas=metas,
         dentro_do_orcamento=pedido.orcamento is None or total <= pedido.orcamento + 1e-6,
         custo_por_mercado=por_mercado,
+        em_casa=casa if pedido.em_casa else {},
     )

@@ -60,7 +60,7 @@ As três verificações de fonte nasceram do experimento: na pergunta sobre a ac
 
 ### Cardápio a partir da cesta (funcionalidade 3 do MVP)
 
-Depois de montar a cesta, o botão **Sugerir cardápio** envia a lista de alimentos ao Miau-ricio. Ele recebe as receitas da base que combinam com esses alimentos e monta 3 dias de almoço e jantar **usando só o que está na lista**. A Mia confere as restrições. Sem LLM, o app lista as receitas da base que usam alimentos da cesta.
+Depois de montar a cesta, o botão **Sugerir cardápio** envia a lista de alimentos ao Miau-ricio, que monta as refeições com receitas cadastradas, **só com o que está na lista**. A Mia confere o resultado. Desde o [tópico 18](18-cardapio-seguro.md), essa parte não usa LLM: ele chegou a sugerir feijão cru.
 
 Isso fecha o ciclo **orçamento → cesta → cardápio** do README.
 
@@ -93,8 +93,7 @@ D empata com B na correção, mas **remove a alucinação mais grave** (fonte fa
 
 - A Mia confere números e fontes, **não o sentido** da frase. Uma afirmação errada, sem número e citando um trecho real, passa.
 - O roteamento por palavras-chave pode mandar uma pergunta para o agente errado se ela misturar assuntos ("quanto custa uma refeição saudável?"). O agente ainda responde, só que com as ferramentas de outro.
-- O cardápio leva cerca de 40 s com o `qwen2.5:7b` local. O modelo às vezes responde em Markdown (`###`, `**`), então o site remove essas marcações antes de mostrar.
-- O cardápio depende do LLM seguir a regra "só alimentos da lista". A Mia confere as restrições, mas não se apareceu um ingrediente que não foi comprado.
+- O modelo às vezes responde em Markdown (`###`, `**`), então o site remove essas marcações antes de mostrar.
 
 ## Testes
 

@@ -29,6 +29,7 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 16 | Configurações e raio | Raio de busca de 1 a 100 km (padrão 10) com radar, custo por km, ordenação, tema; mercados com selos de mais perto, menor preço e melhor custo-benefício | localStorage + SVG, sem biblioteca | ✅ Feito | [16](16-configuracoes-raio.md) |
 | 17 | Fotos dos alimentos | Foto real de licença livre em todo alimento recomendado ou com preço (lista, preços, ranking, chat, cardápio, cupom), com créditos | Wikimedia Commons (API) + Pillow | ✅ Feito | [17](17-fotos-alimentos.md) |
 | 18 | Cardápio seguro | Refeições montadas por código, só com o que está na cesta, sem alimento cru; cartões por dia | Python + JSON de receitas | ✅ Feito | [18](18-cardapio-seguro.md) |
+| 19 | Trocar item e o que tenho em casa | Refaz a cesta sem um alimento ou descontando o que já existe em casa, mantendo as metas | SciPy (`milp`) | ✅ Feito | [19](19-trocar-e-em-casa.md) |
 
 A ordem segue o roadmap das semanas: tópicos 1–5 formam o núcleo do app (semanas 1–2), 6–8 cobrem RAG e o experimento (semanas 2–3), 9 os agentes (semana 4), 10 a multimodalidade (semana 5) e 11–12 a integração, os testes e a entrega (semanas 6–7).
 
@@ -39,7 +40,7 @@ git checkout develop_gui
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-pytest                                               # 206 testes, ~11 s
+pytest                                               # 214 testes, ~12 s
 ollama pull qwen2.5:7b                               # opcional: LLM local e gratuito
 uvicorn economia.api:app --app-dir src --reload
 ```

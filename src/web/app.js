@@ -139,6 +139,9 @@ async function iniciar() {
     aviso.hidden = false;
   }
 
+  nomesAlimentos = Object.fromEntries(opcoes.alimentos.map((a) => [a.id, a.nome]));
+  $("#em-casa-alimento").replaceChildren(...opcoes.alimentos.map((a) => el("option", { value: a.id }, a.nome)));
+
   const lista = $("#lista-restricoes");
   for (const r of opcoes.restricoes) {
     lista.append(el("label", { class: "chip" }, el("input", { type: "checkbox", name: "restricoes", value: r.id }), r.nome));
@@ -154,6 +157,47 @@ async function iniciar() {
 }
 
 // ---------- Cesta ----------
+// Alimentos que o usuário tirou da cesta e o que já tem em casa (tópico 19).
+const semAlimentos = new Map();
+const emCasa = new Map();
+let nomesAlimentos = {};
+
+function chipRemovivel(texto, rotulo, aoRemover) {
+  const b = el("button", { type: "button", class: "chip chip-remover", "aria-label": rotulo }, `${texto} ✕`);
+  b.addEventListener("click", aoRemover);
+  return b;
+}
+
+function mostrarAjustesCesta() {
+  $("#sem-alimentos-area").hidden = semAlimentos.size === 0;
+  $("#sem-alimentos-lista").replaceChildren(...[...semAlimentos].map(([id, nome]) =>
+    chipRemovivel(nome, `Devolver ${nome} à cesta`, () => {
+      semAlimentos.delete(id);
+      mostrarAjustesCesta();
+      $("#form-cesta").requestSubmit();
+    })));
+  $("#em-casa-lista").replaceChildren(...[...emCasa].map(([id, kg]) =>
+    chipRemovivel(`${String(kg).replace(".", ",")} kg de ${nomesAlimentos[id]}`, `Remover ${nomesAlimentos[id]} de casa`, () => {
+      emCasa.delete(id);
+      mostrarAjustesCesta();
+    })));
+}
+
+$("#em-casa-adicionar").addEventListener("click", () => {
+  const kg = Number($("#em-casa-kg").value);
+  if (!(kg > 0 && kg <= 200)) return;
+  const id = $("#em-casa-alimento").value;
+  emCasa.set(id, kg);
+  mostrarAjustesCesta();
+});
+
+function trocarAlimento(id, nome) {
+  semAlimentos.set(id, nome);
+  mostrarAjustesCesta();
+  $("#form-cesta").requestSubmit();
+  $("#form-cesta").scrollIntoView({ behavior: "smooth", block: "end" });
+}
+
 $("#form-cesta").addEventListener("submit", async (evento) => {
   evento.preventDefault();
   const form = new FormData(evento.target);
@@ -166,6 +210,8 @@ $("#form-cesta").addEventListener("submit", async (evento) => {
     custo_deslocamento: Number(form.get("custo_deslocamento") || 0),
   };
   if (mercadosPerto) pedido.mercados = mercadosPerto.ids;
+  pedido.sem_alimentos = [...semAlimentos.keys()];
+  pedido.em_casa = [...emCasa.entries()].map(([alimento, kg]) => ({ alimento, gramas: Math.round(kg * 1000) }));
 
   const botao = evento.target.querySelector("button[type=submit]");
   botao.disabled = true;
@@ -238,8 +284,9 @@ function mostrarPlano(plano, pedido) {
 
   mostrarMetas(cesta);
   mostrarItens(cesta);
-  cestaAtual = { alimentos: [...new Set(cesta.itens.map((i) => i.alimento_id))], restricoes: pedido.restricoes };
-  const unicos = [...new Map(cesta.itens.map((i) => [i.alimento_id, i.alimento.split(" (")[0]])).entries()];
+  const casa = pedido.em_casa.map((i) => i.alimento).filter((id) => !cesta.itens.some((x) => x.alimento_id === id));
+  cestaAtual = { alimentos: [...new Set([...cesta.itens.map((i) => i.alimento_id), ...casa])], restricoes: pedido.restricoes };
+  const unicos = [...new Map([...cesta.itens.map((i) => [i.alimento_id, i.alimento.split(" (")[0]]), ...casa.map((id) => [id, nomesAlimentos[id]])]).entries()];
   $("#ingredientes-cesta").replaceChildren(...unicos.map(([id, nome]) => el("span", { class: "ingrediente" }, fotoAlimento(id, "foto-ingrediente"), nome)));
   $("#cardapio").replaceChildren();
   $("#resultado").hidden = false;
@@ -278,10 +325,18 @@ function mostrarItens(cesta) {
         el("span", { class: "item-nome" }, i.produto),
         el("span", { class: "item-detalhe" }, `${i.quantidade} × ${reais(i.preco_unitario)} · ${reais(i.preco_kg)}/kg`),
         el("span", { class: "item-detalhe" }, `Preço de ${dataBR(i.data_preco)} · fonte: ${i.fonte_preco}`),
+        botaoTrocar(i),
       ),
       el("span", { class: "item-valor" }, reais(i.subtotal), el("small", {}, NOMES_GRUPOS[i.grupo] ?? i.grupo)),
     ))));
   }
+}
+
+function botaoTrocar(item) {
+  const nome = item.alimento.split(" (")[0];
+  const b = el("button", { type: "button", class: "item-trocar", "aria-label": `Trocar ${nome} por outra opção` }, "🔄 Trocar");
+  b.addEventListener("click", () => trocarAlimento(item.alimento_id, nome));
+  return b;
 }
 
 function textoEtapas(etapas) {

@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field
 
 from . import geo, nfce
 from .agentes import Orquestrador
+from .cardapio import NOMES
 from .dados import carregar, preco_por_kg
 from .explicacao import explicar
 from .llm import cliente_do_ambiente
@@ -81,6 +82,11 @@ class ConfirmacaoNFCe(BaseModel):
     itens: list[ItemConfirmado] = Field(..., min_length=1, max_length=200)
 
 
+class ItemEmCasa(BaseModel):
+    alimento: str
+    gramas: float = Field(..., gt=0, le=200000)
+
+
 class PedidoCesta(BaseModel):
     orcamento: float | None = Field(None, gt=0, description="Orçamento em R$. Vazio = sem limite.")
     pessoas: int = Field(..., ge=1, le=20)
@@ -88,6 +94,8 @@ class PedidoCesta(BaseModel):
     restricoes: list[str] = []
     custo_deslocamento: float = Field(0, ge=0, description="Custo de ir a um segundo mercado, em R$.")
     mercados: list[str] | None = Field(None, description="Só estes mercados (ex.: os próximos do usuário). Vazio = todos.")
+    sem_alimentos: list[str] = Field([], max_length=28, description="Alimentos que devem ficar de fora (botão Trocar).")
+    em_casa: list[ItemEmCasa] = Field([], max_length=28, description="O que o usuário já tem em casa. Conta para as metas e não custa nada.")
 
 
 def cesta_json(cesta: Cesta | None) -> dict | None:
@@ -104,7 +112,11 @@ def montar_resposta(pedido: PedidoCesta) -> dict:
     invalidas = set(pedido.restricoes) - RESTRICOES.keys()
     if invalidas:
         raise HTTPException(422, f"Restrição desconhecida: {', '.join(sorted(invalidas))}")
-    p = Pedido(pedido.orcamento, pedido.pessoas, pedido.periodo, tuple(pedido.restricoes))
+    desconhecidos = (set(pedido.sem_alimentos) | {i.alimento for i in pedido.em_casa}) - base.alimentos.keys()
+    if desconhecidos:
+        raise HTTPException(422, f"Alimento desconhecido: {', '.join(sorted(desconhecidos))}")
+    p = Pedido(pedido.orcamento, pedido.pessoas, pedido.periodo, tuple(pedido.restricoes),
+               tuple(pedido.sem_alimentos), tuple((i.alimento, i.gramas) for i in pedido.em_casa))
     if pedido.mercados is not None and not set(pedido.mercados) & base.mercados.keys():
         raise HTTPException(422, "Nenhum dos mercados informados existe na base.")
     plano = planejar(base, p, pedido.custo_deslocamento, pedido.mercados)
@@ -133,6 +145,7 @@ def opcoes():
     return {
         "mercados": [asdict(m) for m in base.mercados.values()],
         "restricoes": [{"id": k, "nome": v} for k, v in NOMES_RESTRICOES.items()],
+        "alimentos": sorted(({"id": k, "nome": v} for k, v in NOMES.items()), key=lambda a: a["nome"]),
         "periodos": [{"id": k, "dias": v} for k, v in DIAS_POR_PERIODO.items()],
         "aviso_dados": base.aviso,
     }

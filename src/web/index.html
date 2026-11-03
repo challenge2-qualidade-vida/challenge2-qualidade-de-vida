@@ -130,6 +130,28 @@
             <div id="lista-restricoes" class="chips"></div>
           </fieldset>
 
+          <details class="mais-opcoes" id="em-casa-opcoes">
+            <summary>🏠 O que já tenho em casa</summary>
+            <p class="nota">Conta para as metas e sai da conta das compras.</p>
+            <div class="em-casa-linha">
+              <label class="campo">
+                <span class="rotulo">Alimento</span>
+                <select id="em-casa-alimento" aria-label="Alimento que tenho em casa"></select>
+              </label>
+              <label class="campo">
+                <span class="rotulo">Quantos kg</span>
+                <input type="number" id="em-casa-kg" min="0.1" max="200" step="0.1" value="1" inputmode="decimal">
+              </label>
+              <button type="button" id="em-casa-adicionar" class="botao-secundario">Adicionar</button>
+            </div>
+            <div id="em-casa-lista" class="chips"></div>
+          </details>
+
+          <div id="sem-alimentos-area" class="campo" hidden>
+            <span class="rotulo">🔄 Fora desta cesta</span>
+            <div id="sem-alimentos-lista" class="chips"></div>
+          </div>
+
           <details class="mais-opcoes">
             <summary>Mais opções</summary>
             <label class="campo">

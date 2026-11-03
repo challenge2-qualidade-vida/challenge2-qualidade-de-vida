@@ -735,3 +735,11 @@ input:focus, select:focus { outline: none; border-color: var(--marca); }
 .cardapio-tipo { font-size: .8rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--marca); }
 .cardapio-fotos { display: flex; gap: 4px; flex-wrap: wrap; }
 .cardapio-preparo { font-size: .9rem; }
+
+/* Trocar item e o que tenho em casa (tópico 19) */
+.em-casa-linha { display: grid; grid-template-columns: 1fr 90px; gap: 8px; align-items: end; margin-bottom: 10px; }
+.em-casa-linha .botao-secundario { grid-column: 1 / -1; }
+.em-casa-linha select, .em-casa-linha input { width: 100%; min-width: 0; }
+.chip-remover { font: inherit; cursor: pointer; }
+.item-trocar { display: inline-block; margin-top: 4px; padding: 3px 10px; font: inherit; font-size: 0.78rem; font-weight: 700; color: var(--marca); background: transparent; border: 1px solid var(--borda); border-radius: 999px; cursor: pointer; }
+.item-trocar:focus-visible { outline: 2px solid var(--marca); }

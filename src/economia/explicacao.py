@@ -32,12 +32,12 @@ def _nomes(base: Base, ids) -> str:
 
 
 def _principais_fontes(cesta, nutriente: str, base: Base, n: int = 2) -> list[tuple[str, float]]:
-    total = cesta.obtido[nutriente]
     por_alimento: dict[str, float] = {}
     for item in cesta.itens:
         a = base.alimentos[item.alimento_id]
         valor = getattr(a, nutriente) * base.produtos[item.produto_id].embalagem_g / 100 * item.quantidade
         por_alimento[a.nome] = por_alimento.get(a.nome, 0) + valor
+    total = sum(por_alimento.values())
     ordenados = sorted(por_alimento.items(), key=lambda kv: kv[1], reverse=True)[:n]
     return [(nome, valor / total) for nome, valor in ordenados]
 
@@ -50,6 +50,10 @@ def explicar(plano: Plano, base: Base) -> list[str]:
     if p.restricoes:
         contexto += " (" + ", ".join(NOMES_RESTRICOES[r].lower() for r in p.restricoes) + ")"
     frases.append(contexto + ".")
+    if p.sem_alimentos:
+        frases.append("Você pediu para trocar: " + ", ".join(_nome_curto(base.alimentos[a].nome) for a in p.sem_alimentos) + ". As metas continuam valendo.")
+    if p.em_casa:
+        frases.append("Já descontamos o que você tem em casa: " + ", ".join(f"{g / 1000:.1f} kg de {_nome_curto(base.alimentos[a].nome)}".replace(".", ",") for a, g in p.em_casa) + ".")
 
     if plano.recomendacao is None:
         if plano.minimo_necessario is None:
@@ -59,7 +63,12 @@ def explicar(plano: Plano, base: Base) -> list[str]:
                 f"Com {reais(p.orcamento)} não dá para cumprir as metas nutricionais. "
                 f"A cesta mínima que cumpre as metas custa {reais(plano.minimo_necessario)}. "
                 "Você pode reduzir o período, ou rever as restrições."
+                + (" Os alimentos que você pediu para trocar também podem voltar." if p.sem_alimentos else "")
             )
+        return frases
+
+    if not plano.cesta_recomendada.itens:
+        frases.append("O que você tem em casa já cumpre as metas para esse período: não precisa comprar nada.")
         return frases
 
     um, dois = plano.um_mercado, plano.dois_mercados

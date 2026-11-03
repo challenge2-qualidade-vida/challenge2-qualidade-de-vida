@@ -78,3 +78,47 @@ def test_sem_nenhuma_fonte_animal_a_cesta_continua_viavel(base):
     cesta = montar_cesta(base, pedido, ("A",))
     assert cesta is not None
     assert not any(i.grupo in ("proteina_animal", "laticinios") for i in cesta.itens)
+
+
+# ---------- Trocar item e o que tenho em casa (tópico 19) ----------
+
+def _ids(cesta):
+    return {i.alimento_id for i in cesta.itens}
+
+
+def test_trocar_alimento_tira_da_cesta_e_mantem_as_metas(base):
+    original = montar_cesta(base, Pedido(None, 4), ("A",))
+    alvo = next(i.alimento_id for i in original.itens if i.grupo == "leguminosas")
+    nova = montar_cesta(base, Pedido(None, 4, sem_alimentos=(alvo,)), ("A",))
+    assert alvo not in _ids(nova)
+    assert nova.custo_total >= original.custo_total
+    for chave, meta in nova.metas.items():
+        assert nova.obtido[chave] >= meta - 1e-6, chave
+
+
+def test_o_que_tem_em_casa_barateia_e_conta_para_as_metas(base):
+    normal = montar_cesta(base, Pedido(None, 2), ("A",))
+    casa = montar_cesta(base, Pedido(None, 2, em_casa=(("arroz", 5000.0), ("feijao_carioca", 3000.0))), ("A",))
+    assert casa.custo_total < normal.custo_total
+    for chave, meta in casa.metas.items():
+        assert casa.obtido[chave] >= meta - 1e-6, chave
+    assert casa.em_casa["kcal"] == pytest.approx(358 * 50 + 329 * 30)
+
+
+def test_custo_por_kcal_nao_conta_o_que_estava_em_casa(base):
+    casa = montar_cesta(base, Pedido(None, 2, em_casa=(("arroz", 5000.0),)), ("A",))
+    comprado = casa.obtido["kcal"] - casa.em_casa["kcal"]
+    assert casa.custo_por_1000_kcal == pytest.approx(casa.custo_total / comprado * 1000)
+
+
+def test_alimento_em_casa_fora_da_restricao_nao_conta(base):
+    casa = montar_cesta(base, Pedido(None, 1, "semana", ("vegetariano",), em_casa=(("frango_coxa", 3000.0),)), ("A",))
+    assert casa.em_casa["proteina_g"] == 0
+
+
+def test_com_tudo_em_casa_nao_precisa_comprar_nada(base):
+    fartura = (("arroz", 50000.0), ("feijao_preto", 30000.0), ("ovo", 20000.0), ("banana", 10000.0), ("repolho", 10000.0))
+    cesta = montar_cesta(base, Pedido(None, 1, "semana", em_casa=fartura), ("A",))
+    assert cesta.itens == []
+    assert cesta.custo_total == 0
+    assert cesta.custo_por_1000_kcal == 0

@@ -211,3 +211,27 @@ def test_cesta_no_chat_traz_alimento_para_a_foto(cliente):
 def test_site_pede_revalidacao_para_nao_ficar_com_arquivo_antigo(cliente):
     assert cliente.get("/app.js").headers["cache-control"] == "no-cache"
     assert "cache-control" not in cliente.get("/api/saude").headers
+
+
+def test_cesta_com_troca_e_em_casa(cliente):
+    base_pedido = {"orcamento": None, "pessoas": 2, "periodo": "semana"}
+    normal = cliente.post("/api/cesta", json=base_pedido).json()
+    alvo = normal["cesta_recomendada"]["itens"][0]["alimento_id"]
+    trocada = cliente.post("/api/cesta", json={**base_pedido, "sem_alimentos": [alvo]}).json()
+    assert alvo not in {i["alimento_id"] for i in trocada["cesta_recomendada"]["itens"]}
+    assert any("pediu para trocar" in f for f in trocada["explicacao"])
+    casa = cliente.post("/api/cesta", json={**base_pedido, "em_casa": [{"alimento": "arroz", "gramas": 3000}]}).json()
+    assert casa["cesta_recomendada"]["custo_total"] < normal["cesta_recomendada"]["custo_total"]
+    assert any("3,0 kg de arroz" in f for f in casa["explicacao"])
+
+
+def test_cesta_recusa_alimento_desconhecido(cliente):
+    r = cliente.post("/api/cesta", json={"pessoas": 1, "sem_alimentos": ["pedra"]})
+    assert r.status_code == 422
+    r = cliente.post("/api/cesta", json={"pessoas": 1, "em_casa": [{"alimento": "pedra", "gramas": 10}]})
+    assert r.status_code == 422
+
+
+def test_opcoes_lista_alimentos(cliente):
+    alimentos = cliente.get("/api/opcoes").json()["alimentos"]
+    assert {"id": "arroz", "nome": "arroz"} in alimentos
