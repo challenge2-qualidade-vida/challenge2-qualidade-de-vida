@@ -459,7 +459,7 @@ def configurar_render(largura, altura, amostras):
 
 
 def pose(pivo, olhos, yaw, pitch, olhar=1.6):
-    """Graus: yaw > 0 olha para a direita da tela; pitch > 0 olha para cima."""
+    """Graus: yaw > 0 olha para a direita da tela; pitch > 0 olha para baixo."""
     pivo.rotation_euler = (math.radians(pitch), 0, math.radians(yaw))
     for o in olhos:
         o.rotation_euler = (math.radians(pitch * (olhar - 1)), 0, math.radians(yaw * (olhar - 1)))

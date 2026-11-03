@@ -1,13 +1,12 @@
 // Gatos em 3D (tópico 25): renderizados no Blender em uma grade de poses.
-// O site escolhe a pose conforme o mouse e mistura as vizinhas, então cabeça e olhos
-// acompanham o cursor com a qualidade de um filme, sem custo de 3D em tempo real.
+// O site escolhe a pose conforme o mouse, então cabeça e olhos acompanham o cursor
+// com a qualidade de um filme, sem custo de 3D em tempo real.
 // Até a grade carregar, e sem JavaScript, fica a imagem parada de frente.
 (() => {
-  const COLUNAS = 13, LINHAS = 9;
+  const COLUNAS = 13, LINHAS = 9, TROCA_MS = 80;
   const semMovimento = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const dados = navigator.connection?.saveData;
   const limite = (v, a, b) => Math.min(b, Math.max(a, v));
-  const suave = (t) => { const u = limite((t - 0.2) / 0.6, 0, 1); return u * u * (3 - 2 * u); };
   let mouseX = null, mouseY = null, ultimoMouse = 0;
 
   addEventListener("pointermove", (e) => {
@@ -31,23 +30,24 @@
       imgParada.replaceWith(canvas);
       const ctx = canvas.getContext("2d");
       let x = (COLUNAS - 1) / 2, y = (LINHAS - 1) / 2, fim = false;
+      let pose = [x, y], anterior = null, troca = 0;
 
-      function desenhar() {
-        const cx = limite(Math.floor(x), 0, COLUNAS - 2), cy = limite(Math.floor(y), 0, LINHAS - 2);
-        const fx = suave(x - cx), fy = suave(y - cy);
+      function pintar([c, l], alfa = 1) {
+        ctx.globalAlpha = alfa;
+        ctx.drawImage(grade, c * cw, l * ch, cw, ch, 0, 0, cw, ch);
+      }
+
+      // Parado, o gato mostra sempre uma pose pura: misturar poses vizinhas duplica olhos
+      // e boca. A mistura existe só durante a troca, rápida demais para o olho perceber.
+      function desenhar(agora) {
+        const t = anterior ? (agora - troca) / TROCA_MS : 1;
         ctx.clearRect(0, 0, cw, ch);
-        // Mistura as quatro poses vizinhas, cada uma com o peso certo, para a cabeça
-        // deslizar sem saltos. A curva encurta a mistura, que é quando os traços duplicam.
-        const poses = [
-          [cx, cy, (1 - fx) * (1 - fy)], [cx + 1, cy, fx * (1 - fy)],
-          [cx, cy + 1, (1 - fx) * fy], [cx + 1, cy + 1, fx * fy],
-        ];
-        let acumulado = 0;
-        for (const [c, l, peso] of poses) {
-          acumulado += peso;
-          if (peso < 0.01) continue;
-          ctx.globalAlpha = peso / acumulado;
-          ctx.drawImage(grade, c * cw, l * ch, cw, ch, 0, 0, cw, ch);
+        if (t < 1) {
+          pintar(anterior);
+          pintar(pose, t);
+        } else {
+          anterior = null;
+          pintar(pose);
         }
         ctx.globalAlpha = 1;
       }
@@ -69,13 +69,19 @@
           alvoX = Math.sin(agora / 3100) * 0.45;
           alvoY = Math.sin(agora / 4300) * 0.25;
         }
-        const nx = ((alvoX + 1) / 2) * (COLUNAS - 1), ny = ((alvoY + 1) / 2) * (LINHAS - 1);
-        const antes = [x, y];
+        // Na grade, a primeira linha olha para baixo: mouse em cima (alvoY -1) vai para a última.
+        const nx = ((alvoX + 1) / 2) * (COLUNAS - 1), ny = ((1 - alvoY) / 2) * (LINHAS - 1);
         x += (nx - x) * 0.09;
         y += (ny - y) * 0.09;
-        if (Math.abs(x - antes[0]) + Math.abs(y - antes[1]) > 0.0008) desenhar();
+        // A folga acima de 0,5 evita o gato ficar trocando de pose com o mouse quase parado.
+        if (Math.abs(x - pose[0]) > 0.6 || Math.abs(y - pose[1]) > 0.6) {
+          anterior = pose;
+          pose = [Math.round(x), Math.round(y)];
+          troca = agora;
+        }
+        if (anterior) desenhar(agora);
       }
-      desenhar();
+      pintar(pose);
       requestAnimationFrame(quadro);
     };
   }
