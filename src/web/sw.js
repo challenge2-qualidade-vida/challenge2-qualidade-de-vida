@@ -1,9 +1,9 @@
 // Service worker da EconoMIA (tópico 20): abre o app sem internet.
 // Sempre tenta a rede primeiro, para nunca mostrar preço velho quando há conexão.
 // A posição do usuário e as respostas do chat nunca são guardadas: só estas rotas da API entram no cache.
-const CACHE = "economia-v1";
+const CACHE = "economia-v2";
 const API_PERMITIDA = ["/api/opcoes", "/api/precos", "/api/creditos"];
-const ESSENCIAIS = ["./", "index.html", "estilo.css", "app.js", "manifest.webmanifest", "img/logo-gato.webp", "img/logo-nome.webp", "img/mia.webp"];
+const ESSENCIAIS = ["./", "index.html", "estilo.css", "app.js", "animacoes.js", "cena3d.js", "manifest.webmanifest", "img/logo-gato.webp", "img/logo-nome.webp", "img/mia.webp"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ESSENCIAIS)).then(() => self.skipWaiting()));

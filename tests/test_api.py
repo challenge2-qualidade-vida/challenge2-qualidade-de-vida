@@ -244,3 +244,20 @@ def test_site_e_instalavel(cliente):
     for icone in manifesto.json()["icons"]:
         assert cliente.get("/" + icone["src"]).status_code == 200
     assert "javascript" in cliente.get("/sw.js").headers["content-type"]
+
+
+def test_efeitos_ficam_no_site_e_vao_comprimidos(cliente):
+    tres = cliente.get("/vendor/three.min.js", headers={"Accept-Encoding": "gzip"})
+    assert tres.status_code == 200
+    assert tres.headers["content-encoding"] == "gzip"
+    assert "javascript" in tres.headers["content-type"]
+    pagina = cliente.get("/").text
+    for arquivo in ("cena3d.js", "animacoes.js", "vendor/gsap.min.js", "vendor/lenis.min.js"):
+        assert arquivo in pagina
+        assert cliente.get("/" + arquivo).status_code == 200
+
+
+def test_site_nao_baixa_o_3d_de_cara(cliente):
+    # O Three.js só vem por import dinâmico, depois de decidir se o aparelho aguenta.
+    assert "three.min.js" not in cliente.get("/").text
+    assert 'import("./vendor/three.min.js")' in cliente.get("/cena3d.js").text

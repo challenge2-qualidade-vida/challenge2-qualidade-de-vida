@@ -10,7 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
@@ -30,6 +30,18 @@
     <main>
       <!-- ================= INÍCIO ================= -->
       <section id="aba-inicio" class="painel">
+        <div id="palco-hero" class="hero">
+          <div class="hero-conteudo">
+            <h1>Faça o dinheiro do mercado render</h1>
+            <p class="hero-texto">Diga quanto você tem. A EconoMIA monta a cesta mais barata que cumpre as metas de nutrição e mostra onde comprar.</p>
+            <button type="button" class="botao botao-hero" data-ir="cesta">Montar minha cesta</button>
+          </div>
+          <div class="hero-palco" aria-hidden="true">
+            <img src="img/mia.webp" alt="" class="hero-gato">
+            <div id="ancora-cesta-hero"></div>
+          </div>
+        </div>
+
         <div class="mascote-cartao">
           <div class="mascote"><img src="img/mia.webp" alt="Mia, a gata da EconoMIA"><span class="humor" id="mascote" aria-hidden="true">✨</span></div>
           <div class="balao" id="balao">Oi! Eu sou a Mia. Vamos fazer o seu dinheiro do mercado render mais, sem comer pior?</div>
@@ -169,6 +181,7 @@
         <div id="erro" class="erro" hidden></div>
 
         <div id="resultado" hidden>
+          <div id="palco-cesta" class="palco palco-cesta" aria-hidden="true"></div>
           <div class="resumo" id="resumo"></div>
 
           <div class="cartao">
@@ -202,6 +215,7 @@
       <!-- ================= PERTO DE MIM ================= -->
       <section id="aba-perto" class="painel" hidden>
         <div class="cabecalho-tela"><img src="img/cifrao.webp" alt=""><div><h1 class="titulo-tela">Perto de mim</h1><p class="nota">O Cifrão mostra onde a proteína está mais barata.</p></div></div>
+        <div id="palco-perto" class="palco" aria-hidden="true"></div>
         <div class="cartao">
           <button type="button" id="botao-localizacao" class="botao largo">📍 Usar minha localização</button>
           <p class="nota centro">Sua localização é usada só para calcular distâncias e não é guardada.</p>
@@ -300,6 +314,16 @@
           </div>
         </div>
 
+        <div class="cartao">
+          <h2>✨ Efeitos 3D</h2>
+          <p class="nota">Moedas e cesta em 3D gastam mais bateria e internet. No automático, o app desliga em aparelhos mais simples.</p>
+          <div class="segmentado" role="radiogroup" aria-label="Efeitos 3D">
+            <label><input type="radio" name="cfg-efeitos" value="auto"><span>Automático</span></label>
+            <label><input type="radio" name="cfg-efeitos" value="ligado"><span>Ligado</span></label>
+            <label><input type="radio" name="cfg-efeitos" value="desligado"><span>Desligado</span></label>
+          </div>
+        </div>
+
         <details class="cartao creditos">
           <summary><h2>📷 Créditos das fotos dos alimentos</h2></summary>
           <p class="nota">Fotos do Wikimedia Commons com licenças livres (CC0, domínio público, CC BY e CC BY-SA). Cada uma com autor e licença:</p>
@@ -338,6 +362,7 @@
       <!-- ================= PREÇOS ================= -->
       <section id="aba-precos" class="painel" hidden>
         <h1 class="titulo-tela">Tabela de preços</h1>
+        <div id="palco-precos" class="palco palco-pequeno" aria-hidden="true"></div>
         <div class="cartao">
           <p class="nota">O menor preço por kg de cada produto aparece em verde. Cada preço mostra a data e a fonte.</p>
           <div class="tabela-rolagem">
@@ -349,6 +374,7 @@
       <!-- ================= CUPOM ================= -->
       <section id="aba-cupom" class="painel" hidden>
         <div class="cabecalho-tela"><img src="img/recibaldo.webp" alt=""><div><h1 class="titulo-tela">Enviar cupom</h1><p class="nota">O Recibaldo lê o cupom e confere cada item.</p></div></div>
+        <div id="palco-cupom" class="palco" aria-hidden="true"></div>
         <div class="cartao">
           <p class="nota">O Recibaldo lê o <b>QR code</b> do cupom e busca a nota oficial na SEFAZ-DF. Você confere antes de salvar, e os preços passam a valer para todos. Nenhum dado pessoal (CPF, nome) é lido ou guardado.</p>
           <form id="form-cupom">
@@ -401,5 +427,10 @@
   </div>
 
   <script src="app.js"></script>
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/ScrollTrigger.min.js" defer></script>
+  <script src="vendor/lenis.min.js" defer></script>
+  <script src="animacoes.js" defer></script>
+  <script type="module" src="cena3d.js"></script>
 </body>
 </html>
