@@ -1,13 +1,15 @@
-// Gatos vivos (tópico 25): uma imagem só, deformada na placa de vídeo em tempo real.
+// Gatos vivos (tópico 25): cada gato é uma imagem só, deformada na placa de vídeo em tempo real.
 // A cabeça gira como uma esfera, o focinho avança, as orelhas recuam, os olhos seguem o
 // cursor, o peito respira e as pálpebras piscam. Nenhum quadro é misturado, então o rosto
-// nunca duplica. Sem WebGL 2 ou com menos movimento pedido, fica a imagem parada.
+// nunca duplica. Todos dividem um só contexto de WebGL, porque o navegador limita quantos
+// podem existir, e só os gatos visíveis são desenhados. Sem WebGL 2 ou com menos movimento
+// pedido, ficam as imagens paradas.
 (() => {
   // Medidas em pixels da imagem de cada gato.
   const GATOS = {
     mia: {
       corPelo: [0.13, 0.135, 0.16],
-      origem: [60, 0],
+      origem: [60, 0], tamanho: [790, 990],
       cabeca: [447, 320], raio: [340, 290],
       area: [450, 270], areaRaio: [450, 330],
       focinho: [443, 470], focinhoRaio: [140, 90],
@@ -31,7 +33,7 @@
     uniform vec2 tamanho, origem, olhar, cabeca, raio, area, areaRaio, focinho, focinhoRaio;
     uniform vec2 orelhaE, orelhaD, orelhaRaio, olhoE, olhoD, olhoRaio, peito, peitoRaio;
     uniform vec3 corPelo;
-    uniform float respiro, piscada;
+    uniform float respiro, piscada, forcaOlho;
     in vec2 uv;
     out vec4 cor;
 
@@ -40,7 +42,7 @@
     // Empurra o miolo do olho e deixa a borda parada, como um globo girando na órbita.
     vec2 globo(vec2 p, vec2 c) {
       vec2 e = (p - c) / olhoRaio;
-      return p - olhar * vec2(20.0, 13.0) * max(0.0, 1.0 - dot(e, e));
+      return p - forcaOlho * olhar * vec2(20.0, 13.0) * max(0.0, 1.0 - dot(e, e));
     }
 
     // A pálpebra desce na cor do pelo e termina em um vinco escuro.
@@ -91,83 +93,119 @@
     ultimoMouse = performance.now();
   }, { passive: true });
 
+  const palco = document.createElement("canvas");
+  const gl = !matchMedia("(prefers-reduced-motion: reduce)").matches
+    && palco.getContext("webgl2", { alpha: true, premultipliedAlpha: true, antialias: false });
+  const prog = gl && programa(gl);
+  if (!prog) return;
+
+  gl.useProgram(prog);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(gl.getAttribLocation(prog, "pos"));
+  gl.vertexAttribPointer(gl.getAttribLocation(prog, "pos"), 2, gl.FLOAT, false, 0, 0);
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+  gl.clearColor(0, 0, 0, 0);
+
+  const local = (nome) => gl.getUniformLocation(prog, nome);
+  const uOlhar = local("olhar"), uRespiro = local("respiro"), uPiscada = local("piscada");
+  const uCorPelo = local("corPelo"), uForcaOlho = local("forcaOlho");
+  const NOMES_PONTOS = ["origem", "tamanho", "cabeca", "raio", "area", "areaRaio", "focinho", "focinhoRaio",
+    "orelhaE", "orelhaD", "orelhaRaio", "olhoE", "olhoD", "olhoRaio", "peito", "peitoRaio"];
+  const pontos = NOMES_PONTOS.map((nome) => [nome, local(nome)]);
+  const gatos = [];
+
   async function iniciar(img) {
     const medidas = GATOS[img.dataset.gato];
     if (!medidas) return;
     await img.decode().catch(() => {});
     if (!img.naturalWidth) return;
 
-    const canvas = document.createElement("canvas");
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-    const gl = canvas.getContext("webgl2", { alpha: true, premultipliedAlpha: true, antialias: false });
-    const prog = gl && programa(gl);
-    if (!prog) return;
-
-    gl.useProgram(prog);
-    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(gl.getAttribLocation(prog, "pos"));
-    gl.vertexAttribPointer(gl.getAttribLocation(prog, "pos"), 2, gl.FLOAT, false, 0, 0);
-
-    gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    const textura = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, textura);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
     gl.generateMipmap(gl.TEXTURE_2D);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-    const local = (nome) => gl.getUniformLocation(prog, nome);
-    gl.uniform2f(local("tamanho"), canvas.width, canvas.height);
-    const { corPelo, ...pontos } = medidas;
-    gl.uniform3f(local("corPelo"), ...corPelo);
-    for (const [nome, valor] of Object.entries(pontos)) gl.uniform2f(local(nome), ...valor);
-    const uOlhar = local("olhar"), uRespiro = local("respiro"), uPiscada = local("piscada");
-
+    const canvas = document.createElement("canvas");
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
     canvas.className = img.className;
-    canvas.setAttribute("role", "img");
-    canvas.setAttribute("aria-label", img.alt);
-    img.replaceWith(canvas);
-
-    let x = 0, y = 0, proximaPiscada = performance.now() + 2500, inicioPiscada = -1e9;
-
-    function quadro(agora) {
-      requestAnimationFrame(quadro);
-      if (document.hidden || !canvas.isConnected) return;
-      const caixa = canvas.getBoundingClientRect();
-      if (!caixa.width || caixa.bottom < 0 || caixa.top > innerHeight) return;
-
-      let alvoX, alvoY;
-      if (mouseX !== null && agora - ultimoMouse < 6000) {
-        // A cabeça fica acima do meio da imagem: é daí que o gato "olha".
-        const olhoX = caixa.left + caixa.width / 2, olhoY = caixa.top + caixa.height * 0.35;
-        alvoX = limite((mouseX - olhoX) / (innerWidth * 0.42), -1, 1);
-        alvoY = limite((mouseY - olhoY) / (innerHeight * 0.5), -1, 1);
-      } else {
-        // Sem mouse, o gato olha em volta devagar.
-        alvoX = Math.sin(agora / 3100) * 0.45;
-        alvoY = Math.sin(agora / 4300) * 0.25;
-      }
-      x += (alvoX - x) * 0.09;
-      y += (alvoY - y) * 0.09;
-
-      if (agora > proximaPiscada) {
-        inicioPiscada = agora;
-        proximaPiscada = agora + 2200 + Math.random() * 4200;
-      }
-      const t = (agora - inicioPiscada) / 170;
-      gl.uniform1f(uPiscada, t < 1 ? Math.sin(t * Math.PI) : 0);
-      gl.uniform1f(uRespiro, Math.sin(agora / 780));
-      gl.uniform2f(uOlhar, x, y);
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    if (img.alt) {
+      canvas.setAttribute("role", "img");
+      canvas.setAttribute("aria-label", img.alt);
+    } else {
+      canvas.setAttribute("aria-hidden", "true");
     }
-    requestAnimationFrame(quadro);
+    img.replaceWith(canvas);
+    gatos.push({
+      medidas, textura, canvas, ctx: canvas.getContext("2d"),
+      proporcao: img.naturalHeight / img.naturalWidth, larguraMaxima: img.naturalWidth,
+      x: 0, y: 0, fase: Math.random() * 6,
+      proximaPiscada: performance.now() + 1000 + Math.random() * 4000, inicioPiscada: -1e9,
+    });
   }
 
-  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    document.querySelectorAll("img[data-gato]").forEach(iniciar);
+  function desenhar(g, agora, caixa) {
+    let alvoX, alvoY;
+    if (mouseX !== null && agora - ultimoMouse < 6000) {
+      // A cabeça fica acima do meio da imagem: é daí que o gato "olha".
+      const olhoX = caixa.left + caixa.width / 2, olhoY = caixa.top + caixa.height * 0.35;
+      alvoX = limite((mouseX - olhoX) / (innerWidth * 0.42), -1, 1);
+      alvoY = limite((mouseY - olhoY) / (innerHeight * 0.5), -1, 1);
+    } else {
+      // Sem mouse, o gato olha em volta devagar.
+      alvoX = Math.sin(agora / 3100 + g.fase) * 0.45;
+      alvoY = Math.sin(agora / 4300 + g.fase) * 0.25;
+    }
+    g.x += (alvoX - g.x) * 0.09;
+    g.y += (alvoY - g.y) * 0.09;
+
+    if (agora > g.proximaPiscada) {
+      g.inicioPiscada = agora;
+      g.proximaPiscada = agora + 2200 + Math.random() * 4200;
+    }
+    const t = (agora - g.inicioPiscada) / 170;
+
+    // Desenha só no tamanho em que o gato aparece: os pequenos custam pouco.
+    const css = Math.max(g.canvas.offsetWidth, g.canvas.offsetHeight / g.proporcao);
+    const largura = Math.round(Math.min(g.larguraMaxima, css * Math.min(devicePixelRatio, 2)));
+    const altura = Math.round(largura * g.proporcao);
+    if (g.canvas.width !== largura || g.canvas.height !== altura) {
+      g.canvas.width = largura;
+      g.canvas.height = altura;
+    }
+    if (palco.width < largura) palco.width = largura;
+    if (palco.height < altura) palco.height = altura;
+
+    gl.viewport(0, palco.height - altura, largura, altura);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.bindTexture(gl.TEXTURE_2D, g.textura);
+    for (const [nome, u] of pontos) gl.uniform2f(u, ...g.medidas[nome]);
+    gl.uniform3f(uCorPelo, ...g.medidas.corPelo);
+    gl.uniform1f(uForcaOlho, g.medidas.semOlhos ? 0 : 1);
+    gl.uniform1f(uPiscada, !g.medidas.semOlhos && t < 1 ? Math.sin(t * Math.PI) : 0);
+    gl.uniform1f(uRespiro, Math.sin(agora / 780 + g.fase));
+    gl.uniform2f(uOlhar, g.x, g.y);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    g.ctx.clearRect(0, 0, largura, altura);
+    g.ctx.drawImage(palco, 0, 0, largura, altura, 0, 0, largura, altura);
   }
+
+  function quadro(agora) {
+    requestAnimationFrame(quadro);
+    if (document.hidden) return;
+    for (const g of gatos) {
+      if (!g.canvas.isConnected) continue;
+      const caixa = g.canvas.getBoundingClientRect();
+      if (!caixa.width || caixa.bottom < 0 || caixa.top > innerHeight) continue;
+      desenhar(g, agora, caixa);
+    }
+  }
+
+  document.querySelectorAll("img[data-gato]").forEach(iniciar);
+  requestAnimationFrame(quadro);
 })();
