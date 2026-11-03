@@ -19,6 +19,10 @@ Projetar e desenvolver uma solução baseada em IA capaz de apoiar a tomada de d
 | | | |
 | | | |
 
+## Site
+
+Documentação publicada em **https://dida0982.github.io/challenge2-qualidade-de-vida/** (gerada a partir de `docs/` com Astro + Starlight). Veja [site/README.md](site/README.md).
+
 ## Restrições do desafio
 
 - [ ] Entender o problema antes da solução
@@ -48,6 +52,7 @@ docs/                    documentação e entregáveis de cada semana
 data/base-conhecimento/  documentos e fontes confiáveis usados no RAG
 src/                     código da aplicação (RAG, agentes, interface)
 notebooks/               experimentos e análises
+site/                    site de documentação (Astro + Starlight), publicado no GitHub Pages
 tests/                   testes e avaliação com métricas
 ```
 

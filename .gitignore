@@ -22,3 +22,8 @@ vectorstore/
 Thumbs.db
 .vscode/
 .idea/
+
+# Site (Astro)
+node_modules/
+site/dist/
+site/.astro/

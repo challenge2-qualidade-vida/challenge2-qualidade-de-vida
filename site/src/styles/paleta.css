@@ -1,0 +1,48 @@
+/*
+ * Paleta EconoMIA
+ * creme  #f6ecdf · verde-escuro #1c362c · verde #385941 · areia #b59e8c · mostarda #dda234
+ */
+
+/* Tema escuro (padrão do Starlight) */
+:root {
+	--sl-color-accent-low: #4a4526;
+	--sl-color-accent: #dda234;
+	--sl-color-accent-high: #f0cf8a;
+	--sl-color-white: #f6ecdf;
+	--sl-color-gray-1: #ede1d0;
+	--sl-color-gray-2: #dccdbb;
+	--sl-color-gray-3: #b59e8c;
+	--sl-color-gray-4: #82806a;
+	--sl-color-gray-5: #385941;
+	--sl-color-gray-6: #24402f;
+	--sl-color-black: #1c362c;
+}
+
+/* Tema claro */
+:root[data-theme='light'] {
+	--sl-color-accent-low: #f3dfb3;
+	--sl-color-accent: #385941;
+	--sl-color-accent-high: #1c362c;
+	--sl-color-white: #1c362c;
+	--sl-color-gray-1: #24402f;
+	--sl-color-gray-2: #385941;
+	--sl-color-gray-3: #55644e;
+	--sl-color-gray-4: #8a7766;
+	--sl-color-gray-5: #b59e8c;
+	--sl-color-gray-6: #ede0cf;
+	--sl-color-gray-7: #f2e6d7;
+	--sl-color-black: #f6ecdf;
+}
+
+/* Destaques em mostarda nos dois temas */
+.sl-markdown-content blockquote {
+	border-inline-start-color: #dda234;
+}
+
+.sl-markdown-content a:hover {
+	text-decoration-color: #dda234;
+}
+
+.sl-markdown-content th {
+	background-color: var(--sl-color-gray-6);
+}
