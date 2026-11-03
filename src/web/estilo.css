@@ -413,7 +413,7 @@ input:focus, select:focus { outline: none; border-color: var(--marca); }
 @keyframes pular { 50% { transform: translateY(-6px); } }
 
 /* ---------- Resultado da cesta ---------- */
-.resumo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.resumo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
 .resumo .opcao { margin-bottom: 0; }
 .resumo .opcao:only-child, .resumo .opcao.largura-toda { grid-column: 1 / -1; }
 .opcao { position: relative; }
@@ -743,3 +743,125 @@ input:focus, select:focus { outline: none; border-color: var(--marca); }
 .chip-remover { font: inherit; color: var(--texto); background: var(--fundo); cursor: pointer; }
 .item-trocar { display: inline-block; margin-top: 4px; padding: 3px 10px; font: inherit; font-size: 0.78rem; font-weight: 700; color: var(--marca); background: transparent; border: 1px solid var(--borda); border-radius: 999px; cursor: pointer; }
 .item-trocar:focus-visible { outline: 2px solid var(--marca); }
+
+.aba-central-texto { display: none; }
+
+/* ---------- Telas maiores (responsivo) ----------
+   Até 719 px: app de celular, como definido acima.
+   720 px: tablet, com mais colunas e a navegação embaixo.
+   1024 px: computador, com a navegação na lateral e o conteúdo em colunas. */
+@media (max-width: 359px) {
+  .pilula { display: none; }
+  .acoes { grid-template-columns: 1fr; }
+  .mini-aneis { grid-template-columns: repeat(2, 1fr); }
+  .resumo { grid-template-columns: minmax(0, 1fr); }
+  .opcao.com-foto { padding-right: 16px; }
+  .opcao.com-foto .foto-destaque { display: none; }
+}
+
+/* Três cartões de resumo só quando a coluna de resultado tem largura para eles. */
+@media (min-width: 720px) and (max-width: 1023px), (min-width: 1280px) {
+  .resumo { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .resumo .opcao.largura-toda { grid-column: auto; }
+  .resumo .opcao:only-child { grid-column: 1 / -1; }
+}
+
+@media (min-width: 720px) {
+  .app { max-width: 880px; }
+  .nav-baixo { max-width: 880px; }
+  main { padding: 0 24px; }
+  .barra-topo { padding-inline: 24px; }
+  .aviso { margin-inline: 24px; }
+  .acoes { margin-bottom: 14px; }
+  .personagens { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .sugestoes { flex-wrap: wrap; overflow: visible; }
+  .turma-banner img { max-height: 280px; object-fit: contain; }
+  .cardapio-refeicao { display: grid; grid-template-columns: 170px 1fr; column-gap: 16px; }
+  .cardapio-refeicao > .cardapio-tipo { grid-row: span 4; padding-top: 3px; }
+  .cardapio-refeicao > :not(.cardapio-tipo) { grid-column: 2; }
+  .chat, #aba-config, #aba-cupom { max-width: 720px; margin-inline: auto; width: 100%; }
+}
+
+@media (min-width: 880px) {
+  .acoes { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  :root { --lateral: 208px; --largura-app: 1320px; }
+  .app {
+    max-width: var(--largura-app);
+    padding-left: var(--lateral);
+    padding-bottom: 32px;
+  }
+  .barra-topo, .aviso { padding-inline: 32px; }
+  .aviso { margin-inline: 32px; padding-inline: 12px; }
+  main { padding: 0 32px; }
+
+  /* A navegação de baixo vira uma coluna lateral. */
+  .nav-baixo {
+    top: 0;
+    bottom: 0;
+    left: max(0px, calc((100vw - var(--largura-app)) / 2));
+    transform: none;
+    width: var(--lateral);
+    max-width: none;
+    height: auto;
+    padding: 20px 12px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    border-radius: 0;
+    border-right: 1px solid var(--borda);
+    box-shadow: none;
+  }
+  .aba {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    font-size: 0.95rem;
+  }
+  .aba:hover { background: var(--marca-clara); }
+  .aba.ativa { background: var(--marca-clara); }
+  .aba-central {
+    order: 1;
+    width: auto;
+    height: auto;
+    margin: 8px 0 0;
+    justify-self: stretch;
+    border-radius: 14px;
+    box-shadow: none;
+  }
+  .aba-central:hover, .aba-central.ativa { background: var(--marca); }
+  .aba-central svg { width: 24px; height: 24px; }
+  .aba-central-texto { display: inline; }
+  .form-chat { bottom: 12px; }
+
+  /* Início: mascote e última cesta lado a lado. */
+  #aba-inicio { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 20px; align-items: start; }
+  #aba-inicio > * { grid-column: 1 / -1; }
+  #aba-inicio:has(#inicio-resumo:not([hidden])) > .mascote-cartao { grid-column: 1; }
+  #aba-inicio > #inicio-resumo { grid-column: 2; }
+  #aba-inicio > .dica { grid-column: 1; }
+  #aba-inicio > [data-ir="precos"] { grid-column: 2; align-self: start; }
+
+  /* Cesta: formulário fixo à esquerda e resultado à direita. */
+  #aba-cesta { display: grid; grid-template-columns: minmax(340px, 400px) minmax(0, 1fr); column-gap: 24px; align-items: start; }
+  #aba-cesta > .cabecalho-tela { grid-column: 1 / -1; }
+  #aba-cesta > #form-cesta { grid-column: 1; grid-row: 2 / span 3; position: sticky; top: 76px; max-height: calc(100vh - 92px); overflow-y: auto; }
+  #aba-cesta > #carregando, #aba-cesta > #erro, #aba-cesta > #resultado { grid-column: 2; }
+  #aba-cesta > #resultado { min-width: 0; }
+
+  /* Perto: cartões de mercado em duas colunas quando houver espaço. */
+  #resultado-perto { min-width: 0; }
+  #lista-mercados { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+  #lista-mercados > * { margin: 0; }
+}
+
+@media (min-width: 1280px) {
+  #resultado { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; align-items: start; }
+  #resultado > * { grid-column: 1 / -1; min-width: 0; }
+  #resultado > .cartao:has(#metas), #resultado > .cartao:has(#explicacao) { grid-column: auto; }
+}
