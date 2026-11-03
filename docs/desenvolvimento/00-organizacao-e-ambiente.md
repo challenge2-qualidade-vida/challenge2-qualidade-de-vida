@@ -35,7 +35,7 @@ Foram instaladas agora para o ambiente ficar pronto. Cada uma só passa a ser us
 ## Como reproduzir na sua máquina
 
 ```bash
-git clone https://github.com/dida0982/challenge2-qualidade-de-vida.git
+git clone https://github.com/challenge2-qualidade-vida/challenge2-qualidade-de-vida.git
 cd challenge2-qualidade-de-vida
 git checkout develop_gui
 python3 -m venv .venv
