@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Literal
 
 import httpx
-from fastapi import FastAPI, File, HTTPException, Query, UploadFile
+from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -30,6 +30,15 @@ app = FastAPI(title="EconoMIA", description="Cesta de compras econômica e equil
 base = carregar()
 conhecimento = BaseConhecimento(base)
 orquestrador = Orquestrador(base, conhecimento, cliente_do_ambiente())
+
+
+@app.middleware("http")
+async def revalidar_site(request: Request, call_next):
+    """Faz o navegador conferir se o site mudou; senão, ele continua com o app.js antigo depois de uma atualização."""
+    resposta = await call_next(request)
+    if not request.url.path.startswith("/api/"):
+        resposta.headers["Cache-Control"] = "no-cache"
+    return resposta
 
 
 def recarregar_base():

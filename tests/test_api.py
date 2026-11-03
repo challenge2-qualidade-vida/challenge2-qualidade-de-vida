@@ -206,3 +206,8 @@ def test_cesta_no_chat_traz_alimento_para_a_foto(cliente):
     dados = cliente.post("/api/chat", json={"mensagem": "Tenho R$ 800 para 4 pessoas no mês"}).json()
     detalhe = dados["dados"]["montar_cesta"]["itens_detalhe"]
     assert detalhe and all(i["alimento_id"] for i in detalhe)
+
+
+def test_site_pede_revalidacao_para_nao_ficar_com_arquivo_antigo(cliente):
+    assert cliente.get("/app.js").headers["cache-control"] == "no-cache"
+    assert "cache-control" not in cliente.get("/api/saude").headers

@@ -142,7 +142,8 @@ def texto_cardapio(c: Cardapio) -> str:
 
 def problemas_cardapio(texto: str, alimentos: list[str]) -> list[str]:
     """O que a Mia não deixa passar num texto sobre o cardápio: alimento cru ou fora da cesta."""
-    t = normalizar(texto)
+    # "farinha de mandioca" é um alimento só; não pode contar como mandioca.
+    t = normalizar(texto).replace("farinha de mandioca", "farinha")
     problemas = []
     if re.search(r"\bcru[as]?\b", t):
         problemas.append("cita alimento cru")

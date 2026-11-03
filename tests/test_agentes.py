@@ -128,25 +128,16 @@ def test_cardapio_sem_llm_usa_receitas_cadastradas(base, bc):
     assert r.modo == "sem_llm"
 
 
-def test_cardapio_mia_descarta_comentario_com_alimento_fora_da_cesta(base, bc):
-    llm = LLMFalso([{"content": "Que tal acrescentar frango ao arroz?"}])
+def test_cardapio_nao_chama_llm(base, bc):
+    llm = LLMFalso([])
     r = Orquestrador(base, bc, llm).cardapio(["arroz", "feijão carioca"], ["vegetariano"])
+    assert llm.recebido == []
     assert "frango" not in r.resposta.lower()
-    assert any("descartou" in e["acao"] for e in r.etapas)
 
 
-def test_cardapio_mia_descarta_alimento_cru(base, bc):
-    llm = LLMFalso([{"content": "No jantar, feijão carioca cru."}])
-    r = Orquestrador(base, bc, llm).cardapio(["arroz", "feijão carioca"], [])
-    assert " cru" not in r.resposta.lower()
-    assert any("descartou" in e["acao"] for e in r.etapas)
-
-
-def test_cardapio_mantem_comentario_correto_do_llm(base, bc):
-    llm = LLMFalso([{"content": "Cozinhe o feijão de uma vez e guarde na geladeira."}])
-    r = Orquestrador(base, bc, llm).cardapio(["arroz", "feijão carioca"], [])
-    assert r.resposta.startswith("Cozinhe o feijão de uma vez")
-    assert r.dados["comentario"]
+def test_prompt_do_miauricio_proibe_sugerir_alimento_cru():
+    from economia.agentes import PROMPT_MIAURICIO
+    assert "nunca sugira comer" in PROMPT_MIAURICIO
 
 
 # ---------- Ajustes motivados pelo experimento (tópico 8) ----------

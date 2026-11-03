@@ -15,7 +15,7 @@ import re
 from dataclasses import asdict
 
 from .assistente import PROMPT_SISTEMA, Assistente, RespostaChat, interpretar, texto_precos, texto_promocao
-from .cardapio import NOME_RECEITA, NOMES, montar_cardapio, problemas_cardapio, resolver_alimentos, texto_cardapio
+from .cardapio import NOME_RECEITA, NOMES, montar_cardapio, problemas_cardapio, texto_cardapio
 from .dados import Base
 from .llm import ClienteLLM, ErroLLM
 from .rag import BaseConhecimento, normalizar
@@ -39,11 +39,8 @@ Você é o Cifrão, o agente de preços da EconoMIA. Cuide só de preços, promo
 
 PROMPT_MIAURICIO = PROMPT_SISTEMA + """
 
-Você é o Miau-ricio, o agente de nutrição e receitas da EconoMIA. Responda com base nos trechos da base de conhecimento e cite [n]. Não fale de preços."""
-
-PROMPT_CARDAPIO = """Você é o Miau-ricio, agente de receitas da EconoMIA. Responda em português do Brasil.
-O cardápio abaixo já está pronto e não pode mudar. Escreva UM comentário de até 2 frases, animado e prático, sobre como aproveitar esse cardápio.
-Não cite nenhum alimento que não esteja no cardápio e não dê números. Texto simples, sem Markdown."""
+Você é o Miau-ricio, o agente de nutrição e receitas da EconoMIA. Responda com base nos trechos da base de conhecimento e cite [n]. Não fale de preços.
+Os valores da TACO citam alimentos crus só para medir nutrientes: nunca sugira comer feijão, carne, frango ou ovo crus."""
 
 # Palavras que não podem aparecer num cardápio com cada restrição.
 PROIBIDOS_POR_RESTRICAO = {
@@ -203,38 +200,23 @@ class Orquestrador:
         return aplicar_verificacao(r, restricoes, mensagem)
 
     def cardapio(self, alimentos: list[str], restricoes: list[str], dias: int = 3) -> RespostaChat:
-        """Miau-ricio monta o cardápio com as receitas cadastradas; o LLM só comenta, e a Mia confere."""
+        """Miau-ricio monta o cardápio com as receitas cadastradas, sem LLM; a Mia confere o texto."""
         etapas = [{"agente": "Orquestrador", "acao": "pediu um cardápio ao Miau-ricio"}]
         plano = montar_cardapio(self.base, alimentos, restricoes, dias)
         if plano.vazio:
             etapas.append({"agente": "Miau-ricio", "acao": "não encontrou receitas para esses alimentos"})
             return RespostaChat("Não encontrei receitas para esses alimentos.", "sem_llm", etapas=etapas)
 
-        texto = texto_cardapio(plano)
         usados = sorted({a for dia in plano.dias for ref in dia for a in ref.alimentos})
         resultados = self.conhecimento.buscar("receita aproveitamento " + " ".join(NOMES[a] for a in usados), k=3, minimo=0.05)
         fontes = [{"titulo": r.trecho.titulo, "fonte": r.trecho.fonte, "texto": r.trecho.texto} for r in resultados]
         etapas.append({"agente": "Miau-ricio", "acao": "montou o cardápio só com os alimentos da cesta"})
-        r = RespostaChat(texto, "llm" if self.cliente else "sem_llm", fontes=fontes, etapas=etapas)
+        r = RespostaChat(texto_cardapio(plano), "sem_llm", fontes=fontes, etapas=etapas)
 
-        comentario = None
-        if self.cliente is not None:
-            try:
-                msg = self.cliente.conversar([
-                    {"role": "system", "content": PROMPT_CARDAPIO},
-                    {"role": "user", "content": texto},
-                ])
-                comentario = (msg.get("content") or "").strip() or None
-            except ErroLLM:
-                r.modo = "sem_llm"
-        if comentario:
-            permitidos = {a for a in resolver_alimentos(self.base, alimentos)}
-            problemas = problemas_cardapio(comentario, sorted(permitidos))
-            if problemas:
-                r.etapas.append({"agente": "Mia", "acao": "descartou o comentário do LLM: " + "; ".join(problemas)})
-            else:
-                r.resposta = f"{comentario}\n\n{texto}"
-
+        problemas = problemas_cardapio(r.resposta, usados)
+        if problemas:
+            r.resposta += "\n\n⚠️ Confira: " + "; ".join(problemas) + "."
         r = aplicar_verificacao(r, restricoes)
-        r.dados = {"cardapio": asdict(plano), "nomes_receitas": {x.receita: NOME_RECEITA[x.receita] for dia in plano.dias for x in dia}, "comentario": comentario if comentario and comentario in r.resposta else None}
+        r.etapas[-1]["problemas"] += [{"tipo": "cardapio", "detalhe": p} for p in problemas]
+        r.dados = {"cardapio": asdict(plano), "nomes_receitas": {x.receita: NOME_RECEITA[x.receita] for dia in plano.dias for x in dia}}
         return r

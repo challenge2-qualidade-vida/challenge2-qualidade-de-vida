@@ -292,7 +292,6 @@ function blocosCardapio(r) {
   const plano = r.dados?.cardapio;
   if (!plano) return [semMarkdown(r.resposta)];
   const blocos = [];
-  if (r.dados.comentario) blocos.push(el("p", { class: "cardapio-comentario" }, semMarkdown(r.dados.comentario)));
   plano.dias.forEach((refeicoes, n) => {
     blocos.push(el("section", { class: "cardapio-dia" },
       el("h4", {}, `Dia ${n + 1}`),

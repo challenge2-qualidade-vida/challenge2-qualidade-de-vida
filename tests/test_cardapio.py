@@ -1,6 +1,6 @@
 import pytest
 
-from economia.cardapio import NOMES, RECEITAS, TERMOS_ALIMENTOS, montar_cardapio, problemas_cardapio, resolver_alimentos
+from economia.cardapio import NOMES, RECEITAS, TERMOS_ALIMENTOS, montar_cardapio, problemas_cardapio, resolver_alimentos, texto_cardapio
 from economia.dados import carregar
 from economia.metas import DIAS_POR_PERIODO
 from economia.otimizador import Pedido
@@ -68,6 +68,8 @@ def test_toda_cesta_do_otimizador_gera_almoco_e_jantar_todo_dia(base, pessoas, p
         tipos = [r.tipo for r in dia]
         assert "almoco" in tipos and "jantar" in tipos
     assert set(a for dia in c.dias for r in dia for a in r.alimentos) <= set(ids)
+    # A Mia não pode encontrar alimento cru ou fora da cesta no texto final.
+    assert problemas_cardapio(texto_cardapio(c), ids) == []
 
 
 def test_mia_detecta_problemas():
@@ -75,3 +77,12 @@ def test_mia_detecta_problemas():
     assert "fora da cesta: tomate" in problemas_cardapio("salada de tomate", ["arroz"])[0]
     assert "alface" in problemas_cardapio("salada de alface", ["arroz"])[0]
     assert problemas_cardapio("Arroz soltinho com feijão.", ["arroz", "feijao_preto"]) == []
+
+
+@pytest.mark.parametrize("r", RECEITAS, ids=lambda r: r["id"])
+def test_texto_de_cada_receita_so_cita_o_que_ela_usa(base, r):
+    """Com a combinação mais simples de cada receita, o texto não pode citar outro alimento."""
+    ids = [vaga[-1] for vaga in r["requer"]]
+    c = montar_cardapio(base, ids, [], 1)
+    for ref in (x for x in c.dias[0] if x.receita == r["id"]):
+        assert problemas_cardapio(texto_cardapio(c), ids) == [], ref.receita

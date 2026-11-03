@@ -28,6 +28,7 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 15 | Identidade visual | Logo e os 4 gatos (Mia, Cifrão, Miau-ricio, Recibaldo) nas telas, paleta verde e dourada, ícones | Pillow + SciPy (remoção de fundo), Canva do grupo | ✅ Feito | [15](15-identidade-visual.md) |
 | 16 | Configurações e raio | Raio de busca de 1 a 100 km (padrão 10) com radar, custo por km, ordenação, tema; mercados com selos de mais perto, menor preço e melhor custo-benefício | localStorage + SVG, sem biblioteca | ✅ Feito | [16](16-configuracoes-raio.md) |
 | 17 | Fotos dos alimentos | Foto real de licença livre em todo alimento recomendado ou com preço (lista, preços, ranking, chat, cardápio, cupom), com créditos | Wikimedia Commons (API) + Pillow | ✅ Feito | [17](17-fotos-alimentos.md) |
+| 18 | Cardápio seguro | Refeições montadas por código, só com o que está na cesta, sem alimento cru; cartões por dia | Python + JSON de receitas | ✅ Feito | [18](18-cardapio-seguro.md) |
 
 A ordem segue o roadmap das semanas: tópicos 1–5 formam o núcleo do app (semanas 1–2), 6–8 cobrem RAG e o experimento (semanas 2–3), 9 os agentes (semana 4), 10 a multimodalidade (semana 5) e 11–12 a integração, os testes e a entrega (semanas 6–7).
 
@@ -38,7 +39,7 @@ git checkout develop_gui
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-pytest                                               # 154 testes, ~8 s
+pytest                                               # 206 testes, ~11 s
 ollama pull qwen2.5:7b                               # opcional: LLM local e gratuito
 uvicorn economia.api:app --app-dir src --reload
 ```
@@ -78,6 +79,7 @@ data/
   experimento/perguntas.json perguntas e gabarito             → tópico 8
   experimento/cesta_referencia.json cesta estilo DIEESE        → tópico 11
   precos/precos.json         mercados, produtos e preços      → tópico 1
+  receitas/receitas.json     receitas do cardápio             → tópico 18
   precos/contribuicoes.json  preços enviados via NFC-e (fora do git) → tópico 10
 src/economia/
   dados.py                   carrega e valida as bases        → tópico 1
@@ -94,6 +96,7 @@ src/economia/
   agentes.py                 Orquestrador, Cifrão, Miau-ricio, Mia → tópico 9
   nfce.py                    Recibaldo: QR code da NFC-e      → tópico 10
   metricas.py                métricas do projeto              → tópico 11
+  cardapio.py                cardápio a partir da cesta       → tópico 18
   geo.py                     localização e ranking de proteínas → tópico 13
 experimentos/
   llm_x_rag.py               experimento LLM × LLM + RAG      → tópico 8
@@ -112,6 +115,7 @@ tests/
   test_agentes.py            testes dos agentes               → tópico 9
   test_nfce.py               testes da NFC-e                  → tópico 10
   test_geo.py                testes de localização            → tópico 13
+  test_cardapio.py           testes do cardápio               → tópico 18
   fixtures/nfce_exemplo.html nota fictícia para os testes     → tópico 10
 requirements.txt             dependências (todas gratuitas)
 Dockerfile, render.yaml      publicação gratuita              → tópico 12
