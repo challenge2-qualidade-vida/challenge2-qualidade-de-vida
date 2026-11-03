@@ -10,6 +10,12 @@ Projetar e desenvolver uma solução baseada em IA capaz de apoiar a tomada de d
 
 **Essential Question do grupo:** _a definir na semana 1_
 
+## Links do projeto
+
+- **Organização:** https://github.com/challenge2-qualidade-vida
+- **Repositório:** https://github.com/challenge2-qualidade-vida/challenge2-qualidade-de-vida
+- **Quadro de tarefas (GitHub Projects):** https://github.com/orgs/challenge2-qualidade-vida/projects/1
+
 ## Equipe
 
 | Nome | GitHub | Papel |
