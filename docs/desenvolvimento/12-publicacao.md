@@ -64,7 +64,7 @@ Depois de publicar com Groq ou Gemini, vale rodar o experimento de novo com o me
 ## Como rodar localmente (resumo final)
 
 ```bash
-git clone https://github.com/dida0982/challenge2-qualidade-de-vida.git
+git clone https://github.com/challenge2-qualidade-vida/challenge2-qualidade-de-vida.git
 cd challenge2-qualidade-de-vida
 git checkout develop_gui
 python3 -m venv .venv && source .venv/bin/activate
