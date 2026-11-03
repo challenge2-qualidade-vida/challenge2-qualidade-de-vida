@@ -1,6 +1,6 @@
 # Pesquisa de design, animação e 3D
 
-Pesquisa feita em 03/11/2026 para deixar o site mais bonito. Nada disto foi aplicado ainda. Os sites servem de inspiração: a ideia é criar algo próprio, sem copiar telas nem marcas.
+Pesquisa feita em 03/11/2026 para deixar o site mais bonito. Nada disto foi aplicado ao site ainda. As instalações valem para o computador em que foram feitas: cada colega precisa instalar no seu. Os sites servem de inspiração: a ideia é criar algo próprio, sem copiar telas nem marcas.
 
 ## Referências
 
@@ -31,12 +31,13 @@ As fontes concordam em um ponto: a animação precisa explicar ou dar retorno ao
 
 | Ferramenta | Para quê | Situação nesta máquina |
 |------------|----------|------------------------|
-| [frontend-design](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design) (Anthropic) | Direção visual própria, tipografia, cor e animação | Não instalado |
+| [frontend-design](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design) (Anthropic) | Direção visual própria, tipografia, cor e animação | ✅ Instalado |
 | Claude in Chrome | Ver o site de verdade e testar | Já em uso |
-| Figma e Canva | Trazer designs para o código | Listados na conta |
-| Three.js 3D Viewer | Prévia de cenas 3D | Listado na conta |
-| [Magic UI](https://playbooks.com/mcp/magic-ui) e [21st.dev](https://lobehub.com/nl/mcp/21st-dev-magic-mcp) | Componentes animados prontos | Exigem Node.js, e são feitos para React. O site usa HTML puro |
-| [BlenderMCP](https://agentpedia.codes/mcp/blender) | Modelar os gatos em 3D | Exige instalar o Blender |
+| Figma e Canva | Trazer designs para o código | ✅ Conectados pela conta |
+| Three.js 3D Viewer | Prévia de cenas 3D | ✅ Conectado pela conta |
+| [Magic UI](https://playbooks.com/mcp/magic-ui) | Componentes animados prontos, feitos para React (o site usa HTML puro) | ✅ Instalado |
+| [21st.dev](https://lobehub.com/nl/mcp/21st-dev-magic-mcp) | Componentes prontos, feitos para React | ⏳ Exige a chave da conta do usuário |
+| [MCP for Blender](https://github.com/ahujasid/mcp-for-blender) | Modelar os gatos em 3D | ✅ Instalado, com Blender 5.2.3 e telemetria desligada. Pode executar código no Blender |
 
 ## Cuidados
 
