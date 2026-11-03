@@ -42,7 +42,12 @@ Tipos: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `ci`, `perf`, `build`
 - `fix(planejamento): corrige soma do custo estimado da lista`
 - `docs(spec): adiciona spec do endpoint do RAG`
 
-Sem linhas `Co-Authored-By` de ferramentas de IA.
+Nenhuma IA como coautora: sem linhas `Co-Authored-By` nem menções a ferramentas de IA em commits, merge commits e PRs.
+
+## Pull requests
+
+- **Labels:** as da issue vinculada (semana e área) e a do tipo (`feat` → `enhancement`, `fix` → `bug`, `docs` → `documentação`, `ci` e `build` → `llmops`).
+- **Revisores:** `pedrolucasdourado` e `gpaulovit` (só o outro, se o autor for um deles).
 
 ## Regras do grupo
 

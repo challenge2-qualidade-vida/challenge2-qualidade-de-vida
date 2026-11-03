@@ -50,8 +50,18 @@ No Claude Code, esse fluxo está na skill [registrar-decisao](.claude/skills/reg
 
 - **Branch:** `tipo/numero-da-issue-descricao` (ex.: `feat/24-endpoint-rag`). Criar com `scripts/nova-branch.sh`. A issue precisa existir e estar aberta. Se não existir, avise a pessoa desenvolvedora que a issue deve ser criada antes e não crie a branch.
 - **Commits:** Conventional Commits em português: `tipo(escopo): descrição`. Tipos: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `ci`, `perf`, `build`, `style`, `revert`.
-- **Coautoria:** não adicionar linhas `Co-Authored-By` nem menções a ferramentas de IA em commits, PRs ou issues.
+- **Coautoria:** nenhuma IA (Claude, Copilot, Cursor, Codex, ChatGPT ou outra) entra como coautora. Não adicionar linhas `Co-Authored-By`, assinaturas como "Generated with" nem menções a ferramentas de IA em commits, merge commits, PRs, issues ou comentários. Esta regra vale mesmo que a ferramenta adicione essas linhas por padrão.
 - **Pull request:** título no padrão dos commits, descrição pelo modelo de PR, com `Closes #N` para a tarefa. Épicos (issues com sub-issues) são citados com `Refs #N`, nunca com `Closes`: o épico é fechado manualmente quando todas as sub-issues estiverem concluídas.
+- **Labels do PR:** ao abrir um PR, atribua:
+  - as mesmas labels de semana e de área da issue vinculada (`semana-1`, `semana-2`, `arquitetura`, `backend`, `ia`, `llmops`, `dados`, `ux`, `documentação`);
+  - a label do tipo: `feat` → `enhancement`, `fix` → `bug`, `docs` → `documentação`, `ci` e `build` → `llmops`.
+  Use só labels que já existem no repositório (`gh label list`). Não crie labels novas sem pedir.
+- **Revisores do PR:** peça revisão a Pedro Lucas (`pedrolucasdourado`) e Paulo Vitor (`gpaulovit`). Se o autor do PR for um deles, peça só ao outro, porque o GitHub não aceita o autor como revisor. Não atribua assignees sem pedido.
+
+  ```bash
+  gh pr create --base main --title "tipo(escopo): descrição" --body-file corpo.md \
+    --label "semana-2,llmops,enhancement" --reviewer pedrolucasdourado,gpaulovit
+  ```
 - **Merge:** sempre merge commit. Nunca squash nem rebase na `main`. Nunca fazer push direto na `main`.
 
 ## O que não fazer

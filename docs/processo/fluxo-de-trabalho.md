@@ -87,7 +87,7 @@ Refs #24
   - `docs(spec): adiciona spec do endpoint do RAG`
   - `test(receitas): adiciona cenários de resposta sem fonte`
 - **Mudança incompatível:** `!` depois do tipo (`feat(api)!: ...`)
-- **Coautoria:** commits e PRs não levam linha de coautoria de ferramentas de IA
+- **Coautoria:** nenhuma IA entra como coautora. Commits, merge commits, PRs, issues e comentários não levam `Co-Authored-By` nem menções a ferramentas de IA
 
 ### Pull requests
 
@@ -100,6 +100,10 @@ Para entrar na `main`, um PR precisa de:
 - **Spec atualizada** quando o PR for de funcionalidade (`feat`) e alterar `src/`
 
 O título do PR segue o mesmo padrão dos commits.
+
+**Labels:** as de semana e de área da issue vinculada, mais a do tipo (`feat` → `enhancement`, `fix` → `bug`, `docs` → `documentação`, `ci` e `build` → `llmops`).
+
+**Revisores:** Pedro Lucas (`pedrolucasdourado`) e Paulo Vitor (`gpaulovit`). Quando o autor do PR é um deles, a revisão é pedida ao outro.
 
 ### Épicos
 
