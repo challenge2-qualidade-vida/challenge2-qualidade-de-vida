@@ -75,10 +75,10 @@ document.querySelectorAll(".contador-botao").forEach((b) => b.addEventListener("
 const DICAS = [
   ["Compare o preço por quilo, não o da embalagem: o pacote maior nem sempre compensa.", "Critérios da EconoMIA"],
   ["Arroz com feijão é uma combinação completa: as proteínas dos dois se complementam.", "Guia Alimentar para a População Brasileira"],
-  ["Frutas e legumes da estação costumam ser mais baratos e mais saborosos.", "Guia Alimentar para a População Brasileira"],
+  ["Prefira legumes, verduras e frutas da estação e cultivados localmente.", "Guia Alimentar para a População Brasileira"],
   ["Ovos são acessíveis e relativamente baratos, e podem substituir a carne em várias refeições.", "Guia Alimentar para a População Brasileira"],
   ["Banana muito madura vira vitamina, mingau ou bolo. Não precisa ir para o lixo!", "Aproveitamento de alimentos (EconoMIA)"],
-  ["Planeje as refeições antes de ir ao mercado e nunca faça compras com fome.", "Critérios da EconoMIA"],
+  ["Planeje as refeições antes de ir ao mercado: faça a lista e defina o orçamento antes de sair.", "Critérios da EconoMIA"],
   ["Prefira alimentos in natura ou minimamente processados aos ultraprocessados.", "Guia Alimentar: a regra de ouro"],
 ];
 
