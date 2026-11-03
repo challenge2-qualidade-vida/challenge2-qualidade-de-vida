@@ -929,7 +929,7 @@ h1, h2, h3, .titulo-tela, .botao-hero { font-family: "Fredoka", "Nunito", system
    para não brigar com o "transform" da animação de entrada. */
 @keyframes respirar { from { scale: 0.994 0.984; } to { scale: 1.006 1.016; } }
 @media (prefers-reduced-motion: no-preference) {
-  .hero-gato { transform-origin: 50% 100%; animation: respirar 2.45s ease-in-out infinite alternate; }
+  img.hero-gato { transform-origin: 50% 100%; animation: respirar 2.45s ease-in-out infinite alternate; }
 }
 #ancora-cesta-hero { position: absolute; right: 4%; bottom: 4%; width: 52%; height: 72%; }
 

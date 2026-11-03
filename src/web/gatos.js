@@ -1,93 +1,173 @@
-// Gatos em 3D (tópico 25): renderizados no Blender em uma grade de poses.
-// O site escolhe a pose conforme o mouse, então cabeça e olhos acompanham o cursor
-// com a qualidade de um filme, sem custo de 3D em tempo real.
-// Até a grade carregar, e sem JavaScript, fica a imagem parada de frente.
+// Gatos vivos (tópico 25): uma imagem só, deformada na placa de vídeo em tempo real.
+// A cabeça gira como uma esfera, o focinho avança, as orelhas recuam, os olhos seguem o
+// cursor, o peito respira e as pálpebras piscam. Nenhum quadro é misturado, então o rosto
+// nunca duplica. Sem WebGL 2 ou com menos movimento pedido, fica a imagem parada.
 (() => {
-  const COLUNAS = 13, LINHAS = 9, TROCA_MS = 80;
-  const semMovimento = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const dados = navigator.connection?.saveData;
+  // Medidas em pixels da imagem de cada gato.
+  const GATOS = {
+    mia: {
+      corPelo: [0.13, 0.135, 0.16],
+      origem: [60, 0],
+      cabeca: [447, 320], raio: [340, 290],
+      area: [450, 270], areaRaio: [450, 330],
+      focinho: [443, 470], focinhoRaio: [140, 90],
+      orelhaE: [165, 150], orelhaD: [735, 170], orelhaRaio: [100, 120],
+      olhoE: [309, 361], olhoD: [581, 373], olhoRaio: [71, 59],
+      peito: [430, 730], peitoRaio: [270, 210],
+    },
+  };
+
+  const VERTICES = `#version 300 es
+    in vec2 pos;
+    out vec2 uv;
+    void main() {
+      uv = vec2(pos.x + 1.0, 1.0 - pos.y) / 2.0;
+      gl_Position = vec4(pos, 0.0, 1.0);
+    }`;
+
+  const FRAGMENTOS = `#version 300 es
+    precision highp float;
+    uniform sampler2D imagem;
+    uniform vec2 tamanho, origem, olhar, cabeca, raio, area, areaRaio, focinho, focinhoRaio;
+    uniform vec2 orelhaE, orelhaD, orelhaRaio, olhoE, olhoD, olhoRaio, peito, peitoRaio;
+    uniform vec3 corPelo;
+    uniform float respiro, piscada;
+    in vec2 uv;
+    out vec4 cor;
+
+    float sino(vec2 p, vec2 c, vec2 r) { vec2 d = (p - c) / r; return exp(-dot(d, d)); }
+
+    // Empurra o miolo do olho e deixa a borda parada, como um globo girando na órbita.
+    vec2 globo(vec2 p, vec2 c) {
+      vec2 e = (p - c) / olhoRaio;
+      return p - olhar * vec2(20.0, 13.0) * max(0.0, 1.0 - dot(e, e));
+    }
+
+    // A pálpebra desce na cor do pelo e termina em um vinco escuro.
+    vec4 palpebra(vec2 p, vec2 c, vec4 base) {
+      vec2 e = (p - c) / (olhoRaio * 1.06);
+      float dentro = 1.0 - smoothstep(0.86, 1.0, dot(e, e));
+      if (dentro <= 0.0 || piscada <= 0.0) return base;
+      float linha = -1.0 + 2.1 * piscada;
+      vec4 pelo = vec4(corPelo * (1.0 + 0.25 * e.y) * (1.0 - 0.75 * exp(-pow((e.y - linha) / 0.1, 2.0))), 1.0);
+      return mix(base, pelo, dentro * (1.0 - smoothstep(linha - 0.03, linha + 0.03, e.y)));
+    }
+
+    void main() {
+      vec2 p = uv * tamanho + origem;
+      p -= (p - peito) * 0.022 * respiro * sino(p, peito, peitoRaio);
+
+      vec2 q = (p - cabeca) / raio;
+      float z = pow(max(0.0, 1.0 - dot(q, q)), 1.5);
+      z += 0.45 * sino(p, focinho, focinhoRaio);
+      z -= 0.5 * (sino(p, orelhaE, orelhaRaio) + sino(p, orelhaD, orelhaRaio));
+      float peso = 1.0 - smoothstep(1.0, 1.3, length((p - area) / areaRaio));
+      p -= (olhar * vec2(1.0, 0.8) * (50.0 * z + 14.0) + vec2(0.0, -3.5 * respiro)) * peso;
+
+      vec2 olho = globo(globo(p, olhoE), olhoD);
+      vec4 base = texture(imagem, (olho - origem) / tamanho);
+      cor = palpebra(p, olhoD, palpebra(p, olhoE, base));
+    }`;
+
+  function programa(gl) {
+    const p = gl.createProgram();
+    for (const [tipo, fonte] of [[gl.VERTEX_SHADER, VERTICES], [gl.FRAGMENT_SHADER, FRAGMENTOS]]) {
+      const s = gl.createShader(tipo);
+      gl.shaderSource(s, fonte);
+      gl.compileShader(s);
+      gl.attachShader(p, s);
+    }
+    gl.linkProgram(p);
+    return gl.getProgramParameter(p, gl.LINK_STATUS) ? p : null;
+  }
+
   const limite = (v, a, b) => Math.min(b, Math.max(a, v));
   let mouseX = null, mouseY = null, ultimoMouse = 0;
 
   addEventListener("pointermove", (e) => {
+    if (e.pointerType === "touch") return;
     mouseX = e.clientX;
     mouseY = e.clientY;
     ultimoMouse = performance.now();
   }, { passive: true });
 
-  function iniciar(imgParada) {
-    const grade = new Image();
-    grade.decoding = "async";
-    grade.src = imgParada.dataset.grade;
-    grade.onload = () => {
-      const cw = grade.width / COLUNAS, ch = grade.height / LINHAS;
-      const canvas = document.createElement("canvas");
-      canvas.width = cw;
-      canvas.height = ch;
-      canvas.className = imgParada.className;
-      canvas.setAttribute("role", "img");
-      canvas.setAttribute("aria-label", imgParada.alt);
-      imgParada.replaceWith(canvas);
-      const ctx = canvas.getContext("2d");
-      let x = (COLUNAS - 1) / 2, y = (LINHAS - 1) / 2, fim = false;
-      let pose = [x, y], anterior = null, troca = 0;
+  async function iniciar(img) {
+    const medidas = GATOS[img.dataset.gato];
+    if (!medidas) return;
+    await img.decode().catch(() => {});
+    if (!img.naturalWidth) return;
 
-      function pintar([c, l], alfa = 1) {
-        ctx.globalAlpha = alfa;
-        ctx.drawImage(grade, c * cw, l * ch, cw, ch, 0, 0, cw, ch);
-      }
+    const canvas = document.createElement("canvas");
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const gl = canvas.getContext("webgl2", { alpha: true, premultipliedAlpha: true, antialias: false });
+    const prog = gl && programa(gl);
+    if (!prog) return;
 
-      // Parado, o gato mostra sempre uma pose pura: misturar poses vizinhas duplica olhos
-      // e boca. A mistura existe só durante a troca, rápida demais para o olho perceber.
-      function desenhar(agora) {
-        const t = anterior ? (agora - troca) / TROCA_MS : 1;
-        ctx.clearRect(0, 0, cw, ch);
-        if (t < 1) {
-          pintar(anterior);
-          pintar(pose, t);
-        } else {
-          anterior = null;
-          pintar(pose);
-        }
-        ctx.globalAlpha = 1;
-      }
+    gl.useProgram(prog);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(gl.getAttribLocation(prog, "pos"));
+    gl.vertexAttribPointer(gl.getAttribLocation(prog, "pos"), 2, gl.FLOAT, false, 0, 0);
 
-      function quadro(agora) {
-        if (fim) return;
-        requestAnimationFrame(quadro);
-        if (document.hidden || !canvas.isConnected) return;
-        const caixa = canvas.getBoundingClientRect();
-        if (!caixa.width || caixa.bottom < 0 || caixa.top > innerHeight) return;
-        let alvoX = 0, alvoY = 0;
-        if (mouseX !== null && agora - ultimoMouse < 6000) {
-          // A cabeça fica acima do meio da imagem: é daí que o gato "olha".
-          const olhoX = caixa.left + caixa.width / 2, olhoY = caixa.top + caixa.height * 0.34;
-          alvoX = limite((mouseX - olhoX) / (innerWidth * 0.42), -1, 1);
-          alvoY = limite((mouseY - olhoY) / (innerHeight * 0.5), -1, 1);
-        } else {
-          // Com o mouse parado, o gato olha em volta devagar.
-          alvoX = Math.sin(agora / 3100) * 0.45;
-          alvoY = Math.sin(agora / 4300) * 0.25;
-        }
-        // Na grade, a primeira linha olha para baixo: mouse em cima (alvoY -1) vai para a última.
-        const nx = ((alvoX + 1) / 2) * (COLUNAS - 1), ny = ((1 - alvoY) / 2) * (LINHAS - 1);
-        x += (nx - x) * 0.09;
-        y += (ny - y) * 0.09;
-        // A folga acima de 0,5 evita o gato ficar trocando de pose com o mouse quase parado.
-        if (Math.abs(x - pose[0]) > 0.6 || Math.abs(y - pose[1]) > 0.6) {
-          anterior = pose;
-          pose = [Math.round(x), Math.round(y)];
-          troca = agora;
-        }
-        if (anterior) desenhar(agora);
-      }
-      pintar(pose);
+    gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    const local = (nome) => gl.getUniformLocation(prog, nome);
+    gl.uniform2f(local("tamanho"), canvas.width, canvas.height);
+    const { corPelo, ...pontos } = medidas;
+    gl.uniform3f(local("corPelo"), ...corPelo);
+    for (const [nome, valor] of Object.entries(pontos)) gl.uniform2f(local(nome), ...valor);
+    const uOlhar = local("olhar"), uRespiro = local("respiro"), uPiscada = local("piscada");
+
+    canvas.className = img.className;
+    canvas.setAttribute("role", "img");
+    canvas.setAttribute("aria-label", img.alt);
+    img.replaceWith(canvas);
+
+    let x = 0, y = 0, proximaPiscada = performance.now() + 2500, inicioPiscada = -1e9;
+
+    function quadro(agora) {
       requestAnimationFrame(quadro);
-    };
+      if (document.hidden || !canvas.isConnected) return;
+      const caixa = canvas.getBoundingClientRect();
+      if (!caixa.width || caixa.bottom < 0 || caixa.top > innerHeight) return;
+
+      let alvoX, alvoY;
+      if (mouseX !== null && agora - ultimoMouse < 6000) {
+        // A cabeça fica acima do meio da imagem: é daí que o gato "olha".
+        const olhoX = caixa.left + caixa.width / 2, olhoY = caixa.top + caixa.height * 0.35;
+        alvoX = limite((mouseX - olhoX) / (innerWidth * 0.42), -1, 1);
+        alvoY = limite((mouseY - olhoY) / (innerHeight * 0.5), -1, 1);
+      } else {
+        // Sem mouse, o gato olha em volta devagar.
+        alvoX = Math.sin(agora / 3100) * 0.45;
+        alvoY = Math.sin(agora / 4300) * 0.25;
+      }
+      x += (alvoX - x) * 0.09;
+      y += (alvoY - y) * 0.09;
+
+      if (agora > proximaPiscada) {
+        inicioPiscada = agora;
+        proximaPiscada = agora + 2200 + Math.random() * 4200;
+      }
+      const t = (agora - inicioPiscada) / 170;
+      gl.uniform1f(uPiscada, t < 1 ? Math.sin(t * Math.PI) : 0);
+      gl.uniform1f(uRespiro, Math.sin(agora / 780));
+      gl.uniform2f(uOlhar, x, y);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    requestAnimationFrame(quadro);
   }
 
-  // No toque não há cursor para seguir: a grade pesada não compensa e fica a imagem,
-  // que respira pelo CSS. O mesmo vale para economia de dados e menos movimento.
-  const toque = !matchMedia("(pointer: fine)").matches;
-  if (!toque && !dados && !semMovimento) document.querySelectorAll("img[data-grade]").forEach(iniciar);
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.querySelectorAll("img[data-gato]").forEach(iniciar);
+  }
 })();
