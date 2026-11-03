@@ -48,3 +48,24 @@ def test_preco_por_kg():
     produto = Produto("arroz-5kg", "arroz", "Arroz 5 kg", 5000)
     preco = Preco("arroz-5kg", "A", 27.90, "2026-10-20", "exemplo")
     assert preco_por_kg(produto, preco) == pytest.approx(5.58)
+
+
+def test_alimento_sem_valor_na_taco_declara_a_fonte_propria(base):
+    assert "TACO não publica" in base.alimentos["leite"].fonte_nutricao
+    assert base.alimentos["arroz"].fonte_nutricao == ""
+
+
+def test_sensibilidade_mantem_diferenca_entre_mercados(base):
+    import importlib.util
+    import json
+    from pathlib import Path
+    raiz = Path(__file__).resolve().parents[1]
+    spec = importlib.util.spec_from_file_location("sens", raiz / "experimentos" / "sensibilidade_precos.py")
+    sens = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sens)
+    itens = json.loads((raiz / "data" / "experimento" / "precos_procon_anapolis.json").read_text(encoding="utf-8"))["itens"]
+    real = sens.com_precos_reais(base, itens)
+    arroz = {p.mercado: p.preco for p in real.precos if p.produto == "arroz-5kg"}
+    assert arroz["B"] < arroz["A"] < arroz["C"]
+    assert sens.media_kg(real, "tomate") == pytest.approx(8.92, abs=0.02)
+    assert {p.preco for p in real.precos if p.produto == "lentilha-500g"} == {p.preco for p in base.precos if p.produto == "lentilha-500g"}

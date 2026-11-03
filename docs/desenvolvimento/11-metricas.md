@@ -27,7 +27,7 @@ O cálculo automático das **8 métricas do README** sobre uma grade de **160 ce
 
 O README pede comparar com a **cesta básica do DIEESE de Brasília**. O DIEESE publica o **custo** dessa cesta com os preços que ele coleta. Comparar esse custo com o da nossa base seria misturar duas fontes de preço. Por isso montamos a cesta **com as quantidades do DIEESE** (Decreto-Lei nº 399/1938, Região 1, que inclui o DF) e a precificamos **com a mesma base de preços** da EconoMIA, pelo menor preço por kg. Assim a diferença vem só da **escolha dos alimentos**.
 
-Adaptações: farinha de trigo → farinha de mandioca; 90 bananas ≈ 9 kg; café e manteiga ficaram de fora (não estão na base), o que deixa a referência mais barata e torna a comparação **conservadora**. As quantidades precisam ser conferidas na metodologia oficial do DIEESE.
+Adaptações: farinha de trigo → farinha de mandioca; 90 bananas ≈ 9 kg; café e manteiga ficaram de fora (não estão na base), o que deixa a referência mais barata e torna a comparação **conservadora**. As quantidades foram conferidas na metodologia do DIEESE ([tópico 21](21-conferencia-das-fontes.md)).
 
 **A referência não tem a mesma energia:** dá cerca de **3.100 kcal por pessoa por dia** (155% da meta de 2.000). Por isso o relatório traz duas economias: a **bruta** e a **com a mesma energia** (a referência reduzida proporcionalmente à meta de kcal).
 
@@ -37,10 +37,10 @@ Adaptações: farinha de trigo → farinha de mandioca; 90 bananas ≈ 9 kg; caf
 
 | # | Métrica | Resultado |
 |---|---------|-----------|
-| 1 | Economia × cesta de referência | **72,5%** bruta; **57,2%** com a mesma energia |
+| 1 | Economia × cesta de referência | **72,5%** bruta; **57,0%** com a mesma energia |
 | 2 | Aderência ao orçamento | **100%** das cestas dentro do orçamento (incluindo o deslocamento); 68% dos cenários têm solução |
 | 3 | Adequação nutricional | **100%** cumprem as 4 metas; **100%** respeitam as restrições; **100%** têm ≥ 3 frutas/hortaliças; 5 a 8 grupos de alimentos por cesta |
-| 4 | Custo por 1.000 kcal / por g de proteína | **R$ 2,86 / R$ 0,111** (referência: R$ 6,75 / R$ 0,181) |
+| 4 | Custo por 1.000 kcal / por g de proteína | **R$ 2,86 / R$ 0,111** (referência: R$ 6,72 / R$ 0,181) |
 | 5 | Qualidade dos dados | 100% dos preços com data e fonte; 100% com até 30 dias; cobertura de 98% (produto × mercado); **100% de fonte "exemplo"** |
 | 6 | Precisão de preço (±5% na gôndola) | **pendente**: trabalho de campo |
 | 7 | Qualidade das respostas | A 59% · B 94% · C 82% · **D 94%** (tópicos 8 e 9) |

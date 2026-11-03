@@ -1,5 +1,5 @@
 {
-  "fonte": "Tabela TACO 4ª ed. (NEPA/Unicamp), valores por 100 g. Valores aproximados: conferir na tabela original antes da entrega.",
+  "fonte": "Tabela TACO 4ª ed. (NEPA/Unicamp), valores por 100 g, conferidos com a tabela original em 03/11/2026. Exceção: leite (ver o campo fonte_nutricao).",
   "alimentos": [
     {
       "id": "arroz",
@@ -183,6 +183,7 @@
       "tags": [
         "lactose"
       ],
+      "fonte_nutricao": "Valor aproximado: a TACO não publica energia e proteína do leite integral (análises em reavaliação). Coerente com rótulos comerciais e com tabelas secundárias: 58 a 64 kcal e 2,9 a 3,2 g de proteína por 100 mL.",
       "por_100g": {
         "kcal": 61,
         "proteina_g": 2.9,

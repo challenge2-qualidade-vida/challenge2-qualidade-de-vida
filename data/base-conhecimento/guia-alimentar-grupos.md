@@ -1,6 +1,6 @@
 # Guia Alimentar — grupos de alimentos e refeições
 
-> Fonte: Guia Alimentar para a População Brasileira, 2ª ed., Ministério da Saúde, 2014 (capítulos 3 e 4). Texto resumido pelo grupo; conferir no original.
+> Fonte: Guia Alimentar para a População Brasileira, 2ª ed., Ministério da Saúde, 2014 (capítulos 3 e 4). Texto resumido pelo grupo e conferido com o original em 03/11/2026.
 
 ## Feijões
 
@@ -16,11 +16,11 @@ Arroz, milho, trigo (macarrão, pães), aveia, mandioca, batata e farinha de man
 
 ## Legumes, verduras e frutas
 
-Legumes, verduras e frutas fornecem vitaminas, minerais e fibra, com poucas calorias. O Guia recomenda consumi-los em variedade e todos os dias. Frutas e hortaliças da estação costumam ser mais baratas e mais saborosas. A OMS recomenda pelo menos 400 g de frutas, legumes e verduras por dia.
+Legumes, verduras e frutas fornecem vitaminas, minerais e fibra, com poucas calorias. O Guia recomenda consumi-los em variedade e todos os dias. O Guia recomenda preferir os da estação e cultivados localmente. A OMS recomenda pelo menos 400 g de frutas, legumes e verduras por dia.
 
 ## Carnes e ovos
 
-Carnes vermelhas, frango, peixes e ovos são fontes de proteína de alta qualidade, ferro e vitamina B12. O Guia recomenda limitar carnes vermelhas e preferir cortes magros. O ovo é uma das fontes de proteína mais baratas e pode substituir a carne em várias refeições.
+Carnes vermelhas, frango, peixes e ovos são fontes de proteína de alta qualidade, ferro e vitamina B12. O Guia recomenda limitar carnes vermelhas e preferir cortes magros. Os ovos são acessíveis e relativamente baratos no Brasil e podem substituir a carne em várias refeições.
 
 ## Leite e queijos
 

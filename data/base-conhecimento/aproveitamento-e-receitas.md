@@ -1,6 +1,6 @@
 # Aproveitamento de alimentos e receitas simples
 
-> Fonte: receitas e dicas reunidas pelo grupo, com base nos alimentos da cesta. Texto do grupo; revisar antes da entrega.
+> Fonte: receitas e dicas reunidas pelo grupo, com base nos alimentos da cesta. Texto do grupo, sem fonte externa.
 
 ## Ordem de uso dos alimentos
 

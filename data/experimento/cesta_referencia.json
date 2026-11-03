@@ -1,18 +1,71 @@
 {
-  "descricao": "Cesta de referência no estilo da cesta básica do DIEESE (Decreto-Lei nº 399/1938, Região 1, que inclui o DF): quantidades por pessoa adulta por mês. Itens sem correspondência na base da EconoMIA foram adaptados ou retirados, como indicado. Conferir as quantidades na metodologia oficial do DIEESE antes da entrega.",
+  "descricao": "Cesta de referência no estilo da cesta básica do DIEESE (Decreto-Lei nº 399/1938, Região 1, que inclui o DF): quantidades por pessoa adulta por mês, conferidas na metodologia do DIEESE em 03/11/2026. Itens sem correspondência na base da EconoMIA foram adaptados ou retirados, como indicado.",
   "fonte": "DIEESE, Metodologia da Pesquisa Nacional da Cesta Básica de Alimentos; Decreto-Lei nº 399/1938",
   "itens": [
-    {"item_dieese": "Carne", "alimento": "patinho", "kg_mes": 6.0},
-    {"item_dieese": "Leite", "alimento": "leite", "kg_mes": 7.5},
-    {"item_dieese": "Feijão", "alimento": "feijao_carioca", "kg_mes": 4.5},
-    {"item_dieese": "Arroz", "alimento": "arroz", "kg_mes": 3.0},
-    {"item_dieese": "Farinha (trigo na Região 1; adaptado para farinha de mandioca)", "alimento": "farinha_mandioca", "kg_mes": 1.5},
-    {"item_dieese": "Batata", "alimento": "batata", "kg_mes": 6.0},
-    {"item_dieese": "Tomate", "alimento": "tomate", "kg_mes": 9.0},
-    {"item_dieese": "Pão francês", "alimento": "pao_frances", "kg_mes": 6.0},
-    {"item_dieese": "Banana (90 unidades, ~100 g cada)", "alimento": "banana", "kg_mes": 9.0},
-    {"item_dieese": "Açúcar", "alimento": "acucar", "kg_mes": 3.0},
-    {"item_dieese": "Óleo (750 mL, ~690 g)", "alimento": "oleo_soja", "kg_mes": 0.69}
+    {
+      "item_dieese": "Carne",
+      "alimento": "patinho",
+      "kg_mes": 6.0
+    },
+    {
+      "item_dieese": "Leite",
+      "alimento": "leite",
+      "kg_mes": 7.5
+    },
+    {
+      "item_dieese": "Feijão",
+      "alimento": "feijao_carioca",
+      "kg_mes": 4.5
+    },
+    {
+      "item_dieese": "Arroz",
+      "alimento": "arroz",
+      "kg_mes": 3.0
+    },
+    {
+      "item_dieese": "Farinha (trigo na Região 1; adaptado para farinha de mandioca)",
+      "alimento": "farinha_mandioca",
+      "kg_mes": 1.5
+    },
+    {
+      "item_dieese": "Batata",
+      "alimento": "batata",
+      "kg_mes": 6.0
+    },
+    {
+      "item_dieese": "Tomate",
+      "alimento": "tomate",
+      "kg_mes": 9.0
+    },
+    {
+      "item_dieese": "Pão francês",
+      "alimento": "pao_frances",
+      "kg_mes": 6.0
+    },
+    {
+      "item_dieese": "Banana (90 unidades, ~100 g cada)",
+      "alimento": "banana",
+      "kg_mes": 9.0
+    },
+    {
+      "item_dieese": "Açúcar",
+      "alimento": "acucar",
+      "kg_mes": 3.0
+    },
+    {
+      "item_dieese": "Banha/Óleo (750 g na tabela do DIEESE)",
+      "alimento": "oleo_soja",
+      "kg_mes": 0.75
+    }
   ],
-  "retirados": ["Café em pó (600 g): sem dados nutricionais relevantes na base", "Manteiga (750 g): não está na base"]
+  "retirados": [
+    "Café em pó (600 g): sem dados nutricionais relevantes na base",
+    "Manteiga (750 g): não está na base"
+  ],
+  "custo_publicado": {
+    "capital": "Brasília",
+    "mes": "setembro de 2026",
+    "valor": 773.78,
+    "fonte": "Conab/DIEESE, Pesquisa Nacional da Cesta Básica de Alimentos, setembro de 2026"
+  }
 }

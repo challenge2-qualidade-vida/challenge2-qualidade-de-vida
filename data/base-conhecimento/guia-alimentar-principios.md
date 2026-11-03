@@ -1,6 +1,6 @@
 # Guia Alimentar — princípios e regra de ouro
 
-> Fonte: Guia Alimentar para a População Brasileira, 2ª ed., Ministério da Saúde, 2014 (capítulos 1, 2 e 6). Texto resumido pelo grupo; conferir no original.
+> Fonte: Guia Alimentar para a População Brasileira, 2ª ed., Ministério da Saúde, 2014 (capítulos 1, 2 e 6). Texto resumido pelo grupo e conferido com o original em 03/11/2026.
 
 ## Regra de ouro
 

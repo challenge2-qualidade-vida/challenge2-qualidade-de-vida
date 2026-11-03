@@ -25,6 +25,7 @@ class Alimento:
     kcal: float          # por 100 g
     proteina_g: float    # por 100 g
     fibra_g: float       # por 100 g
+    fonte_nutricao: str = ""   # preenchido só quando o valor não vem da TACO
 
 
 @dataclass(frozen=True)
@@ -89,6 +90,7 @@ def carregar(arq_alimentos: Path = ARQ_ALIMENTOS, arq_precos: Path = ARQ_PRECOS,
             kcal=a["por_100g"]["kcal"],
             proteina_g=a["por_100g"]["proteina_g"],
             fibra_g=a["por_100g"]["fibra_g"],
+            fonte_nutricao=a.get("fonte_nutricao", ""),
         )
         for a in bruto_a["alimentos"]
     }

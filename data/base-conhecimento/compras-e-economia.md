@@ -16,11 +16,11 @@ Dividir a compra entre dois mercados só compensa se a diferença de preço for 
 
 ## Alimentação saudável pode ser barata
 
-Segundo o Guia Alimentar, no Brasil uma alimentação baseada em alimentos in natura e minimamente processados, como arroz, feijão, mandioca, frutas e legumes da estação, ainda é mais barata que uma baseada em ultraprocessados. Feiras e sacolões costumam ter frutas e hortaliças mais baratas que supermercados.
+Segundo o Guia Alimentar, no Brasil uma alimentação baseada em alimentos in natura e minimamente processados, como arroz, feijão, mandioca, frutas e legumes da estação, ainda é mais barata que uma baseada em ultraprocessados. O Guia recomenda preferir legumes, verduras e frutas da estação e cultivados localmente.
 
 ## Planejar antes de comprar
 
-Planejar as refeições da semana antes de ir ao mercado evita compras por impulso e desperdício. Faça a lista a partir do cardápio, confira o que já tem em casa e defina o orçamento antes de sair. Comprar com fome aumenta o gasto.
+Planejar as refeições da semana antes de ir ao mercado evita compras por impulso e desperdício. Faça a lista a partir do cardápio, confira o que já tem em casa e defina o orçamento antes de sair.
 
 ## Substituições baratas
 

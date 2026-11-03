@@ -16,7 +16,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from .dados import RAIZ, Base
 
 PASTA_BASE = RAIZ / "data" / "base-conhecimento"
-FONTE_TACO = "Tabela TACO 4ª ed. (NEPA/Unicamp), valores aproximados"
+FONTE_TACO = "Tabela TACO 4ª ed. (NEPA/Unicamp)"
 
 # Abaixo desta similaridade o trecho é considerado irrelevante.
 SIMILARIDADE_MINIMA = 0.12
@@ -99,7 +99,8 @@ def trechos_taco(base: Base) -> list[Trecho]:
             f"{a.nome}: por 100 g tem {a.kcal:g} kcal, {a.proteina_g:g} g de proteína e {a.fibra_g:g} g de fibra. "
             f"Grupo: {NOMES_GRUPOS.get(a.grupo, a.grupo)}."
         )
-        trechos.append(Trecho(f"taco#{a.id}", f"TACO — {a.nome}", texto, FONTE_TACO))
+        rotulo = "Composição" if a.fonte_nutricao else "TACO"
+        trechos.append(Trecho(f"taco#{a.id}", f"{rotulo} — {a.nome}", texto, a.fonte_nutricao or FONTE_TACO))
     return trechos
 
 
