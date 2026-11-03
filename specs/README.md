@@ -27,5 +27,3 @@ Os arquivos `.feature` começam com `# language: pt` e usam as palavras-chave em
 | `Quando` | Ação |
 | `Então` | Resultado esperado |
 | `E`, `Mas` | Continuação do passo anterior |
-
-O suporte do pytest-bdd a `# language: pt` deve ser confirmado na versão adotada (#36). Se não houver suporte, os cenários usam as palavras-chave em inglês (`Feature`, `Scenario`, `Given`, `When`, `Then`), mantendo o texto dos passos em português.
