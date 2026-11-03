@@ -12,12 +12,13 @@ Projetar e desenvolver uma solução baseada em IA capaz de apoiar a tomada de d
 
 ## Equipe
 
-| Nome | GitHub | Papel |
-|------|--------|-------|
-| Guilherme Barros | @dida0982 | |
-| Isabel Azar  | @iAiBel | |
-| | | |
-| | | |
+| Foto | Nome | GitHub | Papel |
+|------|------|--------|-------|
+| <img src="https://github.com/dida0982.png" width="60" alt="Foto de Guilherme Barros"> | Guilherme Barros | [@dida0982](https://github.com/dida0982) | AI Engineering e frontend |
+| <img src="https://github.com/gpaulovit.png" width="60" alt="Foto de Paulo Vitor Gomes"> | Paulo Vitor Gomes | [@gpaulovit](https://github.com/gpaulovit) | AI Engineering e LLMOps |
+| <img src="https://github.com/iAiBel.png" width="60" alt="Foto de Isabel Azar"> | Isabel Azar | [@iAiBel](https://github.com/iAiBel) | Engenharia de dados e backend |
+| <img src="https://github.com/pedrolucasdourado.png" width="60" alt="Foto de Pedro Lucas Dourado"> | Pedro Lucas Dourado | [@pedrolucasdourado](https://github.com/pedrolucasdourado) | Arquiteto de LLMOps |
+| <img src="https://github.com/necrophagial.png" width="60" alt="Foto de Mariah Gladys"> | Mariah Gladys | [@necrophagial](https://github.com/necrophagial) | Scrum master e documentação |
 
 ## Site
 
