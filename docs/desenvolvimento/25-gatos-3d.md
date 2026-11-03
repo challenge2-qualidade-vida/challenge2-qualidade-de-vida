@@ -1,47 +1,70 @@
 # Tópico 25 — Gatos em 3D e cores novas
 
-**Status:** 🟡 Mia pronta e aguardando aprovação; Cifrão, Miau-ricio e Recibaldo ainda não foram feitos
+**Status:** 🟡 Mia refeita e aguardando aprovação; Cifrão, Miau-ricio e Recibaldo ainda não foram feitos
 
 O pedido foi trocar os gatos por personagens em 3D, com pelo e visual de filme de animação, que respiram e olham para o cursor, mexendo cabeça e olhos, no estilo de [pawzo.netlify.app](https://pawzo.netlify.app/). As cores do site também passaram a ser as dessa página. A cesta com as moedas virando comida (tópico 24) continua igual.
 
+## Por que a Mia foi refeita
+
+A primeira versão foi modelada por script no Blender e o Guilherme a achou feia. Olhos pareciam bolas coladas no rosto, e o pelo e as proporções ficaram longe das referências. Ele mandou a Pawzo e pins do Pinterest no estilo "3D cartoon estilizado". Vários desses pins têm o selo "Modificado por IA": esse visual vem de geração de imagem, e não de modelagem por script.
+
+A Mia agora é **uma imagem gerada por IA, não um modelo 3D**. O movimento é uma deformação em tempo real dessa imagem. As imagens da Pawzo e do Pinterest serviram só de referência de estilo; nenhuma foi copiada para o projeto.
+
 ## Como a Mia funciona
 
-Desenhar pelo de verdade em tempo real pesaria demais no navegador. Por isso, a Mia é renderizada antes, no Blender, em várias poses. O site só escolhe qual pose mostrar.
-
-| Parte | Como é feita |
+| Etapa | Como é feita |
 |-------|--------------|
-| Modelo e pelo | Script em Python no Blender 5.2 (`experimentos/gatos3d/gato.py`), com render Cycles e pelo de partículas |
-| Poses | Grade de 13 × 9 = 117 poses: a cabeça gira de 6° em 6° na horizontal (±36°) e de 4° em 4° na vertical (±16°). Os olhos giram um pouco além da cabeça |
-| Imagem do site | `experimentos/gatos3d/grade.py` junta as poses em `src/web/img/gatos3d/mia.webp` (2,5 MB) e gera `mia-frente.webp` (33 KB), a imagem parada |
-| Olhar | `src/web/gatos.js` calcula a pose a partir da posição do mouse e desenha no `<canvas>`. Com o mouse parado por 6 s, a Mia olha em volta devagar |
-| Respiração | Animação em CSS (`@keyframes respirar`), que desliga quando a pessoa pede menos movimento |
+| Imagem | FLUX.1 schnell, no espaço gratuito do Hugging Face, sem conta (`experimentos/gatos3d/gerar_imagem.py`) |
+| Recorte | Máscara inicial do `rembg` (`isnet-general-use`), corrigida por `experimentos/gatos3d/recorte_mia.py`: tapa os buracos nas orelhas, tira a franja clara do pelo, contorna as patas e troca a moeda pela de outra imagem, que saiu com um cifrão legível |
+| Arquivo | `src/web/img/gatos3d/mia.webp`, 790 × 990 px e cerca de 85 KB. A grade de poses da versão do Blender tinha 2,5 MB |
+| Movimento | `src/web/gatos.js`, com um shader em WebGL 2 |
 
-A Pawzo usa um vídeo que só olha na horizontal. A grade também permite olhar para cima e para baixo.
+O shader calcula, para cada pixel, de onde na imagem ele deve vir:
 
-### Quando a grade não é carregada
+- **Cabeça:** gira como uma esfera. O miolo anda mais que a borda, o focinho avança e as orelhas recuam.
+- **Olhos:** o miolo do olho anda e a borda fica parada, como um globo na órbita.
+- **Respiração:** o peito expande e a cabeça sobe e desce um pouco.
+- **Piscada:** a pálpebra desce a intervalos aleatórios de 2,2 a 6,4 s, em 170 ms.
+- **Sem mouse:** depois de 6 s parado, e sempre no toque, a Mia olha em volta devagar.
 
-Em telas de toque, com economia de dados ou com menos movimento pedido no sistema, o site mostra só `mia-frente.webp`. No toque não há cursor para seguir, então os 2,5 MB não compensam. No toque e com economia de dados, a Mia continua respirando.
+Como nenhum quadro é misturado, o rosto não duplica. Sem WebGL 2 ou com menos movimento pedido no sistema, fica a imagem parada; só sem WebGL 2 ela respira pelo CSS.
+
+**Limite da técnica:** a imagem só tem a frente da gata. Por isso o giro é pequeno, e os brilhos dos olhos andam junto com a íris, o que não aconteceria em um modelo 3D de verdade.
 
 ## Como refazer
 
-São cerca de 20 s por pose, ou cerca de 40 minutos para a grade inteira, e não é preciso ter conta em nenhum serviço.
-
 ```bash
-~/Applications/Blender.app/Contents/MacOS/Blender --background \
-  --python experimentos/gatos3d/gato.py -- --gato mia --grade <pasta das poses> \
-  --amostras 48 --largura 640 --altura 780 --qualidade 1.0
+python3 experimentos/gatos3d/gerar_imagem.py "<descrição>" 11 mia_11.webp
+python3 experimentos/gatos3d/gerar_imagem.py "<descrição da moeda>" 55 mia_55.webp
 
-.venv/bin/python experimentos/gatos3d/grade.py <pasta das poses> mia
+# rembg em um ambiente separado, para não pesar no projeto
+python3 -m venv recorte && recorte/bin/pip install "rembg[cpu]"
+recorte/bin/python -c "from PIL import Image; from rembg import remove, new_session; remove(Image.open('mia_11.webp').convert('RGB'), session=new_session('isnet-general-use'), alpha_matting=True, alpha_matting_foreground_threshold=240, alpha_matting_background_threshold=15, alpha_matting_erode_size=8).save('mia_recorte.png')"
+
+.venv/bin/python experimentos/gatos3d/recorte_mia.py mia_11.webp mia_recorte.png mia_55.webp mia_final.png
+.venv/bin/python -c "from PIL import Image; Image.open('mia_final.png').crop((60,0,850,990)).save('src/web/img/gatos3d/mia.webp', quality=88, method=6, alpha_quality=95)"
 ```
 
-Se mudar o tamanho da grade, atualize `YAWS` e `PITCHES` em `gato.py`, `COLUNAS, LINHAS` em `grade.py` e `COLUNAS, LINHAS` em `gatos.js`.
+Descrição da imagem usada (semente 11):
+
+> Adorable 3D animated movie character render of a fluffy tuxedo kitten, black fur with white chest, white muzzle and white paws, sitting upright facing the camera, head looking straight at the viewer, perfectly symmetrical face, huge expressive round golden amber eyes with large glossy catchlights, small pink nose, gentle smile, long soft silky individually detailed fur, fluffy cheeks and chest tuft, big soft ears with pink inside, thin red collar with a small round gold coin pendant, Pixar Disney style, soft studio lighting, subsurface scattering, full body, plain solid light cream background, no shadow
+
+Descrição da moeda (semente 55):
+
+> Adorable 3D animated movie character render of a fluffy tuxedo kitten, black fur with white chest, white muzzle and white paws, sitting upright with front paws together, facing the camera, head straight, perfectly symmetrical face, big round golden amber eyes looking straight at the viewer with medium round black pupils and two glossy catchlights, small pink nose, closed gentle smile, long soft silky individually detailed fur, fluffy cheeks and chest tuft, soft ears with pink inside, thin red collar with a small round plain gold coin pendant with dollar sign, Pixar Disney style, soft studio lighting, subsurface scattering, full body with space around, plain solid light cream background
+
+Para um gato novo, as medidas (cabeça, olhos, focinho, orelhas, peito) entram em `GATOS`, no início de `gatos.js`, e a imagem usa `data-gato="<nome>"`. As medidas das patas e da moeda ficam no início de `recorte_mia.py`.
 
 ## Problemas encontrados
 
 | Problema | Causa | Solução |
 |----------|-------|---------|
-| Olhos e boca duplicados | O site misturava poses vizinhas conforme a posição do mouse. Reduzir a distância entre as poses de 12° para 6° não bastou: com o mouse parado entre duas poses, o rosto continuava duplicado | O gato mostra sempre uma pose pura. A mistura acontece só na troca, por 80 ms |
-| Mia olhava para o lado oposto na vertical | Na grade, a primeira linha (pitch positivo) olha para baixo, e o código supunha o contrário | Eixo invertido no `gatos.js` e comentário corrigido no `gato.py` |
+| Mia feia | Modelagem por script não chegou no nível das referências | Imagem gerada por IA, com movimento no shader. Os scripts do Blender saíram do projeto e continuam no histórico do git |
+| Rosto duplicado na versão do Blender | Mistura de poses vizinhas | A técnica nova não mistura quadros |
+| Buracos nas orelhas e franja clara | O `rembg` confundiu o rosa com o fundo | Preenchimento dos buracos e cor da borda tirada do pelo vizinho |
+| Olhos deformados no extremo do olhar | Giro forte demais | Giro reduzido |
+| Piscada com aparência de óculos | A pálpebra copiava a sobrancelha branca | Pálpebra na cor do pelo, com vinco escuro |
+| Espaço gratuito recusando pedidos | Cota do uso sem conta | Aproveitadas as três imagens que já tinham sido geradas |
 | Título borrado | A sombra do texto usava a cor clara do fundo | Sombra em mostarda escuro |
 | Logo verde ilegível no fundo mostarda | O arquivo do logo é verde | Filtro em CSS que deixa o nome creme |
 | Conteúdo passando por baixo do logo ao rolar | Barra do topo transparente | Barra com o gradiente opaco |
@@ -63,14 +86,16 @@ As cores vêm da página da Pawzo e ficam nas variáveis do início de `src/web/
 
 ## O que foi conferido
 
-- 223 testes passando, incluindo `test_mia_tem_imagem_parada_e_grade_de_poses`.
-- No Chrome, a 1470 px: a Mia acompanha o mouse nos quatro lados, com o rosto limpo com o mouse parado; barra ao rolar; console sem erros do site.
+- 223 testes passando, incluindo `test_mia_e_uma_imagem_animada_pelo_gatos_js`.
+- No Chrome, a 1470 px: a Mia acompanha o mouse nos extremos e no alto, a 62 quadros por segundo, sem erro de WebGL nem do site no console.
+- Piscada: quadros de meio e de olho fechado conferidos um a um.
+- Largura de 390 px, simulada em um quadro dentro da página: sem rolagem lateral. As patas ficam atrás da barra inferior até rolar a página.
 - Cores das telas Início, Cesta, Perto, Mia e Cupom.
-- Largura de 390 px, simulada em um quadro dentro da página: sem rolagem lateral, Mia e cesta visíveis.
 
 ## O que falta
 
 - Aprovação da Mia pelo Guilherme e pelo grupo.
 - Fazer Cifrão, Miau-ricio e Recibaldo. Até lá, os gatos de `.mascote`, `.acao-gato`, `.cabecalho-tela` e `.turma` continuam sendo os desenhos verdes antigos, que destoam da paleta nova.
-- Olhar a troca de poses em movimento: o teste automático confere o gato parado, e a suavidade precisa ser avaliada por uma pessoa.
+- Avaliar o movimento a olho, inclusive a piscada: o teste automático confere quadros parados.
 - Testar em celular real.
+- Citar no relatório final que a Mia foi gerada por IA.
