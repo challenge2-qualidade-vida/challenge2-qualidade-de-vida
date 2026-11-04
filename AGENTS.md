@@ -21,10 +21,10 @@ Se a tarefa for uma funcionalidade e não houver spec, escreva a spec e os cená
 - API: FastAPI (formato das rotas em definição na #31)
 - Orquestração dos agentes: LangGraph
 - Fila e worker: Redis + RQ
-- Banco relacional: PostgreSQL
+- Banco relacional: PostgreSQL, com SQLAlchemy Core (sem ORM) e migrações em SQL com Flyway
 - Banco vetorial: Qdrant
 - LLMOps: Langfuse Cloud
-- Frontend: React + Vite, na pasta `frontend/`
+- Frontend: React + Vite com TypeScript, na pasta `frontend/`
 - Login: e-mail e senha próprios, com JWT
 - Implantação: VM com Docker Compose
 - Testes: pytest e pytest-bdd

@@ -43,12 +43,12 @@ flowchart LR
 | API | FastAPI | Rotas HTTP, autenticação, enfileiramento de tarefas |
 | Orquestração dos agentes | LangGraph | Grafo do orquestrador: interpreta o pedido, aciona os agentes e passa a resposta pela Mia |
 | Fila e worker | Redis + RQ | Tarefas assíncronas e agendamento da extração bimestral |
-| Banco relacional | PostgreSQL | Contas, perfil, listas, notas, preços, catálogo de alimentos, receitas estruturadas |
+| Banco relacional | PostgreSQL, acessado com SQLAlchemy Core (sem ORM) e migrações em SQL com Flyway | Contas, perfil, listas, notas, preços, catálogo de alimentos, receitas estruturadas |
 | Banco vetorial | Qdrant | Embeddings das receitas e da base de conhecimento do RAG, com payload para filtrar na busca por tipo, alimentos, ingredientes restritos e tema. O payload é sincronizado com o catálogo de alimentos do PostgreSQL |
 | LLM | API de provedor, atrás de um adaptador | Interpretação, redação das respostas e leitura de imagens. O provedor e o modelo são decididos na #13 |
-| LLMOps | Langfuse Cloud (plano gratuito), fora da VM | Registro de prompts, respostas, custo, latência e avaliações. Acesso das 2 pessoas de DevOps. Os registros não levam dados pessoais nem sensíveis (RN30) |
+| LLMOps | Langfuse Cloud (plano gratuito, região US), fora da VM | Registro de prompts, respostas, custo, latência e avaliações. Acesso das 2 pessoas de DevOps. Os registros não levam dados pessoais nem sensíveis (RN30) |
 | Login | E-mail e senha no próprio backend | Senha com hash e token JWT |
-| Implantação | Uma VM com Docker Compose | Sobe API, worker, Redis, PostgreSQL, Qdrant e o frontend. O Langfuse fica fora da VM |
+| Implantação | Uma VM no Azure (2 vCPUs, 16 GiB) com Docker Compose | Sobe API, worker, Redis, PostgreSQL, Qdrant e o frontend. O Langfuse fica fora da VM |
 
 ## 3. Onde o LLM entra
 
@@ -69,8 +69,9 @@ O LLM só interpreta texto e imagens e redige respostas. Cálculos, comparaçõe
 
 ```
 src/economia/
-  compartilhado/        Alimento, Dinheiro, Quantidade, eventos, adaptador do LLM
+  compartilhado/        Alimento, Dinheiro, Quantidade, eventos, adaptador do LLM, configuração (pydantic-settings)
   planejamento/
+    AGENTS.md           instruções do contexto para pessoas e agentes de IA
     dominio/            entidades, objetos de valor, regras (sem dependência externa)
     aplicacao/          casos de uso e serviços expostos aos outros contextos
     infraestrutura/     banco, LLM, APIs externas
@@ -81,8 +82,9 @@ src/economia/
   conversa/             orquestrador (grafo do LangGraph em infraestrutura/)
   api/                  rotas FastAPI
   worker/               tarefas do RQ e agendamentos
-prompts/                prompts versionados
-frontend/               React + Vite
+prompts/<agente>/       prompts versionados
+migracoes/              migrações SQL do Flyway (V1__descricao.sql)
+frontend/               React + Vite com TypeScript
 tests/
   <contexto>/           testes de unidade
   bdd/                  passos dos cenários (pytest-bdd)
@@ -91,6 +93,14 @@ docker-compose.yml
 ```
 
 A camada `dominio` não importa nada de `infraestrutura`, de frameworks nem de LLM.
+
+Convenções para a equipe e para os agentes de IA:
+
+- **`AGENTS.md` em cada contexto:** termos, regras de negócio e limites de importação daquele contexto, lidos por quem for mexer nele.
+- **import-linter no CI:** barra o PR quando o `dominio` importa infraestrutura, framework ou LLM, ou quando um contexto importa o domínio de outro.
+- **Configuração** lida das variáveis de ambiente num único lugar, com pydantic-settings.
+- **Prompts** em `prompts/<agente>/`, um arquivo por prompt, com a versão no nome, para o Langfuse rastrear qual versão gerou cada resposta.
+- **Cliente da API** no frontend gerado a partir do OpenAPI, em TypeScript.
 
 ## 6. Infraestrutura e operação
 
@@ -124,7 +134,7 @@ flowchart LR
 ```
 
 - API e worker usam a mesma imagem, com comandos diferentes. O frontend é gerado no build e servido pelo Caddy.
-- A ferramenta de migração ainda está em definição (Flyway ou Alembic, seção 7).
+- As migrações usam o **Flyway**: arquivos SQL numerados em `migracoes/` (`V1__descricao.sql`), aplicados pelo contêiner oficial do Flyway antes de a API subir, tanto no deploy quanto no `docker compose` local.
 
 ### Segredos
 
@@ -135,16 +145,16 @@ flowchart LR
 
 | Proteção | Como funciona |
 | --- | --- |
-| Limite de requisições | Limite por pessoa e por IP, mais apertado nas rotas que chamam o LLM |
-| Limite de gasto com LLM | Teto diário de custo com o provedor. Ao atingir o teto, o sistema avisa a pessoa e recusa novas chamadas ao LLM até o dia seguinte. Como segunda barreira, o painel do provedor também tem limite de gasto ou alerta de cobrança configurado (OWASP API4:2023) |
+| Limite de requisições | 10 mensagens por minuto por pessoa nas rotas que chamam o LLM e 60 requisições por minuto nas demais, também por IP |
+| Limite de gasto com LLM | Teto diário de US$ 1 com o provedor, ajustável por variável de ambiente. Ao atingir o teto, o sistema avisa a pessoa e recusa novas chamadas ao LLM até o dia seguinte. Como segunda barreira, o painel do provedor também tem limite de gasto ou alerta de cobrança configurado (OWASP API4:2023) |
 | CORS restrito | A API só aceita chamadas do domínio do frontend |
-| JWT curto com renovação | Token de acesso de vida curta (ex.: 15 minutos) e token de renovação. Senhas com hash Argon2id |
+| JWT curto com renovação | Token de acesso de 15 minutos e token de renovação de 7 dias. Senhas com hash Argon2id |
 
 ### Monitoramento
 
 - **Logs** em JSON, com um identificador por requisição, lidos pelo Docker. Os logs seguem a RN30: sem dados pessoais nem sensíveis.
 - **Rotas de saúde** (`/saude`) na API e no worker, usadas pelo `docker compose` e pelo deploy.
-- **Uptime Kuma** consulta as rotas de saúde e avisa a equipe quando algo cai. Se ele rodar na mesma VM, não consegue avisar quando a própria VM cai.
+- **Uptime Kuma** roda **fora da VM** (serviço externo ou máquina da equipe), consulta as rotas de saúde e avisa a equipe quando algo cai, inclusive a própria VM.
 - As chamadas ao LLM são acompanhadas no Langfuse Cloud (seção 3).
 
 ### Backup
@@ -155,11 +165,8 @@ flowchart LR
 ## 7. A definir
 
 - **Provedor e modelo do LLM, e modelo de embeddings** (#13).
-- **Ferramenta de migração do banco:** Flyway (SQL puro, experiência da equipe) ou Alembic (Python, ligado ao SQLAlchemy), e como o código Python acessa o banco.
-- **Uptime Kuma:** na própria VM ou num serviço de monitoramento externo, para avisar também quando a VM cair.
-- **Valores dos limites:** requisições por minuto, teto diário de gasto com LLM e duração dos tokens.
-- **VM:** tamanho. A VM roda no Azure for Students e precisa aguentar PostgreSQL, Qdrant, Redis, API, worker e frontend.
-- **Langfuse Cloud:** região dos dados (US, EU ou Japão).
+- **Custo da VM:** conferir na calculadora do Azure quanto a VM de 2 vCPUs e 16 GiB consome dos US$ 100 de crédito e por quantos meses o crédito dura.
+- **Onde roda o Uptime Kuma** fora da VM: qual serviço ou máquina.
 - **Organização do código** a confirmar na #36 e **formato detalhado das rotas** na #31.
 
 Os fluxos de dados, as rotas iniciais e os contratos dos agentes estão em [fluxos e contratos](fluxos-e-contratos.md).
