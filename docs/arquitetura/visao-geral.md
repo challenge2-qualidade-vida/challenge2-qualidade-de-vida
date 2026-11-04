@@ -92,9 +92,72 @@ docker-compose.yml
 
 A camada `dominio` não importa nada de `infraestrutura`, de frameworks nem de LLM.
 
-## 6. A definir
+## 6. Infraestrutura e operação
+
+### Ambientes
+
+| Ambiente | Onde roda | Para quê |
+| --- | --- | --- |
+| Local | Máquina de cada pessoa, com `docker compose` | Desenvolvimento e testes |
+| Produção | VM no Azure for Students, com `docker compose` | Uso real e demo |
+
+Não há ambiente de homologação. O que entra na `main` vai para a produção.
+
+### Rede e HTTPS
+
+- O domínio da equipe aponta para a VM. O **Caddy** fica na frente de tudo, obtém e renova o certificado HTTPS sozinho, serve o frontend (arquivos estáticos do build do Vite) e repassa `/api` para a API.
+- O Caddy usa um **volume persistente** para os certificados. Sem ele, o certificado é pedido de novo a cada recriação do contêiner, e o Let's Encrypt limita a quantidade de pedidos.
+- Na VM, só as portas 80 e 443 ficam abertas para a internet, além do SSH restrito. PostgreSQL, Qdrant e Redis só são acessíveis pela rede interna do Docker.
+
+### Entrega contínua
+
+```mermaid
+flowchart LR
+    PR[Pull request] --> CI[CI: lint, testes, import-linter]
+    CI -->|merge na main| Build[Build das imagens Docker]
+    Build --> GHCR[(GitHub Container Registry)]
+    GHCR --> Deploy[Deploy por SSH na VM]
+    Deploy --> Env[Grava o .env a partir dos GitHub Secrets]
+    Env --> Mig[Roda as migrações do banco]
+    Mig --> Up[docker compose pull e up]
+    Up --> Saude[Confere as rotas de saúde]
+```
+
+- API e worker usam a mesma imagem, com comandos diferentes. O frontend é gerado no build e servido pelo Caddy.
+- A ferramenta de migração ainda está em definição (Flyway ou Alembic, seção 7).
+
+### Segredos
+
+- Chave do provedor de LLM, chave secreta do HMAC (RN15), senha do banco, segredo do JWT e chaves do Langfuse ficam nos **GitHub Secrets**.
+- O deploy grava o `.env` na VM com permissão só para o usuário do serviço. O `.env` nunca entra no repositório. Localmente, cada pessoa usa o `.env.example` com valores fictícios.
+
+### Proteções da API
+
+| Proteção | Como funciona |
+| --- | --- |
+| Limite de requisições | Limite por pessoa e por IP, mais apertado nas rotas que chamam o LLM |
+| Limite de gasto com LLM | Teto diário de custo com o provedor. Ao atingir o teto, o sistema avisa a pessoa e recusa novas chamadas ao LLM até o dia seguinte. Como segunda barreira, o painel do provedor também tem limite de gasto ou alerta de cobrança configurado (OWASP API4:2023) |
+| CORS restrito | A API só aceita chamadas do domínio do frontend |
+| JWT curto com renovação | Token de acesso de vida curta (ex.: 15 minutos) e token de renovação. Senhas com hash Argon2id |
+
+### Monitoramento
+
+- **Logs** em JSON, com um identificador por requisição, lidos pelo Docker. Os logs seguem a RN30: sem dados pessoais nem sensíveis.
+- **Rotas de saúde** (`/saude`) na API e no worker, usadas pelo `docker compose` e pelo deploy.
+- **Uptime Kuma** consulta as rotas de saúde e avisa a equipe quando algo cai. Se ele rodar na mesma VM, não consegue avisar quando a própria VM cai.
+- As chamadas ao LLM são acompanhadas no Langfuse Cloud (seção 3).
+
+### Backup
+
+- Todo dia, um `pg_dump` do PostgreSQL e um snapshot do Qdrant são enviados ao **Azure Blob Storage**, com retenção de 7 dias.
+- A restauração é testada pelo menos uma vez antes da demo.
+
+## 7. A definir
 
 - **Provedor e modelo do LLM, e modelo de embeddings** (#13).
+- **Ferramenta de migração do banco:** Flyway (SQL puro, experiência da equipe) ou Alembic (Python, ligado ao SQLAlchemy), e como o código Python acessa o banco.
+- **Uptime Kuma:** na própria VM ou num serviço de monitoramento externo, para avisar também quando a VM cair.
+- **Valores dos limites:** requisições por minuto, teto diário de gasto com LLM e duração dos tokens.
 - **Como a notificação chega ao frontend** quando uma tarefa termina (RN26): o frontend consulta a API de tempos em tempos, a API envia por SSE ou WebSocket, ou a notificação aparece na próxima vez que a pessoa abrir o app.
 - **VM:** tamanho. A VM roda no Azure for Students e precisa aguentar PostgreSQL, Qdrant, Redis, API, worker e frontend.
 - **Langfuse Cloud:** região dos dados (US, EU ou Japão).
