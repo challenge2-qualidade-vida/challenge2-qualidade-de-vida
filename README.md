@@ -48,14 +48,21 @@ Documentação publicada em **https://dida0982.github.io/challenge2-qualidade-de
 
 ```
 docs/                    documentação e entregáveis de cada semana
+  arquitetura/           modelo de domínio, visão geral da arquitetura, fluxos e contratos
+  produto/               escopo do MVP e priorização
+  processo/              fluxo de trabalho e convenções da equipe
+  decisoes.md            decisões do projeto, com justificativa e validação
   semana-1/              definições do projeto (problema, stakeholders, riscos, métricas)
   challenge2_resumo.xlsx resumo do desafio
+specs/                   specs e cenários BDD de cada funcionalidade
 data/base-conhecimento/  documentos e fontes confiáveis usados no RAG
-src/                     código da aplicação (RAG, agentes, interface)
+src/economia/            código do backend, um módulo por contexto (ver a visão geral da arquitetura)
 notebooks/               experimentos e análises
 site/                    site de documentação (Astro + Starlight), publicado no GitHub Pages
-tests/                   testes e avaliação com métricas
+tests/                   testes de unidade e passos BDD
 ```
+
+A arquitetura e as pastas previstas (`prompts/`, `migracoes/`, `frontend/`) estão na [visão geral da arquitetura](docs/arquitetura/visao-geral.md). As pastas do código são criadas na #36.
 
 ## Como trabalhar no repositório
 

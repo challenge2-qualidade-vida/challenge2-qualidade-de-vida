@@ -1,6 +1,6 @@
 # EconoMIA: análise de viabilidade, concorrentes e justificativa (v2)
 
-> **Versão 2.** Mudanças em relação à [v1](analise-viabilidade-e-justificativa-v1.md): os dados de preço unitário da Austrália e do Reino Unido (seção 1.4) foram trocados por dados do Brasil (Idec, Lei 13.175/2015, Procon Maceió), e a pesquisa do Procon de Lages entrou na seção 1.3. Na seção 1.7, entrou o levantamento ObservaDF (UnB, 2026) e a evidência da PNAD 2024 foi reescrita. Na seção 1.8, o estudo francês (Ducrot, 2017) foi trocado por dados do Brasil (Santos et al., 2019, e UNICEF, 2021). A seção 3.4 passou a ser "em decisão", com as opções de modelo, ferramentas de LLMOps e deploy em lista. As referências foram numeradas ([1] a [55]) e passaram a listar só as fontes citadas no texto; a reportagem da Itatiaia (que trazia o valor de junho, não de julho) saiu da seção 1.1, e a evidência sobre ultraprocessados (seção 1.6) foi corrigida com os números da fonte.
+> **Versão 2.** Mudanças em relação à v1: a coleta própria de preços em loja saiu das fontes de preço, porque é inviável para a equipe. Os dados de preço unitário da Austrália e do Reino Unido (seção 1.4) foram trocados por dados do Brasil (Idec, Lei 13.175/2015, Procon Maceió), e a pesquisa do Procon de Lages entrou na seção 1.3. Na seção 1.7, entrou o levantamento ObservaDF (UnB, 2026) e a evidência da PNAD 2024 foi reescrita. Na seção 1.8, o estudo francês (Ducrot, 2017) foi trocado por dados do Brasil (Santos et al., 2019, e UNICEF, 2021). A seção 3.4 passou a ser "em decisão", com as opções de modelo, ferramentas de LLMOps e deploy em lista. As referências foram numeradas ([1] a [55]) e passaram a listar só as fontes citadas no texto; a reportagem da Itatiaia (que trazia o valor de junho, não de julho) saiu da seção 1.1, e a evidência sobre ultraprocessados (seção 1.6) foi corrigida com os números da fonte.
 
 > Documento da Semana 1 (27/10 a 02/11/2026). Ele dá base às seções **2. Problema**, **5. Riscos** e **7. Fontes** de [definicoes-do-projeto.md](definicoes-do-projeto.md).
 > Pesquisa feita em 29/10/2026. Os itens marcados com ⚠️ vieram de fonte secundária ou não tiveram o documento original conferido. 
@@ -15,7 +15,7 @@
 | **Já existe solução pronta?** | **Só em partes.** Há apps de preço (Menor Preço Brasil), de lista (Listonic, Bring!), de receitas (Supercook, Samsung Food), de finanças (Mobills) e de leitura de nota (Grocery AI). **Nenhum combina** preço local real, orçamento, receitas e leitura de nota com explicação dos critérios, em português e para o contexto do DF. |
 | **É tecnicamente viável em 7 semanas?** | **Sim, com recorte.** LLM, RAG, multiagente e leitura de imagem são tecnologias maduras. **O gargalo é o dado de preço**, não a IA. |
 | **Recorte recomendado** | **Gama (RA II do DF)** no MVP, com o modelo de dados já preparado para outras RAs (campo `regiao`). |
-| **Maior risco** | Base de preços pequena ou desatualizada. **Mitigação:** coleta própria em 4 a 6 mercados do Gama, mais notas fiscais (NFC-e) da própria equipe e de voluntários, deixando sempre explícita a data e a origem de cada preço. |
+| **Maior risco** | Base de preços pequena ou desatualizada. **Mitigação:** notas fiscais (NFC-e) da própria equipe e de voluntários, mais encartes públicos dos mercados, deixando sempre explícita a data e a origem de cada preço. |
 
 ---
 
@@ -50,7 +50,7 @@ Cada bloco liga uma evidência a uma funcionalidade do EconoMIA. Esse é o argum
 | Em Goiânia (região vizinha ao DF), o Procon encontrou **variação de mais de 250%** no preço do mesmo item da cesta (banana) entre supermercados. | [Mais Goiás / Procon Goiânia](https://www.maisgoias.com.br/cidades/procon-encontra-variacao-de-mais-de-250-no-preco-de-itens-da-cesta-basica-em-goiania/) [11] | 4.2 Comparação de preços |
 | Em Dourados (MS), houve diferenças de **mais de 100%** em itens básicos entre 12 supermercados (out/2026). | [A Crítica / Procon](https://acritica.net/economia/erva-mate-tem-diferenca-de-344-entre-supermercados-de-dourados-aponta-procon/) [12] | 4.2 |
 | Em Lages (SC), o Procon encontrou o quilo da laranja-pera entre **R$ 1,99 e R$ 16,90** (variação de **749%**) em 9 mercados. O total da cesta variou de **R$ 388,53 a R$ 784,58**, uma diferença de R$ 396 para a mesma lista. | [ND Mais, 03/09/2026](https://ndmais.com.br/economia/pesquisa-do-procon-encontra-variacao-de-ate-749-nos-precos-de-supermercados-e-cesta-basica-tem-diferenca-de-r-396/) [13] | 4.2 e "Como reorganizar minhas compras para gastar menos?" |
-| **Não encontramos uma pesquisa de preços recente e pública do Procon-DF.** | Busca em 29/10/2026 | **Oportunidade:** a coleta própria da equipe no Gama vira, ao mesmo tempo, dado do app e evidência do problema. |
+| **Não encontramos uma pesquisa de preços recente e pública do Procon-DF.** | Busca em 29/10/2026 | **Lacuna:** não há dado público e local de preço por loja. As notas fiscais e os encartes reunidos pelo app passam a gerar esse dado. |
 
 ### 1.4 Promoção não é sinônimo de economia (preço unitário e reduflação)
 
@@ -121,7 +121,7 @@ Legenda: ✅ faz bem · 🟡 parcial · ❌ não faz
 
 | App / solução | Preço local real | Orçamento | Lista | Receitas e aproveitamento | Lê nota ou encarte | Nutrição | Explica o "porquê" | Observação |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **Menor Preço Brasil** (Sefaz-RS/Confaz) | ✅ via NFC-e | ❌ | 🟡 | ❌ | 🟡 código de barras | ❌ | ❌ | **Principal concorrente em preço.** O DF assinou o convênio em 2019 ([Convênio ICMS 03/2019](https://www.legisweb.com.br/legislacao/?id=382945) [41]). É gratuito, mas não tem API pública. **Tarefa: testar o app no Gama.** |
+| **Menor Preço Brasil** (Sefaz-RS/Confaz) | ✅ via NFC-e | ❌ | 🟡 | ❌ | 🟡 código de barras | ❌ | ❌ | **Principal concorrente em preço.** O DF assinou o convênio em 2019 ([Convênio ICMS 03/2019](https://www.legisweb.com.br/legislacao/?id=382945) [41]). É gratuito, mas não tem API pública. |
 | **Nota Paraná / Menor Preço PR** | ✅ | ❌ | 🟡 (exige cadastro) | ❌ | ❌ | ❌ | ❌ | Origem do modelo. Mostra que dados de NFC-e funcionam para comparar preços ([Bem Paraná](https://www.bemparana.com.br/consumidor/aplicativo-que-permite-pesquisa-de-29-milhoes-de-precos-ajuda-a-economizar-na-black-friday/) [42]) |
 | **LudiiPrice** (TCC, UFS) | 🟡 colaborativo | ❌ | ❌ | ❌ | ✅ QR code da NFC-e | ❌ | ❌ | **Prova acadêmica** de que dá para ler o QR code e montar uma base de preços ([PDF](https://ri.ufs.br/bitstream/riufs/15903/2/Adan_Cordeiro_Araujo.pdf) [43]) |
 | **Listonic / Bring! / AnyList / SoftList** | ❌ | 🟡 soma manual | ✅ | 🟡 (AnyList) | ❌ | ❌ | ❌ | Ótimos em lista compartilhada pela família ([Mobills](https://www.mobills.com.br/blog/aplicativo-de-lista-de-compras/) [44]; [Meu Tudo](https://meutudo.com.br/blog/aplicativo-lista-de-compras/) [45]) |
@@ -137,7 +137,7 @@ Legenda: ✅ faz bem · 🟡 parcial · ❌ não faz
 | **LLM genérico** (ChatGPT, Gemini, Claude) | ❌ alucina preços | 🟡 | 🟡 | ✅ | ✅ | 🟡 | 🟡 | **Concorrente indireto mais importante.** É exatamente a "Abordagem A" da comparação da Semana 3 |
 | **EconoMIA** (proposta) | ✅ base local com data e fonte | ✅ | ✅ | ✅ | ✅ | ✅ Guia Alimentar | ✅ | — |
 
-> ⚠️ Os apps marcados não foram testados nesta pesquisa. Vale alguém do grupo instalar e conferir antes da apresentação.
+> ⚠️ Os apps marcados não foram testados nesta pesquisa.
 
 ### 2.2 Diferencial defensável (o que dizer para a banca)
 
@@ -157,7 +157,6 @@ Legenda: ✅ faz bem · 🟡 parcial · ❌ não faz
 
 | Critério | Só o Gama | DF inteiro (33+ RAs) |
 | --- | --- | --- |
-| Coleta de preços em 7 semanas | ✅ é viável visitar 4 a 6 mercados | ❌ inviável manualmente |
 | Contato com usuários reais (questionário e entrevistas) | ✅ alguém do grupo mora ou estuda lá | 🟡 dispersos |
 | Representatividade | 🟡 cerca de 137 mil habitantes urbanos, com renda domiciliar média de **R$ 5.034** contra **R$ 6.938** no DF (PDAD 2021, [IPEDF](https://ipe.df.gov.br/documents/9915964/10216206/PDAD_2021-Apresentacao_Sul.pdf) [51]). É um perfil de renda média, alinhado ao público | ✅ |
 | Deslocamento entre lojas | ✅ dá para mapear distâncias reais | ❌ |
@@ -169,15 +168,12 @@ Legenda: ✅ faz bem · 🟡 parcial · ❌ não faz
 
 | Fonte de preço | Viabilidade | Prós | Contras |
 | --- | --- | --- | --- |
-| **A. Coleta própria em loja** (fotos de gôndola e etiqueta) | ✅ alta | Controle total, data conhecida, também gera evidência do problema (seção 1.3) | Trabalhosa. Precisa de uma lista fixa de cerca de 40 a 60 itens e cobre poucas datas |
-| **B. NFC-e via QR code** (notas da equipe e de voluntários) | ✅ alta, **testar na semana 1** | Dado oficial com item, preço unitário, loja e data. O QR code aponta para a página pública de consulta da Sefaz-DF (`fazenda.df.gov.br/nfce/...`). Alimenta direto o agente **Recibaldo** | A nota pode trazer **CPF**, que precisa ser descartado (LGPD). A página pode ter captcha ou mudar de formato. As descrições vêm abreviadas ("ARROZ T1 5KG CAMIL"), então é preciso normalizar |
-| **C. Encartes** (PDF ou imagem das redes) | 🟡 média | Promoções reais. É um ótimo caso de **multimodalidade** (Semana 5) | Só mostram promoções e têm validade curta |
-| **D. Menor Preço Brasil** | ❌ para automação | Teria a melhor cobertura | Não há API pública. Raspar o app é juridicamente arriscado e frágil. **Use só como referência manual e benchmark** |
-| **E. Dados oficiais agregados** (DIEESE, IPCA) | ✅ | Contexto e tendência | Não têm preço por loja |
+| **A. NFC-e via QR code** (notas da equipe e de voluntários) | ✅ alta | Dado oficial com item, preço unitário, loja e data. O QR code aponta para a página pública de consulta da Sefaz-DF (`fazenda.df.gov.br/nfce/...`). Alimenta direto o agente **Recibaldo** | A nota pode trazer **CPF**, que precisa ser descartado (LGPD). A página pode ter captcha ou mudar de formato. As descrições vêm abreviadas ("ARROZ T1 5KG CAMIL"), então é preciso normalizar |
+| **B. Encartes** (PDF ou imagem das redes) | 🟡 média | Promoções reais. É um ótimo caso de **multimodalidade** (Semana 5) | Só mostram promoções e têm validade curta |
+| **C. Menor Preço Brasil** | ❌ para automação | Teria a melhor cobertura | Não há API pública. Raspar o app é juridicamente arriscado e frágil. **Use só como referência manual e benchmark** |
+| **D. Dados oficiais agregados** (DIEESE, IPCA) | ✅ | Contexto e tendência | Não têm preço por loja |
 
-**Recomendação:** combinar **A + B** como base principal, usar **C** como entrada multimodal e **E** como contexto. Com isso, a base de preços fica **pequena porém confiável e com data**, o que já está alinhado à proposta ("distinguir preços confirmados de valores históricos").
-
-**Teste prático para esta semana:** peguem uma NFC-e de mercado do Gama, leiam o QR code e vejam se a página da Sefaz-DF mostra os itens sem login nem captcha. Se mostrar, a fonte B está validada.
+**Recomendação:** usar **A** como base principal, **B** como entrada multimodal e fonte de promoções e **D** como contexto. Com isso, a base de preços fica **pequena porém confiável e com data**, o que já está alinhado à proposta ("distinguir preços confirmados de valores históricos").
 
 ### 3.3 Viabilidade técnica por componente
 
@@ -262,7 +258,7 @@ Legenda: ✅ faz bem · 🟡 parcial · ❌ não faz
 | --- | --- |
 | LGPD: notas fiscais podem ter CPF | Descartar o CPF na ingestão e nunca guardar a imagem original sem necessidade |
 | LGPD: questionário com pessoas | Termo de consentimento (TCLE) simples, sem coletar nome nem telefone, a menos que a pessoa se ofereça para uma entrevista |
-| Raspagem de sites e apps | Evitar. Preferir coleta manual, NFC-e do próprio usuário e encartes públicos |
+| Raspagem de sites e apps | Evitar. Preferir NFC-e do próprio usuário e encartes públicos |
 | Recomendação nutricional | O app **não substitui nutricionista**. Usar só orientações gerais do Guia Alimentar e deixar isso explícito |
 | Recomendação financeira | O app não dá conselho financeiro. Ele organiza informação, como o próprio PDF já diz |
 
@@ -273,7 +269,7 @@ Legenda: ✅ faz bem · 🟡 parcial · ❌ não faz
 | Relevância do problema | 5 | Há muitos dados oficiais recentes, inclusive do DF |
 | Diferenciação | 4 | Existem soluções parciais, mas nenhuma integrada |
 | Viabilidade técnica | 4 | As tecnologias são maduras. A leitura de imagem exige revisão humana |
-| Viabilidade de dados | 3 | **É o ponto fraco.** Fica viável com o recorte no Gama e a combinação de fontes A + B |
+| Viabilidade de dados | 3 | **É o ponto fraco.** Fica viável com o recorte no Gama e a combinação de NFC-e e encartes |
 | Viabilidade de prazo | 4 | Depende de cortar escopo (ver seção 4) |
 | **Geral** | **Viável com recorte** | |
 
@@ -285,7 +281,7 @@ Estes riscos complementam a tabela do README.
 
 | Risco | Prob. | Impacto | Mitigação |
 | --- | --- | --- | --- |
-| Base de preços pequena ou velha, o que leva a recomendações erradas | Alta | Alto | Mostrar a data em todo preço, avisar quando estiver desatualizado e repetir a coleta nas semanas 2 e 5 |
+| Base de preços pequena ou velha, o que leva a recomendações erradas | Alta | Alto | Mostrar a data em todo preço, avisar quando estiver desatualizado e renovar a base toda semana com novas notas fiscais e encartes |
 | Normalização de produtos ("ARROZ T1 5KG" = "Arroz Camil Tipo 1 5kg") | Alta | Médio | Tabela de equivalência manual para os cerca de 60 itens, com o LLM sugerindo correspondências e uma pessoa validando |
 | O usuário confia demais em "promoção boa" | Média | Médio | Sempre mostrar o cálculo (preço por kg, deslocamento) |
 | Recomendar comida barata e pouco saudável | Média | Alto | O Miau-ricio aplica a classificação NOVA do Guia Alimentar e avisa quando o item é ultraprocessado |
