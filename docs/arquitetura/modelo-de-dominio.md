@@ -89,6 +89,8 @@ flowchart LR
 | Limitação | O que o sistema não sabe ou não pode garantir numa resposta | Verificação | `Limitacao` |
 | Pedido | Mensagem do usuário em linguagem natural | Conversa | `Pedido` |
 | Intenção | O que o usuário quer fazer, identificado a partir do pedido | Conversa | `Intencao` |
+| Conversa | Sequência de pedidos e respostas entre a pessoa e o orquestrador. A memória da conversa vale por 24 horas | Conversa | `Conversa` |
+| Notificação | Aviso à pessoa de que uma tarefa terminou (busca de receitas, leitura de nota), guardado até ela ler | Conversa | `Notificacao` |
 
 ## 4. Blocos de construção
 

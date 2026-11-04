@@ -158,7 +158,8 @@ flowchart LR
 - **Ferramenta de migração do banco:** Flyway (SQL puro, experiência da equipe) ou Alembic (Python, ligado ao SQLAlchemy), e como o código Python acessa o banco.
 - **Uptime Kuma:** na própria VM ou num serviço de monitoramento externo, para avisar também quando a VM cair.
 - **Valores dos limites:** requisições por minuto, teto diário de gasto com LLM e duração dos tokens.
-- **Como a notificação chega ao frontend** quando uma tarefa termina (RN26): o frontend consulta a API de tempos em tempos, a API envia por SSE ou WebSocket, ou a notificação aparece na próxima vez que a pessoa abrir o app.
 - **VM:** tamanho. A VM roda no Azure for Students e precisa aguentar PostgreSQL, Qdrant, Redis, API, worker e frontend.
 - **Langfuse Cloud:** região dos dados (US, EU ou Japão).
-- **Organização do código** a confirmar na #36 e **formato da API** na #31 e na #33.
+- **Organização do código** a confirmar na #36 e **formato detalhado das rotas** na #31.
+
+Os fluxos de dados, as rotas iniciais e os contratos dos agentes estão em [fluxos e contratos](fluxos-e-contratos.md).
