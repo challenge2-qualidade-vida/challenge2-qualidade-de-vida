@@ -16,13 +16,21 @@ Se a tarefa for uma funcionalidade e não houver spec, escreva a spec e os cená
 
 ## Stack
 
+- Arquitetura: monolito modular, com API e worker saindo do mesmo código ([visão geral](docs/arquitetura/visao-geral.md))
 - Python, gerenciado com Poetry (`pyproject.toml`)
-- API: FastAPI (em definição na #31)
+- API: FastAPI (formato das rotas em definição na #31)
+- Orquestração dos agentes: LangGraph
+- Fila e worker: Redis + RQ
 - Banco relacional: PostgreSQL
+- Banco vetorial: Qdrant
+- LLMOps: Langfuse Cloud
+- Frontend: React + Vite, na pasta `frontend/`
+- Login: e-mail e senha próprios, com JWT
+- Implantação: VM com Docker Compose
 - Testes: pytest e pytest-bdd
 - Lint e formatação: Ruff
 
-As escolhas do RAG (LLM, embeddings, banco vetorial, framework) estão em definição na #13. Não introduza uma biblioteca nova sem registrar a decisão em `docs/decisoes.md`.
+O provedor e o modelo do LLM e o modelo de embeddings estão em definição na #13. Não introduza uma biblioteca nova sem registrar a decisão em `docs/decisoes.md`.
 
 ## Decisões
 

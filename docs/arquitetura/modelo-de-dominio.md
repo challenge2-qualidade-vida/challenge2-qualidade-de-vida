@@ -169,6 +169,7 @@ flowchart LR
 | RN27 | Receitas com ingrediente que viola uma restrição do perfil (alergia, dieta) não aparecem. O sistema informa quantas receitas ficaram de fora e por qual restrição, e a pessoa pode pedir para vê-las mesmo assim, com o ingrediente restrito destacado | Receitas e nutrição, Planejamento |
 | RN28 | Uma receita pode ser sugerida quando faltam até 2 ingredientes, ou quando os ingredientes que faltam podem ser substituídos por outros disponíveis. A sugestão informa quais ingredientes faltam e quais substituições foram consideradas. Receitas sem nada faltando aparecem primeiro | Receitas e nutrição |
 | RN29 | A pessoa pode adicionar os ingredientes que faltam numa receita à lista de compras com uma única ação | Receitas e nutrição, Planejamento |
+| RN30 | Dados pessoais e dados sensíveis (nome, e-mail, restrições de saúde como alergias, itens e estabelecimentos das notas fiscais) não são enviados ao Langfuse. Eles são retirados ou mascarados antes do registro das chamadas ao LLM, porque o Langfuse Cloud guarda os dados fora do Brasil, o que seria transferência internacional (LGPD, art. 33), e restrições de saúde são dado sensível | Todos |
 
 As specs citam as regras pelo número (ex.: "Atende RN02 e RN03").
 
@@ -243,24 +244,4 @@ Funcionalidades que fazem parte do produto, mas não entram no MVP:
 
 ## 6. Organização do código
 
-Proposta, a ser confirmada na #36:
-
-```
-src/economia/
-  planejamento/
-    dominio/          entidades, objetos de valor, regras (sem dependência externa)
-    aplicacao/        casos de uso
-    infraestrutura/   banco, LLM, APIs externas
-  precos/
-  receitas/
-  leitura_documentos/
-  verificacao/
-  conversa/           orquestrador
-  api/                rotas FastAPI
-tests/
-  <contexto>/         testes de unidade
-  bdd/                passos dos cenários (pytest-bdd)
-specs/                specs e cenários (.feature)
-```
-
-A camada `dominio` não importa nada de `infraestrutura`, de frameworks nem de LLM. Isso mantém as regras de negócio testáveis sem banco e sem chamadas de API.
+A arquitetura (monolito modular, processos, componentes) e a organização das pastas estão na [visão geral da arquitetura](visao-geral.md). A regra que vale para todos os contextos: a camada `dominio` não importa nada de `infraestrutura`, de frameworks nem de LLM. Isso mantém as regras de negócio testáveis sem banco e sem chamadas de API.
