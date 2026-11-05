@@ -1,20 +1,14 @@
 // Cena 3D da EconoMIA (tópico 24): moedas que viram comida e caem na cesta.
 // O canvas fica fixo atrás do site, e os objetos seguem "palcos" do HTML, então
-// rolam junto com a página. Sem WebGL, em aparelho fraco ou com economia de dados,
-// o Three.js nem é baixado e o site continua igual, só sem o 3D.
+// rolam junto com a página. Sem WebGL, o Three.js nem é baixado e o site continua
+// igual, só sem o 3D. Em aparelho fraco, a cena só fica mais leve.
 
 const reduzirMovimento = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-function efeitosPermitidos() {
-  const preferencia = window.economia?.efeitos ?? "auto";
-  if (preferencia === "desligado") return false;
+// O 3D fica sempre ligado; só não roda em navegador sem WebGL.
+function temWebGL() {
   const teste = document.createElement("canvas");
-  if (!teste.getContext("webgl2") && !teste.getContext("webgl")) return false;
-  if (preferencia === "ligado") return true;
-  const rede = navigator.connection;
-  if (reduzirMovimento || rede?.saveData || /(^|-)2g$/.test(rede?.effectiveType ?? "")) return false;
-  if ((navigator.deviceMemory ?? 8) <= 2 || (navigator.hardwareConcurrency ?? 8) <= 2) return false;
-  return true;
+  return !!(teste.getContext("webgl2") || teste.getContext("webgl"));
 }
 
 // Cores da marca.
@@ -57,7 +51,7 @@ function pintarRelevo(x, t, desenho, sombra) {
 }
 
 async function iniciar() {
-  if (!efeitosPermitidos()) return;
+  if (!temWebGL()) return;
   const THREE = await import("./vendor/three.min.js");
 
   const fraco = innerWidth < 720 || (navigator.hardwareConcurrency ?? 8) <= 4;
@@ -412,7 +406,7 @@ async function iniciar() {
   }, { passive: true });
 
   // ---------- Quadro a quadro ----------
-  let ultimo = performance.now(), tempo = 0, quadros = 0, inicioMedida = ultimo, avisos = 0, ligado = true;
+  let ultimo = performance.now(), tempo = 0, quadros = 0, inicioMedida = ultimo, resolucaoReduzida = false;
 
   // Título, texto e botão: moeda nenhuma passa por trás deles.
   const zonasSeguras = () => [...document.querySelectorAll("#palco-hero h1, #palco-hero .hero-texto, #palco-hero .botao-hero")]
@@ -618,7 +612,6 @@ async function iniciar() {
   }
 
   function quadro(agora) {
-    if (!ligado) return;
     requestAnimationFrame(quadro);
     if (document.hidden) { ultimo = agora; return; }
     const dt = Math.min((agora - ultimo) / 1000, 0.05);
@@ -678,21 +671,16 @@ async function iniciar() {
 
     renderer.render(cena, camera);
 
-    // Se o aparelho não acompanhar, primeiro reduz a resolução; depois desliga o 3D.
+    // Se o aparelho não acompanhar, reduz a resolução, sem desligar o 3D.
     if (++quadros === 90) {
       const fps = 90000 / (agora - inicioMedida);
       quadros = 0;
       inicioMedida = agora;
-      if (fps < 24 && !document.hidden) {
-        avisos++;
-        if (avisos === 1) { renderer.setPixelRatio(1); redimensionar(); }
-        if (avisos >= 3) {
-          ligado = false;
-          document.documentElement.classList.remove("com-3d");
-          canvas.remove();
-          renderer.dispose();
-        }
-      } else avisos = Math.max(0, avisos - 1);
+      if (fps < 24 && !document.hidden && !resolucaoReduzida) {
+        resolucaoReduzida = true;
+        renderer.setPixelRatio(1);
+        redimensionar();
+      }
     }
   }
   requestAnimationFrame(quadro);

@@ -21,7 +21,7 @@ const NOMES_GRUPOS = {
 let mercados = {};
 
 // Estado lido pela cena 3D e pelas animações (cena3d.js e animacoes.js).
-window.economia = { aba: "inicio", cesta: null, efeitos: "auto" };
+window.economia = { aba: "inicio", cesta: null };
 
 // Foto do alimento (Wikimedia Commons, licença livre; créditos nas Configurações).
 function fotoAlimento(id, classe = "foto-alimento") {
@@ -434,10 +434,9 @@ $("#botao-cardapio").addEventListener("click", async (evento) => {
 // Preferências do usuário, guardadas só neste navegador (localStorage).
 // A localização (GPS) nunca é guardada; só a região padrão, se a pessoa escolher.
 const CHAVE_CONFIG = "economia.config";
-const CONFIG_PADRAO = { raio_km: 10, custo_por_km: 0.65, ordem: "custo_beneficio", tema: "auto", regiao: "", efeitos: "auto" };
+const CONFIG_PADRAO = { raio_km: 10, custo_por_km: 0.65, ordem: "custo_beneficio", tema: "auto", regiao: "" };
 const LIMITES = { raio_min: 1, raio_max: 100 };
 let config = carregarConfig();
-window.economia.efeitos = config.efeitos;
 
 function carregarConfig() {
   try {
@@ -477,7 +476,6 @@ function aplicarConfig() {
 
   document.querySelectorAll('input[name="cfg-ordem"], input[name="ordem-perto"]').forEach((i) => (i.checked = i.value === config.ordem));
   document.querySelectorAll('input[name="cfg-tema"]').forEach((i) => (i.checked = i.value === config.tema));
-  document.querySelectorAll('input[name="cfg-efeitos"]').forEach((i) => (i.checked = i.value === config.efeitos));
   $("#cfg-regiao").value = config.regiao;
   desenharRadar();
 }
@@ -536,10 +534,6 @@ document.querySelectorAll('input[name="cfg-ordem"], input[name="ordem-perto"]').
   if (ultimoPerto) mostrarMercados(ultimoPerto);
 }));
 document.querySelectorAll('input[name="cfg-tema"]').forEach((i) => i.addEventListener("change", () => salvarConfig({ tema: i.value })));
-document.querySelectorAll('input[name="cfg-efeitos"]').forEach((i) => i.addEventListener("change", () => {
-  salvarConfig({ efeitos: i.value });
-  location.reload();   // o 3D só decide se liga ao abrir o site
-}));
 $("#cfg-regiao").addEventListener("change", (e) => {
   salvarConfig({ regiao: e.target.value });
   carregarRadar();

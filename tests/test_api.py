@@ -286,3 +286,11 @@ def test_atlas_de_comida_tem_todos_os_alimentos(cliente):
     ids_script = re.findall(r'"(\w+)"', re.search(r"ORDEM = \[(.*?)\]", (raiz / "experimentos/gatos3d/comida.py").read_text(), re.S).group(1))
     assert ids_cena == ids_script
     assert set(ids_cena) == {f.stem for f in (raiz / "src/web/img/alimentos").glob("*.webp")}
+
+
+def test_3d_fica_sempre_ligado_sem_opcao_nas_configuracoes(cliente):
+    assert "cfg-efeitos" not in cliente.get("/").text
+    assert "cfg-efeitos" not in cliente.get("/app.js").text
+    cena = cliente.get("/cena3d.js").text
+    assert "if (!temWebGL()) return;" in cena
+    assert "saveData" not in cena
