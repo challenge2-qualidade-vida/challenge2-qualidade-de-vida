@@ -1,5 +1,7 @@
 # Tudo o que foi usado no front da EconoMIA
 
+> **Frontend novo:** o site está sendo recriado em `frontend/`, com React, Vite e TypeScript. As ferramentas dele estão no [tópico 27](desenvolvimento/27-frontend-react.md). Este arquivo descreve o site antigo, de `src/web/`.
+
 Situação em 05/11/2026, na branch `develop_gui`, incluindo o [tópico 26](desenvolvimento/26-abertura-3d.md). O como e o porquê de cada parte estão nos tópicos de [docs/desenvolvimento/](desenvolvimento/README.md).
 
 **Resumo:** o site é feito em HTML, CSS e JavaScript puros, sem framework e sem etapa de build. O FastAPI entrega os arquivos de `src/web/` e responde à API. Todas as ferramentas usadas são gratuitas.
