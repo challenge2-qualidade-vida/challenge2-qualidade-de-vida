@@ -60,6 +60,8 @@ sequenceDiagram
 
 ## 3. Fluxo da busca de receitas (RN26)
 
+> **A definir (05/11/2026):** com a troca do TudoGostoso pelos datasets afrodite.json e RecipeNLG, não há fonte para a busca sob demanda. O fluxo abaixo vale quando houver uma. Ver "Fonte de receitas" no [modelo de domínio](modelo-de-dominio.md).
+
 ```mermaid
 sequenceDiagram
     participant F as Frontend
