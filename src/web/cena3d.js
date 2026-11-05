@@ -109,7 +109,6 @@ async function iniciar() {
   cena.add(sol);
 
   // ---------- Peças ----------
-  const geo = { cone: new THREE.ConeGeometry(0.3, 0.95, 16) };
   // As cópias da textura só aparecem depois de avisadas de que a imagem carregou.
   const mapasEsperando = [];
   let comidaPronta = false;
@@ -312,24 +311,6 @@ async function iniciar() {
   const cestaHero = criarCesta();
   const cestaResultado = criarCesta();
   const moedaGrande = new THREE.Mesh(tiposMoeda[0].geo, tiposMoeda[0].mat);
-  const radar = new THREE.Group();
-  [0.45, 0.8, 1.15].forEach((r, i) => {
-    const anel = new THREE.Mesh(new THREE.RingGeometry(r - 0.012, r + 0.012, 48), new THREE.MeshBasicMaterial({ color: i === 2 ? COR.ouro : COR.mata, side: THREE.DoubleSide, transparent: true, opacity: 0.8 }));
-    radar.add(anel);
-  });
-  const varredura = new THREE.Mesh(new THREE.RingGeometry(0.02, 1.15, 32, 1, 0, 0.7), new THREE.MeshBasicMaterial({ color: COR.ouro, transparent: true, opacity: 0.28, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false }));
-  radar.add(varredura);
-  const pinos = new THREE.Group();
-  radar.add(pinos);
-  radar.rotation.x = -1.05;
-  const matPino = new THREE.MeshStandardMaterial({ color: COR.ouro, metalness: 0.7, roughness: 0.3 });
-  [[0.38, 1], [0.7, 2.6], [0.95, 4.1], [0.55, 5.3], [1.02, 0.5], [0.82, 3.4]].forEach(([r, a]) => {
-    const pino = new THREE.Mesh(geo.cone, matPino);
-    pino.scale.setScalar(0.22);
-    pino.rotation.x = Math.PI + Math.PI / 2;
-    pino.position.set(Math.cos(a) * r, Math.sin(a) * r, 0.11);
-    pinos.add(pino);
-  });
   // ---------- Cupom ----------
   // Papel térmico com a estrutura de um cupom brasileiro. É ilustração, e o papel diz isso.
   const cupom = new THREE.Group();
@@ -536,7 +517,252 @@ async function iniciar() {
     }
   }
 
-  cena.add(cestaHero, cestaResultado, moedaGrande, radar, cupom);
+  // ---------- Mapa da tela Perto ----------
+  // Cidade em miniatura com um aceno a Brasília: lago curvo e dois eixos em cruz.
+  // É ilustração: os pinos não indicam mercados reais. Coordenadas de -1 a 1 no disco.
+  const mapa = new THREE.Group();
+  const RAIO_MAPA = 1.15;
+  const lago = (x, z) => {
+    const dx = x + 0.5, dz = z + 0.56, a = 0.5;
+    const u = dx * Math.cos(a) + dz * Math.sin(a), v = -dx * Math.sin(a) + dz * Math.cos(a);
+    return (u / 0.5) ** 2 + (v / 0.2) ** 2 < 1;
+  };
+  const parque = (x, z) => Math.hypot(x - 0.52, z - 0.5) < 0.24;
+  const arco = (x) => 0.34 - 0.62 * x * x;
+  const pertoDeRua = (x, z) => Math.abs(z - arco(x)) < 0.07 || Math.abs(x) < 0.06;
+
+  const texturaMapa = (() => {
+    const S = fraco ? 512 : 1024;
+    const t = document.createElement("canvas");
+    t.width = t.height = S;
+    const x = t.getContext("2d");
+    const px = (v) => ((v + 1) / 2) * S;
+    const chao = x.createRadialGradient(S / 2, S / 2, S * 0.1, S / 2, S / 2, S * 0.5);
+    chao.addColorStop(0, "#f8eecf"); chao.addColorStop(1, "#ecdcae");
+    x.fillStyle = chao;
+    x.fillRect(0, 0, S, S);
+    // Ruas pequenas, discretas.
+    x.strokeStyle = "#fffaf0"; x.lineWidth = S * 0.009; x.lineCap = "round";
+    for (let v = -1; v <= 1.01; v += 0.28) {
+      x.beginPath(); x.moveTo(px(-1), px(v)); x.lineTo(px(1), px(v)); x.stroke();
+      x.beginPath(); x.moveTo(px(v), px(-1)); x.lineTo(px(v), px(1)); x.stroke();
+    }
+    // Parque e lago com cores bem diferentes, para não se confundirem.
+    x.fillStyle = "#9cc873";
+    x.beginPath(); x.arc(px(0.52), px(0.5), S * 0.12, 0, 7); x.fill();
+    x.fillStyle = "#86b95f";
+    x.beginPath(); x.arc(px(0.58), px(0.45), S * 0.05, 0, 7); x.fill();
+    x.save();
+    x.translate(px(-0.5), px(-0.56)); x.rotate(0.5);
+    x.fillStyle = "#5fb3dc";
+    x.beginPath(); x.ellipse(0, 0, S * 0.25, S * 0.1, 0, 0, 7); x.fill();
+    x.strokeStyle = "rgba(255,255,255,.65)"; x.lineWidth = S * 0.004;
+    x.beginPath(); x.ellipse(0, 0, S * 0.21, S * 0.07, 0, 0.4, 2.4); x.stroke();
+    x.restore();
+    // Os dois eixos, largos, em cima de tudo.
+    const eixo = (desenhar) => {
+      x.strokeStyle = "#d9c07a"; x.lineWidth = S * 0.036; desenhar(); x.stroke();
+      x.strokeStyle = "#fffdf5"; x.lineWidth = S * 0.027; desenhar(); x.stroke();
+    };
+    eixo(() => { x.beginPath(); x.moveTo(px(0), px(-1)); x.lineTo(px(0), px(1)); });
+    eixo(() => {
+      x.beginPath();
+      for (let v = -1; v <= 1.001; v += 0.04) x.lineTo(px(v), px(arco(v)));
+    });
+    const tx = new THREE.CanvasTexture(t);
+    tx.colorSpace = THREE.SRGBColorSpace;
+    tx.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    return tx;
+  })();
+  const geoChao = new THREE.CylinderGeometry(RAIO_MAPA, RAIO_MAPA * 0.97, 0.09, 96);
+  {
+    // A tampa usa o canvas de cima para baixo: x à direita, z para a câmera.
+    const pos = geoChao.attributes.position, uv = geoChao.attributes.uv;
+    for (let i = 0; i < pos.count; i++) uv.setXY(i, pos.getX(i) / (2 * RAIO_MAPA) + 0.5, 0.5 - pos.getZ(i) / (2 * RAIO_MAPA));
+  }
+  const matLateralMapa = new THREE.MeshPhysicalMaterial({ color: COR.ouro, metalness: 0.75, roughness: 0.32 });
+  const chaoMapa = new THREE.Mesh(geoChao, [matLateralMapa, new THREE.MeshBasicMaterial({ map: texturaMapa, toneMapped: false }), matLateralMapa]);
+  chaoMapa.position.y = -0.045;
+  mapa.add(chaoMapa);
+
+  // Prédios e árvores: uma peça só de cada, repetida, para pesar pouco.
+  {
+    const acaso = repetivel(2718);
+    const predios = [], arvores = [];
+    for (let i = -7; i <= 7; i++) for (let j = -7; j <= 7; j++) {
+      const x = (i + 0.5) * 0.14 + (acaso() - 0.5) * 0.02, z = (j + 0.5) * 0.14 + (acaso() - 0.5) * 0.02;
+      const sorte = acaso();
+      if (Math.hypot(x, z) > 0.88 || lago(x, z) || pertoDeRua(x, z)) continue;
+      if (parque(x, z)) { if (sorte < 0.9) arvores.push([x, z]); continue; }
+      if (Math.abs(i * 2 + 1) % 4 === 0 || Math.abs(j * 2 + 1) % 4 === 0) continue;
+      if (sorte < 0.34) predios.push([x, z, acaso()]);
+      else if (sorte < 0.62) arvores.push([x, z]);
+    }
+    const aux = new THREE.Object3D();
+    const CORES_PREDIO = [0xffffff, 0xfff4dc, 0xf4e2bd, 0xffe9c4];
+    const malhaPredios = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ roughness: 0.75, envMapIntensity: 0.4 }), predios.length);
+    predios.forEach(([x, z, a], i) => {
+      const h = 0.05 + a * 0.13, l = 0.055 + a * 0.02;
+      aux.position.set(x * RAIO_MAPA, h / 2, z * RAIO_MAPA);
+      aux.scale.set(l, h, l);
+      aux.rotation.y = 0;
+      aux.updateMatrix();
+      malhaPredios.setMatrixAt(i, aux.matrix);
+      malhaPredios.setColorAt(i, new THREE.Color(CORES_PREDIO[i % CORES_PREDIO.length]));
+    });
+    const malhaArvores = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 1), new THREE.MeshStandardMaterial({ color: 0x4f8f3f, roughness: 0.8, envMapIntensity: 0.3 }), arvores.length);
+    arvores.forEach(([x, z], i) => {
+      const r = 0.022 + ((i * 7) % 5) * 0.004;
+      aux.position.set(x * RAIO_MAPA, r * 0.9, z * RAIO_MAPA);
+      aux.scale.setScalar(r);
+      aux.updateMatrix();
+      malhaArvores.setMatrixAt(i, aux.matrix);
+    });
+    mapa.add(malhaPredios, malhaArvores);
+  }
+
+  // Ondas que saem da sua localização e varredura em leque.
+  const matOnda = () => new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false, toneMapped: false });
+  const ondas = [0, 1, 2].map((i) => {
+    const m = new THREE.Mesh(new THREE.RingGeometry(0.94, 1, 64), matOnda());
+    m.rotation.x = -Math.PI / 2;
+    m.position.y = 0.012;
+    m.userData.fase = i / 3;
+    mapa.add(m);
+    return m;
+  });
+  const leque = (() => {
+    const t = document.createElement("canvas");
+    t.width = t.height = 256;
+    const x = t.getContext("2d");
+    const g = x.createConicGradient(0, 128, 128);
+    g.addColorStop(0, "rgba(245,170,30,.5)"); g.addColorStop(0.2, "rgba(245,180,40,0)"); g.addColorStop(1, "rgba(245,180,40,0)");
+    x.fillStyle = g;
+    x.fillRect(0, 0, 256, 256);
+    const m = new THREE.Mesh(new THREE.RingGeometry(0.02, RAIO_MAPA * 0.98, 64, 1), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(t), transparent: true, depthWrite: false, toneMapped: false }));
+    m.rotation.x = -Math.PI / 2;
+    m.position.y = 0.008;
+    return m;
+  })();
+  mapa.add(leque);
+
+  // Você: um ponto azul com borda branca, diferente de todos os pinos.
+  const voce = new THREE.Group();
+  const baseVoce = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.02, 32), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }));
+  const miolo = new THREE.Mesh(new THREE.SphereGeometry(0.045, 24, 16), new THREE.MeshPhysicalMaterial({ color: 0x2f7fd1, roughness: 0.25, clearcoat: 0.6 }));
+  miolo.position.y = 0.025;
+  voce.add(baseVoce, miolo);
+  voce.position.set(0, 0.012, arco(0) * RAIO_MAPA);
+  mapa.add(voce);
+
+  // Pinos em gota, com cesta na cabeça. O melhor é maior e verde; a forma e o tamanho também dizem isso.
+  const perfilPino = [[0.001, 0], [0.03, 0.05], [0.07, 0.11], [0.105, 0.17], [0.125, 0.23], [0.118, 0.29], [0.085, 0.34], [0.04, 0.37], [0.001, 0.38]].map(([r, y]) => new THREE.Vector2(r, y));
+  const geoPino = new THREE.LatheGeometry(perfilPino, 32);
+  const matPino = new THREE.MeshPhysicalMaterial({ color: 0xd9603b, roughness: 0.32, clearcoat: 0.6 });
+  const matPinoMelhor = new THREE.MeshPhysicalMaterial({ color: 0x2f8a4c, roughness: 0.3, clearcoat: 0.6 });
+  const iconePino = (() => {
+    const t = document.createElement("canvas");
+    t.width = t.height = 128;
+    const x = t.getContext("2d");
+    x.fillStyle = "#fff";
+    x.beginPath(); x.arc(64, 64, 58, 0, 7); x.fill();
+    x.strokeStyle = x.fillStyle = "#3c332a"; x.lineWidth = 9; x.lineCap = x.lineJoin = "round";
+    x.beginPath(); x.moveTo(24, 36); x.lineTo(38, 36); x.lineTo(50, 78); x.lineTo(90, 78); x.lineTo(100, 48); x.lineTo(42, 48); x.stroke();
+    x.beginPath(); x.arc(54, 94, 7, 0, 7); x.fill();
+    x.beginPath(); x.arc(86, 94, 7, 0, 7); x.fill();
+    return new THREE.CanvasTexture(t);
+  })();
+  const sombraPino = (() => {
+    const t = document.createElement("canvas");
+    t.width = t.height = 64;
+    const x = t.getContext("2d");
+    const g = x.createRadialGradient(32, 32, 2, 32, 32, 32);
+    g.addColorStop(0, "rgba(60,45,10,.55)"); g.addColorStop(1, "rgba(60,45,10,0)");
+    x.fillStyle = g;
+    x.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(t);
+  })();
+  const pinosMapa = [[-0.42, 0.06, false], [0.42, 0.14, true], [-0.56, 0.55, false], [0.2, -0.42, false], [0.68, -0.24, false], [-0.1, 0.72, false]].map(([cx, cz, melhor]) => {
+    const g = new THREE.Group();
+    g.position.set(cx * RAIO_MAPA, 0.005, cz * RAIO_MAPA);
+    const corpo = new THREE.Group();
+    corpo.add(new THREE.Mesh(geoPino, melhor ? matPinoMelhor : matPino));
+    const icone = new THREE.Sprite(new THREE.SpriteMaterial({ map: iconePino, toneMapped: false, depthTest: false }));
+    icone.renderOrder = 2;
+    icone.scale.setScalar(0.15);
+    icone.position.y = 0.245;
+    icone.center.set(0.5, 0.5);
+    corpo.add(icone);
+    const tamanho = melhor ? 0.92 : 0.66;
+    corpo.scale.setScalar(tamanho);
+    const sombra = new THREE.Mesh(new THREE.RingGeometry(0.001, 0.09, 24), new THREE.MeshBasicMaterial({ map: sombraPino, transparent: true, depthWrite: false, toneMapped: false }));
+    sombra.rotation.x = -Math.PI / 2;
+    sombra.position.y = 0.006;
+    const eco = new THREE.Mesh(new THREE.RingGeometry(0.9, 1, 32), matOnda());
+    eco.material.color.set(melhor ? 0x2f8a4c : 0xd9603b);
+    eco.rotation.x = -Math.PI / 2;
+    eco.position.y = 0.01;
+    g.add(sombra, eco, corpo);
+    mapa.add(g);
+    return { g, corpo, eco, tamanho, melhor, angulo: (Math.atan2(-g.position.z, g.position.x) + Math.PI * 2) % (Math.PI * 2), salto: 1, fase: Math.random() * 6 };
+  });
+
+  // Rota tracejada de você até o melhor pino, com os traços andando.
+  const texturaRota = (() => {
+    const t = document.createElement("canvas");
+    t.width = 64; t.height = 8;
+    const x = t.getContext("2d");
+    x.fillStyle = "#2f8a4c";
+    x.beginPath(); x.roundRect(4, 0, 34, 8, 4); x.fill();
+    const tx = new THREE.CanvasTexture(t);
+    tx.wrapS = THREE.RepeatWrapping;
+    tx.repeat.set(9, 1);
+    return tx;
+  })();
+  {
+    const fim = pinosMapa.find((q) => q.melhor).g.position;
+    const curva = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(voce.position.x, 0.02, voce.position.z),
+      new THREE.Vector3(fim.x * 0.5, 0.02, voce.position.z + (fim.z - voce.position.z) * 0.15 + 0.03),
+      new THREE.Vector3(fim.x, 0.02, fim.z),
+    ]);
+    mapa.add(new THREE.Mesh(new THREE.TubeGeometry(curva, 32, 0.012, 6), new THREE.MeshBasicMaterial({ map: texturaRota, alphaTest: 0.5, toneMapped: false })));
+  }
+  mapa.rotation.x = 0.82;
+
+  let anguloAnterior = 0;
+  function atualizarMapa(t, dt) {
+    mapa.rotation.y = Math.sin(t * 0.25) * 0.14;
+    if (reduzirMovimento) return;
+    texturaRota.offset.x = -t * 0.9;
+    const angulo = (t * 0.9) % (Math.PI * 2);
+    leque.rotation.z = angulo;
+    ondas.forEach((o) => {
+      const u = (t * 0.32 + o.userData.fase) % 1;
+      const r = 0.05 + u * RAIO_MAPA * 0.92;
+      o.scale.set(r, r, 1);
+      o.position.set(voce.position.x * (1 - u), 0.012, voce.position.z * (1 - u));
+      o.material.opacity = (1 - u) ** 2 * 0.75;
+    });
+    miolo.scale.setScalar(1 + Math.sin(t * 3) * 0.08);
+    // Quando o leque passa, o pino salta e solta um eco no chão.
+    for (const q of pinosMapa) {
+      const passou = anguloAnterior <= angulo ? q.angulo > anguloAnterior && q.angulo <= angulo : q.angulo > anguloAnterior || q.angulo <= angulo;
+      if (passou) q.salto = 0;
+      q.salto = Math.min(1, q.salto + dt * 1.6);
+      const s = q.salto;
+      const pulo = Math.sin(Math.min(s * 1.6, 1) * Math.PI) * 0.1;
+      const flutua = Math.sin(t * 1.6 + q.fase) * 0.008;
+      q.corpo.position.y = pulo + flutua + (q.melhor ? 0.01 : 0);
+      const amassa = s < 0.08 ? (1 - s / 0.08) * 0.14 : 0;
+      q.corpo.scale.set(q.tamanho * (1 + amassa), q.tamanho * (1 - amassa), q.tamanho * (1 + amassa));
+      q.eco.scale.setScalar(0.04 + s * 0.26);
+      q.eco.material.opacity = (1 - s) * 0.8;
+    }
+    anguloAnterior = angulo;
+  }
+
+  cena.add(cestaHero, cestaResultado, moedaGrande, mapa, cupom);
 
   // Com `grudar`, o objeto para logo abaixo da barra do topo até o palco inteiro passar.
   function ancorar(obj, seletor, escala, grudar, proporcao = 0.72) {
@@ -817,7 +1043,7 @@ async function iniciar() {
 
     ancorar(cestaHero, aba === "inicio" ? "#ancora-cesta-hero" : "#nada", 0.95, true);
     ancorar(cestaResultado, aba === "cesta" ? "#palco-cesta" : "#nada", 0.8);
-    ancorar(radar, aba === "perto" ? "#palco-perto" : "#nada", 0.62);
+    ancorar(mapa, aba === "perto" ? "#palco-perto" : "#nada", 0.5, false, 0.78);
     ancorar(cupom, aba === "cupom" ? "#palco-cupom" : "#nada", 0.54, false, 2);
     ancorar(moedaGrande, aba === "precos" ? "#palco-precos" : "#nada", 0.72);
 
@@ -830,8 +1056,7 @@ async function iniciar() {
     cestaResultado.rotation.y = Math.sin(tempo * 0.4) * 0.25;
     cestaResultado.rotation.x = 0.34;
     moedaGrande.rotation.set(Math.PI / 2 + Math.sin(tempo) * 0.2, 0, Math.sin(tempo * 0.8) * 0.5);
-    varredura.rotation.z = -tempo * 1.2;
-    pinos.children.forEach((pino, i) => { pino.position.z = 0.11 + Math.abs(Math.sin(tempo * 1.5 + i)) * 0.06; });
+    if (mapa.visible) atualizarMapa(tempo, dt);
     cupom.rotation.y = Math.sin(tempo * 0.5) * 0.22;
     cupom.rotation.x = -0.06 + Math.sin(tempo * 0.37) * 0.04;
     cupom.rotation.z = 0.04;
