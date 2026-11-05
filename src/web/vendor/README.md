@@ -14,4 +14,4 @@ Cópias locais, para o site não depender de outro servidor. Usadas por `animaco
 npx esbuild three-entrada.js --bundle --minify --format=esm --legal-comments=none --outfile=three.min.js
 ```
 
-O arquivo tem 550 KB, ou 137 KB comprimido, e só é baixado quando o aparelho pode mostrar o 3D.
+O arquivo tem 578 KB, ou 144 KB comprimido, e só é baixado quando o aparelho pode mostrar o 3D.

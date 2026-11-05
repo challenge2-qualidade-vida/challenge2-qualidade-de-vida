@@ -17,12 +17,19 @@ function efeitosPermitidos() {
   return true;
 }
 
-// Cores dos alimentos e da marca.
-const COR = {
-  ouro: 0xf5cf5f, mata: 0x6f8f4f, cesta: 0x2f6b3f, floresta: 0x463708, creme: 0xfaf5ea, tomate: 0xd93b2b, laranja: 0xf08a24,
-  banana: 0xf5cf3a, terra: 0x9a6b3f, cebola: 0xb98a5a, folha: 0x6fb34a, abobora: 0xd97b1f, pacote: 0xe9e2d0,
-  feijao: 0x6d3f25, preto: 0x2a2a33, macarrao: 0xe8c04f, carne: 0xa8413a, frango: 0xe0b483, lata: 0xb9c2c9, leite: 0xf4f6f4,
-};
+// Cores da marca.
+const COR = { ouro: 0xf5cf5f, mata: 0x6f8f4f, cesta: 0x2f6b3f, floresta: 0x463708 };
+
+// Alimentos: posição em img/comida.webp e anel de nutrição de cada um, na ordem dos anéis do cartão.
+const ATLAS = ["tomate", "banana", "ovo", "arroz", "cenoura", "laranja", "feijao_carioca", "repolho", "abobora", "leite", "frango_coxa", "macarrao", "maca", "batata", "mandioca", "cebola", "feijao_preto", "lentilha", "farinha_mandioca", "aveia", "acucar", "oleo_soja", "sardinha", "frango_peito", "patinho", "lombo_porco", "mucarela", "pao_frances"];
+const COLUNAS_ATLAS = 7, LINHAS_ATLAS = 4;
+const ANEIS = [
+  { cor: "#f5cf5f", ids: ["arroz", "macarrao", "pao_frances", "batata", "mandioca", "farinha_mandioca", "acucar", "oleo_soja"] },
+  { cor: "#d9603b", ids: ["ovo", "frango_coxa", "frango_peito", "patinho", "lombo_porco", "sardinha", "leite", "mucarela"] },
+  { cor: "#9a6b3f", ids: ["feijao_carioca", "feijao_preto", "lentilha", "aveia", "cenoura"] },
+  { cor: "#6fb34a", ids: ["banana", "laranja", "maca", "tomate", "repolho", "abobora", "cebola"] },
+];
+const anelDe = (id) => Math.max(0, ANEIS.findIndex((a) => a.ids.includes(id)));
 
 // Moedas da EconoMIA: inspiradas nas do real, sem copiar o desenho oficial.
 const MOEDAS = [
@@ -107,39 +114,45 @@ async function iniciar() {
   cena.add(sol);
 
   // ---------- Peças ----------
-  const fosco = (cor) => new THREE.MeshStandardMaterial({ color: cor, roughness: 0.7, flatShading: true });
-  const geo = {
-    bola: new THREE.IcosahedronGeometry(0.5, 1), oval: new THREE.IcosahedronGeometry(0.5, 2), caixa: new THREE.BoxGeometry(0.7, 0.9, 0.4),
-    pacote: new THREE.BoxGeometry(0.75, 0.55, 0.35), cone: new THREE.ConeGeometry(0.3, 0.95, 7), lata: new THREE.CylinderGeometry(0.4, 0.4, 0.22, 12),
-    garrafa: new THREE.CapsuleGeometry(0.22, 0.65, 3, 8), pao: new THREE.CapsuleGeometry(0.26, 0.5, 3, 8), folha: new THREE.ConeGeometry(0.14, 0.3, 5),
-    banana: new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(-0.5, 0.2, 0), new THREE.Vector3(-0.2, -0.2, 0), new THREE.Vector3(0.25, -0.22, 0), new THREE.Vector3(0.55, 0.15, 0)]), 12, 0.13, 7),
-  };
-  const receita = {
-    tomate: [geo.bola, COR.tomate, 0.95, COR.folha], laranja: [geo.bola, COR.laranja, 0.95], maca: [geo.bola, COR.tomate, 0.9, COR.folha],
-    banana: [geo.banana, COR.banana, 1], ovo: [geo.oval, COR.creme, 0.8, null, [1, 1.28, 1]], batata: [geo.bola, COR.terra, 0.85, null, [1.25, 0.85, 0.9]],
-    mandioca: [geo.pao, COR.terra, 1], cenoura: [geo.cone, COR.laranja, 1, COR.folha], cebola: [geo.bola, COR.cebola, 0.85], repolho: [geo.bola, COR.folha, 1.05],
-    abobora: [geo.bola, COR.abobora, 1, COR.folha, [1.2, 0.8, 1.2]], arroz: [geo.pacote, COR.pacote, 1], feijao_carioca: [geo.pacote, COR.feijao, 1], feijao_preto: [geo.pacote, COR.preto, 1],
-    lentilha: [geo.pacote, COR.terra, 0.9], macarrao: [geo.pacote, COR.macarrao, 1], farinha_mandioca: [geo.pacote, COR.cebola, 1], aveia: [geo.caixa, COR.creme, 0.8], acucar: [geo.pacote, COR.leite, 0.95],
-    leite: [geo.caixa, COR.leite, 1], oleo_soja: [geo.garrafa, COR.banana, 1], sardinha: [geo.lata, COR.lata, 1], frango_coxa: [geo.bola, COR.frango, 0.95], frango_peito: [geo.bola, COR.frango, 0.95, null, [1.2, 0.75, 0.9]],
-    patinho: [geo.bola, COR.carne, 0.95, null, [1.2, 0.7, 1]], lombo_porco: [geo.bola, COR.carne, 0.95, null, [1.3, 0.7, 0.9]], mucarela: [geo.caixa, COR.banana, 0.75], pao_frances: [geo.pao, COR.frango, 1],
-  };
-  const materiais = new Map();
-  const material = (cor) => materiais.get(cor) ?? (materiais.set(cor, fosco(cor)), materiais.get(cor));
+  const geo = { cone: new THREE.ConeGeometry(0.3, 0.95, 16) };
+  // As cópias da textura só aparecem depois de avisadas de que a imagem carregou.
+  const mapasEsperando = [];
+  let comidaPronta = false;
+  const texturaComida = new THREE.TextureLoader().load("img/comida.webp", () => {
+    comidaPronta = true;
+    mapasEsperando.splice(0).forEach((m) => { m.needsUpdate = true; });
+  });
+  texturaComida.colorSpace = THREE.SRGBColorSpace;
 
+  // Cada alimento é uma imagem no estilo dos gatos, sempre de frente para a câmera.
   function criarAlimento(id) {
-    const [g, cor, escala, topo, deforma] = receita[id] ?? [geo.bola, COR.folha, 0.9];
-    const grupo = new THREE.Group();
-    const corpo = new THREE.Mesh(g, material(cor));
-    corpo.scale.setScalar(escala);
-    if (deforma) corpo.scale.set(escala * deforma[0], escala * deforma[1], escala * deforma[2]);
-    grupo.add(corpo);
-    if (topo) {
-      const f = new THREE.Mesh(geo.folha, material(topo));
-      f.position.y = g === geo.cone ? 0.55 : 0.5 * escala * (deforma?.[1] ?? 1);
-      grupo.add(f);
-    }
-    return grupo;
+    const n = Math.max(0, ATLAS.indexOf(id));
+    const mapa = texturaComida.clone();
+    mapa.repeat.set(1 / COLUNAS_ATLAS, 1 / LINHAS_ATLAS);
+    mapa.offset.set((n % COLUNAS_ATLAS) / COLUNAS_ATLAS, 1 - (Math.floor(n / COLUNAS_ATLAS) + 1) / LINHAS_ATLAS);
+    if (comidaPronta) mapa.needsUpdate = true;
+    else mapasEsperando.push(mapa);
+    return new THREE.Sprite(new THREE.SpriteMaterial({ map: mapa, alphaTest: 0.15, toneMapped: false }));
   }
+
+  // Estrelinha das faíscas e do brilho das moedas.
+  const texturaFaisca = (() => {
+    const t = document.createElement("canvas");
+    t.width = t.height = 64;
+    const x = t.getContext("2d");
+    const g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+    g.addColorStop(0, "#fff"); g.addColorStop(0.18, "rgba(255,255,255,.9)"); g.addColorStop(1, "rgba(255,255,255,0)");
+    x.fillStyle = g;
+    x.fillRect(0, 0, 64, 64);
+    x.fillStyle = "#fff";
+    x.beginPath();
+    for (let i = 0; i < 8; i++) {
+      const a = (i * Math.PI) / 4, r = i % 2 ? 4 : 31;
+      x.lineTo(32 + Math.cos(a) * r, 32 + Math.sin(a) * r);
+    }
+    x.fill();
+    return new THREE.CanvasTexture(t);
+  })();
 
   // O perfil gira em torno do eixo Y; as duas faces usam a textura de frente, com o aro alto.
   function criarGeoMoeda(serrilha) {
@@ -265,19 +278,40 @@ async function iniciar() {
   });
   const tipoDaPeca = tiposMoeda.flatMap((tipo) => Array.from({ length: tipo.quantos }, (_, indice) => ({ tipo, indice })));
   const auxiliar = new THREE.Object3D();
-  const IDS = ["tomate", "banana", "ovo", "arroz", "cenoura", "laranja", "feijao_carioca", "repolho", "abobora", "leite", "frango_coxa", "macarrao"];
   // Sorteia para os tipos ficarem misturados na chuva; u é a posição dentro da coluna livre.
-  const pecas = tipoDaPeca.sort(() => Math.random() - 0.5).map(({ tipo, indice }, i) => ({
+  const pecas = tipoDaPeca.sort(() => Math.random() - 0.5).map(({ tipo, indice }) => ({
     tipo, indice, u: Math.random(), y: Math.random(), z: -6 + Math.random() * 5,
     r: Math.random() * 6, rv: 0.6 + Math.random() * 1.6, oscila: Math.random() * 6, s: (0.72 + Math.random() * 0.5) * tipo.escala,
-    v: 0, visivel: 1,
-    comida: i < (fraco ? 6 : 12) ? criarAlimento(IDS[i % IDS.length]) : null,
+    v: 0, visivel: 1, encolhe: 1, ocupada: false, x: 0, py: 0,
   }));
   // As do fundo são menores na tela e caem mais devagar, o que dá profundidade.
   pecas.forEach((q) => { q.v = 0.05 + (q.z + 6) * 0.018; });
-  const comidaChuva = new THREE.Group();
-  pecas.forEach((p) => p.comida && comidaChuva.add(p.comida));
-  cena.add(comidaChuva);
+
+  const faiscas = Array.from({ length: fraco ? 12 : 28 }, () => {
+    const obj = new THREE.Sprite(new THREE.SpriteMaterial({ map: texturaFaisca, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, transparent: true }));
+    obj.visible = false;
+    cena.add(obj);
+    return { obj, vida: 0, total: 1, vx: 0, vy: 0, tamanho: 0.2 };
+  });
+  function faisca(x, y, z, cor, tamanho, vx, vy, vida) {
+    const f = faiscas.find((item) => item.vida <= 0);
+    if (!f) return;
+    Object.assign(f, { vida, total: vida, vx, vy, tamanho });
+    f.obj.material.color.set(cor);
+    f.obj.position.set(x, y, z);
+    f.obj.visible = true;
+  }
+  function atualizarFaiscas(dt) {
+    for (const f of faiscas) {
+      if (f.vida <= 0) continue;
+      f.vida -= dt;
+      f.vy -= 2.4 * dt;
+      f.obj.position.x += f.vx * dt;
+      f.obj.position.y += f.vy * dt;
+      f.obj.scale.setScalar(Math.max(f.tamanho * Math.sin(Math.PI * Math.max(f.vida, 0) / f.total), 0.0001));
+      if (f.vida <= 0) f.obj.visible = false;
+    }
+  }
 
   // ---------- Objetos presos aos palcos ----------
   const cestaHero = criarCesta();
@@ -351,9 +385,9 @@ async function iniciar() {
       const obj = criarAlimento(id);
       const a = i * 2.4, r = 0.36 * Math.sqrt((i + 0.5) / lista.length);
       const alvoY = -0.12 + (i / lista.length) * 0.42;
-      obj.scale.setScalar(0.2);
+      obj.scale.setScalar(0.34);
       obj.position.set(Math.cos(a) * r, animar && !reduzirMovimento ? 2.8 + i * 0.25 : alvoY, Math.sin(a) * r);
-      obj.rotation.set(a, a * 0.6, 0);
+      obj.material.rotation = Math.sin(a) * 0.5;
       cestaResultado.add(obj);
       caindo.push({ obj, alvoY, v: 0, parado: !animar || reduzirMovimento });
     });
@@ -384,57 +418,203 @@ async function iniciar() {
   const zonasSeguras = () => [...document.querySelectorAll("#palco-hero h1, #palco-hero .hero-texto, #palco-hero .botao-hero")]
     .map((el) => el.getBoundingClientRect()).filter((z) => z.height);
 
+  // ---------- Moeda vira comida, comida cai na cesta, cesta alimenta o anel ----------
+  const easeBack = (t) => 1 + 3.2 * (t - 1) ** 3 + 2.2 * (t - 1) ** 2;
+  const QUANTAS_VAGAS = fraco ? 10 : 14;
+  const VAGAS = Array.from({ length: QUANTAS_VAGAS }, (_, i) => {
+    const a = i * 2.4, r = 0.4 * Math.sqrt((i % 7 + 0.5) / 7);
+    return { x: Math.cos(a) * r, y: -0.14 + (i / QUANTAS_VAGAS) * 0.48, z: Math.sin(a) * r * 0.6 };
+  });
+  const TAMANHO_COMIDA = 0.34;
+  const naCesta = [];
+  const voando = [];
+  let esperaProxima = 0.6, cheiaHa = 0, wobble = 0, wobbleV = 0, proximoBrilho = 0.4, avisouCheia = false;
+  const vagaLivre = () => VAGAS.findIndex((_, i) => !naCesta.some((c) => c.vaga === i) && !voando.some((c) => c.vaga === i));
+
+  function iniciarTransformacao() {
+    const vaga = vagaLivre();
+    if (vaga < 0) return;
+    const opcoes = pecas.filter((q) => !q.ocupada && q.visivel > 0.9 && q.y > 0.15 && q.y < 0.85);
+    if (!opcoes.length) return;
+    const q = opcoes[Math.floor(Math.random() * opcoes.length)];
+    q.ocupada = true;
+    const id = ATLAS[Math.floor(Math.random() * ATLAS.length)];
+    const obj = criarAlimento(id);
+    obj.visible = false;
+    cena.add(obj);
+    voando.push({ q, id, obj, vaga, fase: "antecipa", t: 0, de: new THREE.Vector3(), para: new THREE.Vector3() });
+  }
+
+  function recompensa(id) {
+    document.dispatchEvent(new CustomEvent("economia:comida-caiu"));
+    // Só voa até o anel se ele estiver na tela.
+    const i = anelDe(id);
+    const anel = document.querySelectorAll("#inicio-metas .mini-anel .anel")[i];
+    const destino = anel?.offsetParent ? anel.getBoundingClientRect() : null;
+    if (!destino || destino.bottom < 0 || destino.top > innerHeight) return;
+    const px = (cestaHero.position.x / larguraMundo + 0.5) * innerWidth;
+    const py = (0.5 - cestaHero.position.y / alturaMundo) * innerHeight;
+    const ponto = document.createElement("span");
+    ponto.className = "faisca-anel";
+    ponto.style.background = ANEIS[i].cor;
+    ponto.style.left = `${px}px`;
+    ponto.style.top = `${py}px`;
+    document.body.append(ponto);
+    const dx = destino.left + destino.width / 2 - px, dy = destino.top + destino.height / 2 - py;
+    ponto.animate(
+      [{ transform: "translate(-50%, -50%) scale(1)" }, { transform: `translate(calc(${dx}px - 50%), calc(${dy}px - 50%)) scale(0.5)` }],
+      { duration: 620, easing: "cubic-bezier(.45,.05,.3,1)" },
+    ).onfinish = () => {
+      ponto.remove();
+      anel.animate([{ transform: "scale(1)" }, { transform: "scale(1.06)" }, { transform: "scale(1)" }], { duration: 320, easing: "ease-out" });
+    };
+  }
+
+  function atualizarVoos(dt, noHero, progresso) {
+    if (!noHero || !cestaHero.visible) {
+      // Saiu da tela inicial: encerra o que estava no ar, sem deixar comida solta.
+      voando.splice(0).forEach((v) => { cena.remove(v.obj); v.obj.material.map.dispose(); v.obj.material.dispose(); v.q.ocupada = false; v.q.encolhe = 1; v.q.rv = Math.min(v.q.rv, 2.2); });
+      return;
+    }
+    esperaProxima -= dt * (1 + progresso * 7);
+    // A rolagem acelera: no fim da tela inicial, a cesta já está cheia.
+    const meta = Math.floor(progresso * VAGAS.length);
+    if ((esperaProxima <= 0 || naCesta.length + voando.length < meta) && voando.length < 4) {
+      iniciarTransformacao();
+      esperaProxima = 1.7;
+    }
+    const escala = cestaHero.scale.x;
+    for (let i = voando.length - 1; i >= 0; i--) {
+      const v = voando[i];
+      v.t += dt;
+      if (v.fase === "antecipa") {
+        const t = Math.min(v.t / 0.15, 1);
+        v.q.rv = 2 + t * 10;
+        v.q.encolhe = 1 - t * 0.1;
+        if (t === 1) {
+          v.fase = "pop"; v.t = 0;
+          v.de.set(v.q.x, v.q.py, v.q.z);
+          v.obj.position.copy(v.de);
+          v.obj.visible = true;
+          for (let k = 0; k < (fraco ? 4 : 9); k++) {
+            const a = (k / 9) * 6.28 + Math.random();
+            faisca(v.de.x, v.de.y, v.de.z, k % 3 ? 0xf5cf5f : ANEIS[anelDe(v.id)].cor, 0.32, Math.cos(a) * 2.2, Math.sin(a) * 2.2 + 0.8, 0.5);
+          }
+        }
+      } else if (v.fase === "pop") {
+        const t = Math.min(v.t / 0.25, 1);
+        v.q.encolhe = 0.9 * (1 - t) ** 2;
+        v.obj.scale.setScalar(Math.max(easeBack(t) * TAMANHO_COMIDA * escala, 0.0001));
+        if (t === 1) { v.fase = "queda"; v.t = 0; }
+      } else if (v.fase === "queda") {
+        const t = Math.min(v.t / 0.55, 1);
+        const vaga = VAGAS[v.vaga];
+        v.para.set(vaga.x, vaga.y, vaga.z).applyMatrix4(cestaHero.matrixWorld);
+        const queda = t * t;
+        v.obj.position.lerpVectors(v.de, v.para, queda);
+        v.obj.position.y += Math.sin(Math.PI * t) * 0.6;
+        // Estica no sentido da queda.
+        const estica = Math.sin(Math.PI * t) * 0.16;
+        v.obj.scale.set(TAMANHO_COMIDA * escala * (1 - estica), TAMANHO_COMIDA * escala * (1 + estica), 1);
+        v.obj.material.rotation = t * 0.5;
+        if (t === 1) {
+          cena.remove(v.obj);
+          cestaHero.add(v.obj);
+          v.obj.position.set(vaga.x, vaga.y, vaga.z);
+          naCesta.push({ obj: v.obj, vaga: v.vaga, impacto: 0.22, sai: 0 });
+          wobbleV += 2.6 * (Math.random() < 0.5 ? -1 : 1);
+          recompensa(v.id);
+          // A moeda volta do alto da tela.
+          Object.assign(v.q, { ocupada: false, encolhe: 1, y: 1.1, u: Math.random(), rv: 0.6 + Math.random() * 1.6, visivel: 0 });
+          voando.splice(i, 1);
+        }
+      }
+    }
+    // Impacto: amassa e quica um pouco ao tocar o fundo da vaga.
+    for (let i = naCesta.length - 1; i >= 0; i--) {
+      const c = naCesta[i];
+      const vaga = VAGAS[c.vaga];
+      if (c.sai > 0) {
+        c.sai -= dt * 2.5;
+        c.obj.scale.setScalar(Math.max(c.sai, 0.0001) * TAMANHO_COMIDA);
+        if (c.sai <= 0) { cestaHero.remove(c.obj); c.obj.material.map.dispose(); c.obj.material.dispose(); naCesta.splice(i, 1); }
+        continue;
+      }
+      if (c.impacto > 0) {
+        c.impacto = Math.max(0, c.impacto - dt);
+        const t = 1 - c.impacto / 0.22;
+        const amassa = Math.sin(Math.PI * t) * 0.15;
+        c.obj.scale.set(TAMANHO_COMIDA * (1 + amassa), TAMANHO_COMIDA * (1 - amassa), 1);
+        c.obj.position.y = vaga.y + Math.sin(Math.PI * t) * 0.04;
+      }
+    }
+    if (!avisouCheia && naCesta.length === VAGAS.length) {
+      avisouCheia = true;
+      cheiaHa = 0;
+      document.dispatchEvent(new CustomEvent("economia:cesta-cheia"));
+    }
+    if (avisouCheia && (cheiaHa += dt) > 6 && progresso < 0.3) {
+      // Depois de um tempo cheia, abre espaço para a história recomeçar.
+      avisouCheia = false;
+      naCesta.slice(0, 5).forEach((c) => { c.sai = 1; });
+    }
+    proximoBrilho -= dt;
+    if (proximoBrilho <= 0) {
+      proximoBrilho = 0.3 + Math.random() * 0.5;
+      const q = pecas[Math.floor(Math.random() * pecas.length)];
+      if (q.visivel > 0.9) faisca(q.x, q.py, q.z + 0.3, 0xffffff, 0.5 * q.s, 0, 0, 0.14);
+    }
+  }
+
   function atualizarChuva(dt) {
     const aba = window.economia?.aba ?? "inicio";
     const hero = document.querySelector("#palco-hero");
     const caixa = aba === "inicio" && hero?.offsetParent ? hero.getBoundingClientRect() : null;
     const noHero = !!caixa && caixa.bottom > 40;
-    const p = caixa ? Math.min(1, Math.max(0, -caixa.top / (caixa.height * 0.55))) : 0;
-    const e = p * p * (3 - 2 * p);
-    // Fora do hero, poucas moedas nas beiradas, para não atrapalhar a leitura.
-    const ativos = noHero ? TOTAL : Math.min(6, TOTAL);
-    const alvo = cestaHero.position;
+    const p = caixa ? Math.min(1, Math.max(0, -caixa.top / (caixa.height * 0.6))) : 0;
+    // Com menos movimento pedido, não há chuva: a cesta aparece cheia e parada.
+    const ativos = reduzirMovimento ? 0 : noHero ? TOTAL : Math.min(6, TOTAL);
     const zonas = noHero ? zonasSeguras() : [];
     // Em tela larga, a chuva fica só na coluna à direita do texto.
     const conteudo = noHero && innerWidth >= 1024 ? document.querySelector("#palco-hero .hero-conteudo")?.getBoundingClientRect() : null;
     const esquerda = conteudo ? conteudo.right / innerWidth - 0.5 + 0.03 : -0.5;
     pecas.forEach((q, i) => {
-      q.y -= q.v * dt;
+      if (!q.ocupada) q.y -= q.v * dt;
       if (q.y < -0.1) { q.y = 1.1; q.u = Math.random(); }
       q.r += q.rv * dt;
       q.oscila += dt * 1.3;
       const profundidade = (camera.position.z - q.z) / camera.position.z;
       let x = (esquerda + q.u * (0.48 - esquerda)) * larguraMundo * profundidade;
-      let y = (q.y - 0.5) * alturaMundo * profundidade;
-      let z = q.z;
+      const y = (q.y - 0.5) * alturaMundo * profundidade;
       if (!noHero) x = (i % 2 ? 1 : -1) * (0.36 + (q.u * 0.12)) * larguraMundo * profundidade;
-      if (noHero && cestaHero.visible) {
-        const giro = i * 2.4, raio = 0.35 * cestaHero.scale.x * Math.sqrt((i % 16 + 0.5) / 16);
-        x += (alvo.x + Math.cos(giro) * raio - x) * e;
-        y += (alvo.y + cestaHero.scale.x * (-0.1 + (i % 16) * 0.024) - y) * e;
-        z += (Math.sin(giro) * raio - z) * e;
-      }
+      q.x = x;
+      q.py = y;
       // Longe do texto a moeda aparece; perto dele, encolhe até sumir.
       const px = (x / (larguraMundo * profundidade) + 0.5) * innerWidth, py = (0.5 - y / (alturaMundo * profundidade)) * innerHeight;
       const folga = 46;
       const naZona = zonas.some((r) => px > r.left - folga && px < r.right + folga && py > r.top - folga && py < r.bottom + folga);
       q.visivel += ((naZona || i >= ativos ? 0 : 1) - q.visivel) * Math.min(1, dt * 9);
-      auxiliar.position.set(x, y, z);
+      auxiliar.position.set(x, y, q.z);
       // Duas rotações com oscilação: a moeda nunca gira em um eixo só.
       auxiliar.rotation.set(Math.PI / 2 + q.r, Math.sin(q.oscila) * 0.5, Math.cos(q.oscila * 0.7) * 0.4);
-      const escalaMoeda = (q.comida && noHero ? 1 - e : 1) * q.s * q.visivel * (noHero ? 1 : 0.7);
-      // As moedas somem ao entrar na cesta; quem fica é a comida.
-      auxiliar.scale.setScalar(Math.max(escalaMoeda * (noHero ? 1 - e : 1), 0.0001));
+      auxiliar.scale.setScalar(Math.max(q.s * q.visivel * q.encolhe * (noHero ? 1 : 0.7), 0.0001));
       auxiliar.updateMatrix();
       q.tipo.malha.setMatrixAt(q.indice, auxiliar.matrix);
-      if (q.comida) {
-        q.comida.visible = noHero && e > 0.02;
-        q.comida.position.set(x, y, z);
-        q.comida.rotation.set(q.r * (1 - e), q.r * 0.7 * (1 - e), 0);
-        q.comida.scale.setScalar(Math.max(e * (cestaHero.scale.x * 0.26 || 0.6), 0.0001));
-      }
     });
     tiposMoeda.forEach((tipo) => { tipo.malha.instanceMatrix.needsUpdate = true; });
+    if (!reduzirMovimento) {
+      atualizarVoos(dt, noHero, p);
+      atualizarFaiscas(dt);
+    }
+  }
+
+  if (reduzirMovimento) {
+    VAGAS.forEach((vaga, i) => {
+      const obj = criarAlimento(ATLAS[i % ATLAS.length]);
+      obj.position.set(vaga.x, vaga.y, vaga.z);
+      obj.scale.set(TAMANHO_COMIDA, TAMANHO_COMIDA, 1);
+      cestaHero.add(obj);
+    });
   }
 
   function quadro(agora) {
@@ -458,8 +638,11 @@ async function iniciar() {
     ancorar(moedaGrande, aba === "precos" ? "#palco-precos" : "#nada", 0.72);
 
     // A cesta balança sem dar a volta, com a boca sempre para a câmera.
+    wobbleV += (-wobble * 90 - wobbleV * 7) * dt;
+    wobble += wobbleV * dt;
     cestaHero.rotation.y = Math.sin(tempo * 0.5) * 0.2;
     cestaHero.rotation.x = 0.34;
+    cestaHero.rotation.z = wobble * 0.14;
     cestaResultado.rotation.y = Math.sin(tempo * 0.4) * 0.25;
     cestaResultado.rotation.x = 0.34;
     moedaGrande.rotation.set(Math.PI / 2 + Math.sin(tempo) * 0.2, 0, Math.sin(tempo * 0.8) * 0.5);
@@ -473,7 +656,7 @@ async function iniciar() {
       if (c.parado) continue;
       c.v -= 7 * dt;
       c.obj.position.y += c.v * dt;
-      c.obj.rotation.x += dt * 3;
+      c.obj.material.rotation += dt * 2;
       if (c.obj.position.y <= c.alvoY) {
         c.obj.position.y = c.alvoY;
         if (Math.abs(c.v) < 0.5) c.parado = true;

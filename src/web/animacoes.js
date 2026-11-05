@@ -36,6 +36,11 @@
       .from("#palco-hero .hero-gato", { y: 180, rotate: -14, scale: 0.75, duration: 0.95, ease: "elastic.out(1, 0.65)" }, "-=0.6");
   }
 
+  // Cesta da abertura cheia: a Mia dá um pulinho de alegria.
+  document.addEventListener("economia:cesta-cheia", () => {
+    gsap.fromTo(".hero-gato", { y: 0 }, { y: -26, duration: 0.2, yoyo: true, repeat: 3, ease: "power1.out", clearProps: "y" });
+  });
+
   // A turma entra girando conforme a rolagem.
   gsap.utils.toArray(".personagem").forEach((p, i) => {
     gsap.from(p, {

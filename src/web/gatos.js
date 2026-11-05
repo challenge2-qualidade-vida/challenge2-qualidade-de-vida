@@ -238,6 +238,12 @@
     }
   }
 
+  // Na abertura, a Mia pisca quando um alimento cai na cesta.
+  document.addEventListener("economia:comida-caiu", () => {
+    const mia = gatos.find((g) => g.canvas.classList.contains("hero-gato"));
+    if (mia) mia.inicioPiscada = performance.now();
+  });
+
   document.querySelectorAll("img[data-gato]").forEach(iniciar);
   requestAnimationFrame(quadro);
 })();

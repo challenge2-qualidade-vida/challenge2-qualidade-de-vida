@@ -273,3 +273,16 @@ def test_site_nao_baixa_o_3d_de_cara(cliente):
     # O Three.js só vem por import dinâmico, depois de decidir se o aparelho aguenta.
     assert "three.min.js" not in cliente.get("/").text
     assert 'import("./vendor/three.min.js")' in cliente.get("/cena3d.js").text
+
+
+def test_atlas_de_comida_tem_todos_os_alimentos(cliente):
+    import re
+    from pathlib import Path
+
+    raiz = Path(__file__).resolve().parents[1]
+    assert cliente.get("/img/comida.webp").status_code == 200
+    atlas = re.search(r"const ATLAS = \[(.*?)\]", cliente.get("/cena3d.js").text).group(1)
+    ids_cena = re.findall(r'"(\w+)"', atlas)
+    ids_script = re.findall(r'"(\w+)"', re.search(r"ORDEM = \[(.*?)\]", (raiz / "experimentos/gatos3d/comida.py").read_text(), re.S).group(1))
+    assert ids_cena == ids_script
+    assert set(ids_cena) == {f.stem for f in (raiz / "src/web/img/alimentos").glob("*.webp")}
