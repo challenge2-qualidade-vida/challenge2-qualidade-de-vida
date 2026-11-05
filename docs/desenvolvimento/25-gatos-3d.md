@@ -28,7 +28,7 @@ O shader calcula, para cada pixel, de onde na imagem ele deve vir:
 - **Sem mouse:** depois de 6 s parado, e sempre no toque, o gato olha em volta devagar.
 - **Miau-ricio:** de óculos escuros, não tem olhos nem piscada; só a cabeça acompanha o cursor.
 
-Avatares do chat e o ícone do cardápio são pequenos demais para o movimento aparecer e ficam parados. O logo e os ícones do app continuam com o desenho verde original.
+Avatares do chat e o ícone do cardápio são pequenos demais para o movimento aparecer e ficam parados. O logo e os ícones do app usam o rosto da Mia (`experimentos/gatos3d/logo.py`); o nome continua o mesmo, e os desenhos originais ficam em `docs/marca/`.
 
 Como nenhum quadro é misturado, o rosto não duplica. Sem WebGL 2 ou com menos movimento pedido no sistema, ficam as imagens paradas; a da abertura respira pelo CSS se só faltar o WebGL 2.
 
@@ -67,6 +67,7 @@ flux/bin/mflux-generate --model dhairyashil/FLUX.1-schnell-mflux-4bit --base-mod
 
 .venv/bin/python experimentos/gatos3d/recorte.py <gato> <gato>.png <gato>_recorte.png <gato>_final.png
 .venv/bin/python experimentos/gatos3d/turma.py <pasta com os <gato>_final.png>
+.venv/bin/python experimentos/gatos3d/logo.py <mia_final.png sem o corte>
 ```
 
 Cifrão (semente 102) e Recibaldo (semente 301) usam esta base, seguida da descrição de cada um:
@@ -95,6 +96,7 @@ Para um gato novo, as medidas (cabeça, olhos, focinho, orelhas, peito) entram e
 | Miau-ricio sem bigode e com duas gravatas | A descrição comum não destacava o bigode | Descrição própria e quatro novas opções |
 | Recibo e rabo do Recibaldo apagados | Branco sobre fundo claro e parte fina longe do corpo | Polígono do recibo e área do rabo indicados em `recorte.py` |
 | Olhos menores achatavam no extremo do olhar | O deslocamento era igual para todos os olhos | Deslocamento proporcional ao tamanho do olho e giro vertical menor |
+| Recibaldo com cinco patas | A imagem gerada trouxe as duas de trás, as duas da frente no chão e a que segura a lupa | A pata da frente abaixo do braço levantado virou barriga, com um remendo de pelo em `recorte.py`. Os outros gatos foram conferidos e têm quatro |
 | Limite de contextos de WebGL | Um contexto por gato estouraria o limite do navegador com 16 gatos | Um só contexto compartilhado |
 | Título borrado | A sombra do texto usava a cor clara do fundo | Sombra em mostarda escuro |
 | Logo verde ilegível no fundo mostarda | O arquivo do logo é verde | Filtro em CSS que deixa o nome creme |
@@ -128,4 +130,3 @@ As cores vêm da página da Pawzo e ficam nas variáveis do início de `src/web/
 - Avaliar o movimento a olho, inclusive a piscada: o teste automático confere quadros parados. O Miau-ricio não foi conferido ampliado, e o ajuste final dos olhos não foi revisto nos extremos.
 - Testar em celular real, inclusive o desempenho.
 - Citar no relatório final que os gatos foram gerados por IA.
-- Decidir se o logo e os ícones do app também mudam: continuam com o desenho verde original.
