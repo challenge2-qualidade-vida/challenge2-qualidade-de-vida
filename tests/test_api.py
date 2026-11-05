@@ -294,3 +294,7 @@ def test_3d_fica_sempre_ligado_sem_opcao_nas_configuracoes(cliente):
     cena = cliente.get("/cena3d.js").text
     assert "if (!temWebGL()) return;" in cena
     assert "saveData" not in cena
+
+
+def test_logo_volta_para_o_inicio(cliente):
+    assert 'class="marca" data-ir="inicio"' in cliente.get("/").text
