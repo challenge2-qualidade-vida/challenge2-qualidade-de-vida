@@ -13,6 +13,8 @@ O Guilherme trouxe um briefing de design: moedas genéricas com "$", comida face
 | Comida | Formas geométricas facetadas | 28 imagens no estilo dos gatos |
 | História | A moeda sumia ao entrar na cesta | A moeda vira comida, a comida cai, a cesta balança e o anel de nutrição pulsa |
 
+O título da abertura passou a ser "Faça seu dinheiro render" em 05/11/2026, a pedido do Guilherme.
+
 ## Moedas
 
 Inspiradas nas moedas do real, sem copiar o desenho oficial:
