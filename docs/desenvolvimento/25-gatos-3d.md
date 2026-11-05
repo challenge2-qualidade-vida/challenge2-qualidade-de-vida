@@ -98,6 +98,7 @@ Para um gato novo, as medidas (cabeça, olhos, focinho, orelhas, peito) entram e
 | Olhos menores achatavam no extremo do olhar | O deslocamento era igual para todos os olhos | Deslocamento proporcional ao tamanho do olho e giro vertical menor |
 | Recibaldo com cinco patas | A imagem gerada trouxe as duas de trás, as duas da frente no chão e a que segura a lupa | A pata da frente abaixo do braço levantado virou barriga, com um remendo de pelo em `recorte.py`. Os outros gatos foram conferidos e têm quatro |
 | Mão do Recibaldo preta, diferente das outras patas | A imagem gerada trouxe a mão que segura a lupa em preto | O punho e o polegar são clareados em `recorte.py`, mantendo dobras e textura. O braço continua escuro, como nas outras patas |
+| Cartão "Perto de mim" verde no tema escuro | A cor era `--verde-claro`, fora da paleta mostarda | O cartão passou a usar `--azul-claro`, em mostarda, nos dois temas. O verde continua só onde indica seleção ou melhor preço |
 | Limite de contextos de WebGL | Um contexto por gato estouraria o limite do navegador com 16 gatos | Um só contexto compartilhado |
 | Título borrado | A sombra do texto usava a cor clara do fundo | Sombra em mostarda escuro |
 | Logo verde ilegível no fundo mostarda | O arquivo do logo é verde | Filtro em CSS que deixa o nome creme |
