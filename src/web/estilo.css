@@ -278,7 +278,7 @@ h2 { font-size: 1.08rem; font-weight: 800; }
 .linha-msg { display: flex; gap: 6px; align-items: flex-end; max-width: 94%; }
 .linha-msg .msg { max-width: 100%; }
 .acao-laranja { background: var(--marca-clara); }
-.acao-verde { background: var(--verde-claro); }
+.acao-verde { background: var(--azul-claro); }
 .acao-roxo { background: var(--roxo-claro); }
 .acao-azul { background: var(--azul-claro); }
 
