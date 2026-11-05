@@ -67,7 +67,8 @@ async function iniciar() {
     canvas.remove();
     return;
   }
-  renderer.setPixelRatio(fraco ? 1 : Math.min(devicePixelRatio, 1.5));
+  // Tela pequena não é aparelho fraco: só a resolução mínima fica para quem tem poucos núcleos.
+  renderer.setPixelRatio((navigator.hardwareConcurrency ?? 8) <= 4 ? 1 : Math.min(devicePixelRatio, 1.5));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   document.documentElement.classList.add("com-3d");
 
@@ -329,26 +330,216 @@ async function iniciar() {
     pino.position.set(Math.cos(a) * r, Math.sin(a) * r, 0.11);
     pinos.add(pino);
   });
+  // ---------- Cupom ----------
+  // Papel térmico com a estrutura de um cupom brasileiro. É ilustração, e o papel diz isso.
   const cupom = new THREE.Group();
-  const papel = (() => {
+  const RECIBO_L = fraco ? 512 : 768, RECIBO_A = RECIBO_L * 2;
+  const ITENS_RECIBO = [
+    ["arroz", "Arroz 5 kg", "24,90"], ["feijao_carioca", "Feijão 1 kg", "7,99"], ["banana", "Banana 1 kg", "5,49"],
+    ["ovo", "Ovos 12 un", "11,90"], ["leite", "Leite 1 L", "4,89"],
+  ];
+  const telaRecibo = document.createElement("canvas");
+  telaRecibo.width = RECIBO_L; telaRecibo.height = RECIBO_A;
+  const imagensRecibo = {};
+  let reciboMarcados = 0, reciboCarimbo = false;
+
+  // Só gera números repetíveis, para as fibras e o QR não mudarem a cada desenho.
+  const repetivel = (semente) => () => { semente = (semente * 16807) % 2147483647; return semente / 2147483647; };
+
+  function desenharRecibo() {
+    const x = telaRecibo.getContext("2d");
+    const k = RECIBO_L / 640;
+    x.setTransform(k, 0, 0, k, 0, 0);
+    const L = 640, A = 1280, TINTA = "#2d2a26", MONO = '"Courier New", ui-monospace, monospace';
+    x.clearRect(0, 0, L, A);
+    const papel = x.createLinearGradient(0, 0, L, A);
+    papel.addColorStop(0, "#fffdf6"); papel.addColorStop(0.55, "#fbf7ec"); papel.addColorStop(1, "#f4eedf");
+    x.fillStyle = papel;
+    x.fillRect(0, 0, L, A);
+    // Fibras do papel e a impressão levemente irregular da máquina térmica.
+    const acaso = repetivel(4242);
+    for (let i = 0; i < 900; i++) {
+      x.fillStyle = `rgba(120,100,70,${0.015 + acaso() * 0.035})`;
+      x.fillRect(acaso() * L, acaso() * A, 1 + acaso() * 9, 1);
+    }
+    x.fillStyle = TINTA;
+    x.textBaseline = "alphabetic";
+    const centro = (texto, y, fonte) => { x.font = fonte; x.textAlign = "center"; x.fillText(texto, L / 2, y); };
+    const tracejado = (y) => {
+      x.strokeStyle = "rgba(45,42,38,.55)"; x.lineWidth = 2; x.setLineDash([10, 8]);
+      x.beginPath(); x.moveTo(44, y); x.lineTo(L - 44, y); x.stroke(); x.setLineDash([]);
+    };
+    if (imagensRecibo.gato && imagensRecibo.nome) {
+      const g = imagensRecibo.gato, n = imagensRecibo.nome;
+      const altG = 92, largG = (g.width / g.height) * altG, altN = 54, largN = (n.width / n.height) * altN;
+      const ini = (L - largG - 12 - largN) / 2;
+      x.drawImage(g, ini, 44, largG, altG);
+      x.drawImage(n, ini + largG + 12, 64, largN, altN);
+    } else centro("EconoMIA", 110, "800 58px Fredoka, Nunito, sans-serif");
+    centro("CUPOM DE EXEMPLO", 182, `700 30px ${MONO}`);
+    centro("SEM VALOR FISCAL", 216, `700 24px ${MONO}`);
+    tracejado(240);
+    x.font = `700 23px ${MONO}`;
+    x.textAlign = "left"; x.fillText("ITEM", 44, 276);
+    x.textAlign = "right"; x.fillText("R$", L - 44, 276);
+    let y = 296;
+    ITENS_RECIBO.forEach(([id, nome, valor], i) => {
+      if (imagensRecibo.comida) {
+        const n = ATLAS.indexOf(id), cel = imagensRecibo.comida.width / COLUNAS_ATLAS;
+        x.drawImage(imagensRecibo.comida, (n % COLUNAS_ATLAS) * cel, Math.floor(n / COLUNAS_ATLAS) * cel, cel, cel, 44, y + 4, 62, 62);
+      }
+      x.fillStyle = TINTA;
+      x.font = `700 31px ${MONO}`;
+      x.textAlign = "left"; x.fillText(nome, 118, y + 46);
+      x.textAlign = "right"; x.fillText(valor, L - 44, y + 46);
+      if (i < reciboMarcados) {
+        x.fillStyle = "#2f8a4c";
+        x.font = "800 34px Nunito, sans-serif";
+        x.textAlign = "right"; x.fillText("✓", L - 154, y + 47);
+      }
+      y += 74;
+    });
+    x.fillStyle = TINTA;
+    tracejado(y + 12);
+    x.font = `700 46px ${MONO}`;
+    x.textAlign = "left"; x.fillText("TOTAL", 44, y + 72);
+    x.textAlign = "right"; x.fillText("55,17", L - 44, y + 72);
+    // Marca-texto, um pouco torto, como feito à mão.
+    x.save();
+    x.translate(L / 2, y + 112);
+    x.rotate(-0.012);
+    x.fillStyle = "rgba(245,207,95,.85)";
+    x.beginPath(); x.roundRect(-274, -26, 548, 50, 10); x.fill();
+    x.restore();
+    x.fillStyle = TINTA;
+    centro("Economia: R$ 8,40", y + 122, `700 31px ${MONO}`);
+    tracejado(y + 158);
+    // QR só de enfeite: tem cara de QR e não abre nada.
+    const lado = 196, q = 21, m = lado / q, qx = (L - lado) / 2, qy = y + 178;
+    const acasoQr = repetivel(977);
+    const canto = (i, j) => (i < 8 && j < 8) || (i >= q - 8 && j < 8) || (i < 8 && j >= q - 8);
+    for (let j = 0; j < q; j++) for (let i = 0; i < q; i++) if (acasoQr() > 0.5 && !canto(i, j)) x.fillRect(qx + i * m, qy + j * m, m + 0.3, m + 0.3);
+    [[0, 0], [q - 7, 0], [0, q - 7]].forEach(([i, j]) => {
+      x.fillRect(qx + i * m, qy + j * m, 7 * m, 7 * m);
+      x.fillStyle = "#fbf7ec"; x.fillRect(qx + (i + 1) * m, qy + (j + 1) * m, 5 * m, 5 * m);
+      x.fillStyle = TINTA; x.fillRect(qx + (i + 2) * m, qy + (j + 2) * m, 3 * m, 3 * m);
+    });
+    centro("0000 0000 0000 0000 0000", qy + lado + 36, `700 23px ${MONO}`);
+    centro("Obrigado por economizar!", qy + lado + 72, "800 28px Nunito, sans-serif");
+    if (reciboCarimbo) {
+      x.save();
+      x.translate(L / 2, 1190);
+      x.rotate(-0.07);
+      x.globalAlpha = 0.9;
+      x.strokeStyle = x.fillStyle = "#2f8a4c";
+      x.lineWidth = 7;
+      x.beginPath(); x.roundRect(-150, -52, 300, 104, 16); x.stroke();
+      x.lineWidth = 2.5;
+      x.beginPath(); x.roundRect(-139, -41, 278, 82, 10); x.stroke();
+      x.font = "800 40px Fredoka, Nunito, sans-serif";
+      x.textAlign = "center";
+      x.fillText("CONFERIDO", 0, 2);
+      x.font = "700 21px Nunito, sans-serif";
+      x.fillText("pelo Recibaldo", 0, 30);
+      x.restore();
+    }
+    // Serrilha de papel destacado, em cima e embaixo.
+    x.globalCompositeOperation = "destination-out";
+    x.fillStyle = "#000";
+    const dente = 22, altura = 15;
+    for (let i = 0; i <= L / dente; i++) {
+      x.beginPath(); x.moveTo(i * dente, -1); x.lineTo((i + 0.5) * dente, altura); x.lineTo((i + 1) * dente, -1); x.fill();
+      x.beginPath(); x.moveTo(i * dente, A + 1); x.lineTo((i + 0.5) * dente, A - altura); x.lineTo((i + 1) * dente, A + 1); x.fill();
+    }
+    x.globalCompositeOperation = "source-over";
+    texturaRecibo.needsUpdate = true;
+  }
+
+  const texturaRecibo = new THREE.CanvasTexture(telaRecibo);
+  texturaRecibo.colorSpace = THREE.SRGBColorSpace;
+  texturaRecibo.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  const RECIBO_LARG = 0.8, RECIBO_ALT = 1.6;
+  const geoRecibo = new THREE.PlaneGeometry(RECIBO_LARG, RECIBO_ALT, 16, fraco ? 24 : 48);
+  const baseRecibo = Float32Array.from(geoRecibo.attributes.position.array);
+  const papelRecibo = new THREE.Mesh(geoRecibo, new THREE.MeshStandardMaterial({
+    map: texturaRecibo, alphaTest: 0.5, side: THREE.DoubleSide, roughness: 0.82, envMapIntensity: 0.25,
+    color: 0xa6a9b4, toneMapped: false,
+  }));
+  // Curvatura do papel: a ponta de baixo enrola um pouco, e o resto ondula devagar.
+  const curvaRecibo = (px, py, t) => {
+    const v = py / RECIBO_ALT + 0.5;
+    const rolo = (1 - v) ** 3 * 0.42;
+    const onda = Math.sin(v * 5 + t * 0.9) * 0.018;
+    return rolo + onda + Math.cos(v * 3) * 0.02 - (px * px) * 0.14;
+  };
+  function dobrarRecibo(t) {
+    const pos = geoRecibo.attributes.position;
+    for (let i = 0; i < pos.count; i++) pos.setZ(i, curvaRecibo(baseRecibo[i * 3], baseRecibo[i * 3 + 1], t));
+    pos.needsUpdate = true;
+    geoRecibo.computeVertexNormals();
+  }
+  dobrarRecibo(0);
+
+  // Sombra macia, para o papel descolar do fundo.
+  const sombraRecibo = (() => {
     const t = document.createElement("canvas");
-    t.width = 256; t.height = 512;
+    t.width = 128; t.height = 256;
     const x = t.getContext("2d");
-    x.fillStyle = "#fbf8f0"; x.fillRect(0, 0, 256, 512);
-    x.fillStyle = "#3a4a42";
-    for (let y = 40; y < 320; y += 26) x.fillRect(24, y, 110 + ((y * 7) % 90), 9);
-    for (let i = 0; i < 12; i++) for (let j = 0; j < 12; j++) if ((i * 7 + j * 13 + i * j) % 3) x.fillRect(68 + i * 10, 360 + j * 10, 10, 10);
-    const tx = new THREE.CanvasTexture(t);
-    tx.colorSpace = THREE.SRGBColorSpace;
-    return new THREE.Mesh(new THREE.PlaneGeometry(0.75, 1.5), new THREE.MeshStandardMaterial({ map: tx, side: THREE.DoubleSide, roughness: 0.9 }));
+    x.filter = "blur(10px)";
+    x.fillStyle = "#000";
+    x.fillRect(22, 22, 84, 212);
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(RECIBO_LARG * 1.3, RECIBO_ALT * 1.16), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(t), transparent: true, opacity: 0.32, depthWrite: false, toneMapped: false }));
+    m.position.set(0.05, -0.05, -0.14);
+    return m;
   })();
-  const feixe = new THREE.Mesh(new THREE.PlaneGeometry(0.95, 0.05), new THREE.MeshBasicMaterial({ color: COR.ouro, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false }));
-  feixe.position.z = 0.02;
-  cupom.add(papel, feixe);
+
+  // Feixe de leitura: o miolo é forte e o brilho se espalha para os lados.
+  const feixe = (() => {
+    const t = document.createElement("canvas");
+    t.width = 8; t.height = 128;
+    const x = t.getContext("2d");
+    const g = x.createLinearGradient(0, 0, 0, 128);
+    g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(0.47, "rgba(245,207,95,.55)"); g.addColorStop(0.5, "#fff"); g.addColorStop(0.53, "rgba(245,207,95,.55)"); g.addColorStop(1, "rgba(0,0,0,0)");
+    x.fillStyle = g;
+    x.fillRect(0, 0, 8, 128);
+    return new THREE.Mesh(new THREE.PlaneGeometry(RECIBO_LARG * 1.08, 0.3), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(t), color: COR.ouro, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, toneMapped: false }));
+  })();
+  cupom.add(sombraRecibo, papelRecibo, feixe);
+
+  [["gato", "img/logo-gato.webp"], ["nome", "img/logo-nome.webp"], ["comida", "img/comida.webp"]].forEach(([nome, url]) => {
+    const im = new Image();
+    im.onload = () => { imagensRecibo[nome] = im; desenharRecibo(); };
+    im.src = url;
+  });
+  document.fonts?.ready.then(desenharRecibo);
+  if (reduzirMovimento) { reciboMarcados = ITENS_RECIBO.length; reciboCarimbo = true; feixe.visible = false; }
+  desenharRecibo();
+
+  // O feixe desce, cada item ganha um ✓ e, no fim, vem o carimbo. Depois recomeça.
+  const CICLO_RECIBO = 7, DESCIDA_RECIBO = 3;
+  function atualizarRecibo(t) {
+    if (reduzirMovimento) return;
+    dobrarRecibo(t);
+    const ciclo = t % CICLO_RECIBO;
+    const u = Math.min(ciclo / DESCIDA_RECIBO, 1);
+    const yFeixe = RECIBO_ALT / 2 - u * RECIBO_ALT;
+    feixe.visible = ciclo < DESCIDA_RECIBO;
+    feixe.position.set(0, yFeixe, curvaRecibo(0, yFeixe, t) + 0.05);
+    feixe.material.opacity = Math.min(1, Math.min(u, 1 - u) * 14 + 0.05);
+    // Os itens ficam entre 23% e 52% da altura do papel.
+    const marcados = Math.max(0, Math.min(ITENS_RECIBO.length, Math.floor((u - 0.23) / 0.058)));
+    const carimbo = ciclo >= DESCIDA_RECIBO;
+    if (marcados !== reciboMarcados || carimbo !== reciboCarimbo) {
+      reciboMarcados = marcados;
+      reciboCarimbo = carimbo;
+      desenharRecibo();
+    }
+  }
+
   cena.add(cestaHero, cestaResultado, moedaGrande, radar, cupom);
 
   // Com `grudar`, o objeto para logo abaixo da barra do topo até o palco inteiro passar.
-  function ancorar(obj, seletor, escala, grudar) {
+  function ancorar(obj, seletor, escala, grudar, proporcao = 0.72) {
     const alvo = document.querySelector(seletor);
     const caixa = alvo?.offsetParent ? alvo.getBoundingClientRect() : null;
     if (!caixa || !caixa.height) { obj.visible = false; return; }
@@ -363,7 +554,7 @@ async function iniciar() {
     obj.position.x = ((caixa.left + caixa.width / 2) / innerWidth - 0.5) * larguraMundo;
     obj.position.y = -((topo + caixa.height / 2) / innerHeight - 0.5) * alturaMundo;
     // A menor medida do palco manda, para o objeto nunca passar da largura da tela.
-    const medida = Math.min(caixa.height, caixa.width * 0.72);
+    const medida = Math.min(caixa.height, caixa.width * proporcao);
     obj.scale.setScalar((medida / innerHeight) * alturaMundo * escala);
   }
 
@@ -627,7 +818,7 @@ async function iniciar() {
     ancorar(cestaHero, aba === "inicio" ? "#ancora-cesta-hero" : "#nada", 0.95, true);
     ancorar(cestaResultado, aba === "cesta" ? "#palco-cesta" : "#nada", 0.8);
     ancorar(radar, aba === "perto" ? "#palco-perto" : "#nada", 0.62);
-    ancorar(cupom, aba === "cupom" ? "#palco-cupom" : "#nada", 0.62);
+    ancorar(cupom, aba === "cupom" ? "#palco-cupom" : "#nada", 0.54, false, 2);
     ancorar(moedaGrande, aba === "precos" ? "#palco-precos" : "#nada", 0.72);
 
     // A cesta balança sem dar a volta, com a boca sempre para a câmera.
@@ -641,9 +832,10 @@ async function iniciar() {
     moedaGrande.rotation.set(Math.PI / 2 + Math.sin(tempo) * 0.2, 0, Math.sin(tempo * 0.8) * 0.5);
     varredura.rotation.z = -tempo * 1.2;
     pinos.children.forEach((pino, i) => { pino.position.z = 0.11 + Math.abs(Math.sin(tempo * 1.5 + i)) * 0.06; });
-    cupom.rotation.y = Math.sin(tempo * 0.6) * 0.3;
-    cupom.rotation.z = 0.06;
-    feixe.position.y = Math.sin(tempo * 1.4) * 0.7;
+    cupom.rotation.y = Math.sin(tempo * 0.5) * 0.22;
+    cupom.rotation.x = -0.06 + Math.sin(tempo * 0.37) * 0.04;
+    cupom.rotation.z = 0.04;
+    if (cupom.visible) atualizarRecibo(tempo);
 
     for (const c of caindo) {
       if (c.parado) continue;

@@ -883,6 +883,7 @@ input:focus, select:focus { outline: none; border-color: var(--marca); }
 .com-3d .palco { display: block; height: 260px; margin-bottom: 8px; }
 .com-3d .palco-pequeno { height: 170px; }
 .com-3d .palco-cesta { height: 300px; }
+.com-3d #palco-cupom { height: 440px; }
 
 /* Fundo mostarda em toda a página, com ou sem 3D. */
 html { background: linear-gradient(100deg, #463708 0%, #6b5614 38%, #b08d26 76%, #e3b62f 100%) fixed; }
