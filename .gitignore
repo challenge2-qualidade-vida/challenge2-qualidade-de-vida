@@ -24,9 +24,6 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Preços enviados por usuários via NFC-e (gerado pelo app)
-data/precos/contribuicoes.json
-
 # Site (Astro)
 node_modules/
 site/dist/

@@ -1,6 +1,14 @@
 # Frontend da EconoMIA (React + Vite + TypeScript)
 
-Recriação do site de `src/web/` com o **visual idêntico** e por dentro do jeito do grupo. A referência é o commit `e149814` da `develop_gui`. O passo a passo está em [docs/desenvolvimento/27-frontend-react.md](../docs/desenvolvimento/27-frontend-react.md), e as regras da pasta em [AGENTS.md](AGENTS.md).
+Recriação do site de `src/web/` com o **visual idêntico** e por dentro do jeito do grupo. A referência é o commit `e149814` da `develop_gui`. As regras da pasta estão em [AGENTS.md](AGENTS.md), e a spec em [specs/sem-issue-frontend-react](../specs/sem-issue-frontend-react/spec.md).
+
+## Onde ficou o protótipo
+
+Em 05/11/2026 a `develop_gui` foi alinhada com a `main`: ficou igual a ela, mais esta pasta e a spec. O protótipo antigo (site de `src/web/`, backend em módulos soltos, testes, experimentos e a documentação passo a passo em `docs/desenvolvimento/`) saiu da branch porque não segue a arquitetura nem o processo do grupo. Ele continua no histórico, no commit `16438ea` (tag local `prototipo-develop-gui`), e serve de consulta para as specs. Para abri-lo ao lado, sem mexer na branch:
+
+```bash
+git worktree add ../economia-prototipo 16438ea
+```
 
 ## Rodar
 
@@ -52,7 +60,7 @@ O contrato provisório é [`openapi/provisorio.yaml`](openapi/provisorio.yaml). 
 ```bash
 npm run verificar                                         # tipos
 npm run teste                                             # unidade (Vitest)
-npx playwright test --project=antigo --update-snapshots   # referência: site antigo em :8000
+npx playwright test --project=antigo --update-snapshots   # referência: site antigo em :8000 (rodar o protótipo do commit 16438ea)
 npx playwright test --project=novo                        # compara o novo (:5173, com npm run dev:falso)
 ```
 
@@ -61,6 +69,5 @@ As capturas de referência (`testes/visual/capturas/`, cerca de 12 MB) não vão
 ## Dívidas conhecidas
 
 - `src/efeitos/cena3d.ts` está com `// @ts-nocheck`: a cena foi portada sem mudar o efeito, e falta tipar os objetos do Three.js.
-- As imagens estão em `public/img/` e também em `src/web/img/`, até o site antigo sair.
 - Os textos de Configurações ainda dizem que "a EconoMIA não tem login" e que os dados ficam "só neste aparelho". Foram mantidos porque o visual precisava ficar idêntico.
 - Os dados falsos não calculam: qualquer pedido de cesta devolve a cesta gravada.

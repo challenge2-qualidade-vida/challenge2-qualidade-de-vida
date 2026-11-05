@@ -49,36 +49,6 @@ Nenhuma IA como coautora: sem linhas `Co-Authored-By` nem menções a ferramenta
 - **Labels:** as da issue vinculada (semana e área) e a do tipo (`feat` → `enhancement`, `fix` → `bug`, `docs` → `documentação`, `ci` e `build` → `llmops`).
 - **Revisores:** `pedrolucasdourado` e `gpaulovit` (só o outro, se o autor for um deles).
 
-## Padrão dos commits
-
-Toda mensagem começa com o tipo da mudança, seguido de uma descrição curta em português:
-
-```
-tipo: o que mudou
-```
-
-| Tipo | Quando usar | Exemplo |
-|------|-------------|---------|
-| `feat` | Funcionalidade nova | `feat: adiciona botão de trocar item na cesta` |
-| `fix` | Correção de erro | `fix: impede alimento cru no cardápio` |
-| `docs` | Só documentação | `docs: adiciona relatório final` |
-| `test` | Só testes | `test: cobre cestas sem proteína animal` |
-| `refactor` | Muda o código sem mudar o comportamento | `refactor: separa o cardápio dos agentes` |
-| `perf` | Melhora o desempenho | `perf: reduz o tempo de resposta do cardápio` |
-| `style` | Só visual ou formatação | `style: ajusta o contraste dos chips no modo escuro` |
-| `ci` | Testes automáticos no GitHub | `ci: roda o pytest a cada envio` |
-| `chore` | Manutenção, dependências e configuração | `chore: atualiza as dependências` |
-
-Faça um commit por assunto: se a mudança traz uma correção e uma funcionalidade nova, separe em dois.
-
-Para achar um tipo no histórico:
-
-```bash
-git log --oneline --grep="^fix:"
-```
-
-Os commits anteriores a 03/11/2026 não seguem este padrão.
-
 ## Regras do grupo
 
 - Não subir chaves de API, senhas ou arquivos `.env` (já estão no `.gitignore`, e o gitleaks bloqueia no commit).
@@ -87,11 +57,3 @@ Os commits anteriores a 03/11/2026 não seguem este padrão.
 - Decisões técnicas importantes vão em `docs/decisoes.md`, sempre com a justificativa, que depois é validada por pesquisa (manual ou com IA).
 - Termos novos do negócio entram primeiro no [modelo de domínio](docs/arquitetura/modelo-de-dominio.md).
 - Nada de push direto na `main`, squash ou rebase no merge.
-
-## Endereço do repositório
-
-O GitHub avisa que o repositório mudou para a organização `challenge2-qualidade-vida`. O endereço antigo ainda redireciona. Para atualizar a sua cópia:
-
-```bash
-git remote set-url origin https://github.com/challenge2-qualidade-vida/challenge2-qualidade-de-vida.git
-```
