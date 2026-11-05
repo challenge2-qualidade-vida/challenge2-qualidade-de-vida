@@ -28,7 +28,6 @@ Não encontramos documentação oficial do Flipp nem do Instacart sobre raio de 
 | Ponto de partida padrão | perguntar sempre | 10 regiões do DF | O Perto de mim já abre buscando, sem pedir a localização |
 | Custo do deslocamento | R$ 0,65/km | R$ 0,20 a R$ 2,00 | Gasolina ÷ consumo; entra no custo real e no custo do 2º mercado |
 | Ordenar mercados por | custo-benefício | custo-benefício / menor preço / mais perto | Ordem da lista do Perto de mim |
-| Aparência | automático | automático / claro / escuro | Tema do app |
 | Restaurar padrões | — | — | Volta tudo ao padrão |
 
 **Detalhes de UX que vieram da pesquisa:**
@@ -88,3 +87,7 @@ O custo-benefício responde à pergunta que o usuário realmente tem: **vale atr
 - `test_api.py`: padrões de `/api/configuracoes`; raio 100 aceito, 101 e 0,5 recusados; "mais próximo fora do raio"; o custo por km do usuário muda o custo de ida e volta.
 
 Também testado no Chrome: o atalho de 25 km atualizou o radar para "3 de 3"; o Perto de mim abriu buscando pela região padrão; o Mercado B saiu com ⭐ e 💰 e o A com 📍; "Restaurar padrões" voltou para 10 km. Nenhum erro no console.
+
+## Só tema escuro (05/11/2026)
+
+A opção Aparência saiu das Configurações, a pedido do Guilherme: o site agora é sempre escuro, inclusive para quem tinha outro tema salvo ou usa o sistema no modo claro. As cores claras continuam no início de `estilo.css`, sem uso, porque o tema escuro é aplicado por cima delas.

@@ -9,7 +9,7 @@ Situação em 05/11/2026, na branch `develop_gui`, incluindo o [tópico 26](dese
 | Linguagem | Onde | Para quê |
 |-----------|------|----------|
 | HTML5 | `src/web/index.html` (438 linhas) | Estrutura das telas |
-| CSS3 | `src/web/estilo.css` (958 linhas) | Visual, temas, layout responsivo |
+| CSS3 | `src/web/estilo.css` (958 linhas) | Visual, tema escuro, layout responsivo |
 | JavaScript | `app.js` (1059), `cena3d.js` (388), `gatos.js` (243), `animacoes.js` (73), `sw.js` (33) | Telas, 3D, gatos, animações, modo sem internet |
 | GLSL ES 3.00 | Dentro de `gatos.js` | Shader que movimenta os gatos |
 | JSON | `manifest.webmanifest` | Dados do app instalável |
@@ -22,7 +22,7 @@ Situação em 05/11/2026, na branch `develop_gui`, incluindo o [tópico 26](dese
 | Arquivo | Papel | Tópico |
 |---------|-------|--------|
 | `index.html` | Todas as telas em uma página só | [5](desenvolvimento/README.md), [14](desenvolvimento/14-interface-app.md) |
-| `estilo.css` | Cores, temas claro e escuro, layout | [23](desenvolvimento/23-layout-responsivo.md), [25](desenvolvimento/25-gatos-3d.md) |
+| `estilo.css` | Cores, tema escuro, layout | [23](desenvolvimento/23-layout-responsivo.md), [25](desenvolvimento/25-gatos-3d.md) |
 | `app.js` | Navegação, formulários, chamadas à API | [5](desenvolvimento/README.md) |
 | `cena3d.js` | Moedas, cesta com comida, radar e cupom em 3D | [24](desenvolvimento/24-visual-3d.md) |
 | `animacoes.js` | Abertura, rolagem e animação da cesta | [24](desenvolvimento/24-visual-3d.md) |
@@ -63,7 +63,7 @@ Ficam em `src/web/vendor/`, então o site não depende de outro servidor para us
 | Fetch | Chamadas à API |
 | View Transitions | Troca suave de tela, quando o navegador tem |
 | Pointer Events | Posição do cursor |
-| `matchMedia` | Menos movimento, tema do sistema e tipo de ponteiro |
+| `matchMedia` | Menos movimento e tipo de ponteiro |
 | `navigator.connection` | Economia de dados e internet lenta |
 | MutationObserver | Animar o cardápio quando ele aparece |
 
@@ -141,6 +141,7 @@ Só serviram de inspiração. Nenhuma imagem delas está no projeto.
 ## Decisões que valem para o front todo
 
 - **Sem framework:** o site roda como está, sem instalar nem compilar nada. Por isso, bibliotecas feitas para React ficaram de fora.
+- **Tema escuro sempre:** o site não tem mais opção de aparência.
 - **3D sempre ligado:** só fica de fora o navegador sem WebGL. Em aparelho fraco, a cena tem menos moedas e menor resolução. Com menos movimento pedido no sistema, o 3D aparece sem a chuva.
 - **Privacidade:** a posição e as respostas do chat não entram no cache do site.
 
