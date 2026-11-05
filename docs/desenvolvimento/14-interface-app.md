@@ -68,3 +68,7 @@ No Chrome, com a janela em 420 × 860 px (tamanho de celular):
 ## Logo como atalho (05/11/2026)
 
 Clicar na logo da EconoMIA volta para a tela Início e sobe ao topo da página, de qualquer tela. A logo é um botão com `data-ir="inicio"`, o mesmo atalho usado pelos outros botões de navegação.
+
+## Setas dos valores em R$ (05/11/2026)
+
+As setas padrão do navegador mudavam o valor de R$ 0,01 em R$ 0,01. Os campos de orçamento e de custo para o 2º mercado ganharam botões próprios, que andam de R$ 10 e de R$ 1, respectivamente, e param em valores redondos: de R$ 799,92, a seta de cima leva a R$ 800 e a de baixo, a R$ 790. Digitar centavos continua funcionando. As setas padrão também saíram do campo de pessoas, que já tem os botões − e +.
