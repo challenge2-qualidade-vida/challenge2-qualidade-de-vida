@@ -76,6 +76,18 @@ A ordem de `ORDEM` em `comida.py` precisa ser igual à de `ATLAS` em `cena3d.js`
 | Pausar fora da abertura | Pausa com a aba oculta; a coreografia para fora da abertura | As moedas das beiradas continuam em todas as telas, como antes |
 | Modelos Kenney, gltf-transform | Não usados | Ver "Alimentos" |
 
+## Recibo da tela Cupom
+
+Refeito em 05/11/2026, depois de pesquisar recibos, papel em 3D e o cupom fiscal brasileiro. Tudo é desenhado por código em `cena3d.js`:
+
+- **Papel:** branco quente e fosco, com fibras, bordas serrilhadas, curvatura com a ponta de baixo enrolando e sombra macia.
+- **Conteúdo:** logo, itens com os alimentos do site, total, economia com marca-texto, QR code e chave de acesso.
+- **Animação:** o feixe desce em 3 s, cada item ganha um ✓ e o Recibaldo carimba "CONFERIDO". O ciclo tem 7 s e, com menos movimento pedido, o recibo aparece parado e já conferido.
+
+**É uma ilustração, não um documento.** O papel diz "CUPOM DE EXEMPLO" e "SEM VALOR FISCAL", o QR code não abre nada, e a chave de acesso é só de zeros. Os preços são inventados, e o total confere com a soma dos itens.
+
+Referências: [recibo térmico da shadcn.io](https://www.shadcn.io/blocks/features-receipt-itemized-printout), [papel 3D enrolado](https://www.ui-skills.com/skills/mengto/3d-paper-material), [simulações de papel de recibo](https://kimi-k26-ollama.pages.dev/physics/PROMPT.md), [campos do DANFE](https://www.nuvemshop.com.br/blog/o-que-e-danfe/) e [linha de leitura](https://codemyui.com/barcode-scan-line-animation-pure-css/). Só serviram de ideia; nenhum código ou imagem delas está no projeto. A simulação física do papel ficou de fora, porque uma curvatura calculada é mais leve e bastou para o efeito.
+
 ## Como foi testado
 
 | Teste | Resultado |
