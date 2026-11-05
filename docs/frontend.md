@@ -100,7 +100,7 @@ Nada disto roda no site. São ferramentas usadas durante o desenvolvimento.
 | [API da Wikimedia Commons](https://commons.wikimedia.org) | Não se aplica | Fotos de alimentos, com créditos em [creditos-fotos-alimentos.md](marca/creditos-fotos-alimentos.md) | Varia por foto |
 | Claude Code | Não se aplica | Escrever o código, os testes e a documentação | Não se aplica |
 
-Scripts em `experimentos/gatos3d/`: `gerar_imagem.py`, `recorte.py`, `turma.py`, `logo.py` e `comida.py`.
+Scripts em `experimentos/gatos3d/`: `gerar_imagem.py`, `recorte.py`, `turma.py`, `logo.py`, `nome.py` e `comida.py`.
 
 ## Testado e deixado de fora
 
@@ -132,7 +132,7 @@ Só serviram de inspiração. Nenhuma imagem delas está no projeto.
 |--------|--------|
 | Gatos, turma, logo e ícones | Gerados por IA com FLUX.1 schnell e montados pelos scripts acima |
 | Alimentos da cena 3D (`img/comida.webp`) | Gerados por IA com FLUX.1 schnell, recortados com o modelo `birefnet-general-lite` |
-| Nome "EconoMIA" no logo | Arte original, em `src/web/img/logo-nome.png` |
+| Nome "EconoMIA" no logo | Recortado da arte original (`docs/marca/logo-original.png`), em `src/web/img/logo-nome.png` |
 | Desenhos verdes antigos | Guardados em `docs/marca/` |
 | Alimentos nas listas | Fotos da Wikimedia Commons |
 | Ícones da navegação | SVGs escritos à mão no HTML |

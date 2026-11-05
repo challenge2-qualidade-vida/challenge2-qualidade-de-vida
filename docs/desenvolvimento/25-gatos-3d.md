@@ -28,7 +28,7 @@ O shader calcula, para cada pixel, de onde na imagem ele deve vir:
 - **Sem mouse:** depois de 6 s parado, e sempre no toque, o gato olha em volta devagar.
 - **Miau-ricio:** de óculos escuros, não tem olhos nem piscada; só a cabeça acompanha o cursor.
 
-Avatares do chat e o ícone do cardápio são pequenos demais para o movimento aparecer e ficam parados. O logo e os ícones do app usam o rosto da Mia (`experimentos/gatos3d/logo.py`); o nome continua o mesmo, e os desenhos originais ficam em `docs/marca/`.
+Avatares do chat e o ícone do cardápio são pequenos demais para o movimento aparecer e ficam parados. O logo e os ícones do app usam o rosto da Mia (`experimentos/gatos3d/logo.py`); o nome vem da arte original (`experimentos/gatos3d/nome.py`), e os desenhos originais ficam em `docs/marca/`.
 
 Como nenhum quadro é misturado, o rosto não duplica. Sem WebGL 2 ou com menos movimento pedido no sistema, ficam as imagens paradas; a da abertura respira pelo CSS se só faltar o WebGL 2.
 
@@ -100,6 +100,7 @@ Para um gato novo, as medidas (cabeça, olhos, focinho, orelhas, peito) entram e
 | Mão do Recibaldo preta, diferente das outras patas | A imagem gerada trouxe a mão que segura a lupa em preto | O punho e o polegar são clareados em `recorte.py`, mantendo dobras e textura. O braço continua escuro, como nas outras patas |
 | Cartão "Perto de mim" verde no tema escuro | A cor era `--verde-claro`, fora da paleta mostarda | O cartão passou a usar `--azul-claro`, em mostarda, nos dois temas. O verde continua só onde indica seleção ou melhor preço |
 | Caixa de pergunta do chat com fundo retangular | O campo e o botão ficavam soltos sobre um retângulo escuro | Uma só barra arredondada, com o botão dentro e destaque ao digitar |
+| Nome da logo sem os furos dos "o" e sem a estrela do "A" | Os furos estavam preenchidos com creme, e o filtro do site pintava tudo da mesma cor | `experimentos/gatos3d/nome.py` recorta o nome da arte original, com os furos transparentes e mais resolução |
 | Limite de contextos de WebGL | Um contexto por gato estouraria o limite do navegador com 16 gatos | Um só contexto compartilhado |
 | Título borrado | A sombra do texto usava a cor clara do fundo | Sombra em mostarda escuro |
 | Logo verde ilegível no fundo mostarda | O arquivo do logo é verde | Filtro em CSS que deixa o nome creme |
