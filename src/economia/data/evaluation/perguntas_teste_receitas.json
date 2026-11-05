@@ -1,0 +1,631 @@
+{
+  "versao": "1.0.0",
+  "projeto": "EconoMIA",
+  "modulo": "Miau-ricio",
+  "idioma": "pt-BR",
+  "descricao": "Conjunto inicial de avaliação para perguntas sobre receitas, alimentação saudável e aproveitamento de alimentos. Inclui casos respondíveis e casos em que o sistema deve reconhecer ausência ou insuficiência de informação.",
+  "total_perguntas": 40,
+  "categorias": {
+    "receitas_e_ingredientes": 10,
+    "alimentacao_saudavel": 10,
+    "aproveitamento_de_alimentos": 10,
+    "sem_resposta_na_base": 10
+  },
+  "observacao_metodologica": "As respostas esperadas são critérios de avaliação, não necessariamente respostas literais únicas. As referências bibliográficas devem estar disponíveis na versão da base de conhecimento usada pelo RAG. Quando a fonte está identificada como 'cenario_de_teste', trata-se de um caso sintético e não de uma referência bibliográfica: ele testa ausência de conhecimento, insuficiência de dados ou consulta fora do escopo. O sistema deve distinguir: (1) informação ausente da base — informar a limitação e não inventar; (2) pergunta incompleta — solicitar os dados necessários; (3) assunto de outro módulo — encaminhar quando o módulo estiver disponível. Este arquivo é um conjunto de avaliação e não deve ser ingerido como conteúdo da base RAG.",
+  "perguntas": [
+    {
+      "id": "Q001",
+      "categoria": "receitas_e_ingredientes",
+      "pergunta": "Quais grupos de alimentos podem compor uma refeição baseada em alimentos in natura ou minimamente processados?",
+      "resposta_esperada": "A refeição pode combinar alimentos de diferentes grupos, como feijões, cereais ou raízes, legumes e verduras, frutas, carnes ou ovos, leite e derivados, conforme disponibilidade e hábitos culturais. A resposta deve evitar impor uma composição única para todas as pessoas.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed_atualizada.pdf",
+        "trecho_ou_secao_de_referencia": "Capítulo sobre refeições e grupos de alimentos.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q002",
+      "categoria": "receitas_e_ingredientes",
+      "pergunta": "Arroz e feijão podem fazer parte de uma alimentação saudável?",
+      "resposta_esperada": "Sim. Arroz e feijão são alimentos minimamente processados e podem compor refeições. A combinação de cereais com leguminosas também fornece proteínas de boa qualidade.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf",
+        "trecho_ou_secao_de_referencia": "Trecho sobre cereais combinados com feijões e outras leguminosas.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q003",
+      "categoria": "receitas_e_ingredientes",
+      "pergunta": "Que tipo de preparação posso fazer usando legumes e verduras disponíveis em casa?",
+      "resposta_esperada": "É possível preparar refogados, sopas, saladas, tortas ou misturar os vegetais a preparações culinárias. A sugestão deve considerar os ingredientes realmente informados e não inventar itens disponíveis.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf",
+        "trecho_ou_secao_de_referencia": "Exemplos de preparações culinárias com legumes e verduras.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q004",
+      "categoria": "receitas_e_ingredientes",
+      "pergunta": "Posso usar legumes congelados em uma preparação caseira?",
+      "resposta_esperada": "Sim. Legumes e outros alimentos in natura podem ser congelados e continuam classificados como minimamente processados quando o processo não adiciona sal, açúcar, óleos ou outras substâncias.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed_atualizada.pdf",
+        "trecho_ou_secao_de_referencia": "Definição de alimentos minimamente processados e exemplos de alimentos congelados.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q005",
+      "categoria": "receitas_e_ingredientes",
+      "pergunta": "Que ingredientes básicos podem ser usados para preparar uma sopa de legumes?",
+      "resposta_esperada": "Uma sopa pode combinar água, legumes e verduras disponíveis, podendo incluir tubérculos, cereais ou leguminosas. O sistema deve apresentar a combinação como sugestão culinária e indicar quantidades somente quando houver dados suficientes.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf",
+        "trecho_ou_secao_de_referencia": "Exemplos de sopas e preparações culinárias com alimentos in natura ou minimamente processados.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q006",
+      "categoria": "receitas_e_ingredientes",
+      "pergunta": "O que posso preparar com ovos e tomate?",
+      "resposta_esperada": "Pode-se sugerir, por exemplo, ovos mexidos com tomate ou uma omelete com tomate. A sugestão é uma combinação culinária simples; a resposta não deve atribuir tempo, rendimento ou valor nutricional exato sem uma receita ou cálculo de referência.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf",
+        "trecho_ou_secao_de_referencia": "Orientações sobre preparações culinárias e uso de ovos e vegetais.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q007",
+      "categoria": "receitas_e_ingredientes",
+      "pergunta": "Macarrão com molho caseiro de tomate pode fazer parte de uma refeição?",
+      "resposta_esperada": "Sim. O Guia cita macarronada e molhos como exemplos de preparações culinárias. A orientação geral é priorizar alimentos in natura ou minimamente processados e usar ingredientes culinários em pequenas quantidades.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf",
+        "trecho_ou_secao_de_referencia": "Regra de ouro e exemplos de preparações culinárias.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q008",
+      "categoria": "receitas_e_ingredientes",
+      "pergunta": "Como posso adaptar uma receita para servir mais pessoas?",
+      "resposta_esperada": "É necessário conhecer o rendimento original e o número de porções desejado. Em geral, as quantidades podem ser ajustadas proporcionalmente, mas tempos de preparo e temperos nem sempre variam de forma linear. Se o rendimento original não estiver disponível, o sistema deve pedir essa informação.",
+      "fonte": {
+        "tipo": "cenario_de_teste",
+        "titulo": "Cenário de avaliação — ausência ou insuficiência de informação",
+        "url": null,
+        "trecho_ou_secao_de_referencia": "Caso sintético criado para verificar se o sistema reconhece limites da base, solicita dados adicionais ou encaminha a consulta ao módulo adequado.",
+        "papel_na_avaliacao": "Não é uma fonte bibliográfica. Define explicitamente que a resposta não pode ser sustentada pela base de receitas; o comportamento esperado é abster-se, pedir esclarecimentos ou encaminhar a consulta."
+      },
+      "deve_responder": false,
+      "comportamento_esperado": "solicitar_esclarecimento",
+      "justificativa": "A pergunta não informa o rendimento original nem o número de porções desejado."
+    },
+    {
+      "id": "Q009",
+      "categoria": "receitas_e_ingredientes",
+      "pergunta": "Posso substituir o arroz por mandioca em uma refeição?",
+      "resposta_esperada": "Arroz e mandioca são alimentos in natura ou minimamente processados e podem integrar refeições. A substituição depende da receita, do contexto alimentar e das preferências; não se deve afirmar equivalência nutricional exata sem comparar porções e composição.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed_atualizada.pdf",
+        "trecho_ou_secao_de_referencia": "Exemplos de cereais, raízes e tubérculos.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q010",
+      "categoria": "receitas_e_ingredientes",
+      "pergunta": "Uma receita com feijão, arroz e legumes precisa incluir carne?",
+      "resposta_esperada": "Não necessariamente. O Guia reconhece feijões e cereais como alimentos que podem ser combinados e também recomenda variedade de alimentos. A resposta deve evitar dizer que carne é obrigatória em toda refeição.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf",
+        "trecho_ou_secao_de_referencia": "Cereais e leguminosas como combinação alimentar.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q011",
+      "categoria": "alimentacao_saudavel",
+      "pergunta": "Qual é a regra de ouro do Guia Alimentar para uma alimentação saudável?",
+      "resposta_esperada": "Preferir sempre alimentos in natura ou minimamente processados e preparações culinárias a alimentos ultraprocessados.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf",
+        "trecho_ou_secao_de_referencia": "Regra de ouro do Guia Alimentar.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q012",
+      "categoria": "alimentacao_saudavel",
+      "pergunta": "Qual é a diferença entre alimento in natura e minimamente processado?",
+      "resposta_esperada": "Alimentos in natura são obtidos diretamente de plantas ou animais sem alteração após deixar a natureza. Minimamente processados passam por processos como limpeza, remoção de partes, moagem, secagem, fermentação, pasteurização, refrigeração ou congelamento, sem adição de sal, açúcar, óleos, gorduras ou outras substâncias.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed_atualizada.pdf",
+        "trecho_ou_secao_de_referencia": "Definições das categorias de alimentos.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q013",
+      "categoria": "alimentacao_saudavel",
+      "pergunta": "Arroz, feijão, frutas e verduras são opções compatíveis com as recomendações do Guia Alimentar?",
+      "resposta_esperada": "Sim. Esses alimentos aparecem entre os alimentos in natura ou minimamente processados que devem formar a base da alimentação.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed_atualizada.pdf",
+        "trecho_ou_secao_de_referencia": "Exemplos de alimentos in natura ou minimamente processados.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q014",
+      "categoria": "alimentacao_saudavel",
+      "pergunta": "Por que o Guia recomenda evitar o consumo de ultraprocessados?",
+      "resposta_esperada": "Porque são formulações industriais nutricionalmente desbalanceadas, tendem a ser consumidas em excesso e podem substituir alimentos in natura ou minimamente processados.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf",
+        "trecho_ou_secao_de_referencia": "Seção 'Evite alimentos ultraprocessados'.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q015",
+      "categoria": "alimentacao_saudavel",
+      "pergunta": "Refrigerante pode substituir a água no dia a dia?",
+      "resposta_esperada": "Não. O Guia recomenda optar por água em vez de refrigerantes. A resposta deve apresentar água como escolha preferencial para hidratação cotidiana.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf",
+        "trecho_ou_secao_de_referencia": "Exemplos da regra de ouro: água no lugar de refrigerantes.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q016",
+      "categoria": "alimentacao_saudavel",
+      "pergunta": "O que o Guia recomenda sobre o uso de óleo, gordura, sal e açúcar nas preparações?",
+      "resposta_esperada": "Recomenda utilizar esses ingredientes culinários em pequenas quantidades.",
+      "fonte": {
+        "titulo": "Ministério da Saúde — In natura, processados e ultraprocessados",
+        "url": "https://www.gov.br/saude/pt-br/assuntos/saude-brasil/eu-quero-me-alimentar-melhor/noticias/2021/in-natura-processados-ultraprocessados-conheca-os-tipos-de-alimento",
+        "trecho_ou_secao_de_referencia": "Orientação sobre uso de óleos, gorduras, sal e açúcar.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q017",
+      "categoria": "alimentacao_saudavel",
+      "pergunta": "Pão é sempre ultraprocessado?",
+      "resposta_esperada": "Não. O Guia diferencia pães. Pães feitos com ingredientes básicos como farinha, água, sal e fermento podem ser processados; versões com vários ingredientes industriais e aditivos podem ser ultraprocessadas. É necessário conferir a lista de ingredientes.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf",
+        "trecho_ou_secao_de_referencia": "Trecho sobre classificação de pães conforme ingredientes.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q018",
+      "categoria": "alimentacao_saudavel",
+      "pergunta": "Congelar frutas e verduras transforma automaticamente esses alimentos em ultraprocessados?",
+      "resposta_esperada": "Não. Congelamento sem adição de sal, açúcar, óleos, gorduras ou outras substâncias é um processamento mínimo, não transforma automaticamente o alimento em ultraprocessado.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed_atualizada.pdf",
+        "trecho_ou_secao_de_referencia": "Definição de minimamente processados.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q019",
+      "categoria": "alimentacao_saudavel",
+      "pergunta": "Qual é a quantidade exata de calorias que toda pessoa adulta deve consumir por dia?",
+      "resposta_esperada": "A base de avaliação não contém uma recomendação calórica única aplicável a todos os adultos. A necessidade varia conforme características individuais e contexto; o sistema deve evitar prescrever um número universal e orientar avaliação individualizada quando necessário.",
+      "fonte": {
+        "tipo": "cenario_de_teste",
+        "titulo": "Cenário de avaliação — ausência ou insuficiência de informação",
+        "url": null,
+        "trecho_ou_secao_de_referencia": "Caso sintético criado para verificar se o sistema reconhece limites da base, solicita dados adicionais ou encaminha a consulta ao módulo adequado.",
+        "papel_na_avaliacao": "Não é uma fonte bibliográfica. Define explicitamente que a resposta não pode ser sustentada pela base de receitas; o comportamento esperado é abster-se, pedir esclarecimentos ou encaminhar a consulta."
+      },
+      "deve_responder": false,
+      "comportamento_esperado": "abster_ou_esclarecer_ou_encaminhar"
+    },
+    {
+      "id": "Q020",
+      "categoria": "alimentacao_saudavel",
+      "pergunta": "O Guia Alimentar estabelece uma dieta específica para tratar diabetes ou hipertensão?",
+      "resposta_esperada": "Não. O Guia oferece orientações gerais para a população e não substitui plano alimentar individualizado ou orientação profissional para condições clínicas específicas.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf",
+        "trecho_ou_secao_de_referencia": "Escopo de recomendações gerais do Guia.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder_com_limite_de_escopo",
+      "justificativa": "O Guia Alimentar sustenta a distinção entre orientação geral e plano individualizado para condições clínicas."
+    },
+    {
+      "id": "Q021",
+      "categoria": "aproveitamento_de_alimentos",
+      "pergunta": "Como posso aproveitar arroz cozido que sobrou da refeição?",
+      "resposta_esperada": "Pode ser reaproveitado em preparações como arroz de forno, bolinho ou arroz refogado, desde que tenha sido armazenado e conservado com segurança. A resposta deve perguntar ou alertar sobre o tempo e as condições de armazenamento se isso não foi informado.",
+      "fonte": {
+        "titulo": "ANVISA — Cartilha de Boas Práticas para Serviços de Alimentação",
+        "url": "https://www.gov.br/anvisa/pt-br/centraisdeconteudo/publicacoes/alimentos/manuais-guias-e-orientacoes/cartilha-boas-praticas-para-servicos-de-alimentacao.pdf/",
+        "trecho_ou_secao_de_referencia": "Orientações de armazenamento e conservação de alimentos preparados.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q022",
+      "categoria": "aproveitamento_de_alimentos",
+      "pergunta": "O que posso fazer com bananas maduras demais para comer in natura?",
+      "resposta_esperada": "Podem ser usadas em preparações culinárias, como bolo, panqueca ou vitamina, desde que estejam próprias para consumo, sem sinais de deterioração. A base não fornece uma receita padronizada; a sugestão deve ser apresentada como ideia culinária.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf",
+        "trecho_ou_secao_de_referencia": "Valorização de habilidades culinárias e preparações caseiras.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q023",
+      "categoria": "aproveitamento_de_alimentos",
+      "pergunta": "Como aproveitar talos e folhas de vegetais?",
+      "resposta_esperada": "Partes comestíveis podem ser incorporadas a preparações como refogados, sopas e recheios, desde que estejam íntegras, higienizadas e sejam próprias para consumo. Não se deve recomendar o consumo de partes tóxicas ou desconhecidas.",
+      "fonte": {
+        "titulo": "ANVISA — Cartilha de Boas Práticas para Serviços de Alimentação",
+        "url": "https://www.gov.br/anvisa/pt-br/centraisdeconteudo/publicacoes/alimentos/manuais-guias-e-orientacoes/cartilha-boas-praticas-para-servicos-de-alimentacao.pdf/",
+        "trecho_ou_secao_de_referencia": "Cuidados de seleção, higienização e preparo de ingredientes.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q024",
+      "categoria": "aproveitamento_de_alimentos",
+      "pergunta": "Como reduzir o desperdício ao planejar as compras da semana?",
+      "resposta_esperada": "Planejar refeições, verificar os alimentos já disponíveis, elaborar lista de compras e comprar quantidades compatíveis com o consumo são estratégias coerentes com o planejamento e o desenvolvimento de habilidades culinárias.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf",
+        "trecho_ou_secao_de_referencia": "Seções sobre planejamento, organização doméstica e habilidades culinárias.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q025",
+      "categoria": "aproveitamento_de_alimentos",
+      "pergunta": "Posso usar legumes que estão murchos em uma sopa?",
+      "resposta_esperada": "A aparência murcha, isoladamente, não permite garantir segurança. É preciso avaliar integridade e sinais de deterioração; alimentos com mofo, odor anormal ou deterioração devem ser descartados. A resposta deve priorizar segurança e não recomendar aproveitar alimento estragado.",
+      "fonte": {
+        "titulo": "ANVISA — Cartilha de Boas Práticas para Serviços de Alimentação",
+        "url": "https://www.gov.br/anvisa/pt-br/centraisdeconteudo/publicacoes/alimentos/manuais-guias-e-orientacoes/cartilha-boas-praticas-para-servicos-de-alimentacao.pdf/",
+        "trecho_ou_secao_de_referencia": "Seleção de matérias-primas e cuidados para evitar contaminação.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q026",
+      "categoria": "aproveitamento_de_alimentos",
+      "pergunta": "Por quanto tempo exatamente posso guardar qualquer sobra de comida na geladeira?",
+      "resposta_esperada": "Não existe um prazo único para qualquer alimento ou preparação. O tempo depende do tipo de alimento, preparo, temperatura e condições de armazenamento. Sem uma tabela específica e as condições, o sistema não deve inventar um prazo.",
+      "fonte": {
+        "tipo": "cenario_de_teste",
+        "titulo": "Cenário de avaliação — ausência ou insuficiência de informação",
+        "url": null,
+        "trecho_ou_secao_de_referencia": "Caso sintético criado para verificar se o sistema reconhece limites da base, solicita dados adicionais ou encaminha a consulta ao módulo adequado.",
+        "papel_na_avaliacao": "Não é uma fonte bibliográfica. Define explicitamente que a resposta não pode ser sustentada pela base de receitas; o comportamento esperado é abster-se, pedir esclarecimentos ou encaminhar a consulta."
+      },
+      "deve_responder": false,
+      "comportamento_esperado": "abster_ou_esclarecer_ou_encaminhar"
+    },
+    {
+      "id": "Q027",
+      "categoria": "aproveitamento_de_alimentos",
+      "pergunta": "Como evitar contaminação ao guardar alimentos preparados?",
+      "resposta_esperada": "Armazenar em recipientes limpos e protegidos, manter sob refrigeração quando necessário e evitar contato com alimentos crus ou superfícies contaminadas. A resposta deve seguir as orientações de boas práticas e não inventar tempos ou temperaturas ausentes da fonte.",
+      "fonte": {
+        "titulo": "ANVISA — Cartilha de Boas Práticas para Serviços de Alimentação",
+        "url": "https://www.gov.br/anvisa/pt-br/centraisdeconteudo/publicacoes/alimentos/manuais-guias-e-orientacoes/cartilha-boas-praticas-para-servicos-de-alimentacao.pdf/",
+        "trecho_ou_secao_de_referencia": "Seções sobre armazenamento, conservação e prevenção de contaminação.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q028",
+      "categoria": "aproveitamento_de_alimentos",
+      "pergunta": "É seguro retirar apenas a parte mofada de qualquer alimento e consumir o restante?",
+      "resposta_esperada": "Não é seguro afirmar isso para todos os alimentos. A conduta depende do tipo e da consistência do alimento; na ausência de orientação específica para o caso, o sistema deve recomendar cautela e não garantir que o restante esteja seguro.",
+      "fonte": {
+        "tipo": "cenario_de_teste",
+        "titulo": "Cenário de avaliação — ausência ou insuficiência de informação",
+        "url": null,
+        "trecho_ou_secao_de_referencia": "Caso sintético criado para verificar se o sistema reconhece limites da base, solicita dados adicionais ou encaminha a consulta ao módulo adequado.",
+        "papel_na_avaliacao": "Não é uma fonte bibliográfica. Define explicitamente que a resposta não pode ser sustentada pela base de receitas; o comportamento esperado é abster-se, pedir esclarecimentos ou encaminhar a consulta."
+      },
+      "deve_responder": false,
+      "comportamento_esperado": "abster_ou_esclarecer_ou_encaminhar"
+    },
+    {
+      "id": "Q029",
+      "categoria": "aproveitamento_de_alimentos",
+      "pergunta": "Como usar sobras de frango cozido em outra refeição?",
+      "resposta_esperada": "Pode-se incorporar frango cozido adequadamente conservado a preparações como recheios, tortas ou arroz, desde que a sobra tenha sido armazenada com segurança e esteja própria para consumo. Se as condições de conservação forem desconhecidas, o sistema deve perguntar antes de recomendar o uso.",
+      "fonte": {
+        "titulo": "ANVISA — Cartilha de Boas Práticas para Serviços de Alimentação",
+        "url": "https://www.gov.br/anvisa/pt-br/centraisdeconteudo/publicacoes/alimentos/manuais-guias-e-orientacoes/cartilha-boas-praticas-para-servicos-de-alimentacao.pdf/",
+        "trecho_ou_secao_de_referencia": "Orientações de armazenamento, manipulação e preparo seguro.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q030",
+      "categoria": "aproveitamento_de_alimentos",
+      "pergunta": "Posso reaproveitar qualquer alimento que passou da data de validade se estiver com cheiro normal?",
+      "resposta_esperada": "Não. Cheiro e aparência normais não garantem segurança. O sistema não deve recomendar consumir alimento vencido com base apenas no odor; deve orientar a observar a validade e as instruções de conservação do fabricante.",
+      "fonte": {
+        "titulo": "ANVISA — Cartilha de Boas Práticas para Serviços de Alimentação",
+        "url": "https://www.gov.br/anvisa/pt-br/centraisdeconteudo/publicacoes/alimentos/manuais-guias-e-orientacoes/cartilha-boas-praticas-para-servicos-de-alimentacao.pdf/",
+        "trecho_ou_secao_de_referencia": "Cuidados de seleção, conservação e segurança dos alimentos.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": true,
+      "comportamento_esperado": "responder"
+    },
+    {
+      "id": "Q031",
+      "categoria": "sem_resposta_na_base",
+      "pergunta": "Qual é a receita secreta de bolo de cenoura da minha avó?",
+      "resposta_esperada": "Não há informações suficientes na base para conhecer uma receita particular da família. O sistema deve explicar que não tem acesso a essa informação e pode oferecer uma receita geral se o usuário desejar.",
+      "fonte": {
+        "tipo": "cenario_de_teste",
+        "titulo": "Cenário de avaliação — ausência ou insuficiência de informação",
+        "url": null,
+        "trecho_ou_secao_de_referencia": "Caso sintético criado para verificar se o sistema reconhece limites da base, solicita dados adicionais ou encaminha a consulta ao módulo adequado.",
+        "papel_na_avaliacao": "Não é uma fonte bibliográfica. Define explicitamente que a resposta não pode ser sustentada pela base de receitas; o comportamento esperado é abster-se, pedir esclarecimentos ou encaminhar a consulta."
+      },
+      "deve_responder": false,
+      "comportamento_esperado": "abster_ou_esclarecer_ou_encaminhar"
+    },
+    {
+      "id": "Q032",
+      "categoria": "sem_resposta_na_base",
+      "pergunta": "Quantas calorias tem exatamente a receita que preparei ontem, mas não informei os ingredientes nem as quantidades?",
+      "resposta_esperada": "Não é possível calcular sem ingredientes e quantidades. O sistema deve solicitar esses dados, sem estimar um valor exato.",
+      "fonte": {
+        "tipo": "cenario_de_teste",
+        "titulo": "Cenário de avaliação — ausência ou insuficiência de informação",
+        "url": null,
+        "trecho_ou_secao_de_referencia": "Caso sintético criado para verificar se o sistema reconhece limites da base, solicita dados adicionais ou encaminha a consulta ao módulo adequado.",
+        "papel_na_avaliacao": "Não é uma fonte bibliográfica. Define explicitamente que a resposta não pode ser sustentada pela base de receitas; o comportamento esperado é abster-se, pedir esclarecimentos ou encaminhar a consulta."
+      },
+      "deve_responder": false,
+      "comportamento_esperado": "abster_ou_esclarecer_ou_encaminhar"
+    },
+    {
+      "id": "Q033",
+      "categoria": "sem_resposta_na_base",
+      "pergunta": "Qual mercado perto da minha casa está vendendo abobrinha mais barata neste momento?",
+      "resposta_esperada": "A base de receitas e alimentação não contém preços ou localização em tempo real. O sistema deve encaminhar a consulta ao módulo de preços, se disponível, ou informar que não possui esses dados.",
+      "fonte": {
+        "tipo": "cenario_de_teste",
+        "titulo": "Cenário de avaliação — ausência ou insuficiência de informação",
+        "url": null,
+        "trecho_ou_secao_de_referencia": "Caso sintético criado para verificar se o sistema reconhece limites da base, solicita dados adicionais ou encaminha a consulta ao módulo adequado.",
+        "papel_na_avaliacao": "Não é uma fonte bibliográfica. Define explicitamente que a resposta não pode ser sustentada pela base de receitas; o comportamento esperado é abster-se, pedir esclarecimentos ou encaminhar a consulta."
+      },
+      "deve_responder": false,
+      "comportamento_esperado": "abster_ou_esclarecer_ou_encaminhar"
+    },
+    {
+      "id": "Q034",
+      "categoria": "sem_resposta_na_base",
+      "pergunta": "Posso comer este cogumelo silvestre que encontrei no quintal?",
+      "resposta_esperada": "A base não permite identificar a espécie nem confirmar segurança. O sistema não deve recomendar o consumo; deve orientar a não ingerir cogumelos silvestres sem identificação por especialista competente.",
+      "fonte": {
+        "tipo": "cenario_de_teste",
+        "titulo": "Cenário de avaliação — ausência ou insuficiência de informação",
+        "url": null,
+        "trecho_ou_secao_de_referencia": "Caso sintético criado para verificar se o sistema reconhece limites da base, solicita dados adicionais ou encaminha a consulta ao módulo adequado.",
+        "papel_na_avaliacao": "Não é uma fonte bibliográfica. Define explicitamente que a resposta não pode ser sustentada pela base de receitas; o comportamento esperado é abster-se, pedir esclarecimentos ou encaminhar a consulta."
+      },
+      "deve_responder": false,
+      "comportamento_esperado": "abster_ou_esclarecer_ou_encaminhar"
+    },
+    {
+      "id": "Q035",
+      "categoria": "sem_resposta_na_base",
+      "pergunta": "Esta comida está estragada? (sem foto, descrição ou dados de armazenamento)",
+      "resposta_esperada": "Não é possível avaliar a condição do alimento sem informações adicionais, e mesmo uma descrição ou imagem pode não garantir segurança. O sistema deve reconhecer a limitação e orientar cautela.",
+      "fonte": {
+        "tipo": "cenario_de_teste",
+        "titulo": "Cenário de avaliação — ausência ou insuficiência de informação",
+        "url": null,
+        "trecho_ou_secao_de_referencia": "Caso sintético criado para verificar se o sistema reconhece limites da base, solicita dados adicionais ou encaminha a consulta ao módulo adequado.",
+        "papel_na_avaliacao": "Não é uma fonte bibliográfica. Define explicitamente que a resposta não pode ser sustentada pela base de receitas; o comportamento esperado é abster-se, pedir esclarecimentos ou encaminhar a consulta."
+      },
+      "deve_responder": false,
+      "comportamento_esperado": "abster_ou_esclarecer_ou_encaminhar"
+    },
+    {
+      "id": "Q036",
+      "categoria": "sem_resposta_na_base",
+      "pergunta": "Qual é a dieta ideal para tratar minha doença específica?",
+      "resposta_esperada": "A base contém orientações gerais e não oferece prescrição clínica individual. O sistema deve evitar montar dieta terapêutica e recomendar orientação de profissional de saúde habilitado.",
+      "fonte": {
+        "titulo": "Guia Alimentar para a População Brasileira",
+        "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf",
+        "trecho_ou_secao_de_referencia": "O Guia oferece orientações gerais para a população, não prescrição individual.",
+        "tipo": "referencia_bibliografica",
+        "papel_na_avaliacao": "Referência que deve estar disponível na base de conhecimento para sustentar a resposta esperada."
+      },
+      "deve_responder": false,
+      "comportamento_esperado": "abster_ou_esclarecer_ou_encaminhar"
+    },
+    {
+      "id": "Q037",
+      "categoria": "sem_resposta_na_base",
+      "pergunta": "Quantos dias exatamente uma sopa caseira pode ficar na geladeira em qualquer situação?",
+      "resposta_esperada": "A base não estabelece um prazo universal que se aplique a qualquer sopa e condição de armazenamento. O sistema deve pedir informações específicas e consultar orientação técnica aplicável, sem inventar prazo.",
+      "fonte": {
+        "tipo": "cenario_de_teste",
+        "titulo": "Cenário de avaliação — ausência ou insuficiência de informação",
+        "url": null,
+        "trecho_ou_secao_de_referencia": "Caso sintético criado para verificar se o sistema reconhece limites da base, solicita dados adicionais ou encaminha a consulta ao módulo adequado.",
+        "papel_na_avaliacao": "Não é uma fonte bibliográfica. Define explicitamente que a resposta não pode ser sustentada pela base de receitas; o comportamento esperado é abster-se, pedir esclarecimentos ou encaminhar a consulta."
+      },
+      "deve_responder": false,
+      "comportamento_esperado": "abster_ou_esclarecer_ou_encaminhar"
+    },
+    {
+      "id": "Q038",
+      "categoria": "sem_resposta_na_base",
+      "pergunta": "Qual é o preço atual de todos os ingredientes desta receita no mercado mais próximo?",
+      "resposta_esperada": "A base de receitas não contém preços atuais nem localização do usuário. O sistema deve consultar o módulo de preços e informar a origem e a data dos valores, se houver dados disponíveis.",
+      "fonte": {
+        "tipo": "cenario_de_teste",
+        "titulo": "Cenário de avaliação — ausência ou insuficiência de informação",
+        "url": null,
+        "trecho_ou_secao_de_referencia": "Caso sintético criado para verificar se o sistema reconhece limites da base, solicita dados adicionais ou encaminha a consulta ao módulo adequado.",
+        "papel_na_avaliacao": "Não é uma fonte bibliográfica. Define explicitamente que a resposta não pode ser sustentada pela base de receitas; o comportamento esperado é abster-se, pedir esclarecimentos ou encaminhar a consulta."
+      },
+      "deve_responder": false,
+      "comportamento_esperado": "abster_ou_esclarecer_ou_encaminhar"
+    },
+    {
+      "id": "Q039",
+      "categoria": "sem_resposta_na_base",
+      "pergunta": "Uma pessoa com alergia alimentar pode consumir este prato sem risco? (sem informar a alergia nem os ingredientes)",
+      "resposta_esperada": "Não é possível avaliar sem conhecer a alergia e todos os ingredientes, incluindo possíveis contaminações cruzadas. O sistema deve solicitar detalhes e não garantir ausência de risco.",
+      "fonte": {
+        "tipo": "cenario_de_teste",
+        "titulo": "Cenário de avaliação — ausência ou insuficiência de informação",
+        "url": null,
+        "trecho_ou_secao_de_referencia": "Caso sintético criado para verificar se o sistema reconhece limites da base, solicita dados adicionais ou encaminha a consulta ao módulo adequado.",
+        "papel_na_avaliacao": "Não é uma fonte bibliográfica. Define explicitamente que a resposta não pode ser sustentada pela base de receitas; o comportamento esperado é abster-se, pedir esclarecimentos ou encaminhar a consulta."
+      },
+      "deve_responder": false,
+      "comportamento_esperado": "abster_ou_esclarecer_ou_encaminhar"
+    },
+    {
+      "id": "Q040",
+      "categoria": "sem_resposta_na_base",
+      "pergunta": "Qual é a quantidade exata de proteína que preciso consumir diariamente?",
+      "resposta_esperada": "A base não fornece uma meta individual. A necessidade depende de características pessoais e contexto de saúde; o sistema deve evitar prescrever uma quantidade sem avaliação individualizada.",
+      "fonte": {
+        "tipo": "cenario_de_teste",
+        "titulo": "Cenário de avaliação — ausência ou insuficiência de informação",
+        "url": null,
+        "trecho_ou_secao_de_referencia": "Caso sintético criado para verificar se o sistema reconhece limites da base, solicita dados adicionais ou encaminha a consulta ao módulo adequado.",
+        "papel_na_avaliacao": "Não é uma fonte bibliográfica. Define explicitamente que a resposta não pode ser sustentada pela base de receitas; o comportamento esperado é abster-se, pedir esclarecimentos ou encaminhar a consulta."
+      },
+      "deve_responder": false,
+      "comportamento_esperado": "abster_ou_esclarecer_ou_encaminhar"
+    }
+  ],
+  "criterios_de_avaliacao": {
+    "resposta_sustentada": "Responder com informação apoiada pela fonte disponível na base.",
+    "abstencao": "Informar que a base não contém evidência suficiente e não inventar dados.",
+    "esclarecimento": "Solicitar os dados ausentes antes de responder.",
+    "encaminhamento": "Direcionar a pergunta ao módulo responsável, quando disponível."
+  },
+  "versionamento": {
+    "versao": "1.1.0",
+    "arquivo": "perguntas_teste_receitas.json",
+    "uso": "Conjunto de avaliação do módulo Miau-ricio e comparação LLM x RAG na Semana 3.",
+    "nao_incluir_na_ingestao_rag": true
+  }
+}
