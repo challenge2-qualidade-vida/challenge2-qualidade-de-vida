@@ -305,3 +305,10 @@ def test_valores_em_reais_tem_setas_proprias(cliente):
     assert 'data-passo="10" aria-label="Aumentar o orçamento em 10 reais"' in pagina
     assert 'data-passo="-10" aria-label="Diminuir o orçamento em 10 reais"' in pagina
     assert ".moeda-seta" in cliente.get("/app.js").text
+
+
+def test_site_so_tem_o_tema_escuro(cliente):
+    pagina = cliente.get("/").text
+    assert '<html lang="pt-BR" data-theme="dark">' in pagina
+    assert "cfg-tema" not in pagina
+    assert "cfg-tema" not in cliente.get("/app.js").text

@@ -216,7 +216,7 @@ O passo a passo do que foi construído, como foi feito e como rodar está em [do
 git checkout develop_gui
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-pytest                                          # 227 testes
+pytest                                          # 228 testes
 ollama pull qwen2.5:7b                          # opcional: LLM local e gratuito
 uvicorn economia.api:app --app-dir src --reload # http://localhost:8000
 ```

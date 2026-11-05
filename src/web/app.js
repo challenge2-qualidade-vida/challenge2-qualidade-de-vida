@@ -444,7 +444,7 @@ $("#botao-cardapio").addEventListener("click", async (evento) => {
 // Preferências do usuário, guardadas só neste navegador (localStorage).
 // A localização (GPS) nunca é guardada; só a região padrão, se a pessoa escolher.
 const CHAVE_CONFIG = "economia.config";
-const CONFIG_PADRAO = { raio_km: 10, custo_por_km: 0.65, ordem: "custo_beneficio", tema: "auto", regiao: "" };
+const CONFIG_PADRAO = { raio_km: 10, custo_por_km: 0.65, ordem: "custo_beneficio", regiao: "" };
 const LIMITES = { raio_min: 1, raio_max: 100 };
 let config = carregarConfig();
 
@@ -469,9 +469,6 @@ function salvarConfig(mudancas) {
 const km = (v) => `${String(v).replace(".", ",")} km`;
 
 function aplicarConfig() {
-  if (config.tema === "auto") delete document.documentElement.dataset.theme;
-  else document.documentElement.dataset.theme = config.tema;
-
   const raio = $("#cfg-raio");
   raio.value = config.raio_km;
   raio.style.setProperty("--progresso", `${((config.raio_km - raio.min) / (raio.max - raio.min)) * 100}%`);
@@ -485,7 +482,6 @@ function aplicarConfig() {
   $("#cfg-custo-valor").textContent = reais(config.custo_por_km);
 
   document.querySelectorAll('input[name="cfg-ordem"], input[name="ordem-perto"]').forEach((i) => (i.checked = i.value === config.ordem));
-  document.querySelectorAll('input[name="cfg-tema"]').forEach((i) => (i.checked = i.value === config.tema));
   $("#cfg-regiao").value = config.regiao;
   desenharRadar();
 }
@@ -543,7 +539,6 @@ document.querySelectorAll('input[name="cfg-ordem"], input[name="ordem-perto"]').
   salvarConfig({ ordem: i.value });
   if (ultimoPerto) mostrarMercados(ultimoPerto);
 }));
-document.querySelectorAll('input[name="cfg-tema"]').forEach((i) => i.addEventListener("change", () => salvarConfig({ tema: i.value })));
 $("#cfg-regiao").addEventListener("change", (e) => {
   salvarConfig({ regiao: e.target.value });
   carregarRadar();
