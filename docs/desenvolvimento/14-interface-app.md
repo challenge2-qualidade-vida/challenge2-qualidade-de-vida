@@ -64,3 +64,7 @@ No Chrome, com a janela em 420 × 860 px (tamanho de celular):
 - Transformar em **PWA** (manifest + service worker) para "instalar" na tela do celular. É gratuito.
 - Guardar a última cesta no navegador (`localStorage`), para o Início continuar preenchido ao reabrir.
 - Um botão para alternar entre claro e escuro manualmente (o CSS já aceita `data-theme`).
+
+## Logo como atalho (05/11/2026)
+
+Clicar na logo da EconoMIA volta para a tela Início e sobe ao topo da página, de qualquer tela. A logo é um botão com `data-ir="inicio"`, o mesmo atalho usado pelos outros botões de navegação.
