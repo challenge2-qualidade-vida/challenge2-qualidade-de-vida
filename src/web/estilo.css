@@ -115,6 +115,7 @@ main { padding: 0 16px; }
 .marca:focus-visible { outline: 2px solid var(--marca); outline-offset: 3px; }
 .marca-gato { height: 36px; width: auto; }
 .marca-nome { height: 22px; width: auto; }
+@media (min-width: 720px) { .marca-nome { height: 28px; } }
 .marca-nome, :root[data-theme="dark"] .marca-nome { filter: brightness(0) invert(0.96) sepia(0.25); }
 .pilula {
   font-size: 0.72rem;
