@@ -19,7 +19,7 @@ function efeitosPermitidos() {
 
 // Cores dos alimentos e da marca.
 const COR = {
-  ouro: 0xf5cf5f, mata: 0x6f8f4f, floresta: 0x463708, creme: 0xfaf5ea, tomate: 0xd93b2b, laranja: 0xf08a24,
+  ouro: 0xf5cf5f, mata: 0x6f8f4f, cesta: 0x2f6b3f, floresta: 0x463708, creme: 0xfaf5ea, tomate: 0xd93b2b, laranja: 0xf08a24,
   banana: 0xf5cf3a, terra: 0x9a6b3f, cebola: 0xb98a5a, folha: 0x6fb34a, abobora: 0xd97b1f, pacote: 0xe9e2d0,
   feijao: 0x6d3f25, preto: 0x2a2a33, macarrao: 0xe8c04f, carne: 0xa8413a, frango: 0xe0b483, lata: 0xb9c2c9, leite: 0xf4f6f4,
 };
@@ -49,7 +49,7 @@ async function iniciar() {
     canvas.remove();
     return;
   }
-  renderer.setPixelRatio(Math.min(devicePixelRatio, fraco ? 1.5 : 2));
+  renderer.setPixelRatio(fraco ? 1 : Math.min(devicePixelRatio, 1.5));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   document.documentElement.classList.add("com-3d");
 
@@ -134,24 +134,49 @@ async function iniciar() {
   const matFace = new THREE.MeshStandardMaterial({ map: texturaMoeda, metalness: 0.35, roughness: 0.4, emissive: 0x6e4a08, emissiveIntensity: 0.55 });
   const matsMoeda = [matLateral, matFace, matFace];
 
+  // Cestinha de mercado: parede vazada em duas camadas, para ter espessura, e borda dourada.
+  const texturaTrama = (() => {
+    const t = document.createElement("canvas");
+    t.width = 1024; t.height = 256;
+    const x = t.getContext("2d");
+    x.fillStyle = "#fff"; x.fillRect(0, 0, 1024, 256);
+    x.fillStyle = "#000";
+    const colunas = 28, linhas = 4, l = 1024 / colunas, a = 180 / linhas;
+    for (let i = 0; i < colunas; i++) for (let j = 0; j < linhas; j++) {
+      x.beginPath();
+      x.roundRect(i * l + l * 0.2, 34 + j * a + a * 0.14, l * 0.6, a * 0.72, 6);
+      x.fill();
+    }
+    return new THREE.CanvasTexture(t);
+  })();
+  const matCesta = new THREE.MeshPhysicalMaterial({
+    color: COR.cesta, roughness: 0.42, clearcoat: 0.5, clearcoatRoughness: 0.3,
+    alphaMap: texturaTrama, alphaTest: 0.5, side: THREE.DoubleSide,
+  });
+  const matCestaSolida = new THREE.MeshPhysicalMaterial({ color: COR.cesta, roughness: 0.42, clearcoat: 0.5, clearcoatRoughness: 0.3 });
+  const matBorda = new THREE.MeshPhysicalMaterial({ color: COR.ouro, metalness: 0.85, roughness: 0.28, clearcoat: 0.4 });
+  const segmentos = fraco ? 32 : 64;
+
+  function parede(folga) {
+    const perfil = [[0.42, -0.28], [0.47, -0.24], [0.56, 0], [0.62, 0.28]].map(([r, y]) => new THREE.Vector2(r - folga, y));
+    return new THREE.Mesh(new THREE.LatheGeometry(perfil, segmentos), matCesta);
+  }
+
   function criarCesta() {
     const g = new THREE.Group();
-    const trama = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.62, 0.42, 0.56, 14, 3, true),
-      new THREE.MeshStandardMaterial({ color: COR.mata, wireframe: true, metalness: 0.4, roughness: 0.4 }),
-    );
-    const miolo = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.6, 0.41, 0.55, 14, 1, true),
-      new THREE.MeshStandardMaterial({ color: COR.floresta, side: THREE.DoubleSide, transparent: true, opacity: 0.45, roughness: 0.8 }),
-    );
-    const fundo = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.02, 14), material(COR.floresta));
+    const fundo = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.025, segmentos), matCestaSolida);
     fundo.position.y = -0.28;
-    const borda = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.035, 8, 28), matLateral);
+    const borda = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.032, 12, segmentos), matBorda);
     borda.rotation.x = Math.PI / 2;
     borda.position.y = 0.28;
-    const alca = new THREE.Mesh(new THREE.TorusGeometry(0.6, 0.028, 8, 24, Math.PI), matLateral);
-    alca.position.y = 0.28;
-    g.add(miolo, trama, fundo, borda, alca);
+    g.add(parede(0), parede(0.018), fundo, borda);
+    // Duas alças, abertas para os lados, para não esconder o que cai na cesta.
+    [1, -1].forEach((lado) => {
+      const alca = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.024, 10, 32, Math.PI), matCestaSolida);
+      alca.position.set(0, 0.28, lado * 0.3);
+      alca.rotation.x = lado * 0.5;
+      g.add(alca);
+    });
     return g;
   }
 
@@ -212,13 +237,21 @@ async function iniciar() {
   cupom.add(papel, feixe);
   cena.add(cestaHero, cestaResultado, moedaGrande, radar, cupom);
 
-  function ancorar(obj, seletor, escala) {
+  // Com `grudar`, o objeto para logo abaixo da barra do topo até o palco inteiro passar.
+  function ancorar(obj, seletor, escala, grudar) {
     const alvo = document.querySelector(seletor);
     const caixa = alvo?.offsetParent ? alvo.getBoundingClientRect() : null;
-    obj.visible = !!caixa && caixa.height > 0 && caixa.bottom > -120 && caixa.top < innerHeight + 120;
+    if (!caixa || !caixa.height) { obj.visible = false; return; }
+    let topo = caixa.top;
+    if (grudar) {
+      const teto = document.querySelector(".barra-topo")?.getBoundingClientRect().bottom ?? 0;
+      const fim = alvo.closest(".hero").getBoundingClientRect().bottom;
+      topo = Math.min(Math.max(topo, teto + 12), fim - caixa.height);
+    }
+    obj.visible = topo + caixa.height > -120 && topo < innerHeight + 120;
     if (!obj.visible) return;
     obj.position.x = ((caixa.left + caixa.width / 2) / innerWidth - 0.5) * larguraMundo;
-    obj.position.y = -((caixa.top + caixa.height / 2) / innerHeight - 0.5) * alturaMundo;
+    obj.position.y = -((topo + caixa.height / 2) / innerHeight - 0.5) * alturaMundo;
     // A menor medida do palco manda, para o objeto nunca passar da largura da tela.
     const medida = Math.min(caixa.height, caixa.width * 0.72);
     obj.scale.setScalar((medida / innerHeight) * alturaMundo * escala);
@@ -319,16 +352,17 @@ async function iniciar() {
     camera.position.y += (-mouseY * 0.5 - camera.position.y) * 0.04;
     camera.lookAt(0, 0, 0);
 
-    ancorar(cestaHero, aba === "inicio" ? "#ancora-cesta-hero" : "#nada", 0.95);
+    ancorar(cestaHero, aba === "inicio" ? "#ancora-cesta-hero" : "#nada", 0.95, true);
     ancorar(cestaResultado, aba === "cesta" ? "#palco-cesta" : "#nada", 0.8);
     ancorar(radar, aba === "perto" ? "#palco-perto" : "#nada", 0.62);
     ancorar(cupom, aba === "cupom" ? "#palco-cupom" : "#nada", 0.62);
     ancorar(moedaGrande, aba === "precos" ? "#palco-precos" : "#nada", 0.72);
 
-    cestaHero.rotation.y = tempo * 0.35;
-    cestaHero.rotation.x = 0.3;
-    cestaResultado.rotation.y = tempo * 0.25;
-    cestaResultado.rotation.x = 0.28;
+    // A cesta balança sem dar a volta, com a boca sempre para a câmera.
+    cestaHero.rotation.y = Math.sin(tempo * 0.5) * 0.2;
+    cestaHero.rotation.x = 0.34;
+    cestaResultado.rotation.y = Math.sin(tempo * 0.4) * 0.25;
+    cestaResultado.rotation.x = 0.34;
     moedaGrande.rotation.set(Math.PI / 2 + Math.sin(tempo) * 0.12, 0, tempo * 1.1);
     varredura.rotation.z = -tempo * 1.2;
     pinos.children.forEach((pino, i) => { pino.position.z = 0.11 + Math.abs(Math.sin(tempo * 1.5 + i)) * 0.06; });
