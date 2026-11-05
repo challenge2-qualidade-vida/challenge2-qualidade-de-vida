@@ -257,12 +257,16 @@ def test_efeitos_ficam_no_site_e_vao_comprimidos(cliente):
         assert cliente.get("/" + arquivo).status_code == 200
 
 
-def test_mia_e_uma_imagem_animada_pelo_gatos_js(cliente):
+def test_gatos_sao_imagens_animadas_pelo_gatos_js(cliente):
     pagina = cliente.get("/").text
     assert 'src="img/gatos3d/mia.webp" data-gato="mia"' in pagina
     assert "gatos.js" in pagina
-    for arquivo in ("gatos.js", "img/gatos3d/mia.webp"):
-        assert cliente.get("/" + arquivo).status_code == 200
+    medidas = cliente.get("/gatos.js").text
+    for gato in ("mia", "cifrao", "miauricio", "recibaldo"):
+        assert f'src="img/{gato}.webp" data-gato="{gato}"' in pagina
+        assert f"{gato}: {{" in medidas
+        assert cliente.get(f"/img/{gato}.webp").status_code == 200
+    assert cliente.get("/img/gatos3d/mia.webp").status_code == 200
 
 
 def test_site_nao_baixa_o_3d_de_cara(cliente):

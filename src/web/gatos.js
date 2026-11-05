@@ -17,6 +17,38 @@
       olhoE: [309, 361], olhoD: [581, 373], olhoRaio: [71, 59],
       peito: [430, 730], peitoRaio: [270, 210],
     },
+    cifrao: {
+      corPelo: [0.1, 0.1, 0.12],
+      origem: [40, 0], tamanho: [816, 985],
+      cabeca: [450, 340], raio: [310, 280],
+      area: [450, 270], areaRaio: [440, 320],
+      focinho: [470, 450], focinhoRaio: [130, 85],
+      orelhaE: [195, 190], orelhaD: [665, 160], orelhaRaio: [95, 130],
+      olhoE: [344, 368], olhoD: [576, 347], olhoRaio: [58, 47],
+      peito: [450, 760], peitoRaio: [300, 190],
+    },
+    // De óculos escuros: só a cabeça acompanha o cursor.
+    miauricio: {
+      semOlhos: true,
+      corPelo: [0.07, 0.07, 0.08],
+      origem: [55, 0], tamanho: [825, 985],
+      cabeca: [445, 340], raio: [320, 270],
+      area: [445, 280], areaRaio: [430, 310],
+      focinho: [440, 470], focinhoRaio: [140, 80],
+      orelhaE: [190, 190], orelhaD: [720, 170], orelhaRaio: [100, 130],
+      olhoE: [305, 385], olhoD: [555, 380], olhoRaio: [80, 75],
+      peito: [470, 740], peitoRaio: [240, 170],
+    },
+    recibaldo: {
+      corPelo: [0.07, 0.07, 0.08],
+      origem: [80, 40], tamanho: [816, 945],
+      cabeca: [430, 370], raio: [310, 270],
+      area: [430, 320], areaRaio: [430, 300],
+      focinho: [428, 510], focinhoRaio: [130, 85],
+      orelhaE: [215, 190], orelhaD: [715, 230], orelhaRaio: [100, 120],
+      olhoE: [318, 408], olhoD: [562, 423], olhoRaio: [61, 51],
+      peito: [440, 760], peitoRaio: [230, 160],
+    },
   };
 
   const VERTICES = `#version 300 es
@@ -42,7 +74,7 @@
     // Empurra o miolo do olho e deixa a borda parada, como um globo girando na órbita.
     vec2 globo(vec2 p, vec2 c) {
       vec2 e = (p - c) / olhoRaio;
-      return p - forcaOlho * olhar * vec2(20.0, 13.0) * max(0.0, 1.0 - dot(e, e));
+      return p - forcaOlho * olhar * olhoRaio * vec2(0.24, 0.18) * max(0.0, 1.0 - dot(e, e));
     }
 
     // A pálpebra desce na cor do pelo e termina em um vinco escuro.
@@ -64,7 +96,7 @@
       z += 0.45 * sino(p, focinho, focinhoRaio);
       z -= 0.5 * (sino(p, orelhaE, orelhaRaio) + sino(p, orelhaD, orelhaRaio));
       float peso = 1.0 - smoothstep(1.0, 1.3, length((p - area) / areaRaio));
-      p -= (olhar * vec2(1.0, 0.8) * (50.0 * z + 14.0) + vec2(0.0, -3.5 * respiro)) * peso;
+      p -= (olhar * vec2(1.0, 0.65) * (50.0 * z + 14.0) + vec2(0.0, -3.5 * respiro)) * peso;
 
       vec2 olho = globo(globo(p, olhoE), olhoD);
       vec4 base = texture(imagem, (olho - origem) / tamanho);
