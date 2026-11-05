@@ -1,6 +1,6 @@
 # Tópico 25 — Gatos em 3D e cores novas
 
-**Status:** ✅ os quatro gatos concluídos e aprovados pelo Guilherme (a Mia em 03/11/2026); falta testar em celular real
+**Status:** 🟡 os quatro gatos no site; a Mia foi aprovada pelo Guilherme, os outros três aguardam a avaliação dele; falta testar em celular real
 
 O pedido foi trocar os gatos por personagens em 3D, com pelo e visual de filme de animação, que respiram e olham para o cursor, mexendo cabeça e olhos, no estilo de [pawzo.netlify.app](https://pawzo.netlify.app/). As cores do site também passaram a ser as dessa página. A cesta com as moedas virando comida (tópico 24) continua igual.
 
