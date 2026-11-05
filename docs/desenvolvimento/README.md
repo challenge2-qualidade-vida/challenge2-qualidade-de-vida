@@ -37,6 +37,8 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 24 | Visual com 3D e animações | Moedas que viram comida, cesta 3D com os alimentos calculados, radar, cupom e opção de desligar | Three.js, GSAP e Lenis | ✅ Feito (falta testar em celular real) | [24](24-visual-3d.md) |
 | 25 | Gatos em 3D e cores novas | Os quatro gatos com pelo, respirando, piscando e olhando para o cursor; paleta mostarda e creme | FLUX.1 schnell, mflux, rembg, WebGL 2 | 🟡 No site, aguardando avaliação dos três gatos novos e teste em celular real | [25](25-gatos-3d.md) |
 
+A lista de tudo o que o site usa (linguagens, bibliotecas, plugins e ferramentas) está em [frontend.md](../frontend.md).
+
 A ordem segue o roadmap das semanas: tópicos 1–5 formam o núcleo do app (semanas 1–2), 6–8 cobrem RAG e o experimento (semanas 2–3), 9 os agentes (semana 4), 10 a multimodalidade (semana 5) e 11–12 a integração, os testes e a entrega (semanas 6–7).
 
 ## Como rodar
