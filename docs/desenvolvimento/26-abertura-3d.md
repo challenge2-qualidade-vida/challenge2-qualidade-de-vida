@@ -1,0 +1,97 @@
+# Tópico 26 — Abertura 3D refeita
+
+**Status:** ✅ concluído em 05/11/2026; falta testar em celular real
+
+O Guilherme trouxe um briefing de design: moedas genéricas com "$", comida facetada, cesta de arame escondida atrás da gata e animação sem ligação com o resto da página. A ideia central foi mantida: **cada real vira comida de verdade**.
+
+## O que mudou
+
+| Parte | Antes | Agora |
+|-------|-------|-------|
+| Cesta | Cone de arame atrás da gata | Cestinha de mercado com parede vazada, borda dourada e duas alças, ao lado da gata |
+| Moedas | 80 iguais, com "$", passando pelo título | 32 (14 em aparelho fraco), em três tipos, nunca atrás do título, do texto ou do botão |
+| Comida | Formas geométricas facetadas | 28 imagens no estilo dos gatos |
+| História | A moeda sumia ao entrar na cesta | A moeda vira comida, a comida cai, a cesta balança e o anel de nutrição pulsa |
+
+## Moedas
+
+Inspiradas nas moedas do real, sem copiar o desenho oficial:
+
+| Tipo | Proporção | Aparência |
+|------|-----------|-----------|
+| Bimetálica | 50% | Miolo prateado, anel dourado, serrilha e "R$" |
+| Dourada | 30% | Serrilha e "R$" |
+| Acobreada | 20% | Menor, borda lisa e patinha de gato |
+
+Tudo é gerado por código em `cena3d.js`: o relevo é pintado em um canvas e convertido em mapa de normais, e o campo é mais fosco que o relevo. Faixas de luz no ambiente fazem o reflexo deslizar quando a moeda gira.
+
+## Alimentos
+
+O briefing pedia para testar primeiro as imagens de `img/alimentos`, e depois modelos gratuitos como o Kenney Food Kit. As duas opções foram descartadas:
+
+- **Fotos do projeto:** são quadradas, com 240 px e fundo, então cairiam como quadradinhos.
+- **Modelos do Kenney e similares:** são facetados, justamente o problema apontado pelo briefing. Não chegaram a ser baixados.
+
+Os 28 alimentos foram gerados com o FLUX.1 schnell no Mac, no mesmo estilo dos gatos, cerca de 3 minutos cada. O `isnet-general-use`, usado nos gatos, cortou uma banana porque o fundo também era amarelo, então os alimentos usam o `birefnet-general-lite`.
+
+Em `src/web/img/comida.webp`, cada alimento tem 192 × 192 px, e o conjunto pesa 193 KB. Eles também aparecem na cesta da tela Cesta, com os itens calculados.
+
+```bash
+HF_HOME=hf flux/bin/mflux-generate --model dhairyashil/FLUX.1-schnell-mflux-4bit --base-model schnell \
+  --steps 4 --seed 7 --width 512 --height 512 --output comida/<id>.png --prompt "<alimento>, <base>"
+
+# Em um ambiente com rembg: remove(imagem, session=new_session("birefnet-general-lite")), salvo em comida/<id>_recorte.png
+.venv/bin/python experimentos/gatos3d/comida.py comida
+```
+
+Descrição base:
+
+> cute 3D animated movie style food icon, soft rounded shapes, Pixar Disney style render, soft studio lighting, subsurface scattering, glossy highlights, warm saturated colors, single centered object fully visible with space around, no text, no letters, no label, no logo, plain solid light cream background, no shadow
+
+A ordem de `ORDEM` em `comida.py` precisa ser igual à de `ATLAS` em `cena3d.js`. Um teste confere isso.
+
+## Coreografia
+
+| Etapa | Duração | O que acontece |
+|-------|---------|----------------|
+| Antecipação | 150 ms | A moeda acelera o giro e encolhe 10% |
+| Transformação | 250 ms | A moeda some, sobem faíscas e o alimento surge com um salto |
+| Queda | 550 ms | O alimento faz um arco até a vaga na cesta, esticando na queda |
+| Impacto | 220 ms | O alimento amassa e quica, e a cesta balança |
+| Recompensa | 620 ms | Uma faísca na cor do grupo voa até o anel e ele pulsa, se estiver na tela |
+
+- **Rolagem:** a primeira comida sai em menos de 1 s, depois uma a cada 1,7 s, ou mais rápido conforme a rolagem. A cesta enche até o fim da abertura.
+- **Cesta cheia:** a Mia dá um pulinho. Se a pessoa continuar no topo da página, cinco alimentos saem depois de 6 s e a história recomeça.
+- **Mia:** ela pisca quando um alimento cai.
+- **Anéis:** Energia (dourado), Proteína (terracota), Fibra (marrom) e Frutas e hortaliças (verde).
+
+## Diferenças em relação ao briefing
+
+| O briefing pedia | O que foi feito | Por quê |
+|------------------|-----------------|---------|
+| Cesta verde-floresta `#463708` | Verde `#2f6b3f` | `#463708` é o mostarda escuro da paleta, não verde, e sumiria no fundo |
+| Coreografia com GSAP | Código próprio no laço da cena e Web Animations | Os objetos já são atualizados a cada quadro, e o GSAP não carrega para quem pede menos movimento |
+| Serrilha por mapa de normais | Serrilha na geometria | Mais simples com o mesmo efeito. Em aparelho fraco, não há serrilha |
+| `InstancedMesh` por tipo de alimento | Um `Sprite` por alimento | No máximo 18 alimentos na tela, e cada um é uma imagem |
+| Pausar fora da abertura | Pausa com a aba oculta; a coreografia para fora da abertura | As moedas das beiradas continuam em todas as telas, como antes |
+| Modelos Kenney, gltf-transform | Não usados | Ver "Alimentos" |
+
+## Como foi testado
+
+| Teste | Resultado |
+|-------|-----------|
+| Testes automáticos | 224 passando, incluindo o atlas de alimentos |
+| Velocidade, em computador a 1470 px | 62 quadros por segundo |
+| Título, texto e botão | Sem moedas por trás nas capturas |
+| Cesta ao rolar | Fica abaixo da barra do topo, sem cortes |
+| Enchimento com a página rolada | 14 alimentos, 13 faíscas nas 4 cores, e a Mia reagiu à cesta cheia |
+| Tela Cesta | Alimentos calculados caem na cesta nova |
+| Largura de 390 px, em um quadro dentro da página | Sem rolagem lateral |
+| Tamanho do 3D | Three.js com 144 KB comprimido, mais 193 KB de comida |
+
+## Limitações
+
+- **Celular real:** não foi testado, e a queda de qualidade em aparelhos fracos segue sendo a principal dúvida.
+- **Menos movimento:** o modo que mostra a cesta cheia e parada foi escrito, mas não foi testado, porque só aparece com "Ligado" nas configurações e com o pedido de menos movimento no sistema.
+- **Movimento a olho:** os testes conferem capturas e contagens. A suavidade precisa ser avaliada por uma pessoa.
+- **Faísca:** com a página no topo, o cartão de anéis costuma estar fora da tela, e por isso nem toda comida gera faísca.

@@ -1,6 +1,6 @@
 # Tudo o que foi usado no front da EconoMIA
 
-Situação em 05/11/2026, na branch `develop_gui`. O como e o porquê de cada parte estão nos tópicos de [docs/desenvolvimento/](desenvolvimento/README.md).
+Situação em 05/11/2026, na branch `develop_gui`, incluindo o [tópico 26](desenvolvimento/26-abertura-3d.md). O como e o porquê de cada parte estão nos tópicos de [docs/desenvolvimento/](desenvolvimento/README.md).
 
 **Resumo:** o site é feito em HTML, CSS e JavaScript puros, sem framework e sem etapa de build. O FastAPI entrega os arquivos de `src/web/` e responde à API. Todas as ferramentas usadas são gratuitas.
 
@@ -53,6 +53,7 @@ Ficam em `src/web/vendor/`, então o site não depende de outro servidor para us
 | Recurso | Para quê |
 |---------|----------|
 | WebGL | 3D do Three.js |
+| Web Animations (`element.animate`) | Faísca que voa até o anel de nutrição |
 | WebGL 2 e Canvas 2D | Movimento dos gatos, com um só contexto compartilhado |
 | Service Worker e Cache | Abrir sem internet |
 | Web App Manifest | Instalar como app |
@@ -94,12 +95,12 @@ Nada disto roda no site. São ferramentas usadas durante o desenvolvimento.
 | [FLUX.1 schnell](https://huggingface.co/black-forest-labs/FLUX.1-schnell) | Versão de 4 bits no Mac | Gerar as imagens dos gatos | Apache 2.0 |
 | [Hugging Face Spaces](https://huggingface.co/spaces/black-forest-labs/FLUX.1-schnell) | Não se aplica | Rodar o FLUX online, sem conta (Mia) | Não se aplica |
 | [mflux](https://github.com/mflux-community/mflux) e MLX | 0.24.0 e 0.32.4 | Rodar o FLUX no Mac (Cifrão, Miau-ricio, Recibaldo) | MIT |
-| [rembg](https://github.com/danielgatis/rembg) e ONNX Runtime | 2.0.86 e 1.31.1 | Máscara inicial do recorte, com o modelo `isnet-general-use` | MIT |
+| [rembg](https://github.com/danielgatis/rembg) e ONNX Runtime | 2.0.86 e 1.31.1 | Máscara do recorte, com os modelos `isnet-general-use` (gatos) e `birefnet-general-lite` (alimentos) | MIT |
 | [uv](https://docs.astral.sh/uv/) | Não registrada | Ambiente temporário em Python 3.12 para o mflux | MIT ou Apache 2.0 |
 | [API da Wikimedia Commons](https://commons.wikimedia.org) | Não se aplica | Fotos de alimentos, com créditos em [creditos-fotos-alimentos.md](marca/creditos-fotos-alimentos.md) | Varia por foto |
 | Claude Code | Não se aplica | Escrever o código, os testes e a documentação | Não se aplica |
 
-Scripts em `experimentos/gatos3d/`: `gerar_imagem.py`, `recorte.py`, `turma.py` e `logo.py`.
+Scripts em `experimentos/gatos3d/`: `gerar_imagem.py`, `recorte.py`, `turma.py`, `logo.py` e `comida.py`.
 
 ## Testado e deixado de fora
 
@@ -107,6 +108,7 @@ Scripts em `experimentos/gatos3d/`: `gerar_imagem.py`, `recorte.py`, `turma.py` 
 |------------|-----------------|
 | [Blender](https://www.blender.org) 5.2.3, com Cycles | Primeira versão da Mia. O resultado foi reprovado e os scripts saíram do projeto, mas continuam no histórico do git |
 | [Pollinations](https://pollinations.ai) | Gerador de imagens sem conta. Testado uma vez; veio com marca d'água e qualidade fraca |
+| Fotos de `img/alimentos` na cena 3D | Avaliadas para a chuva de comida; são quadradas e têm fundo, então continuam só nas listas |
 
 ## Instalados, sem nada no site
 
@@ -129,11 +131,12 @@ Só serviram de inspiração. Nenhuma imagem delas está no projeto.
 | Imagem | Origem |
 |--------|--------|
 | Gatos, turma, logo e ícones | Gerados por IA com FLUX.1 schnell e montados pelos scripts acima |
+| Alimentos da cena 3D (`img/comida.webp`) | Gerados por IA com FLUX.1 schnell, recortados com o modelo `birefnet-general-lite` |
 | Nome "EconoMIA" no logo | Arte original, em `src/web/img/logo-nome.png` |
 | Desenhos verdes antigos | Guardados em `docs/marca/` |
-| Alimentos | Fotos da Wikimedia Commons |
+| Alimentos nas listas | Fotos da Wikimedia Commons |
 | Ícones da navegação | SVGs escritos à mão no HTML |
-| Moedas, cesta, comida, radar e cupom em 3D | Criados por código em `cena3d.js`, sem arquivos de modelo |
+| Moedas, cesta, radar e cupom em 3D | Criados por código em `cena3d.js`, sem arquivos de modelo |
 
 ## Decisões que valem para o front todo
 
