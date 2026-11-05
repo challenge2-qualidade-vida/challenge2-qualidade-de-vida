@@ -5,3 +5,4 @@ test-results/
 playwright-report/
 testes/visual/capturas-atuais/
 testes/visual/capturas/
+*.tsbuildinfo
