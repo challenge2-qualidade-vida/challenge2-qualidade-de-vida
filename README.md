@@ -8,7 +8,7 @@ Residência em IA Brasília (TIC em Trilhas / Mentes em Modo IA em Ação) — T
 
 Projetar e desenvolver uma solução baseada em IA capaz de apoiar a tomada de decisão em um contexto relacionado à qualidade de vida.
 
-**Essential Question do grupo:** _a definir na semana 1_
+**Essential Question do grupo:** *a definir na semana 1*
 
 ## Equipe
 
@@ -22,7 +22,7 @@ Projetar e desenvolver uma solução baseada em IA capaz de apoiar a tomada de d
 
 ## Site
 
-Documentação publicada em **https://dida0982.github.io/challenge2-qualidade-de-vida/** (gerada a partir de `docs/` com Astro + Starlight). Veja [site/README.md](site/README.md).
+Documentação publicada em **[https://dida0982.github.io/challenge2-qualidade-de-vida/](https://dida0982.github.io/challenge2-qualidade-de-vida/)** (gerada a partir de `docs/` com Astro + Starlight). Veja [site/README.md](site/README.md).
 
 ## Restrições do desafio
 
@@ -46,7 +46,7 @@ Documentação publicada em **https://dida0982.github.io/challenge2-qualidade-de
 
 ## Estrutura do repositório
 
-```
+```text
 docs/                    documentação e entregáveis de cada semana
   arquitetura/           modelo de domínio, visão geral da arquitetura, fluxos e contratos
   produto/               escopo do MVP e priorização
@@ -62,7 +62,75 @@ site/                    site de documentação (Astro + Starlight), publicado n
 tests/                   testes de unidade e passos BDD
 ```
 
-A arquitetura e as pastas previstas (`prompts/`, `migracoes/`, `frontend/`) estão na [visão geral da arquitetura](docs/arquitetura/visao-geral.md). As pastas do código são criadas na #36.
+A arquitetura e as pastas previstas (`prompts/`, `migracoes/`, `frontend/`) estão na [visão geral da arquitetura](docs/arquitetura/visao-geral.md).
+
+## Estrutura do backend
+
+O backend do EconoMIA segue uma arquitetura de monólito modular, organizada por contextos de negócio.
+
+```text
+src/
+└── economia/
+    ├── compartilhado/
+    ├── planejamento/
+    │   ├── dominio/
+    │   ├── aplicacao/
+    │   └── infraestrutura/
+    ├── precos/
+    │   ├── dominio/
+    │   ├── aplicacao/
+    │   └── infraestrutura/
+    ├── receitas/
+    │   ├── dominio/
+    │   ├── aplicacao/
+    │   └── infraestrutura/
+    ├── leitura_documentos/
+    │   ├── dominio/
+    │   ├── aplicacao/
+    │   └── infraestrutura/
+    ├── verificacao/
+    │   ├── dominio/
+    │   ├── aplicacao/
+    │   └── infraestrutura/
+    ├── conversa/
+    │   ├── dominio/
+    │   ├── aplicacao/
+    │   └── infraestrutura/
+    ├── api/
+    └── worker/
+```
+
+Cada contexto de negócio possui três camadas:
+
+- `dominio`: regras e conceitos de negócio.
+- `aplicacao`: casos de uso e orquestração.
+- `infraestrutura`: integrações e detalhes técnicos.
+
+O diretório `compartilhado` reúne elementos utilizados por diferentes contextos. A API e o worker são pontos de entrada distintos que utilizam o mesmo código do backend.
+
+A camada `dominio` não deve importar componentes de infraestrutura, frameworks ou bibliotecas de LLM.
+
+## Gerenciamento de dependências
+
+O backend utiliza [Poetry](https://python-poetry.org/) para gerenciar dependências e ambientes virtuais.
+
+Para instalar as dependências:
+
+```bash
+poetry install
+```
+
+Para executar os testes:
+
+```bash
+poetry run pytest
+```
+
+Para verificar a qualidade do código:
+
+```bash
+poetry run ruff check .
+```
 
 ## Como trabalhar no repositório
 
