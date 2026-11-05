@@ -16,19 +16,19 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import geo, nfce
-from .agentes import Orquestrador
-from .cardapio import NOMES
-from .dados import carregar, preco_por_kg
-from .explicacao import explicar
-from .limites import limitador_do_ambiente
-from .llm import cliente_do_ambiente
-from .metas import DIAS_POR_PERIODO, NOMES_RESTRICOES, RESTRICOES
-from .otimizador import Cesta, Pedido
-from .planejador import planejar
-from .rag import BaseConhecimento
+from .. import geo, nfce
+from ..agentes import Orquestrador
+from ..cardapio import NOMES
+from ..dados import carregar, preco_por_kg
+from ..explicacao import explicar
+from ..limites import limitador_do_ambiente
+from ..llm import cliente_do_ambiente
+from ..metas import DIAS_POR_PERIODO, NOMES_RESTRICOES, RESTRICOES
+from ..otimizador import Cesta, Pedido
+from ..planejador import planejar
+from ..rag import BaseConhecimento
 
-PASTA_WEB = Path(__file__).resolve().parents[1] / "web"
+PASTA_WEB = Path(__file__).resolve().parents[2] / "web"
 
 app = FastAPI(title="EconoMIA", description="Cesta de compras econômica e equilibrada.", version="0.1.0")
 base = carregar()
@@ -190,7 +190,7 @@ def cesta(pedido: PedidoCesta):
 @app.get("/api/creditos")
 def creditos_imagens():
     """Autor e licença de cada foto de alimento (Wikimedia Commons). As licenças CC exigem crédito."""
-    arquivo = Path(__file__).resolve().parents[2] / "data" / "alimentos" / "imagens.json"
+    arquivo = Path(__file__).resolve().parents[3] / "data" / "alimentos" / "imagens.json"
     dados = json.loads(arquivo.read_text(encoding="utf-8")) if arquivo.exists() else {}
     return [
         {"alimento_id": k, "alimento": base.alimentos[k].nome if k in base.alimentos else k, **v}

@@ -38,6 +38,7 @@ Esta pasta registra **o que foi feito, como foi feito e como rodar** cada parte 
 | 25 | Gatos em 3D e cores novas | Os quatro gatos com pelo, respirando, piscando e olhando para o cursor; paleta mostarda e creme | FLUX.1 schnell, mflux, rembg, WebGL 2 | 🟡 No site, aguardando avaliação dos três gatos novos e teste em celular real | [25](25-gatos-3d.md) |
 | 26 | Abertura 3D refeita | Cestinha de mercado, moedas em três tipos, comida no estilo dos gatos e coreografia até os anéis de nutrição | Three.js, FLUX.1 schnell, birefnet | ✅ Feito (falta testar em celular real) | [26](26-abertura-3d.md) |
 | 27 | Frontend em React | O mesmo site, em React + Vite + TypeScript, com cliente gerado do OpenAPI, login, SSE e flags | React, Vite, openapi-fetch, Playwright | 🟡 Pronto para revisão | [27](27-frontend-react.md) |
+| 28 | Merge da `main` | Traz para a `develop_gui` as decisões, specs e o esqueleto do backend do grupo, sem mexer na `main` | git | ✅ Feito | [28](28-merge-da-main.md) |
 
 A lista de tudo o que o site usa (linguagens, bibliotecas, plugins e ferramentas) está em [frontend.md](../frontend.md).
 

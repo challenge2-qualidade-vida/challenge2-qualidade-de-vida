@@ -79,3 +79,13 @@ Deriva da Big Idea do desafio: empoderar pessoas com IA para compreender melhor,
 ## 7. Fontes confiáveis
 
 Lista completa em [FONTES.md](../../data/base-conhecimento/FONTES.md): Guia Alimentar (Ministério da Saúde), TACO (NEPA/Unicamp), IN 75/2020 (ANVISA), OMS, DIEESE/Conab, IBGE e Procon Anápolis.
+
+## 8. Equipe e papéis
+
+| Integrante | GitHub | Papel |
+|------------|--------|-------|
+| Guilherme Barros | [@dida0982](https://github.com/dida0982) | AI Engineering e frontend |
+| Paulo Vitor Gomes | [@gpaulovit](https://github.com/gpaulovit) | AI Engineering e LLMOps |
+| Isabel Azar | [@iAiBel](https://github.com/iAiBel) | Engenharia de dados e backend |
+| Pedro Lucas Dourado | [@pedrolucasdourado](https://github.com/pedrolucasdourado) | Arquiteto de LLMOps |
+| Mariah Gladys | [@necrophagial](https://github.com/necrophagial) | Scrum master e documentação |

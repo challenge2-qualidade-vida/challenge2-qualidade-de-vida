@@ -1,6 +1,7 @@
 # Segredos
 .env
 .env.*
+!.env.example
 *.key
 
 # Python
@@ -25,3 +26,8 @@ Thumbs.db
 
 # Preços enviados por usuários via NFC-e (gerado pelo app)
 data/precos/contribuicoes.json
+
+# Site (Astro)
+node_modules/
+site/dist/
+site/.astro/
