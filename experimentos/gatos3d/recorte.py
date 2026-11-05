@@ -15,6 +15,8 @@ from scipy import ndimage as nd
 # remendo: cobre uma parte com outra esticada, de (origem) para (destino).
 # incluir: polígonos que a máscara perdeu, como o recibo branco sobre o fundo claro.
 # soltos: elipses onde vale procurar pelo longe do corpo, como a ponta do rabo.
+# excluir: polígonos de sobras do fundo.
+# clarear: polígonos de pelo preto que devem ficar brancos, mantendo dobras e textura.
 # corte: retângulo final, com folga para a cabeça girar.
 GATOS = {
     "mia": {
@@ -35,6 +37,12 @@ GATOS = {
         # A imagem veio com cinco patas: a da frente, abaixo do braço com a lupa, virou barriga.
         "remendo": ((470, 770, 610, 880), (448, 770, 628, 975)),
         "patas": [(215, 870, 75, 80), (362, 923, 80, 42), (535, 902, 84, 50), (697, 880, 79, 68)],
+        # A mão que segura a lupa veio preta; as outras patas são brancas.
+        "clarear": [
+            [(688, 688), (710, 668), (730, 656), (762, 660), (782, 690), (795, 740), (770, 775), (735, 790), (712, 775), (695, 750), (684, 725), (682, 700)],
+            [(642, 690), (655, 666), (668, 668), (684, 692), (682, 716), (668, 716), (648, 705)],
+        ],
+        "excluir": [[(790, 735), (835, 735), (835, 803), (772, 803)]],
         "incluir": [[(722, 543), (830, 572), (748, 885), (647, 853)]],
         "soltos": [(815, 855, 85, 65)],
         "corte": (80, 40, 896, 985),
@@ -102,8 +110,24 @@ def main():
         alfa[canto] *= np.maximum(dentro_de(*g["corpo"]), patas)[canto]
     pes = yy > 905
     alfa[pes] *= patas[pes]
+    if "excluir" in g:
+        desenho = Image.new("L", img.size, 0)
+        for poligono in g["excluir"]:
+            ImageDraw.Draw(desenho).polygon(poligono, fill=255)
+        alfa[np.asarray(desenho) > 0] = 0
     alfa = nd.gaussian_filter(alfa, 0.5)
 
+    if "clarear" in g:
+        desenho = Image.new("L", img.size, 0)
+        for poligono in g["clarear"]:
+            ImageDraw.Draw(desenho).polygon(poligono, fill=255)
+        area = nd.gaussian_filter(nd.binary_dilation(np.asarray(desenho) > 0, iterations=6).astype(float), 1.5)
+        luz = frente.mean(axis=-1)
+        # Só o que é escuro muda: o recibo e o fundo atrás da mão ficam como estão.
+        area *= np.clip((0.55 - luz) / 0.2, 0, 1)
+        claro = 0.66 + 0.36 * np.clip(luz / 0.2, 0, 1) ** 0.7
+        branco = claro[..., None] * np.array([1.0, 0.98, 0.95])
+        frente = np.clip(frente * (1 - area[..., None]) + branco * area[..., None], 0, 1)
     final = Image.fromarray((np.dstack([frente, alfa]) * 255).round().astype("uint8"), "RGBA")
     if "moeda" in g:
         (dx, dy, dr), (cx, cy, r) = g["moeda"]
