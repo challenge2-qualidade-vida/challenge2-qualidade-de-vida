@@ -92,6 +92,7 @@ A ordem de `ORDEM` em `comida.py` precisa ser igual à de `ATLAS` em `cena3d.js`
 ## Limitações
 
 - **Celular real:** não foi testado, e a queda de qualidade em aparelhos fracos segue sendo a principal dúvida.
-- **Menos movimento:** o modo que mostra a cesta cheia e parada foi escrito, mas não foi testado, porque só aparece com "Ligado" nas configurações e com o pedido de menos movimento no sistema.
+- **Menos movimento:** quem pede menos movimento no sistema vê o 3D sem a chuva, com a cesta cheia e parada. Esse modo foi escrito, mas não foi testado.
+- **Aparelhos simples:** desde 05/11/2026 o 3D fica sempre ligado, então também é baixado com economia de dados, 2G e pouca memória. Se a cena ficar abaixo de 24 quadros por segundo, a resolução cai, mas ela não desliga.
 - **Movimento a olho:** os testes conferem capturas e contagens. A suavidade precisa ser avaliada por uma pessoa.
 - **Faísca:** com a página no topo, o cartão de anéis costuma estar fora da tela, e por isso nem toda comida gera faísca.

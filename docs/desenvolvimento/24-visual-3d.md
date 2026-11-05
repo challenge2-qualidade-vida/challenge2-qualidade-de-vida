@@ -30,6 +30,8 @@ O canvas fica fixo atrás do site, e cada objeto segue um "palco" do HTML (`#pal
 
 ## Cuidados com quem tem celular simples
 
+> **Atualização de 05/11/2026:** o 3D passou a ficar sempre ligado e a opção em Configurações saiu do site. Só fica sem 3D o navegador sem WebGL. Ver [tópico 26](26-abertura-3d.md).
+
 - **Quando o 3D fica desligado:** com economia de dados, internet 2G, 2 GB de memória ou menos, 2 núcleos ou menos, pedido de menos movimento ou sem WebGL. Nesses casos, o Three.js nem é baixado.
 - **Tamanho:** o Three.js foi reduzido de 2 MB para 550 KB, ou 137 KB comprimido. O servidor agora comprime os arquivos.
 - **Se ficar lento:** abaixo de 24 quadros por segundo, a resolução cai; se continuar, o 3D desliga sozinho.

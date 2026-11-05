@@ -141,7 +141,7 @@ Só serviram de inspiração. Nenhuma imagem delas está no projeto.
 ## Decisões que valem para o front todo
 
 - **Sem framework:** o site roda como está, sem instalar nem compilar nada. Por isso, bibliotecas feitas para React ficaram de fora.
-- **Aparelhos simples:** o 3D não é baixado com economia de dados, internet 2G, pouca memória, poucos núcleos, menos movimento pedido ou sem WebGL.
+- **3D sempre ligado:** só fica de fora o navegador sem WebGL. Em aparelho fraco, a cena tem menos moedas e menor resolução. Com menos movimento pedido no sistema, o 3D aparece sem a chuva.
 - **Privacidade:** a posição e as respostas do chat não entram no cache do site.
 
 As decisões completas estão em [decisoes.md](decisoes.md).
