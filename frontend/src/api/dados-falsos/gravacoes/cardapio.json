@@ -1,0 +1,209 @@
+{
+ "resposta": "Dia 1\n• Café da manhã: Fruta da cesta (laranja). Lave e sirva. Prefira primeiro a fruta mais madura.\n• Almoço: Arroz, feijão e frango (arroz, feijão carioca, coxa de frango, repolho, óleo). Cozinhe o feijão na pressão até ficar bem macio. Asse ou refogue o frango até não restar parte rosada.\n• Jantar: Macarrão com feijão (macarrão, feijão carioca, abóbora, óleo). Cozinhe os grãos na pressão até ficarem bem macios, junte o macarrão ao caldo e deixe cozinhar até o ponto.\nDia 2\n• Café da manhã: Fruta da cesta (laranja). Lave e sirva. Prefira primeiro a fruta mais madura.\n• Almoço: Tutu de feijão (feijão carioca, farinha de mandioca, arroz, repolho, óleo). Cozinhe o feijão na pressão até ficar bem macio, amasse no caldo quente e engrosse aos poucos com a farinha.\n• Jantar: Frango assado com legumes (coxa de frango, abóbora, arroz, óleo). Asse tudo numa assadeira só, temperado com sal, até o frango dourar e os legumes ficarem macios.\nDia 3\n• Café da manhã: Fruta da cesta (laranja). Lave e sirva. Prefira primeiro a fruta mais madura.\n• Almoço: Frango refogado com repolho (coxa de frango, repolho, arroz, óleo). Refogue o frango em pedaços até cozinhar por inteiro e junte o repolho fatiado nos últimos 5 minutos.\n• Jantar: Macarrão com frango desfiado (macarrão, coxa de frango, óleo). Cozinhe o frango em água até soltar do osso, desfie e refogue. Misture ao macarrão cozido.",
+ "modo": "sem_llm",
+ "ferramentas_usadas": [],
+ "fontes": [
+  {
+   "titulo": "Aproveitamento de alimentos e receitas simples — Sobras de feijão e arroz",
+   "fonte": "receitas e dicas reunidas pelo grupo, com base nos alimentos da cesta. Texto do grupo, sem fonte externa.",
+   "texto": "Feijão que sobrou vira tutu (feijão engrossado com farinha de mandioca) ou feijão tropeiro. Arroz que sobrou vira bolinho de arroz (arroz, ovo, farinha e temperos) ou arroz de forno com legumes."
+  },
+  {
+   "titulo": "Aproveitamento de alimentos e receitas simples — Receita: arroz, feijão e ovo",
+   "fonte": "receitas e dicas reunidas pelo grupo, com base nos alimentos da cesta. Texto do grupo, sem fonte externa.",
+   "texto": "Refeição completa e barata: arroz branco, feijão carioca temperado com cebola e um ovo cozido ou mexido por pessoa, com salada de repolho e tomate. Ingredientes: arroz, feijão, ovo, cebola, repolho, tomate, óleo e sal."
+  },
+  {
+   "titulo": "Aproveitamento de alimentos e receitas simples — Ordem de uso dos alimentos",
+   "fonte": "receitas e dicas reunidas pelo grupo, com base nos alimentos da cesta. Texto do grupo, sem fonte externa.",
+   "texto": "Use primeiro o que estraga mais rápido: folhas (repolho, alface) e frutas maduras (banana) nos primeiros dias; tomate, cenoura e abóbora em seguida; batata, cebola, mandioca, laranja e maçã duram mais. Grãos secos (arroz, feijão, lentilha), farinha, macarrão e óleo duram meses guardados em local seco e fechado."
+  }
+ ],
+ "aviso": null,
+ "dados": {
+  "cardapio": {
+   "dias": [
+    [
+     {
+      "tipo": "cafe",
+      "titulo": "Café da manhã",
+      "receita": "fruta",
+      "ingredientes": [
+       "laranja"
+      ],
+      "alimentos": [
+       "laranja"
+      ],
+      "preparo": "Lave e sirva. Prefira primeiro a fruta mais madura."
+     },
+     {
+      "tipo": "almoco",
+      "titulo": "Almoço",
+      "receita": "arroz_feijao_frango",
+      "ingredientes": [
+       "arroz",
+       "feijão carioca",
+       "coxa de frango",
+       "repolho",
+       "óleo"
+      ],
+      "alimentos": [
+       "arroz",
+       "feijao_carioca",
+       "frango_coxa",
+       "repolho",
+       "oleo_soja"
+      ],
+      "preparo": "Cozinhe o feijão na pressão até ficar bem macio. Asse ou refogue o frango até não restar parte rosada."
+     },
+     {
+      "tipo": "jantar",
+      "titulo": "Jantar",
+      "receita": "macarrao_feijao",
+      "ingredientes": [
+       "macarrão",
+       "feijão carioca",
+       "abóbora",
+       "óleo"
+      ],
+      "alimentos": [
+       "macarrao",
+       "feijao_carioca",
+       "abobora",
+       "oleo_soja"
+      ],
+      "preparo": "Cozinhe os grãos na pressão até ficarem bem macios, junte o macarrão ao caldo e deixe cozinhar até o ponto."
+     }
+    ],
+    [
+     {
+      "tipo": "cafe",
+      "titulo": "Café da manhã",
+      "receita": "fruta",
+      "ingredientes": [
+       "laranja"
+      ],
+      "alimentos": [
+       "laranja"
+      ],
+      "preparo": "Lave e sirva. Prefira primeiro a fruta mais madura."
+     },
+     {
+      "tipo": "almoco",
+      "titulo": "Almoço",
+      "receita": "tutu",
+      "ingredientes": [
+       "feijão carioca",
+       "farinha de mandioca",
+       "arroz",
+       "repolho",
+       "óleo"
+      ],
+      "alimentos": [
+       "feijao_carioca",
+       "farinha_mandioca",
+       "arroz",
+       "repolho",
+       "oleo_soja"
+      ],
+      "preparo": "Cozinhe o feijão na pressão até ficar bem macio, amasse no caldo quente e engrosse aos poucos com a farinha."
+     },
+     {
+      "tipo": "jantar",
+      "titulo": "Jantar",
+      "receita": "frango_legumes",
+      "ingredientes": [
+       "coxa de frango",
+       "abóbora",
+       "arroz",
+       "óleo"
+      ],
+      "alimentos": [
+       "frango_coxa",
+       "abobora",
+       "arroz",
+       "oleo_soja"
+      ],
+      "preparo": "Asse tudo numa assadeira só, temperado com sal, até o frango dourar e os legumes ficarem macios."
+     }
+    ],
+    [
+     {
+      "tipo": "cafe",
+      "titulo": "Café da manhã",
+      "receita": "fruta",
+      "ingredientes": [
+       "laranja"
+      ],
+      "alimentos": [
+       "laranja"
+      ],
+      "preparo": "Lave e sirva. Prefira primeiro a fruta mais madura."
+     },
+     {
+      "tipo": "almoco",
+      "titulo": "Almoço",
+      "receita": "frango_repolho",
+      "ingredientes": [
+       "coxa de frango",
+       "repolho",
+       "arroz",
+       "óleo"
+      ],
+      "alimentos": [
+       "frango_coxa",
+       "repolho",
+       "arroz",
+       "oleo_soja"
+      ],
+      "preparo": "Refogue o frango em pedaços até cozinhar por inteiro e junte o repolho fatiado nos últimos 5 minutos."
+     },
+     {
+      "tipo": "jantar",
+      "titulo": "Jantar",
+      "receita": "macarrao_frango",
+      "ingredientes": [
+       "macarrão",
+       "coxa de frango",
+       "óleo"
+      ],
+      "alimentos": [
+       "macarrao",
+       "frango_coxa",
+       "oleo_soja"
+      ],
+      "preparo": "Cozinhe o frango em água até soltar do osso, desfie e refogue. Misture ao macarrão cozido."
+     }
+    ]
+   ],
+   "nao_usados": [
+    "açúcar",
+    "leite"
+   ]
+  },
+  "nomes_receitas": {
+   "fruta": "Fruta da cesta",
+   "arroz_feijao_frango": "Arroz, feijão e frango",
+   "macarrao_feijao": "Macarrão com feijão",
+   "tutu": "Tutu de feijão",
+   "frango_legumes": "Frango assado com legumes",
+   "frango_repolho": "Frango refogado com repolho",
+   "macarrao_frango": "Macarrão com frango desfiado"
+  }
+ },
+ "etapas": [
+  {
+   "agente": "Orquestrador",
+   "acao": "pediu um cardápio ao Miau-ricio"
+  },
+  {
+   "agente": "Miau-ricio",
+   "acao": "montou o cardápio só com os alimentos da cesta"
+  },
+  {
+   "agente": "Mia",
+   "acao": "verificou a resposta",
+   "problemas": []
+  }
+ ]
+}

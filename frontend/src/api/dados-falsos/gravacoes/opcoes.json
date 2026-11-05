@@ -1,0 +1,180 @@
+{
+ "mercados": [
+  {
+   "id": "A",
+   "nome": "Mercado A",
+   "regiao": "Asa Norte (exemplo)",
+   "lat": -15.7617,
+   "lon": -47.8825
+  },
+  {
+   "id": "B",
+   "nome": "Mercado B",
+   "regiao": "Asa Sul (exemplo)",
+   "lat": -15.816,
+   "lon": -47.903
+  },
+  {
+   "id": "C",
+   "nome": "Mercado C",
+   "regiao": "Guará (exemplo)",
+   "lat": -15.823,
+   "lon": -47.979
+  }
+ ],
+ "restricoes": [
+  {
+   "id": "sem_porco",
+   "nome": "Sem carne de porco"
+  },
+  {
+   "id": "sem_carne_vermelha",
+   "nome": "Sem carne vermelha"
+  },
+  {
+   "id": "vegetariano",
+   "nome": "Vegetariano"
+  },
+  {
+   "id": "sem_lactose",
+   "nome": "Sem lactose"
+  },
+  {
+   "id": "sem_gluten",
+   "nome": "Sem glúten"
+  },
+  {
+   "id": "sem_ovo",
+   "nome": "Sem ovo"
+  }
+ ],
+ "alimentos": [
+  {
+   "id": "abobora",
+   "nome": "abóbora"
+  },
+  {
+   "id": "arroz",
+   "nome": "arroz"
+  },
+  {
+   "id": "aveia",
+   "nome": "aveia"
+  },
+  {
+   "id": "acucar",
+   "nome": "açúcar"
+  },
+  {
+   "id": "banana",
+   "nome": "banana"
+  },
+  {
+   "id": "batata",
+   "nome": "batata"
+  },
+  {
+   "id": "cebola",
+   "nome": "cebola"
+  },
+  {
+   "id": "cenoura",
+   "nome": "cenoura"
+  },
+  {
+   "id": "frango_coxa",
+   "nome": "coxa de frango"
+  },
+  {
+   "id": "farinha_mandioca",
+   "nome": "farinha de mandioca"
+  },
+  {
+   "id": "feijao_carioca",
+   "nome": "feijão carioca"
+  },
+  {
+   "id": "feijao_preto",
+   "nome": "feijão preto"
+  },
+  {
+   "id": "laranja",
+   "nome": "laranja"
+  },
+  {
+   "id": "leite",
+   "nome": "leite"
+  },
+  {
+   "id": "lentilha",
+   "nome": "lentilha"
+  },
+  {
+   "id": "lombo_porco",
+   "nome": "lombo de porco"
+  },
+  {
+   "id": "macarrao",
+   "nome": "macarrão"
+  },
+  {
+   "id": "mandioca",
+   "nome": "mandioca"
+  },
+  {
+   "id": "maca",
+   "nome": "maçã"
+  },
+  {
+   "id": "mucarela",
+   "nome": "muçarela"
+  },
+  {
+   "id": "ovo",
+   "nome": "ovo"
+  },
+  {
+   "id": "patinho",
+   "nome": "patinho moído"
+  },
+  {
+   "id": "frango_peito",
+   "nome": "peito de frango"
+  },
+  {
+   "id": "pao_frances",
+   "nome": "pão francês"
+  },
+  {
+   "id": "repolho",
+   "nome": "repolho"
+  },
+  {
+   "id": "sardinha",
+   "nome": "sardinha em lata"
+  },
+  {
+   "id": "tomate",
+   "nome": "tomate"
+  },
+  {
+   "id": "oleo_soja",
+   "nome": "óleo"
+  }
+ ],
+ "periodos": [
+  {
+   "id": "semana",
+   "dias": 7
+  },
+  {
+   "id": "quinzena",
+   "dias": 15
+  },
+  {
+   "id": "mes",
+   "dias": 30
+  }
+ ],
+ "aviso_dados": "DADOS DE EXEMPLO. Mercados e preços fictícios, usados só para desenvolver o app. Substituir pela coleta do grupo (semana 2)."
+}

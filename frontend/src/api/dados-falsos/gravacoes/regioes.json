@@ -1,0 +1,62 @@
+[
+ {
+  "id": "asa_norte",
+  "nome": "Asa Norte",
+  "lat": -15.7617,
+  "lon": -47.8825
+ },
+ {
+  "id": "asa_sul",
+  "nome": "Asa Sul",
+  "lat": -15.816,
+  "lon": -47.903
+ },
+ {
+  "id": "guara",
+  "nome": "Guará",
+  "lat": -15.823,
+  "lon": -47.979
+ },
+ {
+  "id": "taguatinga",
+  "nome": "Taguatinga",
+  "lat": -15.8333,
+  "lon": -48.0564
+ },
+ {
+  "id": "aguas_claras",
+  "nome": "Águas Claras",
+  "lat": -15.8344,
+  "lon": -48.0263
+ },
+ {
+  "id": "ceilandia",
+  "nome": "Ceilândia",
+  "lat": -15.8199,
+  "lon": -48.1085
+ },
+ {
+  "id": "samambaia",
+  "nome": "Samambaia",
+  "lat": -15.877,
+  "lon": -48.083
+ },
+ {
+  "id": "sobradinho",
+  "nome": "Sobradinho",
+  "lat": -15.653,
+  "lon": -47.79
+ },
+ {
+  "id": "gama",
+  "nome": "Gama",
+  "lat": -16.019,
+  "lon": -48.066
+ },
+ {
+  "id": "planaltina",
+  "nome": "Planaltina",
+  "lat": -15.62,
+  "lon": -47.65
+ }
+]

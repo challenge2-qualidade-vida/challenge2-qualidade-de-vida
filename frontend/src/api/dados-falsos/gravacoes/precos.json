@@ -1,0 +1,821 @@
+{
+ "mercados": [
+  {
+   "id": "A",
+   "nome": "Mercado A",
+   "regiao": "Asa Norte (exemplo)",
+   "lat": -15.7617,
+   "lon": -47.8825
+  },
+  {
+   "id": "B",
+   "nome": "Mercado B",
+   "regiao": "Asa Sul (exemplo)",
+   "lat": -15.816,
+   "lon": -47.903
+  },
+  {
+   "id": "C",
+   "nome": "Mercado C",
+   "regiao": "Guará (exemplo)",
+   "lat": -15.823,
+   "lon": -47.979
+  }
+ ],
+ "produtos": [
+  {
+   "produto_id": "arroz-1kg",
+   "produto": "Arroz tipo 1 — 1 kg",
+   "alimento_id": "arroz",
+   "alimento": "Arroz branco tipo 1 (cru)",
+   "precos": {
+    "A": {
+     "preco": 649,
+     "preco_kg": 649,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 699,
+     "preco_kg": 699,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 599,
+     "preco_kg": 599,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "arroz-5kg",
+   "produto": "Arroz tipo 1 — 5 kg",
+   "alimento_id": "arroz",
+   "alimento": "Arroz branco tipo 1 (cru)",
+   "precos": {
+    "A": {
+     "preco": 2790,
+     "preco_kg": 558,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 2650,
+     "preco_kg": 530,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 2890,
+     "preco_kg": 578,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "macarrao-500g",
+   "produto": "Macarrão espaguete — 500 g",
+   "alimento_id": "macarrao",
+   "alimento": "Macarrão de trigo (cru)",
+   "precos": {
+    "A": {
+     "preco": 429,
+     "preco_kg": 858,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 399,
+     "preco_kg": 798,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 459,
+     "preco_kg": 918,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "aveia-250g",
+   "produto": "Aveia em flocos — 250 g",
+   "alimento_id": "aveia",
+   "alimento": "Aveia em flocos",
+   "precos": {
+    "A": {
+     "preco": 549,
+     "preco_kg": 2196,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 599,
+     "preco_kg": 2396,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 499,
+     "preco_kg": 1996,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "pao-frances-1kg",
+   "produto": "Pão francês — 1 kg",
+   "alimento_id": "pao_frances",
+   "alimento": "Pão francês",
+   "precos": {
+    "A": {
+     "preco": 1690,
+     "preco_kg": 1690,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 1499,
+     "preco_kg": 1499,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 1750,
+     "preco_kg": 1750,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "farinha-mandioca-1kg",
+   "produto": "Farinha de mandioca — 1 kg",
+   "alimento_id": "farinha_mandioca",
+   "alimento": "Farinha de mandioca",
+   "precos": {
+    "A": {
+     "preco": 899,
+     "preco_kg": 899,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 949,
+     "preco_kg": 949,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 799,
+     "preco_kg": 799,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "feijao-carioca-1kg",
+   "produto": "Feijão carioca — 1 kg",
+   "alimento_id": "feijao_carioca",
+   "alimento": "Feijão carioca (cru)",
+   "precos": {
+    "A": {
+     "preco": 799,
+     "preco_kg": 799,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 849,
+     "preco_kg": 849,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 749,
+     "preco_kg": 749,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "feijao-preto-1kg",
+   "produto": "Feijão preto — 1 kg",
+   "alimento_id": "feijao_preto",
+   "alimento": "Feijão preto (cru)",
+   "precos": {
+    "A": {
+     "preco": 849,
+     "preco_kg": 849,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 799,
+     "preco_kg": 799,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "lentilha-500g",
+   "produto": "Lentilha — 500 g",
+   "alimento_id": "lentilha",
+   "alimento": "Lentilha (crua)",
+   "precos": {
+    "A": {
+     "preco": 899,
+     "preco_kg": 1798,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 949,
+     "preco_kg": 1898,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "ovo-12un",
+   "produto": "Ovos — 12 unidades (~600 g)",
+   "alimento_id": "ovo",
+   "alimento": "Ovo de galinha inteiro (cru)",
+   "precos": {
+    "A": {
+     "preco": 1090,
+     "preco_kg": 1817,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 1149,
+     "preco_kg": 1915,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 999,
+     "preco_kg": 1665,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "ovo-30un",
+   "produto": "Ovos — 30 unidades (~1,5 kg)",
+   "alimento_id": "ovo",
+   "alimento": "Ovo de galinha inteiro (cru)",
+   "precos": {
+    "A": {
+     "preco": 2490,
+     "preco_kg": 1660,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 2290,
+     "preco_kg": 1527,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 2590,
+     "preco_kg": 1727,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "frango-peito-1kg",
+   "produto": "Peito de frango — 1 kg",
+   "alimento_id": "frango_peito",
+   "alimento": "Frango, peito sem pele (cru)",
+   "precos": {
+    "A": {
+     "preco": 1990,
+     "preco_kg": 1990,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 1849,
+     "preco_kg": 1849,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 2190,
+     "preco_kg": 2190,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "frango-coxa-1kg",
+   "produto": "Coxa de frango — 1 kg",
+   "alimento_id": "frango_coxa",
+   "alimento": "Frango, coxa com pele (crua)",
+   "precos": {
+    "A": {
+     "preco": 1390,
+     "preco_kg": 1390,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 1299,
+     "preco_kg": 1299,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 1449,
+     "preco_kg": 1449,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "patinho-1kg",
+   "produto": "Patinho moído — 1 kg",
+   "alimento_id": "patinho",
+   "alimento": "Carne bovina, patinho moído (cru)",
+   "precos": {
+    "A": {
+     "preco": 4490,
+     "preco_kg": 4490,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 4290,
+     "preco_kg": 4290,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 4690,
+     "preco_kg": 4690,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "lombo-1kg",
+   "produto": "Lombo suíno — 1 kg",
+   "alimento_id": "lombo_porco",
+   "alimento": "Carne suína, lombo (cru)",
+   "precos": {
+    "A": {
+     "preco": 2790,
+     "preco_kg": 2790,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 2990,
+     "preco_kg": 2990,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 2649,
+     "preco_kg": 2649,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "sardinha-125g",
+   "produto": "Sardinha em lata — 125 g",
+   "alimento_id": "sardinha",
+   "alimento": "Sardinha em conserva em óleo",
+   "precos": {
+    "A": {
+     "preco": 649,
+     "preco_kg": 5192,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 599,
+     "preco_kg": 4792,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 699,
+     "preco_kg": 5592,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "leite-1l",
+   "produto": "Leite integral UHT — 1 L",
+   "alimento_id": "leite",
+   "alimento": "Leite de vaca integral",
+   "precos": {
+    "A": {
+     "preco": 549,
+     "preco_kg": 549,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 529,
+     "preco_kg": 529,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 579,
+     "preco_kg": 579,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "mucarela-500g",
+   "produto": "Queijo muçarela fatiado — 500 g",
+   "alimento_id": "mucarela",
+   "alimento": "Queijo muçarela",
+   "precos": {
+    "A": {
+     "preco": 2490,
+     "preco_kg": 4980,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 2290,
+     "preco_kg": 4580,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 2690,
+     "preco_kg": 5380,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "batata-1kg",
+   "produto": "Batata inglesa — 1 kg",
+   "alimento_id": "batata",
+   "alimento": "Batata inglesa (crua)",
+   "precos": {
+    "A": {
+     "preco": 699,
+     "preco_kg": 699,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 599,
+     "preco_kg": 599,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 749,
+     "preco_kg": 749,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "mandioca-1kg",
+   "produto": "Mandioca — 1 kg",
+   "alimento_id": "mandioca",
+   "alimento": "Mandioca (crua)",
+   "precos": {
+    "A": {
+     "preco": 599,
+     "preco_kg": 599,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 649,
+     "preco_kg": 649,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 499,
+     "preco_kg": 499,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "cenoura-1kg",
+   "produto": "Cenoura — 1 kg",
+   "alimento_id": "cenoura",
+   "alimento": "Cenoura (crua)",
+   "precos": {
+    "A": {
+     "preco": 549,
+     "preco_kg": 549,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 499,
+     "preco_kg": 499,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 599,
+     "preco_kg": 599,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "tomate-1kg",
+   "produto": "Tomate — 1 kg",
+   "alimento_id": "tomate",
+   "alimento": "Tomate",
+   "precos": {
+    "A": {
+     "preco": 899,
+     "preco_kg": 899,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 799,
+     "preco_kg": 799,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 949,
+     "preco_kg": 949,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "cebola-1kg",
+   "produto": "Cebola — 1 kg",
+   "alimento_id": "cebola",
+   "alimento": "Cebola",
+   "precos": {
+    "A": {
+     "preco": 599,
+     "preco_kg": 599,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 649,
+     "preco_kg": 649,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 549,
+     "preco_kg": 549,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "repolho-1kg",
+   "produto": "Repolho — 1 kg",
+   "alimento_id": "repolho",
+   "alimento": "Repolho",
+   "precos": {
+    "A": {
+     "preco": 449,
+     "preco_kg": 449,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 399,
+     "preco_kg": 399,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 499,
+     "preco_kg": 499,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "abobora-1kg",
+   "produto": "Abóbora cabotiá — 1 kg",
+   "alimento_id": "abobora",
+   "alimento": "Abóbora cabotiá (crua)",
+   "precos": {
+    "A": {
+     "preco": 499,
+     "preco_kg": 499,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 549,
+     "preco_kg": 549,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 399,
+     "preco_kg": 399,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "banana-1kg",
+   "produto": "Banana prata — 1 kg",
+   "alimento_id": "banana",
+   "alimento": "Banana prata",
+   "precos": {
+    "A": {
+     "preco": 699,
+     "preco_kg": 699,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 749,
+     "preco_kg": 749,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 599,
+     "preco_kg": 599,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "laranja-1kg",
+   "produto": "Laranja pera — 1 kg",
+   "alimento_id": "laranja",
+   "alimento": "Laranja pera",
+   "precos": {
+    "A": {
+     "preco": 499,
+     "preco_kg": 499,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 449,
+     "preco_kg": 449,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 549,
+     "preco_kg": 549,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "maca-1kg",
+   "produto": "Maçã fuji — 1 kg",
+   "alimento_id": "maca",
+   "alimento": "Maçã fuji",
+   "precos": {
+    "A": {
+     "preco": 999,
+     "preco_kg": 999,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 1099,
+     "preco_kg": 1099,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 899,
+     "preco_kg": 899,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "oleo-900ml",
+   "produto": "Óleo de soja — 900 mL (~828 g)",
+   "alimento_id": "oleo_soja",
+   "alimento": "Óleo de soja",
+   "precos": {
+    "A": {
+     "preco": 799,
+     "preco_kg": 965,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 849,
+     "preco_kg": 1025,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 749,
+     "preco_kg": 905,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "acucar-1kg",
+   "produto": "Açúcar cristal — 1 kg",
+   "alimento_id": "acucar",
+   "alimento": "Açúcar cristal",
+   "precos": {
+    "A": {
+     "preco": 499,
+     "preco_kg": 499,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 479,
+     "preco_kg": 479,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 529,
+     "preco_kg": 529,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  },
+  {
+   "produto_id": "acucar-5kg",
+   "produto": "Açúcar cristal — 5 kg",
+   "alimento_id": "acucar",
+   "alimento": "Açúcar cristal",
+   "precos": {
+    "A": {
+     "preco": 2190,
+     "preco_kg": 438,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "B": {
+     "preco": 2290,
+     "preco_kg": 458,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    },
+    "C": {
+     "preco": 2090,
+     "preco_kg": 418,
+     "data": "2026-10-20",
+     "fonte": "exemplo"
+    }
+   }
+  }
+ ]
+}

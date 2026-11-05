@@ -1,0 +1,5955 @@
+{
+ "-15.7617,-47.8825,10": {
+  "raio_km": 10,
+  "mercados": [
+   {
+    "id": "A",
+    "nome": "Mercado A",
+    "regiao": "Asa Norte (exemplo)",
+    "distancia_km": 0,
+    "custo_ida_volta": 0,
+    "rumo_graus": 0,
+    "carrinho_proteinas": 24689,
+    "custo_real": 24689,
+    "selos": [
+     "mais_perto"
+    ]
+   },
+   {
+    "id": "B",
+    "nome": "Mercado B",
+    "regiao": "Asa Sul (exemplo)",
+    "distancia_km": 6.4,
+    "custo_ida_volta": 1086,
+    "rumo_graus": 200,
+    "carrinho_proteinas": 23504,
+    "custo_real": 24590,
+    "selos": [
+     "melhor_preco",
+     "melhor_custo_beneficio"
+    ]
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": 12.4,
+  "custo_segundo_mercado": 1086,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_preto",
+     "alimento": "Feijão preto",
+     "grupo": "leguminosas",
+     "proteina_100g": 21.3,
+     "precos": {
+      "A": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 399,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 5.9
+    },
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "A": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 400,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 425,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "A",
+     "economia_vs_mais_caro_pct": 5.9
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "A": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1390,
+       "preco_kg": 1390,
+       "custo_100g_proteina": 813,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1299,
+       "preco_kg": 1299,
+       "custo_100g_proteina": 760,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 6.5
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "A": {
+       "produto": "Lentilha — 500 g",
+       "preco": 899,
+       "preco_kg": 1798,
+       "custo_100g_proteina": 775,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "A",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "A": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1990,
+       "preco_kg": 1990,
+       "custo_100g_proteina": 926,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1849,
+       "preco_kg": 1849,
+       "custo_100g_proteina": 860,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 7.1
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "A": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2490,
+       "preco_kg": 1660,
+       "custo_100g_proteina": 1277,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2290,
+       "preco_kg": 1527,
+       "custo_100g_proteina": 1174,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2790,
+       "preco_kg": 2790,
+       "custo_100g_proteina": 1235,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2990,
+       "preco_kg": 2990,
+       "custo_100g_proteina": 1323,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "A",
+     "economia_vs_mais_caro_pct": 6.7
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "A": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 549,
+       "preco_kg": 549,
+       "custo_100g_proteina": 1893,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 529,
+       "preco_kg": 529,
+       "custo_100g_proteina": 1824,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 3.6
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "A": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4490,
+       "preco_kg": 4490,
+       "custo_100g_proteina": 2069,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4290,
+       "preco_kg": 4290,
+       "custo_100g_proteina": 1977,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 4.5
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2490,
+       "preco_kg": 4980,
+       "custo_100g_proteina": 2204,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2290,
+       "preco_kg": 4580,
+       "custo_100g_proteina": 2027,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "A": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 649,
+       "preco_kg": 5192,
+       "custo_100g_proteina": 3265,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 599,
+       "preco_kg": 4792,
+       "custo_100g_proteina": 3014,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 7.7
+    }
+   ],
+   "vitorias": {
+    "A": 2,
+    "B": 8
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão preto",
+     "Feijão carioca",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Ovo de galinha inteiro",
+     "Carne suína, lombo",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "A": 24689,
+     "B": 23504
+    },
+    "melhor_mercado": "B"
+   }
+  },
+  "sem_localizacao": []
+ },
+ "-15.7617,-47.8825,100": {
+  "raio_km": 100,
+  "mercados": [
+   {
+    "id": "A",
+    "nome": "Mercado A",
+    "regiao": "Asa Norte (exemplo)",
+    "distancia_km": 0,
+    "custo_ida_volta": 0,
+    "rumo_graus": 0,
+    "carrinho_proteinas": 23840,
+    "custo_real": 23840,
+    "selos": [
+     "mais_perto"
+    ]
+   },
+   {
+    "id": "B",
+    "nome": "Mercado B",
+    "regiao": "Asa Sul (exemplo)",
+    "distancia_km": 6.4,
+    "custo_ida_volta": 1086,
+    "rumo_graus": 200,
+    "carrinho_proteinas": 22705,
+    "custo_real": 23791,
+    "selos": [
+     "melhor_preco",
+     "melhor_custo_beneficio"
+    ]
+   },
+   {
+    "id": "C",
+    "nome": "Mercado C",
+    "regiao": "Guará (exemplo)",
+    "distancia_km": 12.4,
+    "custo_ida_volta": 2091,
+    "rumo_graus": 236.6,
+    "carrinho_proteinas": 24943,
+    "custo_real": 27034,
+    "selos": []
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": null,
+  "custo_segundo_mercado": 1086,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "A": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 400,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 425,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 749,
+       "preco_kg": 749,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.8
+    },
+    {
+     "alimento_id": "feijao_preto",
+     "alimento": "Feijão preto",
+     "grupo": "leguminosas",
+     "proteina_100g": 21.3,
+     "precos": {
+      "A": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 399,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 5.9
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "A": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1390,
+       "preco_kg": 1390,
+       "custo_100g_proteina": 813,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1299,
+       "preco_kg": 1299,
+       "custo_100g_proteina": 760,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1449,
+       "preco_kg": 1449,
+       "custo_100g_proteina": 847,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 10.4
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "A": {
+       "produto": "Lentilha — 500 g",
+       "preco": 899,
+       "preco_kg": 1798,
+       "custo_100g_proteina": 775,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lentilha — 500 g",
+       "preco": 949,
+       "preco_kg": 1898,
+       "custo_100g_proteina": 818,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "A",
+     "economia_vs_mais_caro_pct": 5.3
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "A": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1990,
+       "preco_kg": 1990,
+       "custo_100g_proteina": 926,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1849,
+       "preco_kg": 1849,
+       "custo_100g_proteina": 860,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 2190,
+       "preco_kg": 2190,
+       "custo_100g_proteina": 1019,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 15.6
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2790,
+       "preco_kg": 2790,
+       "custo_100g_proteina": 1235,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2990,
+       "preco_kg": 2990,
+       "custo_100g_proteina": 1323,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2649,
+       "preco_kg": 2649,
+       "custo_100g_proteina": 1172,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.4
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "A": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2490,
+       "preco_kg": 1660,
+       "custo_100g_proteina": 1277,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2290,
+       "preco_kg": 1527,
+       "custo_100g_proteina": 1174,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Ovos — 12 unidades (~600 g)",
+       "preco": 999,
+       "preco_kg": 1665,
+       "custo_100g_proteina": 1281,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.3
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "A": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 549,
+       "preco_kg": 549,
+       "custo_100g_proteina": 1893,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 529,
+       "preco_kg": 529,
+       "custo_100g_proteina": 1824,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 579,
+       "preco_kg": 579,
+       "custo_100g_proteina": 1997,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.6
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "A": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4490,
+       "preco_kg": 4490,
+       "custo_100g_proteina": 2069,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4290,
+       "preco_kg": 4290,
+       "custo_100g_proteina": 1977,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4690,
+       "preco_kg": 4690,
+       "custo_100g_proteina": 2161,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.5
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2490,
+       "preco_kg": 4980,
+       "custo_100g_proteina": 2204,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2290,
+       "preco_kg": 4580,
+       "custo_100g_proteina": 2027,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2690,
+       "preco_kg": 5380,
+       "custo_100g_proteina": 2381,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.9
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "A": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 649,
+       "preco_kg": 5192,
+       "custo_100g_proteina": 3265,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 599,
+       "preco_kg": 4792,
+       "custo_100g_proteina": 3014,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 699,
+       "preco_kg": 5592,
+       "custo_100g_proteina": 3517,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.3
+    }
+   ],
+   "vitorias": {
+    "A": 1,
+    "B": 8,
+    "C": 2
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão carioca",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Carne suína, lombo",
+     "Ovo de galinha inteiro",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "A": 23840,
+     "B": 22705,
+     "C": 24943
+    },
+    "melhor_mercado": "B"
+   }
+  },
+  "sem_localizacao": []
+ },
+ "-15.8160,-47.9030,10": {
+  "raio_km": 10,
+  "mercados": [
+   {
+    "id": "B",
+    "nome": "Mercado B",
+    "regiao": "Asa Sul (exemplo)",
+    "distancia_km": 0,
+    "custo_ida_volta": 0,
+    "rumo_graus": 0,
+    "carrinho_proteinas": 22705,
+    "custo_real": 22705,
+    "selos": [
+     "mais_perto",
+     "melhor_preco",
+     "melhor_custo_beneficio"
+    ]
+   },
+   {
+    "id": "A",
+    "nome": "Mercado A",
+    "regiao": "Asa Norte (exemplo)",
+    "distancia_km": 6.4,
+    "custo_ida_volta": 1086,
+    "rumo_graus": 20,
+    "carrinho_proteinas": 23840,
+    "custo_real": 24926,
+    "selos": []
+   },
+   {
+    "id": "C",
+    "nome": "Mercado C",
+    "regiao": "Guará (exemplo)",
+    "distancia_km": 8.2,
+    "custo_ida_volta": 1380,
+    "rumo_graus": 264.5,
+    "carrinho_proteinas": 24943,
+    "custo_real": 26323,
+    "selos": []
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": null,
+  "custo_segundo_mercado": 1086,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "A": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 400,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 425,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 749,
+       "preco_kg": 749,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.8
+    },
+    {
+     "alimento_id": "feijao_preto",
+     "alimento": "Feijão preto",
+     "grupo": "leguminosas",
+     "proteina_100g": 21.3,
+     "precos": {
+      "A": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 399,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 5.9
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "A": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1390,
+       "preco_kg": 1390,
+       "custo_100g_proteina": 813,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1299,
+       "preco_kg": 1299,
+       "custo_100g_proteina": 760,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1449,
+       "preco_kg": 1449,
+       "custo_100g_proteina": 847,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 10.4
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "A": {
+       "produto": "Lentilha — 500 g",
+       "preco": 899,
+       "preco_kg": 1798,
+       "custo_100g_proteina": 775,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lentilha — 500 g",
+       "preco": 949,
+       "preco_kg": 1898,
+       "custo_100g_proteina": 818,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "A",
+     "economia_vs_mais_caro_pct": 5.3
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "A": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1990,
+       "preco_kg": 1990,
+       "custo_100g_proteina": 926,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1849,
+       "preco_kg": 1849,
+       "custo_100g_proteina": 860,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 2190,
+       "preco_kg": 2190,
+       "custo_100g_proteina": 1019,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 15.6
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2790,
+       "preco_kg": 2790,
+       "custo_100g_proteina": 1235,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2990,
+       "preco_kg": 2990,
+       "custo_100g_proteina": 1323,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2649,
+       "preco_kg": 2649,
+       "custo_100g_proteina": 1172,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.4
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "A": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2490,
+       "preco_kg": 1660,
+       "custo_100g_proteina": 1277,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2290,
+       "preco_kg": 1527,
+       "custo_100g_proteina": 1174,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Ovos — 12 unidades (~600 g)",
+       "preco": 999,
+       "preco_kg": 1665,
+       "custo_100g_proteina": 1281,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.3
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "A": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 549,
+       "preco_kg": 549,
+       "custo_100g_proteina": 1893,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 529,
+       "preco_kg": 529,
+       "custo_100g_proteina": 1824,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 579,
+       "preco_kg": 579,
+       "custo_100g_proteina": 1997,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.6
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "A": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4490,
+       "preco_kg": 4490,
+       "custo_100g_proteina": 2069,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4290,
+       "preco_kg": 4290,
+       "custo_100g_proteina": 1977,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4690,
+       "preco_kg": 4690,
+       "custo_100g_proteina": 2161,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.5
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2490,
+       "preco_kg": 4980,
+       "custo_100g_proteina": 2204,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2290,
+       "preco_kg": 4580,
+       "custo_100g_proteina": 2027,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2690,
+       "preco_kg": 5380,
+       "custo_100g_proteina": 2381,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.9
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "A": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 649,
+       "preco_kg": 5192,
+       "custo_100g_proteina": 3265,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 599,
+       "preco_kg": 4792,
+       "custo_100g_proteina": 3014,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 699,
+       "preco_kg": 5592,
+       "custo_100g_proteina": 3517,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.3
+    }
+   ],
+   "vitorias": {
+    "B": 8,
+    "A": 1,
+    "C": 2
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão carioca",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Carne suína, lombo",
+     "Ovo de galinha inteiro",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "B": 22705,
+     "A": 23840,
+     "C": 24943
+    },
+    "melhor_mercado": "B"
+   }
+  },
+  "sem_localizacao": []
+ },
+ "-15.8160,-47.9030,100": {
+  "raio_km": 100,
+  "mercados": [
+   {
+    "id": "B",
+    "nome": "Mercado B",
+    "regiao": "Asa Sul (exemplo)",
+    "distancia_km": 0,
+    "custo_ida_volta": 0,
+    "rumo_graus": 0,
+    "carrinho_proteinas": 22705,
+    "custo_real": 22705,
+    "selos": [
+     "mais_perto",
+     "melhor_preco",
+     "melhor_custo_beneficio"
+    ]
+   },
+   {
+    "id": "A",
+    "nome": "Mercado A",
+    "regiao": "Asa Norte (exemplo)",
+    "distancia_km": 6.4,
+    "custo_ida_volta": 1086,
+    "rumo_graus": 20,
+    "carrinho_proteinas": 23840,
+    "custo_real": 24926,
+    "selos": []
+   },
+   {
+    "id": "C",
+    "nome": "Mercado C",
+    "regiao": "Guará (exemplo)",
+    "distancia_km": 8.2,
+    "custo_ida_volta": 1380,
+    "rumo_graus": 264.5,
+    "carrinho_proteinas": 24943,
+    "custo_real": 26323,
+    "selos": []
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": null,
+  "custo_segundo_mercado": 1086,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "A": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 400,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 425,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 749,
+       "preco_kg": 749,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.8
+    },
+    {
+     "alimento_id": "feijao_preto",
+     "alimento": "Feijão preto",
+     "grupo": "leguminosas",
+     "proteina_100g": 21.3,
+     "precos": {
+      "A": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 399,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 5.9
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "A": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1390,
+       "preco_kg": 1390,
+       "custo_100g_proteina": 813,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1299,
+       "preco_kg": 1299,
+       "custo_100g_proteina": 760,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1449,
+       "preco_kg": 1449,
+       "custo_100g_proteina": 847,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 10.4
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "A": {
+       "produto": "Lentilha — 500 g",
+       "preco": 899,
+       "preco_kg": 1798,
+       "custo_100g_proteina": 775,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lentilha — 500 g",
+       "preco": 949,
+       "preco_kg": 1898,
+       "custo_100g_proteina": 818,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "A",
+     "economia_vs_mais_caro_pct": 5.3
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "A": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1990,
+       "preco_kg": 1990,
+       "custo_100g_proteina": 926,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1849,
+       "preco_kg": 1849,
+       "custo_100g_proteina": 860,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 2190,
+       "preco_kg": 2190,
+       "custo_100g_proteina": 1019,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 15.6
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2790,
+       "preco_kg": 2790,
+       "custo_100g_proteina": 1235,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2990,
+       "preco_kg": 2990,
+       "custo_100g_proteina": 1323,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2649,
+       "preco_kg": 2649,
+       "custo_100g_proteina": 1172,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.4
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "A": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2490,
+       "preco_kg": 1660,
+       "custo_100g_proteina": 1277,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2290,
+       "preco_kg": 1527,
+       "custo_100g_proteina": 1174,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Ovos — 12 unidades (~600 g)",
+       "preco": 999,
+       "preco_kg": 1665,
+       "custo_100g_proteina": 1281,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.3
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "A": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 549,
+       "preco_kg": 549,
+       "custo_100g_proteina": 1893,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 529,
+       "preco_kg": 529,
+       "custo_100g_proteina": 1824,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 579,
+       "preco_kg": 579,
+       "custo_100g_proteina": 1997,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.6
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "A": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4490,
+       "preco_kg": 4490,
+       "custo_100g_proteina": 2069,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4290,
+       "preco_kg": 4290,
+       "custo_100g_proteina": 1977,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4690,
+       "preco_kg": 4690,
+       "custo_100g_proteina": 2161,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.5
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2490,
+       "preco_kg": 4980,
+       "custo_100g_proteina": 2204,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2290,
+       "preco_kg": 4580,
+       "custo_100g_proteina": 2027,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2690,
+       "preco_kg": 5380,
+       "custo_100g_proteina": 2381,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.9
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "A": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 649,
+       "preco_kg": 5192,
+       "custo_100g_proteina": 3265,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 599,
+       "preco_kg": 4792,
+       "custo_100g_proteina": 3014,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 699,
+       "preco_kg": 5592,
+       "custo_100g_proteina": 3517,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.3
+    }
+   ],
+   "vitorias": {
+    "B": 8,
+    "A": 1,
+    "C": 2
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão carioca",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Carne suína, lombo",
+     "Ovo de galinha inteiro",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "B": 22705,
+     "A": 23840,
+     "C": 24943
+    },
+    "melhor_mercado": "B"
+   }
+  },
+  "sem_localizacao": []
+ },
+ "-15.8230,-47.9790,10": {
+  "raio_km": 10,
+  "mercados": [
+   {
+    "id": "C",
+    "nome": "Mercado C",
+    "regiao": "Guará (exemplo)",
+    "distancia_km": 0,
+    "custo_ida_volta": 0,
+    "rumo_graus": 0,
+    "carrinho_proteinas": 24943,
+    "custo_real": 24943,
+    "selos": [
+     "mais_perto"
+    ]
+   },
+   {
+    "id": "B",
+    "nome": "Mercado B",
+    "regiao": "Asa Sul (exemplo)",
+    "distancia_km": 8.2,
+    "custo_ida_volta": 1380,
+    "rumo_graus": 84.5,
+    "carrinho_proteinas": 22705,
+    "custo_real": 24085,
+    "selos": [
+     "melhor_preco",
+     "melhor_custo_beneficio"
+    ]
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": 12.4,
+  "custo_segundo_mercado": 1380,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "B": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 425,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 749,
+       "preco_kg": 749,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.8
+    },
+    {
+     "alimento_id": "feijao_preto",
+     "alimento": "Feijão preto",
+     "grupo": "leguminosas",
+     "proteina_100g": 21.3,
+     "precos": {
+      "B": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "B": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1299,
+       "preco_kg": 1299,
+       "custo_100g_proteina": 760,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1449,
+       "preco_kg": 1449,
+       "custo_100g_proteina": 847,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 10.4
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "C": {
+       "produto": "Lentilha — 500 g",
+       "preco": 949,
+       "preco_kg": 1898,
+       "custo_100g_proteina": 818,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "B": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1849,
+       "preco_kg": 1849,
+       "custo_100g_proteina": 860,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 2190,
+       "preco_kg": 2190,
+       "custo_100g_proteina": 1019,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 15.6
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "B": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2990,
+       "preco_kg": 2990,
+       "custo_100g_proteina": 1323,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2649,
+       "preco_kg": 2649,
+       "custo_100g_proteina": 1172,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.4
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "B": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2290,
+       "preco_kg": 1527,
+       "custo_100g_proteina": 1174,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Ovos — 12 unidades (~600 g)",
+       "preco": 999,
+       "preco_kg": 1665,
+       "custo_100g_proteina": 1281,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.3
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "B": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 529,
+       "preco_kg": 529,
+       "custo_100g_proteina": 1824,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 579,
+       "preco_kg": 579,
+       "custo_100g_proteina": 1997,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.6
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "B": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4290,
+       "preco_kg": 4290,
+       "custo_100g_proteina": 1977,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4690,
+       "preco_kg": 4690,
+       "custo_100g_proteina": 2161,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.5
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "B": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2290,
+       "preco_kg": 4580,
+       "custo_100g_proteina": 2027,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2690,
+       "preco_kg": 5380,
+       "custo_100g_proteina": 2381,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.9
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "B": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 599,
+       "preco_kg": 4792,
+       "custo_100g_proteina": 3014,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 699,
+       "preco_kg": 5592,
+       "custo_100g_proteina": 3517,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.3
+    }
+   ],
+   "vitorias": {
+    "C": 2,
+    "B": 7
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão carioca",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Carne suína, lombo",
+     "Ovo de galinha inteiro",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "C": 24943,
+     "B": 22705
+    },
+    "melhor_mercado": "B"
+   }
+  },
+  "sem_localizacao": []
+ },
+ "-15.8230,-47.9790,100": {
+  "raio_km": 100,
+  "mercados": [
+   {
+    "id": "C",
+    "nome": "Mercado C",
+    "regiao": "Guará (exemplo)",
+    "distancia_km": 0,
+    "custo_ida_volta": 0,
+    "rumo_graus": 0,
+    "carrinho_proteinas": 24943,
+    "custo_real": 24943,
+    "selos": [
+     "mais_perto"
+    ]
+   },
+   {
+    "id": "B",
+    "nome": "Mercado B",
+    "regiao": "Asa Sul (exemplo)",
+    "distancia_km": 8.2,
+    "custo_ida_volta": 1380,
+    "rumo_graus": 84.5,
+    "carrinho_proteinas": 22705,
+    "custo_real": 24085,
+    "selos": [
+     "melhor_preco",
+     "melhor_custo_beneficio"
+    ]
+   },
+   {
+    "id": "A",
+    "nome": "Mercado A",
+    "regiao": "Asa Norte (exemplo)",
+    "distancia_km": 12.4,
+    "custo_ida_volta": 2091,
+    "rumo_graus": 56.6,
+    "carrinho_proteinas": 23840,
+    "custo_real": 25931,
+    "selos": []
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": null,
+  "custo_segundo_mercado": 1380,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "A": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 400,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 425,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 749,
+       "preco_kg": 749,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.8
+    },
+    {
+     "alimento_id": "feijao_preto",
+     "alimento": "Feijão preto",
+     "grupo": "leguminosas",
+     "proteina_100g": 21.3,
+     "precos": {
+      "A": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 399,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 5.9
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "A": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1390,
+       "preco_kg": 1390,
+       "custo_100g_proteina": 813,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1299,
+       "preco_kg": 1299,
+       "custo_100g_proteina": 760,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1449,
+       "preco_kg": 1449,
+       "custo_100g_proteina": 847,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 10.4
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "A": {
+       "produto": "Lentilha — 500 g",
+       "preco": 899,
+       "preco_kg": 1798,
+       "custo_100g_proteina": 775,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lentilha — 500 g",
+       "preco": 949,
+       "preco_kg": 1898,
+       "custo_100g_proteina": 818,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "A",
+     "economia_vs_mais_caro_pct": 5.3
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "A": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1990,
+       "preco_kg": 1990,
+       "custo_100g_proteina": 926,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1849,
+       "preco_kg": 1849,
+       "custo_100g_proteina": 860,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 2190,
+       "preco_kg": 2190,
+       "custo_100g_proteina": 1019,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 15.6
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2790,
+       "preco_kg": 2790,
+       "custo_100g_proteina": 1235,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2990,
+       "preco_kg": 2990,
+       "custo_100g_proteina": 1323,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2649,
+       "preco_kg": 2649,
+       "custo_100g_proteina": 1172,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.4
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "A": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2490,
+       "preco_kg": 1660,
+       "custo_100g_proteina": 1277,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2290,
+       "preco_kg": 1527,
+       "custo_100g_proteina": 1174,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Ovos — 12 unidades (~600 g)",
+       "preco": 999,
+       "preco_kg": 1665,
+       "custo_100g_proteina": 1281,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.3
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "A": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 549,
+       "preco_kg": 549,
+       "custo_100g_proteina": 1893,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 529,
+       "preco_kg": 529,
+       "custo_100g_proteina": 1824,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 579,
+       "preco_kg": 579,
+       "custo_100g_proteina": 1997,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.6
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "A": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4490,
+       "preco_kg": 4490,
+       "custo_100g_proteina": 2069,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4290,
+       "preco_kg": 4290,
+       "custo_100g_proteina": 1977,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4690,
+       "preco_kg": 4690,
+       "custo_100g_proteina": 2161,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.5
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2490,
+       "preco_kg": 4980,
+       "custo_100g_proteina": 2204,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2290,
+       "preco_kg": 4580,
+       "custo_100g_proteina": 2027,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2690,
+       "preco_kg": 5380,
+       "custo_100g_proteina": 2381,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.9
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "A": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 649,
+       "preco_kg": 5192,
+       "custo_100g_proteina": 3265,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 599,
+       "preco_kg": 4792,
+       "custo_100g_proteina": 3014,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 699,
+       "preco_kg": 5592,
+       "custo_100g_proteina": 3517,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.3
+    }
+   ],
+   "vitorias": {
+    "C": 2,
+    "B": 8,
+    "A": 1
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão carioca",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Carne suína, lombo",
+     "Ovo de galinha inteiro",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "C": 24943,
+     "B": 22705,
+     "A": 23840
+    },
+    "melhor_mercado": "B"
+   }
+  },
+  "sem_localizacao": []
+ },
+ "-15.8333,-48.0564,10": {
+  "raio_km": 10,
+  "mercados": [
+   {
+    "id": "C",
+    "nome": "Mercado C",
+    "regiao": "Guará (exemplo)",
+    "distancia_km": 8.4,
+    "custo_ida_volta": 1413,
+    "rumo_graus": 82.1,
+    "carrinho_proteinas": 26841,
+    "custo_real": 28254,
+    "selos": [
+     "mais_perto"
+    ]
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": 16.5,
+  "custo_segundo_mercado": 0,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "C": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 749,
+       "preco_kg": 749,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "C": {
+       "produto": "Lentilha — 500 g",
+       "preco": 949,
+       "preco_kg": 1898,
+       "custo_100g_proteina": 818,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "C": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1449,
+       "preco_kg": 1449,
+       "custo_100g_proteina": 847,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "C": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 2190,
+       "preco_kg": 2190,
+       "custo_100g_proteina": 1019,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "C": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2649,
+       "preco_kg": 2649,
+       "custo_100g_proteina": 1172,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "C": {
+       "produto": "Ovos — 12 unidades (~600 g)",
+       "preco": 999,
+       "preco_kg": 1665,
+       "custo_100g_proteina": 1281,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "C": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 579,
+       "preco_kg": 579,
+       "custo_100g_proteina": 1997,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "C": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4690,
+       "preco_kg": 4690,
+       "custo_100g_proteina": 2161,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "C": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2690,
+       "preco_kg": 5380,
+       "custo_100g_proteina": 2381,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "C": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 699,
+       "preco_kg": 5592,
+       "custo_100g_proteina": 3517,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    }
+   ],
+   "vitorias": {
+    "C": 0
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão carioca",
+     "Lentilha",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Carne suína, lombo",
+     "Ovo de galinha inteiro",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "C": 26841
+    },
+    "melhor_mercado": "C"
+   }
+  },
+  "sem_localizacao": []
+ },
+ "-15.8333,-48.0564,100": {
+  "raio_km": 100,
+  "mercados": [
+   {
+    "id": "C",
+    "nome": "Mercado C",
+    "regiao": "Guará (exemplo)",
+    "distancia_km": 8.4,
+    "custo_ida_volta": 1413,
+    "rumo_graus": 82.1,
+    "carrinho_proteinas": 24943,
+    "custo_real": 26356,
+    "selos": [
+     "mais_perto"
+    ]
+   },
+   {
+    "id": "B",
+    "nome": "Mercado B",
+    "regiao": "Asa Sul (exemplo)",
+    "distancia_km": 16.5,
+    "custo_ida_volta": 2792,
+    "rumo_graus": 83.3,
+    "carrinho_proteinas": 22705,
+    "custo_real": 25497,
+    "selos": [
+     "melhor_preco",
+     "melhor_custo_beneficio"
+    ]
+   },
+   {
+    "id": "A",
+    "nome": "Mercado A",
+    "regiao": "Asa Norte (exemplo)",
+    "distancia_km": 20.2,
+    "custo_ida_volta": 3420,
+    "rumo_graus": 66.9,
+    "carrinho_proteinas": 23840,
+    "custo_real": 27260,
+    "selos": []
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": null,
+  "custo_segundo_mercado": 2792,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "A": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 400,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 425,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 749,
+       "preco_kg": 749,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.8
+    },
+    {
+     "alimento_id": "feijao_preto",
+     "alimento": "Feijão preto",
+     "grupo": "leguminosas",
+     "proteina_100g": 21.3,
+     "precos": {
+      "A": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 399,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 5.9
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "A": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1390,
+       "preco_kg": 1390,
+       "custo_100g_proteina": 813,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1299,
+       "preco_kg": 1299,
+       "custo_100g_proteina": 760,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1449,
+       "preco_kg": 1449,
+       "custo_100g_proteina": 847,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 10.4
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "A": {
+       "produto": "Lentilha — 500 g",
+       "preco": 899,
+       "preco_kg": 1798,
+       "custo_100g_proteina": 775,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lentilha — 500 g",
+       "preco": 949,
+       "preco_kg": 1898,
+       "custo_100g_proteina": 818,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "A",
+     "economia_vs_mais_caro_pct": 5.3
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "A": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1990,
+       "preco_kg": 1990,
+       "custo_100g_proteina": 926,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1849,
+       "preco_kg": 1849,
+       "custo_100g_proteina": 860,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 2190,
+       "preco_kg": 2190,
+       "custo_100g_proteina": 1019,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 15.6
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2790,
+       "preco_kg": 2790,
+       "custo_100g_proteina": 1235,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2990,
+       "preco_kg": 2990,
+       "custo_100g_proteina": 1323,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2649,
+       "preco_kg": 2649,
+       "custo_100g_proteina": 1172,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.4
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "A": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2490,
+       "preco_kg": 1660,
+       "custo_100g_proteina": 1277,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2290,
+       "preco_kg": 1527,
+       "custo_100g_proteina": 1174,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Ovos — 12 unidades (~600 g)",
+       "preco": 999,
+       "preco_kg": 1665,
+       "custo_100g_proteina": 1281,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.3
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "A": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 549,
+       "preco_kg": 549,
+       "custo_100g_proteina": 1893,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 529,
+       "preco_kg": 529,
+       "custo_100g_proteina": 1824,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 579,
+       "preco_kg": 579,
+       "custo_100g_proteina": 1997,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.6
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "A": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4490,
+       "preco_kg": 4490,
+       "custo_100g_proteina": 2069,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4290,
+       "preco_kg": 4290,
+       "custo_100g_proteina": 1977,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4690,
+       "preco_kg": 4690,
+       "custo_100g_proteina": 2161,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.5
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2490,
+       "preco_kg": 4980,
+       "custo_100g_proteina": 2204,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2290,
+       "preco_kg": 4580,
+       "custo_100g_proteina": 2027,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2690,
+       "preco_kg": 5380,
+       "custo_100g_proteina": 2381,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.9
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "A": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 649,
+       "preco_kg": 5192,
+       "custo_100g_proteina": 3265,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 599,
+       "preco_kg": 4792,
+       "custo_100g_proteina": 3014,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 699,
+       "preco_kg": 5592,
+       "custo_100g_proteina": 3517,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.3
+    }
+   ],
+   "vitorias": {
+    "C": 2,
+    "B": 8,
+    "A": 1
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão carioca",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Carne suína, lombo",
+     "Ovo de galinha inteiro",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "C": 24943,
+     "B": 22705,
+     "A": 23840
+    },
+    "melhor_mercado": "B"
+   }
+  },
+  "sem_localizacao": []
+ },
+ "-15.8344,-48.0263,10": {
+  "raio_km": 10,
+  "mercados": [
+   {
+    "id": "C",
+    "nome": "Mercado C",
+    "regiao": "Guará (exemplo)",
+    "distancia_km": 5.2,
+    "custo_ida_volta": 882,
+    "rumo_graus": 75.9,
+    "carrinho_proteinas": 26841,
+    "custo_real": 27723,
+    "selos": [
+     "mais_perto"
+    ]
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": 13.3,
+  "custo_segundo_mercado": 0,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "C": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 749,
+       "preco_kg": 749,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "C": {
+       "produto": "Lentilha — 500 g",
+       "preco": 949,
+       "preco_kg": 1898,
+       "custo_100g_proteina": 818,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "C": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1449,
+       "preco_kg": 1449,
+       "custo_100g_proteina": 847,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "C": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 2190,
+       "preco_kg": 2190,
+       "custo_100g_proteina": 1019,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "C": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2649,
+       "preco_kg": 2649,
+       "custo_100g_proteina": 1172,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "C": {
+       "produto": "Ovos — 12 unidades (~600 g)",
+       "preco": 999,
+       "preco_kg": 1665,
+       "custo_100g_proteina": 1281,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "C": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 579,
+       "preco_kg": 579,
+       "custo_100g_proteina": 1997,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "C": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4690,
+       "preco_kg": 4690,
+       "custo_100g_proteina": 2161,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "C": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2690,
+       "preco_kg": 5380,
+       "custo_100g_proteina": 2381,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "C": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 699,
+       "preco_kg": 5592,
+       "custo_100g_proteina": 3517,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 0
+    }
+   ],
+   "vitorias": {
+    "C": 0
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão carioca",
+     "Lentilha",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Carne suína, lombo",
+     "Ovo de galinha inteiro",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "C": 26841
+    },
+    "melhor_mercado": "C"
+   }
+  },
+  "sem_localizacao": []
+ },
+ "-15.8344,-48.0263,100": {
+  "raio_km": 100,
+  "mercados": [
+   {
+    "id": "C",
+    "nome": "Mercado C",
+    "regiao": "Guará (exemplo)",
+    "distancia_km": 5.2,
+    "custo_ida_volta": 882,
+    "rumo_graus": 75.9,
+    "carrinho_proteinas": 24943,
+    "custo_real": 25825,
+    "selos": [
+     "mais_perto"
+    ]
+   },
+   {
+    "id": "B",
+    "nome": "Mercado B",
+    "regiao": "Asa Sul (exemplo)",
+    "distancia_km": 13.3,
+    "custo_ida_volta": 2256,
+    "rumo_graus": 81.2,
+    "carrinho_proteinas": 22705,
+    "custo_real": 24961,
+    "selos": [
+     "melhor_preco",
+     "melhor_custo_beneficio"
+    ]
+   },
+   {
+    "id": "A",
+    "nome": "Mercado A",
+    "regiao": "Asa Norte (exemplo)",
+    "distancia_km": 17.4,
+    "custo_ida_volta": 2937,
+    "rumo_graus": 62.3,
+    "carrinho_proteinas": 23840,
+    "custo_real": 26777,
+    "selos": []
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": null,
+  "custo_segundo_mercado": 2256,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "A": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 400,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 425,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 749,
+       "preco_kg": 749,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.8
+    },
+    {
+     "alimento_id": "feijao_preto",
+     "alimento": "Feijão preto",
+     "grupo": "leguminosas",
+     "proteina_100g": 21.3,
+     "precos": {
+      "A": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 399,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 5.9
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "A": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1390,
+       "preco_kg": 1390,
+       "custo_100g_proteina": 813,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1299,
+       "preco_kg": 1299,
+       "custo_100g_proteina": 760,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1449,
+       "preco_kg": 1449,
+       "custo_100g_proteina": 847,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 10.4
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "A": {
+       "produto": "Lentilha — 500 g",
+       "preco": 899,
+       "preco_kg": 1798,
+       "custo_100g_proteina": 775,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lentilha — 500 g",
+       "preco": 949,
+       "preco_kg": 1898,
+       "custo_100g_proteina": 818,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "A",
+     "economia_vs_mais_caro_pct": 5.3
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "A": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1990,
+       "preco_kg": 1990,
+       "custo_100g_proteina": 926,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1849,
+       "preco_kg": 1849,
+       "custo_100g_proteina": 860,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 2190,
+       "preco_kg": 2190,
+       "custo_100g_proteina": 1019,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 15.6
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2790,
+       "preco_kg": 2790,
+       "custo_100g_proteina": 1235,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2990,
+       "preco_kg": 2990,
+       "custo_100g_proteina": 1323,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2649,
+       "preco_kg": 2649,
+       "custo_100g_proteina": 1172,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.4
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "A": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2490,
+       "preco_kg": 1660,
+       "custo_100g_proteina": 1277,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2290,
+       "preco_kg": 1527,
+       "custo_100g_proteina": 1174,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Ovos — 12 unidades (~600 g)",
+       "preco": 999,
+       "preco_kg": 1665,
+       "custo_100g_proteina": 1281,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.3
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "A": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 549,
+       "preco_kg": 549,
+       "custo_100g_proteina": 1893,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 529,
+       "preco_kg": 529,
+       "custo_100g_proteina": 1824,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 579,
+       "preco_kg": 579,
+       "custo_100g_proteina": 1997,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.6
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "A": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4490,
+       "preco_kg": 4490,
+       "custo_100g_proteina": 2069,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4290,
+       "preco_kg": 4290,
+       "custo_100g_proteina": 1977,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4690,
+       "preco_kg": 4690,
+       "custo_100g_proteina": 2161,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.5
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2490,
+       "preco_kg": 4980,
+       "custo_100g_proteina": 2204,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2290,
+       "preco_kg": 4580,
+       "custo_100g_proteina": 2027,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2690,
+       "preco_kg": 5380,
+       "custo_100g_proteina": 2381,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.9
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "A": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 649,
+       "preco_kg": 5192,
+       "custo_100g_proteina": 3265,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 599,
+       "preco_kg": 4792,
+       "custo_100g_proteina": 3014,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 699,
+       "preco_kg": 5592,
+       "custo_100g_proteina": 3517,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.3
+    }
+   ],
+   "vitorias": {
+    "C": 2,
+    "B": 8,
+    "A": 1
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão carioca",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Carne suína, lombo",
+     "Ovo de galinha inteiro",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "C": 24943,
+     "B": 22705,
+     "A": 23840
+    },
+    "melhor_mercado": "B"
+   }
+  },
+  "sem_localizacao": []
+ },
+ "-15.8199,-48.1085,10": {
+  "raio_km": 10,
+  "mercados": [],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": 13.9,
+  "custo_segundo_mercado": 0,
+  "custo_por_km": 65,
+  "proteinas": null,
+  "sem_localizacao": []
+ },
+ "-15.8199,-48.1085,100": {
+  "raio_km": 100,
+  "mercados": [
+   {
+    "id": "C",
+    "nome": "Mercado C",
+    "regiao": "Guará (exemplo)",
+    "distancia_km": 13.9,
+    "custo_ida_volta": 2342,
+    "rumo_graus": 91.4,
+    "carrinho_proteinas": 24943,
+    "custo_real": 27285,
+    "selos": [
+     "mais_perto"
+    ]
+   },
+   {
+    "id": "B",
+    "nome": "Mercado B",
+    "regiao": "Asa Sul (exemplo)",
+    "distancia_km": 22,
+    "custo_ida_volta": 3716,
+    "rumo_graus": 88.9,
+    "carrinho_proteinas": 22705,
+    "custo_real": 26421,
+    "selos": [
+     "melhor_preco",
+     "melhor_custo_beneficio"
+    ]
+   },
+   {
+    "id": "A",
+    "nome": "Mercado A",
+    "regiao": "Asa Norte (exemplo)",
+    "distancia_km": 25,
+    "custo_ida_volta": 4231,
+    "rumo_graus": 75,
+    "carrinho_proteinas": 23840,
+    "custo_real": 28071,
+    "selos": []
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": null,
+  "custo_segundo_mercado": 3716,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "A": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 400,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 425,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 749,
+       "preco_kg": 749,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.8
+    },
+    {
+     "alimento_id": "feijao_preto",
+     "alimento": "Feijão preto",
+     "grupo": "leguminosas",
+     "proteina_100g": 21.3,
+     "precos": {
+      "A": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 399,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 5.9
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "A": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1390,
+       "preco_kg": 1390,
+       "custo_100g_proteina": 813,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1299,
+       "preco_kg": 1299,
+       "custo_100g_proteina": 760,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1449,
+       "preco_kg": 1449,
+       "custo_100g_proteina": 847,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 10.4
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "A": {
+       "produto": "Lentilha — 500 g",
+       "preco": 899,
+       "preco_kg": 1798,
+       "custo_100g_proteina": 775,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lentilha — 500 g",
+       "preco": 949,
+       "preco_kg": 1898,
+       "custo_100g_proteina": 818,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "A",
+     "economia_vs_mais_caro_pct": 5.3
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "A": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1990,
+       "preco_kg": 1990,
+       "custo_100g_proteina": 926,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1849,
+       "preco_kg": 1849,
+       "custo_100g_proteina": 860,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 2190,
+       "preco_kg": 2190,
+       "custo_100g_proteina": 1019,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 15.6
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2790,
+       "preco_kg": 2790,
+       "custo_100g_proteina": 1235,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2990,
+       "preco_kg": 2990,
+       "custo_100g_proteina": 1323,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2649,
+       "preco_kg": 2649,
+       "custo_100g_proteina": 1172,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.4
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "A": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2490,
+       "preco_kg": 1660,
+       "custo_100g_proteina": 1277,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2290,
+       "preco_kg": 1527,
+       "custo_100g_proteina": 1174,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Ovos — 12 unidades (~600 g)",
+       "preco": 999,
+       "preco_kg": 1665,
+       "custo_100g_proteina": 1281,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.3
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "A": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 549,
+       "preco_kg": 549,
+       "custo_100g_proteina": 1893,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 529,
+       "preco_kg": 529,
+       "custo_100g_proteina": 1824,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 579,
+       "preco_kg": 579,
+       "custo_100g_proteina": 1997,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.6
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "A": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4490,
+       "preco_kg": 4490,
+       "custo_100g_proteina": 2069,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4290,
+       "preco_kg": 4290,
+       "custo_100g_proteina": 1977,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4690,
+       "preco_kg": 4690,
+       "custo_100g_proteina": 2161,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.5
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2490,
+       "preco_kg": 4980,
+       "custo_100g_proteina": 2204,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2290,
+       "preco_kg": 4580,
+       "custo_100g_proteina": 2027,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2690,
+       "preco_kg": 5380,
+       "custo_100g_proteina": 2381,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.9
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "A": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 649,
+       "preco_kg": 5192,
+       "custo_100g_proteina": 3265,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 599,
+       "preco_kg": 4792,
+       "custo_100g_proteina": 3014,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 699,
+       "preco_kg": 5592,
+       "custo_100g_proteina": 3517,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.3
+    }
+   ],
+   "vitorias": {
+    "C": 2,
+    "B": 8,
+    "A": 1
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão carioca",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Carne suína, lombo",
+     "Ovo de galinha inteiro",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "C": 24943,
+     "B": 22705,
+     "A": 23840
+    },
+    "melhor_mercado": "B"
+   }
+  },
+  "sem_localizacao": []
+ },
+ "-15.8770,-48.0830,10": {
+  "raio_km": 10,
+  "mercados": [],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": 12.6,
+  "custo_segundo_mercado": 0,
+  "custo_por_km": 65,
+  "proteinas": null,
+  "sem_localizacao": []
+ },
+ "-15.8770,-48.0830,100": {
+  "raio_km": 100,
+  "mercados": [
+   {
+    "id": "C",
+    "nome": "Mercado C",
+    "regiao": "Guará (exemplo)",
+    "distancia_km": 12.6,
+    "custo_ida_volta": 2136,
+    "rumo_graus": 61.7,
+    "carrinho_proteinas": 24943,
+    "custo_real": 27079,
+    "selos": [
+     "mais_perto"
+    ]
+   },
+   {
+    "id": "B",
+    "nome": "Mercado B",
+    "regiao": "Asa Sul (exemplo)",
+    "distancia_km": 20.4,
+    "custo_ida_volta": 3450,
+    "rumo_graus": 70.6,
+    "carrinho_proteinas": 22705,
+    "custo_real": 26155,
+    "selos": [
+     "melhor_preco",
+     "melhor_custo_beneficio"
+    ]
+   },
+   {
+    "id": "A",
+    "nome": "Mercado A",
+    "regiao": "Asa Norte (exemplo)",
+    "distancia_km": 25,
+    "custo_ida_volta": 4223,
+    "rumo_graus": 59.2,
+    "carrinho_proteinas": 23840,
+    "custo_real": 28063,
+    "selos": []
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": null,
+  "custo_segundo_mercado": 3450,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "A": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 400,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 425,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 749,
+       "preco_kg": 749,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.8
+    },
+    {
+     "alimento_id": "feijao_preto",
+     "alimento": "Feijão preto",
+     "grupo": "leguminosas",
+     "proteina_100g": 21.3,
+     "precos": {
+      "A": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 399,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 5.9
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "A": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1390,
+       "preco_kg": 1390,
+       "custo_100g_proteina": 813,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1299,
+       "preco_kg": 1299,
+       "custo_100g_proteina": 760,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1449,
+       "preco_kg": 1449,
+       "custo_100g_proteina": 847,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 10.4
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "A": {
+       "produto": "Lentilha — 500 g",
+       "preco": 899,
+       "preco_kg": 1798,
+       "custo_100g_proteina": 775,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lentilha — 500 g",
+       "preco": 949,
+       "preco_kg": 1898,
+       "custo_100g_proteina": 818,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "A",
+     "economia_vs_mais_caro_pct": 5.3
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "A": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1990,
+       "preco_kg": 1990,
+       "custo_100g_proteina": 926,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1849,
+       "preco_kg": 1849,
+       "custo_100g_proteina": 860,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 2190,
+       "preco_kg": 2190,
+       "custo_100g_proteina": 1019,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 15.6
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2790,
+       "preco_kg": 2790,
+       "custo_100g_proteina": 1235,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2990,
+       "preco_kg": 2990,
+       "custo_100g_proteina": 1323,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2649,
+       "preco_kg": 2649,
+       "custo_100g_proteina": 1172,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.4
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "A": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2490,
+       "preco_kg": 1660,
+       "custo_100g_proteina": 1277,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2290,
+       "preco_kg": 1527,
+       "custo_100g_proteina": 1174,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Ovos — 12 unidades (~600 g)",
+       "preco": 999,
+       "preco_kg": 1665,
+       "custo_100g_proteina": 1281,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.3
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "A": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 549,
+       "preco_kg": 549,
+       "custo_100g_proteina": 1893,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 529,
+       "preco_kg": 529,
+       "custo_100g_proteina": 1824,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 579,
+       "preco_kg": 579,
+       "custo_100g_proteina": 1997,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.6
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "A": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4490,
+       "preco_kg": 4490,
+       "custo_100g_proteina": 2069,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4290,
+       "preco_kg": 4290,
+       "custo_100g_proteina": 1977,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4690,
+       "preco_kg": 4690,
+       "custo_100g_proteina": 2161,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.5
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2490,
+       "preco_kg": 4980,
+       "custo_100g_proteina": 2204,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2290,
+       "preco_kg": 4580,
+       "custo_100g_proteina": 2027,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2690,
+       "preco_kg": 5380,
+       "custo_100g_proteina": 2381,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.9
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "A": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 649,
+       "preco_kg": 5192,
+       "custo_100g_proteina": 3265,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 599,
+       "preco_kg": 4792,
+       "custo_100g_proteina": 3014,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 699,
+       "preco_kg": 5592,
+       "custo_100g_proteina": 3517,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.3
+    }
+   ],
+   "vitorias": {
+    "C": 2,
+    "B": 8,
+    "A": 1
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão carioca",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Carne suína, lombo",
+     "Ovo de galinha inteiro",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "C": 24943,
+     "B": 22705,
+     "A": 23840
+    },
+    "melhor_mercado": "B"
+   }
+  },
+  "sem_localizacao": []
+ },
+ "-15.6530,-47.7900,10": {
+  "raio_km": 10,
+  "mercados": [],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": 15.6,
+  "custo_segundo_mercado": 0,
+  "custo_por_km": 65,
+  "proteinas": null,
+  "sem_localizacao": []
+ },
+ "-15.6530,-47.7900,100": {
+  "raio_km": 100,
+  "mercados": [
+   {
+    "id": "A",
+    "nome": "Mercado A",
+    "regiao": "Asa Norte (exemplo)",
+    "distancia_km": 15.6,
+    "custo_ida_volta": 2641,
+    "rumo_graus": 219.3,
+    "carrinho_proteinas": 23840,
+    "custo_real": 26481,
+    "selos": [
+     "mais_perto"
+    ]
+   },
+   {
+    "id": "B",
+    "nome": "Mercado B",
+    "regiao": "Asa Sul (exemplo)",
+    "distancia_km": 21.8,
+    "custo_ida_volta": 3682,
+    "rumo_graus": 213.7,
+    "carrinho_proteinas": 22705,
+    "custo_real": 26387,
+    "selos": [
+     "melhor_preco",
+     "melhor_custo_beneficio"
+    ]
+   },
+   {
+    "id": "C",
+    "nome": "Mercado C",
+    "regiao": "Guará (exemplo)",
+    "distancia_km": 27.7,
+    "custo_ida_volta": 4679,
+    "rumo_graus": 226.9,
+    "carrinho_proteinas": 24943,
+    "custo_real": 29622,
+    "selos": []
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": null,
+  "custo_segundo_mercado": 3682,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "A": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 400,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 425,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 749,
+       "preco_kg": 749,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.8
+    },
+    {
+     "alimento_id": "feijao_preto",
+     "alimento": "Feijão preto",
+     "grupo": "leguminosas",
+     "proteina_100g": 21.3,
+     "precos": {
+      "A": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 399,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 5.9
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "A": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1390,
+       "preco_kg": 1390,
+       "custo_100g_proteina": 813,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1299,
+       "preco_kg": 1299,
+       "custo_100g_proteina": 760,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1449,
+       "preco_kg": 1449,
+       "custo_100g_proteina": 847,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 10.4
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "A": {
+       "produto": "Lentilha — 500 g",
+       "preco": 899,
+       "preco_kg": 1798,
+       "custo_100g_proteina": 775,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lentilha — 500 g",
+       "preco": 949,
+       "preco_kg": 1898,
+       "custo_100g_proteina": 818,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "A",
+     "economia_vs_mais_caro_pct": 5.3
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "A": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1990,
+       "preco_kg": 1990,
+       "custo_100g_proteina": 926,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1849,
+       "preco_kg": 1849,
+       "custo_100g_proteina": 860,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 2190,
+       "preco_kg": 2190,
+       "custo_100g_proteina": 1019,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 15.6
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2790,
+       "preco_kg": 2790,
+       "custo_100g_proteina": 1235,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2990,
+       "preco_kg": 2990,
+       "custo_100g_proteina": 1323,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2649,
+       "preco_kg": 2649,
+       "custo_100g_proteina": 1172,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.4
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "A": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2490,
+       "preco_kg": 1660,
+       "custo_100g_proteina": 1277,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2290,
+       "preco_kg": 1527,
+       "custo_100g_proteina": 1174,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Ovos — 12 unidades (~600 g)",
+       "preco": 999,
+       "preco_kg": 1665,
+       "custo_100g_proteina": 1281,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.3
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "A": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 549,
+       "preco_kg": 549,
+       "custo_100g_proteina": 1893,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 529,
+       "preco_kg": 529,
+       "custo_100g_proteina": 1824,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 579,
+       "preco_kg": 579,
+       "custo_100g_proteina": 1997,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.6
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "A": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4490,
+       "preco_kg": 4490,
+       "custo_100g_proteina": 2069,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4290,
+       "preco_kg": 4290,
+       "custo_100g_proteina": 1977,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4690,
+       "preco_kg": 4690,
+       "custo_100g_proteina": 2161,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.5
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2490,
+       "preco_kg": 4980,
+       "custo_100g_proteina": 2204,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2290,
+       "preco_kg": 4580,
+       "custo_100g_proteina": 2027,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2690,
+       "preco_kg": 5380,
+       "custo_100g_proteina": 2381,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.9
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "A": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 649,
+       "preco_kg": 5192,
+       "custo_100g_proteina": 3265,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 599,
+       "preco_kg": 4792,
+       "custo_100g_proteina": 3014,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 699,
+       "preco_kg": 5592,
+       "custo_100g_proteina": 3517,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.3
+    }
+   ],
+   "vitorias": {
+    "A": 1,
+    "B": 8,
+    "C": 2
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão carioca",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Carne suína, lombo",
+     "Ovo de galinha inteiro",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "A": 23840,
+     "B": 22705,
+     "C": 24943
+    },
+    "melhor_mercado": "B"
+   }
+  },
+  "sem_localizacao": []
+ },
+ "-16.0190,-48.0660,10": {
+  "raio_km": 10,
+  "mercados": [],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": 23.7,
+  "custo_segundo_mercado": 0,
+  "custo_por_km": 65,
+  "proteinas": null,
+  "sem_localizacao": []
+ },
+ "-16.0190,-48.0660,100": {
+  "raio_km": 100,
+  "mercados": [
+   {
+    "id": "C",
+    "nome": "Mercado C",
+    "regiao": "Guará (exemplo)",
+    "distancia_km": 23.7,
+    "custo_ida_volta": 4005,
+    "rumo_graus": 23.1,
+    "carrinho_proteinas": 24943,
+    "custo_real": 28948,
+    "selos": [
+     "mais_perto"
+    ]
+   },
+   {
+    "id": "B",
+    "nome": "Mercado B",
+    "regiao": "Asa Sul (exemplo)",
+    "distancia_km": 28.5,
+    "custo_ida_volta": 4820,
+    "rumo_graus": 37.7,
+    "carrinho_proteinas": 22705,
+    "custo_real": 27525,
+    "selos": [
+     "melhor_preco",
+     "melhor_custo_beneficio"
+    ]
+   },
+   {
+    "id": "A",
+    "nome": "Mercado A",
+    "regiao": "Asa Norte (exemplo)",
+    "distancia_km": 34.7,
+    "custo_ida_volta": 5863,
+    "rumo_graus": 34.5,
+    "carrinho_proteinas": 23840,
+    "custo_real": 29703,
+    "selos": []
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": null,
+  "custo_segundo_mercado": 4820,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "A": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 400,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 425,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 749,
+       "preco_kg": 749,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.8
+    },
+    {
+     "alimento_id": "feijao_preto",
+     "alimento": "Feijão preto",
+     "grupo": "leguminosas",
+     "proteina_100g": 21.3,
+     "precos": {
+      "A": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 399,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 5.9
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "A": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1390,
+       "preco_kg": 1390,
+       "custo_100g_proteina": 813,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1299,
+       "preco_kg": 1299,
+       "custo_100g_proteina": 760,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1449,
+       "preco_kg": 1449,
+       "custo_100g_proteina": 847,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 10.4
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "A": {
+       "produto": "Lentilha — 500 g",
+       "preco": 899,
+       "preco_kg": 1798,
+       "custo_100g_proteina": 775,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lentilha — 500 g",
+       "preco": 949,
+       "preco_kg": 1898,
+       "custo_100g_proteina": 818,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "A",
+     "economia_vs_mais_caro_pct": 5.3
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "A": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1990,
+       "preco_kg": 1990,
+       "custo_100g_proteina": 926,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1849,
+       "preco_kg": 1849,
+       "custo_100g_proteina": 860,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 2190,
+       "preco_kg": 2190,
+       "custo_100g_proteina": 1019,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 15.6
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2790,
+       "preco_kg": 2790,
+       "custo_100g_proteina": 1235,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2990,
+       "preco_kg": 2990,
+       "custo_100g_proteina": 1323,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2649,
+       "preco_kg": 2649,
+       "custo_100g_proteina": 1172,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.4
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "A": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2490,
+       "preco_kg": 1660,
+       "custo_100g_proteina": 1277,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2290,
+       "preco_kg": 1527,
+       "custo_100g_proteina": 1174,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Ovos — 12 unidades (~600 g)",
+       "preco": 999,
+       "preco_kg": 1665,
+       "custo_100g_proteina": 1281,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.3
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "A": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 549,
+       "preco_kg": 549,
+       "custo_100g_proteina": 1893,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 529,
+       "preco_kg": 529,
+       "custo_100g_proteina": 1824,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 579,
+       "preco_kg": 579,
+       "custo_100g_proteina": 1997,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.6
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "A": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4490,
+       "preco_kg": 4490,
+       "custo_100g_proteina": 2069,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4290,
+       "preco_kg": 4290,
+       "custo_100g_proteina": 1977,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4690,
+       "preco_kg": 4690,
+       "custo_100g_proteina": 2161,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.5
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2490,
+       "preco_kg": 4980,
+       "custo_100g_proteina": 2204,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2290,
+       "preco_kg": 4580,
+       "custo_100g_proteina": 2027,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2690,
+       "preco_kg": 5380,
+       "custo_100g_proteina": 2381,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.9
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "A": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 649,
+       "preco_kg": 5192,
+       "custo_100g_proteina": 3265,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 599,
+       "preco_kg": 4792,
+       "custo_100g_proteina": 3014,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 699,
+       "preco_kg": 5592,
+       "custo_100g_proteina": 3517,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.3
+    }
+   ],
+   "vitorias": {
+    "C": 2,
+    "B": 8,
+    "A": 1
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão carioca",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Carne suína, lombo",
+     "Ovo de galinha inteiro",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "C": 24943,
+     "B": 22705,
+     "A": 23840
+    },
+    "melhor_mercado": "B"
+   }
+  },
+  "sem_localizacao": []
+ },
+ "-15.6200,-47.6500,10": {
+  "raio_km": 10,
+  "mercados": [],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": 29.5,
+  "custo_segundo_mercado": 0,
+  "custo_por_km": 65,
+  "proteinas": null,
+  "sem_localizacao": []
+ },
+ "-15.6200,-47.6500,100": {
+  "raio_km": 100,
+  "mercados": [
+   {
+    "id": "A",
+    "nome": "Mercado A",
+    "regiao": "Asa Norte (exemplo)",
+    "distancia_km": 29.5,
+    "custo_ida_volta": 4978,
+    "rumo_graus": 237.6,
+    "carrinho_proteinas": 23840,
+    "custo_real": 28818,
+    "selos": [
+     "mais_perto"
+    ]
+   },
+   {
+    "id": "B",
+    "nome": "Mercado B",
+    "regiao": "Asa Sul (exemplo)",
+    "distancia_km": 34.8,
+    "custo_ida_volta": 5875,
+    "rumo_graus": 231.1,
+    "carrinho_proteinas": 22705,
+    "custo_real": 28580,
+    "selos": [
+     "melhor_preco",
+     "melhor_custo_beneficio"
+    ]
+   },
+   {
+    "id": "C",
+    "nome": "Mercado C",
+    "regiao": "Guará (exemplo)",
+    "distancia_km": 41.8,
+    "custo_ida_volta": 7069,
+    "rumo_graus": 237.3,
+    "carrinho_proteinas": 24943,
+    "custo_real": 32012,
+    "selos": []
+   }
+  ],
+  "total_com_localizacao": 3,
+  "mais_proximo_fora_do_raio_km": null,
+  "custo_segundo_mercado": 5875,
+  "custo_por_km": 65,
+  "proteinas": {
+   "alimentos": [
+    {
+     "alimento_id": "feijao_carioca",
+     "alimento": "Feijão carioca",
+     "grupo": "leguminosas",
+     "proteina_100g": 20,
+     "precos": {
+      "A": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 400,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 425,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Feijão carioca — 1 kg",
+       "preco": 749,
+       "preco_kg": 749,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.8
+    },
+    {
+     "alimento_id": "feijao_preto",
+     "alimento": "Feijão preto",
+     "grupo": "leguminosas",
+     "proteina_100g": 21.3,
+     "precos": {
+      "A": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 849,
+       "preco_kg": 849,
+       "custo_100g_proteina": 399,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Feijão preto — 1 kg",
+       "preco": 799,
+       "preco_kg": 799,
+       "custo_100g_proteina": 375,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 5.9
+    },
+    {
+     "alimento_id": "frango_coxa",
+     "alimento": "Frango, coxa com pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 17.1,
+     "precos": {
+      "A": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1390,
+       "preco_kg": 1390,
+       "custo_100g_proteina": 813,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1299,
+       "preco_kg": 1299,
+       "custo_100g_proteina": 760,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Coxa de frango — 1 kg",
+       "preco": 1449,
+       "preco_kg": 1449,
+       "custo_100g_proteina": 847,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 10.4
+    },
+    {
+     "alimento_id": "lentilha",
+     "alimento": "Lentilha",
+     "grupo": "leguminosas",
+     "proteina_100g": 23.2,
+     "precos": {
+      "A": {
+       "produto": "Lentilha — 500 g",
+       "preco": 899,
+       "preco_kg": 1798,
+       "custo_100g_proteina": 775,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lentilha — 500 g",
+       "preco": 949,
+       "preco_kg": 1898,
+       "custo_100g_proteina": 818,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "A",
+     "economia_vs_mais_caro_pct": 5.3
+    },
+    {
+     "alimento_id": "frango_peito",
+     "alimento": "Frango, peito sem pele",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.5,
+     "precos": {
+      "A": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1990,
+       "preco_kg": 1990,
+       "custo_100g_proteina": 926,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 1849,
+       "preco_kg": 1849,
+       "custo_100g_proteina": 860,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Peito de frango — 1 kg",
+       "preco": 2190,
+       "preco_kg": 2190,
+       "custo_100g_proteina": 1019,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 15.6
+    },
+    {
+     "alimento_id": "lombo_porco",
+     "alimento": "Carne suína, lombo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2790,
+       "preco_kg": 2790,
+       "custo_100g_proteina": 1235,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2990,
+       "preco_kg": 2990,
+       "custo_100g_proteina": 1323,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Lombo suíno — 1 kg",
+       "preco": 2649,
+       "preco_kg": 2649,
+       "custo_100g_proteina": 1172,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "C",
+     "economia_vs_mais_caro_pct": 11.4
+    },
+    {
+     "alimento_id": "ovo",
+     "alimento": "Ovo de galinha inteiro",
+     "grupo": "proteina_animal",
+     "proteina_100g": 13,
+     "precos": {
+      "A": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2490,
+       "preco_kg": 1660,
+       "custo_100g_proteina": 1277,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Ovos — 30 unidades (~1,5 kg)",
+       "preco": 2290,
+       "preco_kg": 1527,
+       "custo_100g_proteina": 1174,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Ovos — 12 unidades (~600 g)",
+       "preco": 999,
+       "preco_kg": 1665,
+       "custo_100g_proteina": 1281,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.3
+    },
+    {
+     "alimento_id": "leite",
+     "alimento": "Leite de vaca integral",
+     "grupo": "laticinios",
+     "proteina_100g": 2.9,
+     "precos": {
+      "A": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 549,
+       "preco_kg": 549,
+       "custo_100g_proteina": 1893,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 529,
+       "preco_kg": 529,
+       "custo_100g_proteina": 1824,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Leite integral UHT — 1 L",
+       "preco": 579,
+       "preco_kg": 579,
+       "custo_100g_proteina": 1997,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.6
+    },
+    {
+     "alimento_id": "patinho",
+     "alimento": "Carne bovina, patinho moído",
+     "grupo": "proteina_animal",
+     "proteina_100g": 21.7,
+     "precos": {
+      "A": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4490,
+       "preco_kg": 4490,
+       "custo_100g_proteina": 2069,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4290,
+       "preco_kg": 4290,
+       "custo_100g_proteina": 1977,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Patinho moído — 1 kg",
+       "preco": 4690,
+       "preco_kg": 4690,
+       "custo_100g_proteina": 2161,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 8.5
+    },
+    {
+     "alimento_id": "mucarela",
+     "alimento": "Queijo muçarela",
+     "grupo": "laticinios",
+     "proteina_100g": 22.6,
+     "precos": {
+      "A": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2490,
+       "preco_kg": 4980,
+       "custo_100g_proteina": 2204,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2290,
+       "preco_kg": 4580,
+       "custo_100g_proteina": 2027,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Queijo muçarela fatiado — 500 g",
+       "preco": 2690,
+       "preco_kg": 5380,
+       "custo_100g_proteina": 2381,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.9
+    },
+    {
+     "alimento_id": "sardinha",
+     "alimento": "Sardinha em conserva em óleo",
+     "grupo": "proteina_animal",
+     "proteina_100g": 15.9,
+     "precos": {
+      "A": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 649,
+       "preco_kg": 5192,
+       "custo_100g_proteina": 3265,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "B": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 599,
+       "preco_kg": 4792,
+       "custo_100g_proteina": 3014,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      },
+      "C": {
+       "produto": "Sardinha em lata — 125 g",
+       "preco": 699,
+       "preco_kg": 5592,
+       "custo_100g_proteina": 3517,
+       "data": "2026-10-20",
+       "fonte": "exemplo"
+      }
+     },
+     "melhor_mercado": "B",
+     "economia_vs_mais_caro_pct": 14.3
+    }
+   ],
+   "vitorias": {
+    "A": 1,
+    "B": 8,
+    "C": 2
+   },
+   "carrinho": {
+    "itens": [
+     "Feijão carioca",
+     "Frango, coxa com pele",
+     "Frango, peito sem pele",
+     "Carne suína, lombo",
+     "Ovo de galinha inteiro",
+     "Leite de vaca integral",
+     "Carne bovina, patinho moído",
+     "Queijo muçarela",
+     "Sardinha em conserva em óleo"
+    ],
+    "total_por_mercado": {
+     "A": 23840,
+     "B": 22705,
+     "C": 24943
+    },
+    "melhor_mercado": "B"
+   }
+  },
+  "sem_localizacao": []
+ }
+}

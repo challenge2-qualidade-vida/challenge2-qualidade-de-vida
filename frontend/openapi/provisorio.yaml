@@ -1,0 +1,702 @@
+# CONTRATO PROVISÓRIO do frontend com a API do grupo.
+# Escrito a partir do que as telas usam hoje no protótipo (src/web e src/economia/api.py),
+# só até o backend publicar o OpenAPI real. Quando ele existir, troque este arquivo pelo
+# esquema do FastAPI e rode `npm run tipos-api`. As diferenças para o contrato do grupo
+# (docs/arquitetura/fluxos-e-contratos.md, na main) estão em frontend/README.md.
+#
+# Regras: rotas sob /api/v1; dinheiro em centavos (inteiro); erros em Problem Details.
+openapi: 3.1.0
+info:
+  title: EconoMIA (contrato provisório do frontend)
+  version: 0.1.0-provisorio
+servers:
+  - url: /api/v1
+security:
+  - tokenDeAcesso: []
+
+paths:
+  /auth/cadastro:
+    post:
+      summary: Cria a conta e já abre a sessão
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PedidoDeCadastro" }
+      responses:
+        "201": { $ref: "#/components/responses/Sessao" }
+        default: { $ref: "#/components/responses/Problema" }
+  /auth/login:
+    post:
+      summary: Entra com e-mail e senha
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PedidoDeLogin" }
+      responses:
+        "200": { $ref: "#/components/responses/Sessao" }
+        default: { $ref: "#/components/responses/Problema" }
+  /auth/renovar:
+    post:
+      summary: Troca o token de renovação (cookie httpOnly de 7 dias) por um novo token de acesso de 15 minutos
+      security: []
+      responses:
+        "200": { $ref: "#/components/responses/Sessao" }
+        default: { $ref: "#/components/responses/Problema" }
+  /auth/sair:
+    post:
+      summary: Encerra a sessão e apaga o cookie de renovação
+      responses:
+        "204": { description: Sessão encerrada }
+        default: { $ref: "#/components/responses/Problema" }
+
+  /opcoes:
+    get:
+      summary: Mercados, restrições, alimentos e períodos do formulário
+      responses:
+        "200":
+          description: Opções
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Opcoes" }
+        default: { $ref: "#/components/responses/Problema" }
+  /precos:
+    get:
+      summary: Tabela de preços por produto e estabelecimento
+      responses:
+        "200":
+          description: Tabela
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TabelaDePrecos" }
+        default: { $ref: "#/components/responses/Problema" }
+  /creditos:
+    get:
+      summary: Créditos das fotos dos alimentos
+      responses:
+        "200":
+          description: Créditos
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/CreditoDeFoto" }
+        default: { $ref: "#/components/responses/Problema" }
+  /configuracoes:
+    get:
+      summary: Limites das configurações (raio, custo por km, ordenação)
+      responses:
+        "200":
+          description: Limites
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LimitesDeConfiguracao" }
+        default: { $ref: "#/components/responses/Problema" }
+  /regioes:
+    get:
+      summary: Regiões do DF usadas como ponto de partida
+      responses:
+        "200":
+          description: Regiões
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Regiao" }
+        default: { $ref: "#/components/responses/Problema" }
+  /llm:
+    get:
+      summary: Modelo de linguagem em uso
+      responses:
+        "200":
+          description: Estado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EstadoDoLlm" }
+        default: { $ref: "#/components/responses/Problema" }
+
+  /cestas:
+    post:
+      summary: Monta a cesta mais barata que cumpre as metas (no grupo, PlanoDeCompras)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PedidoDeCesta" }
+      responses:
+        "200":
+          description: Plano
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PlanoDeCesta" }
+        default: { $ref: "#/components/responses/Problema" }
+  /cestas/ultima:
+    get:
+      summary: Última cesta montada pela pessoa (dados salvos na conta)
+      responses:
+        "200":
+          description: Última cesta
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UltimaCesta" }
+        "404": { $ref: "#/components/responses/Problema" }
+        default: { $ref: "#/components/responses/Problema" }
+  /cardapios:
+    post:
+      summary: Cardápio com os alimentos da cesta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PedidoDeCardapio" }
+      responses:
+        "200":
+          description: Cardápio
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RespostaDeCardapio" }
+        default: { $ref: "#/components/responses/Problema" }
+
+  /mercados/proximos:
+    get:
+      summary: Estabelecimentos com preço perto de um ponto (fora do MVP, flag "perto")
+      parameters:
+        - { name: lat, in: query, required: true, schema: { type: number } }
+        - { name: lon, in: query, required: true, schema: { type: number } }
+        - { name: raio_km, in: query, required: true, schema: { type: number } }
+        - { name: custo_por_km, in: query, required: true, description: Centavos por km, schema: { type: integer } }
+      responses:
+        "200":
+          description: Mercados
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MercadosProximos" }
+        default: { $ref: "#/components/responses/Problema" }
+  /mercados/mapa:
+    get:
+      summary: Supermercados do OpenStreetMap perto de um ponto (fora do MVP, flag "perto")
+      parameters:
+        - { name: lat, in: query, required: true, schema: { type: number } }
+        - { name: lon, in: query, required: true, schema: { type: number } }
+        - { name: raio_km, in: query, required: true, schema: { type: number } }
+      responses:
+        "200":
+          description: Supermercados
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SupermercadosDoMapa" }
+        default: { $ref: "#/components/responses/Problema" }
+
+  /notas:
+    post:
+      summary: Lê uma nota fiscal pela foto ou pelo link do QR code (no grupo, a leitura é assíncrona, com 202)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                arquivo: { type: string, format: binary }
+          application/json:
+            schema:
+              type: object
+              required: [url]
+              properties:
+                url: { type: string }
+      responses:
+        "200":
+          description: Nota lida, pronta para revisão
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LeituraDeNota" }
+        default: { $ref: "#/components/responses/Problema" }
+  /notas/revisao:
+    post:
+      summary: Salva os preços revisados da nota
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RevisaoDeNota" }
+      responses:
+        "200":
+          description: Preços salvos
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [salvos]
+                properties:
+                  salvos: { type: integer }
+        default: { $ref: "#/components/responses/Problema" }
+
+  /conversas:
+    post:
+      summary: Abre uma conversa com o orquestrador
+      responses:
+        "201":
+          description: Conversa criada
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [id]
+                properties:
+                  id: { type: string }
+        default: { $ref: "#/components/responses/Problema" }
+  /conversas/{id}/mensagens:
+    post:
+      summary: Envia um pedido. A resposta vem em SSE com os eventos texto, blocos, tarefa, erro e fim
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [texto]
+              properties:
+                texto: { type: string, maxLength: 1000 }
+      responses:
+        "200":
+          description: Stream de eventos. O evento "blocos" traz um BlocosDaResposta em JSON.
+          content:
+            text/event-stream:
+              schema: { type: string }
+        default: { $ref: "#/components/responses/Problema" }
+
+  /notificacoes:
+    get:
+      summary: Notificações da pessoa, consultadas periodicamente
+      responses:
+        "200":
+          description: Notificações
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Notificacao" }
+        default: { $ref: "#/components/responses/Problema" }
+  /notificacoes/{id}/lida:
+    post:
+      summary: Marca a notificação como lida
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "204": { description: Marcada }
+        default: { $ref: "#/components/responses/Problema" }
+
+components:
+  securitySchemes:
+    tokenDeAcesso:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Sessao:
+      description: Sessão aberta. O token de renovação vem num cookie httpOnly.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Sessao" }
+    Problema:
+      description: Erro no formato Problem Details (RFC 9457)
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problema" }
+
+  schemas:
+    Problema:
+      type: object
+      required: [title, status]
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string }
+
+    PedidoDeCadastro:
+      type: object
+      required: [nome, email, senha]
+      properties:
+        nome: { type: string }
+        email: { type: string, format: email }
+        senha: { type: string, minLength: 8 }
+    PedidoDeLogin:
+      type: object
+      required: [email, senha]
+      properties:
+        email: { type: string, format: email }
+        senha: { type: string }
+    Sessao:
+      type: object
+      required: [token_acesso, expira_em_s, pessoa]
+      properties:
+        token_acesso: { type: string }
+        expira_em_s: { type: integer, description: "Vida do token de acesso, em segundos (900)" }
+        pessoa:
+          type: object
+          required: [nome, email]
+          properties:
+            nome: { type: string }
+            email: { type: string }
+
+    Estabelecimento:
+      type: object
+      required: [id, nome, regiao]
+      properties:
+        id: { type: string }
+        nome: { type: string }
+        regiao: { type: string }
+        lat: { type: [number, "null"] }
+        lon: { type: [number, "null"] }
+    ItemDeOpcao:
+      type: object
+      required: [id, nome]
+      properties:
+        id: { type: string }
+        nome: { type: string }
+    Opcoes:
+      type: object
+      required: [mercados, restricoes, alimentos, periodos]
+      properties:
+        mercados: { type: array, items: { $ref: "#/components/schemas/Estabelecimento" } }
+        restricoes: { type: array, items: { $ref: "#/components/schemas/ItemDeOpcao" } }
+        alimentos: { type: array, items: { $ref: "#/components/schemas/ItemDeOpcao" } }
+        periodos:
+          type: array
+          items:
+            type: object
+            required: [id, dias]
+            properties:
+              id: { type: string }
+              dias: { type: integer }
+        aviso_dados: { type: [string, "null"] }
+
+    PrecoDeProduto:
+      type: object
+      required: [preco, preco_kg, data, fonte]
+      properties:
+        preco: { type: integer, description: Centavos }
+        preco_kg: { type: integer, description: Centavos por kg }
+        data: { type: string, format: date }
+        fonte: { type: string }
+    TabelaDePrecos:
+      type: object
+      required: [mercados, produtos]
+      properties:
+        mercados: { type: array, items: { $ref: "#/components/schemas/Estabelecimento" } }
+        produtos:
+          type: array
+          items:
+            type: object
+            required: [produto_id, produto, alimento_id, precos]
+            properties:
+              produto_id: { type: string }
+              produto: { type: string }
+              alimento_id: { type: string }
+              alimento: { type: string }
+              precos:
+                type: object
+                additionalProperties: { $ref: "#/components/schemas/PrecoDeProduto" }
+
+    CreditoDeFoto:
+      type: object
+      required: [alimento_id, alimento, titulo, pagina, autor, licenca]
+      properties:
+        alimento_id: { type: string }
+        alimento: { type: string }
+        titulo: { type: string }
+        pagina: { type: string }
+        autor: { type: string }
+        licenca: { type: string }
+        licenca_url: { type: [string, "null"] }
+
+    Faixa:
+      type: object
+      required: [padrao, minimo, maximo]
+      properties:
+        padrao: { type: number }
+        minimo: { type: number }
+        maximo: { type: number }
+    LimitesDeConfiguracao:
+      type: object
+      required: [raio_km, custo_por_km, raio_maximo_mapa_km, ordenacao]
+      properties:
+        raio_km: { $ref: "#/components/schemas/Faixa" }
+        custo_por_km: { $ref: "#/components/schemas/Faixa", description: Centavos por km }
+        raio_maximo_mapa_km: { type: number }
+        ordenacao:
+          type: object
+          required: [padrao, opcoes]
+          properties:
+            padrao: { type: string }
+            opcoes: { type: array, items: { type: string } }
+
+    Regiao:
+      type: object
+      required: [id, nome, lat, lon]
+      properties:
+        id: { type: string }
+        nome: { type: string }
+        lat: { type: number }
+        lon: { type: number }
+
+    EstadoDoLlm:
+      type: object
+      required: [ativo]
+      properties:
+        ativo: { type: boolean }
+        provedor: { type: string }
+        modelo: { type: string }
+
+    IngredienteEmCasa:
+      type: object
+      required: [alimento, gramas]
+      properties:
+        alimento: { type: string }
+        gramas: { type: integer }
+    PedidoDeCesta:
+      type: object
+      required: [pessoas, periodo, restricoes, sem_alimentos, em_casa]
+      properties:
+        orcamento: { type: [integer, "null"], description: Centavos; nulo = sem limite }
+        pessoas: { type: integer, minimum: 1, maximum: 20 }
+        periodo: { type: string, enum: [semana, quinzena, mes] }
+        restricoes: { type: array, items: { type: string } }
+        custo_deslocamento: { type: integer, description: "Centavos (fora do MVP, flag deslocamento)" }
+        mercados: { type: array, items: { type: string } }
+        sem_alimentos: { type: array, items: { type: string } }
+        em_casa: { type: array, items: { $ref: "#/components/schemas/IngredienteEmCasa" } }
+    ItemDaCesta:
+      type: object
+      required: [produto_id, produto, alimento_id, alimento, grupo, mercado_id, mercado, quantidade, preco_unitario, subtotal, preco_kg, data_preco, fonte_preco]
+      properties:
+        produto_id: { type: string }
+        produto: { type: string }
+        alimento_id: { type: string }
+        alimento: { type: string }
+        grupo: { type: string }
+        mercado_id: { type: string }
+        mercado: { type: string }
+        quantidade: { type: integer }
+        preco_unitario: { type: integer, description: Centavos }
+        subtotal: { type: integer, description: Centavos }
+        preco_kg: { type: integer, description: Centavos por kg }
+        data_preco: { type: string, format: date }
+        fonte_preco: { type: string }
+    MetasNutricionais:
+      type: object
+      required: [kcal, proteina_g, fibra_g, flv_g]
+      properties:
+        kcal: { type: number }
+        proteina_g: { type: number }
+        fibra_g: { type: number }
+        flv_g: { type: number }
+    Cesta:
+      type: object
+      required: [mercados, itens, custo_total, obtido, metas, dentro_do_orcamento, custo_por_mercado, custo_por_1000_kcal, custo_por_g_proteina]
+      properties:
+        mercados: { type: array, items: { type: string } }
+        itens: { type: array, items: { $ref: "#/components/schemas/ItemDaCesta" } }
+        custo_total: { type: integer, description: Centavos }
+        obtido: { $ref: "#/components/schemas/MetasNutricionais" }
+        metas: { $ref: "#/components/schemas/MetasNutricionais" }
+        dentro_do_orcamento: { type: boolean }
+        custo_por_mercado: { type: object, additionalProperties: { type: integer }, description: Centavos por estabelecimento }
+        custo_por_1000_kcal: { type: integer, description: Centavos }
+        custo_por_g_proteina: { type: integer, description: Centavos }
+    PlanoDeCesta:
+      type: object
+      required: [recomendacao, explicacao]
+      properties:
+        recomendacao: { type: [string, "null"], enum: [um, dois, null] }
+        cesta_recomendada: { oneOf: [{ $ref: "#/components/schemas/Cesta" }, { type: "null" }] }
+        um_mercado: { oneOf: [{ $ref: "#/components/schemas/Cesta" }, { type: "null" }] }
+        dois_mercados: { oneOf: [{ $ref: "#/components/schemas/Cesta" }, { type: "null" }] }
+        custo_deslocamento: { type: integer, description: Centavos }
+        minimo_necessario: { type: [integer, "null"], description: Centavos }
+        explicacao: { type: array, items: { type: string } }
+    UltimaCesta:
+      type: object
+      required: [plano, pedido, quando]
+      properties:
+        plano: { $ref: "#/components/schemas/PlanoDeCesta" }
+        pedido: { $ref: "#/components/schemas/PedidoDeCesta" }
+        quando: { type: string, format: date-time }
+
+    PedidoDeCardapio:
+      type: object
+      required: [alimentos, restricoes, dias]
+      properties:
+        alimentos: { type: array, items: { type: string } }
+        restricoes: { type: array, items: { type: string } }
+        dias: { type: integer, enum: [3, 7] }
+    EtapaDeAgente:
+      type: object
+      required: [agente, acao]
+      properties:
+        agente: { type: string }
+        acao: { type: string }
+    RefeicaoDoCardapio:
+      type: object
+      required: [titulo, receita, alimentos, ingredientes, preparo]
+      properties:
+        titulo: { type: string }
+        receita: { type: string }
+        alimentos: { type: array, items: { type: string } }
+        ingredientes: { type: array, items: { type: string } }
+        preparo: { type: string }
+    RespostaDeCardapio:
+      type: object
+      required: [resposta]
+      properties:
+        resposta: { type: string }
+        etapas: { type: array, items: { $ref: "#/components/schemas/EtapaDeAgente" } }
+        dados:
+          type: [object, "null"]
+          properties:
+            cardapio:
+              type: object
+              required: [dias, nao_usados]
+              properties:
+                dias: { type: array, items: { type: array, items: { $ref: "#/components/schemas/RefeicaoDoCardapio" } } }
+                nao_usados: { type: array, items: { type: string } }
+            nomes_receitas: { type: object, additionalProperties: { type: string } }
+
+    MercadoProximo:
+      type: object
+      required: [id, nome, regiao, distancia_km, custo_ida_volta, rumo_graus, selos]
+      properties:
+        id: { type: string }
+        nome: { type: string }
+        regiao: { type: string }
+        distancia_km: { type: number }
+        custo_ida_volta: { type: integer, description: Centavos }
+        rumo_graus: { type: number }
+        carrinho_proteinas: { type: [integer, "null"], description: Centavos }
+        custo_real: { type: [integer, "null"], description: Centavos }
+        selos: { type: array, items: { type: string, enum: [mais_perto, melhor_preco, melhor_custo_beneficio] } }
+    PrecoDeProteina:
+      type: object
+      required: [preco_kg, custo_100g_proteina, data, fonte]
+      properties:
+        preco_kg: { type: integer, description: Centavos por kg }
+        custo_100g_proteina: { type: integer, description: Centavos }
+        data: { type: string, format: date }
+        fonte: { type: string }
+    RankingDeProteinas:
+      type: object
+      required: [carrinho, alimentos]
+      properties:
+        carrinho:
+          type: object
+          required: [itens, total_por_mercado]
+          properties:
+            itens: { type: array, items: { type: string } }
+            total_por_mercado: { type: object, additionalProperties: { type: integer } }
+            melhor_mercado: { type: [string, "null"] }
+        alimentos:
+          type: array
+          items:
+            type: object
+            required: [alimento_id, alimento, grupo, proteina_100g, precos, melhor_mercado, economia_vs_mais_caro_pct]
+            properties:
+              alimento_id: { type: string }
+              alimento: { type: string }
+              grupo: { type: string }
+              proteina_100g: { type: number }
+              precos: { type: object, additionalProperties: { $ref: "#/components/schemas/PrecoDeProteina" } }
+              melhor_mercado: { type: string }
+              economia_vs_mais_caro_pct: { type: number }
+    MercadosProximos:
+      type: object
+      required: [raio_km, mercados, total_com_localizacao, custo_segundo_mercado]
+      properties:
+        raio_km: { type: number }
+        mercados: { type: array, items: { $ref: "#/components/schemas/MercadoProximo" } }
+        total_com_localizacao: { type: integer }
+        mais_proximo_fora_do_raio_km: { type: [number, "null"] }
+        custo_segundo_mercado: { type: integer, description: Centavos }
+        proteinas: { oneOf: [{ $ref: "#/components/schemas/RankingDeProteinas" }, { type: "null" }] }
+    SupermercadosDoMapa:
+      type: object
+      required: [supermercados, fonte]
+      properties:
+        fonte: { type: string }
+        supermercados:
+          type: array
+          items:
+            type: object
+            required: [nome, distancia_km, tem_precos]
+            properties:
+              nome: { type: string }
+              distancia_km: { type: number }
+              tem_precos: { type: boolean }
+
+    ItemExtraido:
+      type: object
+      required: [descricao, quantidade, unidade, valor_unitario, valor_total, confianca]
+      properties:
+        descricao: { type: string }
+        quantidade: { type: number }
+        unidade: { type: string }
+        valor_unitario: { type: integer, description: Centavos }
+        valor_total: { type: integer, description: Centavos }
+        preco_embalagem: { type: [integer, "null"], description: Centavos }
+        produto_id: { type: [string, "null"] }
+        confianca: { type: string, enum: [alta, revisar] }
+    LeituraDeNota:
+      type: object
+      required: [emitente, cnpj, data, itens]
+      properties:
+        emitente: { type: string }
+        cnpj: { type: string }
+        data: { type: string, format: date }
+        itens: { type: array, items: { $ref: "#/components/schemas/ItemExtraido" } }
+    RevisaoDeNota:
+      type: object
+      required: [emitente, cnpj, data, itens]
+      properties:
+        emitente: { type: string }
+        cnpj: { type: string }
+        data: { type: string, format: date }
+        itens:
+          type: array
+          items:
+            type: object
+            required: [produto_id, preco]
+            properties:
+              produto_id: { type: string }
+              preco: { type: integer, description: Centavos }
+
+    FonteCitada:
+      type: object
+      required: [fonte]
+      properties:
+        fonte: { type: string }
+    BlocosDaResposta:
+      type: object
+      description: Conteúdo do evento SSE "blocos"
+      properties:
+        agentes: { type: array, items: { $ref: "#/components/schemas/EtapaDeAgente" } }
+        ferramentas_usadas: { type: array, items: { type: string } }
+        fontes: { type: array, items: { $ref: "#/components/schemas/FonteCitada" } }
+        aviso: { type: [string, "null"] }
+        dados: { type: object, additionalProperties: true }
+
+    Notificacao:
+      type: object
+      required: [id, tipo, texto, criada_em, lida]
+      properties:
+        id: { type: string }
+        tipo: { type: string, enum: [busca_de_receitas_concluida, nota_fiscal_lida, nota_repetida] }
+        texto: { type: string }
+        criada_em: { type: string, format: date-time }
+        lida: { type: boolean }

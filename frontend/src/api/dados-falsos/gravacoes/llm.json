@@ -1,0 +1,5 @@
+{
+ "ativo": true,
+ "provedor": "ollama",
+ "modelo": "qwen2.5:7b"
+}

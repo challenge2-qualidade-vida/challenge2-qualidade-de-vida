@@ -1,0 +1,21 @@
+{
+ "raio_km": {
+  "padrao": 10,
+  "minimo": 1,
+  "maximo": 100
+ },
+ "custo_por_km": {
+  "padrao": 65,
+  "minimo": 20,
+  "maximo": 200
+ },
+ "raio_maximo_mapa_km": 10,
+ "ordenacao": {
+  "padrao": "custo_beneficio",
+  "opcoes": [
+   "distancia",
+   "preco",
+   "custo_beneficio"
+  ]
+ }
+}

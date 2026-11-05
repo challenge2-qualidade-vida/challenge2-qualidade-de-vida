@@ -47,3 +47,22 @@ Registre aqui cada decisão importante e a justificativa (restrição do desafio
 | 05/11/2026 | Gerar os alimentos da cena 3D com FLUX.1 schnell, em vez das fotos do projeto ou dos modelos do Kenney | Fotos de `img/alimentos`; Kenney Food Kit; Poly Pizza | As fotos são quadradas e têm fundo. Os modelos gratuitos são facetados, o que o briefing critica. As imagens geradas combinam com os gatos e pesam 193 KB | Guilherme |
 | 05/11/2026 | Deixar o 3D sempre ligado e tirar a opção de Configurações | Manter Automático, Ligado e Desligado | Pedido do Guilherme. O custo é mais bateria e dados em aparelhos simples, que só recebem uma cena mais leve | Guilherme |
 | 05/11/2026 | Deixar só o tema escuro e tirar a opção de Aparência | Manter Automático, Claro e Escuro | Pedido do Guilherme. Quem prefere tela clara perde a opção | Guilherme |
+
+## Frontend em React (formato da `main`)
+
+Decisões da recriação do frontend em `frontend/`, no formato de tabela da `main`, com a coluna de validação. As justificativas foram propostas na tarefa e ainda precisam ser confirmadas pela equipe.
+
+| Data | Decisão | Alternativas consideradas | Justificativa | Quem decidiu | Validação |
+|------|---------|---------------------------|---------------|--------------|-----------|
+| 05/11/2026 | Recriar o site de `src/web/` em `frontend/`, com React, Vite e TypeScript, mantendo o visual idêntico | Manter o site em HTML, CSS e JS puros; redesenhar o visual junto | O visual foi aprovado pelo grupo, mas o código não segue as decisões de stack, contrato e organização da `main` | Guilherme | Pendente |
+| 05/11/2026 | Playwright para os testes de comparação visual entre o site antigo e o novo | BackstopJS; Percy e Chromatic (pagos); comparação manual | Gratuito e de código aberto (Apache-2.0), tira capturas em várias larguras e compara pixel a pixel no mesmo comando de teste | Guilherme | Pendente |
+| 05/11/2026 | Vitest para os testes de unidade do frontend | Jest | Usa a mesma configuração do Vite, sem transpilador separado | Guilherme | Pendente |
+| 05/11/2026 | Navegação entre telas por estado do React, sem biblioteca de rotas | React Router; TanStack Router | O site atual troca de tela sem mudar o endereço, e o visual precisa ficar idêntico. Uma biblioteca de rotas pode entrar depois, se o grupo quiser endereços por tela | Guilherme | Pendente |
+| 05/11/2026 | Estado compartilhado com Context e hooks do React, sem biblioteca de estado | Redux Toolkit; Zustand | Poucos dados compartilhados (tela aberta, sessão, configurações, última cesta) | Guilherme | Pendente |
+| 05/11/2026 | Dados falsos por um `fetch` próprio entregue ao openapi-fetch, ligado pela variável `VITE_DADOS_FALSOS` | MSW (Mock Service Worker); servidor falso separado | As telas usam o mesmo cliente tipado nos dois modos, sem service worker nem processo a mais | Guilherme | Pendente |
+| 05/11/2026 | Contrato provisório em `frontend/openapi/provisorio.yaml`, com os campos que as telas usam hoje, até o backend publicar o OpenAPI | Esperar o backend; tipos escritos à mão | O cliente já nasce gerado do OpenAPI, e a troca pelo contrato real é só gerar os tipos de novo | Guilherme | Pendente |
+| 05/11/2026 | Valores em dinheiro no contrato da API como inteiros em centavos | Reais com casas decimais | Segue a regra do `Dinheiro` em centavos do `AGENTS.md` e evita erro de arredondamento | Guilherme | Pendente |
+| 05/11/2026 | Funcionalidades fora do MVP atrás de flags, desligadas por padrão e ligadas pela variável `VITE_FUNCIONALIDADES` | Apagar as telas; deixar tudo ligado | O visual fica pronto para quando o grupo decidir, sem chamar rotas que não existem | Guilherme | Pendente |
+| 05/11/2026 | Token de acesso só na memória e token de renovação em cookie `httpOnly`, definido pelo backend | Os dois tokens no `localStorage` | O JavaScript da página não consegue ler o cookie `httpOnly`, o que reduz o risco de roubo do token | Guilherme | Pendente |
+| 05/11/2026 | Sem modo sem internet (service worker) no frontend novo | `vite-plugin-pwa` | Não está nas decisões do grupo, e o grupo decidiu ter dados salvos no servidor | Guilherme | Pendente |
+| 05/11/2026 | Three.js, GSAP e Lenis como dependências npm | Cópias em `vendor/` | As versões ficam no `package.json` e no lockfile, e o Vite carrega o 3D só quando precisa | Guilherme | Pendente |
