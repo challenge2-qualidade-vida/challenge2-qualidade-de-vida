@@ -58,3 +58,11 @@ Os commits anteriores a 03/11/2026 não seguem este padrão.
 - Não subir dados pessoais reais (LGPD). Use dados públicos ou anonimizados.
 - Toda fonte usada na base de conhecimento deve ser registrada em `data/base-conhecimento/FONTES.md`.
 - Decisões técnicas importantes vão em `docs/decisoes.md`, com a justificativa.
+
+## Endereço do repositório
+
+O GitHub avisa que o repositório mudou para a organização `challenge2-qualidade-vida`. O endereço antigo ainda redireciona. Para atualizar a sua cópia:
+
+```bash
+git remote set-url origin https://github.com/challenge2-qualidade-vida/challenge2-qualidade-de-vida.git
+```
