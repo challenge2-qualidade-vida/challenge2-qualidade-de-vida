@@ -1,5 +1,6 @@
 // Tela aberta. O site troca de tela sem mudar o endereço, como o antigo (decisão em docs/decisoes.md).
 import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
+import { flushSync } from "react-dom";
 import { avisarAba, type NomeDaAba } from "../efeitos/ponte";
 
 interface Navegacao {
@@ -18,8 +19,10 @@ export function ProvedorDeNavegacao({ children, inicial = "inicio" }: { children
   const [perguntaPendente, setPergunta] = useState<string | null>(null);
 
   const irPara = useCallback((nome: NomeDaAba) => {
+    // A tela nova precisa estar desenhada antes de voltar ao topo, como no site antigo,
+    // senão a rolagem suave para no meio da página antiga.
     const trocar = () => {
-      setAba(nome);
+      flushSync(() => setAba(nome));
       avisarAba(nome);
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
