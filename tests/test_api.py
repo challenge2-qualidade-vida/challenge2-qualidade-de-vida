@@ -298,3 +298,10 @@ def test_3d_fica_sempre_ligado_sem_opcao_nas_configuracoes(cliente):
 
 def test_logo_volta_para_o_inicio(cliente):
     assert 'class="marca" data-ir="inicio"' in cliente.get("/").text
+
+
+def test_valores_em_reais_tem_setas_proprias(cliente):
+    pagina = cliente.get("/").text
+    assert 'data-passo="10" aria-label="Aumentar o orçamento em 10 reais"' in pagina
+    assert 'data-passo="-10" aria-label="Diminuir o orçamento em 10 reais"' in pagina
+    assert ".moeda-seta" in cliente.get("/app.js").text

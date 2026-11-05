@@ -77,6 +77,16 @@ document.querySelectorAll("[data-pergunta]").forEach((b) => b.addEventListener("
 }));
 
 // Contador de pessoas (− / +)
+// Setas dos valores em R$: andam em passos redondos, e a partir de 799,92 vão a 800 ou 790.
+document.querySelectorAll(".moeda-seta").forEach((b) => b.addEventListener("click", () => {
+  const campo = b.closest(".moeda").querySelector("input");
+  const passo = Number(b.dataset.passo), tamanho = Math.abs(passo), atual = Number(campo.value) || 0;
+  const proximo = passo > 0 ? Math.floor(atual / tamanho + 1e-9) * tamanho + tamanho : Math.ceil(atual / tamanho - 1e-9) * tamanho - tamanho;
+  campo.value = Math.max(Number(campo.min) || 0, proximo);
+  campo.dispatchEvent(new Event("input", { bubbles: true }));
+  campo.dispatchEvent(new Event("change", { bubbles: true }));
+}));
+
 document.querySelectorAll(".contador-botao").forEach((b) => b.addEventListener("click", () => {
   const campo = $("#form-cesta").pessoas;
   campo.value = Math.min(20, Math.max(1, Number(campo.value || 1) + Number(b.dataset.passo)));

@@ -344,6 +344,29 @@ input:focus, select:focus { outline: none; border-color: var(--marca); }
 .moeda:focus-within { border-color: var(--marca); }
 .moeda span { font-weight: 800; color: var(--suave); }
 .moeda input { border: none; background: transparent; font-size: 1.4rem; font-weight: 800; padding-left: 0; }
+.moeda input, .contador input { appearance: textfield; -moz-appearance: textfield; }
+.moeda input::-webkit-outer-spin-button, .moeda input::-webkit-inner-spin-button,
+.contador input::-webkit-outer-spin-button, .contador input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.moeda-setas { display: flex; flex-direction: column; gap: 3px; flex: none; }
+.moeda-seta {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 25px;
+  padding: 0;
+  border: 1.5px solid var(--borda);
+  background: var(--marca-clara);
+  color: var(--texto);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+.moeda-seta:first-child { border-radius: 12px 12px 5px 5px; }
+.moeda-seta:last-child { border-radius: 5px 5px 12px 12px; }
+.moeda-seta svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.moeda-seta:hover { background: var(--marca); border-color: var(--marca); color: var(--cartao); }
+.moeda-seta:active { transform: scale(0.92); }
+.moeda-seta:focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; }
+@media (pointer: coarse) { .moeda-seta { width: 48px; height: 30px; } }
 
 .contador { display: flex; align-items: center; gap: 10px; }
 .contador input { text-align: center; font-size: 1.4rem; font-weight: 800; max-width: 90px; }
