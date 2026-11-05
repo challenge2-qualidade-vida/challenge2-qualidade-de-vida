@@ -108,13 +108,13 @@ Scripts em `experimentos/gatos3d/`: `gerar_imagem.py`, `recorte.py`, `turma.py` 
 | [Blender](https://www.blender.org) 5.2.3, com Cycles | Primeira versão da Mia. O resultado foi reprovado e os scripts saíram do projeto, mas continuam no histórico do git |
 | [Pollinations](https://pollinations.ai) | Gerador de imagens sem conta. Testado uma vez; veio com marca d'água e qualidade fraca |
 
-## Instalados, mas sem nada no site
+## Instalados, sem nada no site
 
 | Ferramenta | Situação |
 |------------|----------|
 | Plugin [frontend-design](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design) (Claude Code) | Instalado. Serviu de orientação de design no [tópico 24](desenvolvimento/24-visual-3d.md); não adiciona código ao site |
 | [Magic UI](https://magicui.design) (MCP) | Configurado. Nenhum componente usado, porque é feito para React |
-| [21st.dev](https://21st.dev) (MCP `magic`) | Configurado, mas não conecta. Nenhum componente usado, porque é feito para React |
+| [21st.dev](https://21st.dev) (MCP `magic`) | Removido em 05/11/2026: não conectava e nenhum componente foi usado, porque é feito para React |
 
 ## Referências visuais
 
