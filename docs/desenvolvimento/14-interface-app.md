@@ -16,7 +16,7 @@ Não foi possível abrir a página do app na Play Store pela ferramenta de naveg
 | Navegação fixa embaixo | 5 botões: Início, Cesta, **📷 (cupom, botão central destacado)**, Perto, Mia |
 | Mascote que reage | A Mia (😺) fala com o usuário e muda conforme o resultado: 😻 quando a cesta cabe no orçamento, 😿 quando falta dinheiro |
 | Painel inicial com progresso | Anel do **orçamento usado** e 4 anéis das **metas nutricionais** da última cesta |
-| Ações rápidas grandes | 4 cartões coloridos: Montar cesta, Perto de mim, Promoção vale?, Enviar cupom |
+| Ações rápidas grandes | 4 cartões coloridos: Montar cesta, Achar ofertas perto de mim, Essa promoção vale?, Enviar cupom |
 | Conteúdo diário | **Dica do dia** tirada da base (Guia Alimentar e critérios da EconoMIA), sempre com a fonte |
 | Formulário fácil de tocar | Orçamento em destaque, contador − / + para as pessoas, período em botões (semana / 15 dias / mês), restrições como chips, "Mais opções" recolhido |
 | Listas em cartões | A lista de compras virou cartões com emoji do grupo, quantidade × preço, preço/kg e fonte, em vez de tabela larga |
