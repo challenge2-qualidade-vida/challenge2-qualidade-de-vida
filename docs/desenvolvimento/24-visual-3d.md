@@ -12,7 +12,7 @@ O grupo escolheu o caminho de maior impacto, com 3D em várias telas. A referên
 |------|----------------|
 | Início | Chuva de moedas em 3D. Ao rolar, as moedas entram na cesta e viram comida. A Mia entra pulando, e os gatos seguem o mouse |
 | Cesta | **Os alimentos da cesta calculada** caem em uma cesta 3D. Se couber no orçamento, moedas saltam dela. O total sobe contando |
-| Perto | Radar 3D com pinos. É decorativo: os pinos não mostram mercados reais |
+| Perto | Radar 3D com pinos, depois trocado por um mapa em miniatura ([tópico 26](26-abertura-3d.md)). É decorativo: os pinos não mostram mercados reais |
 | Cupom | Cupom 3D com um feixe de leitura |
 | Preços | Moeda grande girando |
 | Mia e Configurações | Poucas moedas nas beiradas, para não atrapalhar a leitura |

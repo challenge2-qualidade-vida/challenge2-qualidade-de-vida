@@ -90,6 +90,19 @@ Refeito em 05/11/2026, depois de pesquisar recibos, papel em 3D e o cupom fiscal
 
 Referências: [recibo térmico da shadcn.io](https://www.shadcn.io/blocks/features-receipt-itemized-printout), [papel 3D enrolado](https://www.ui-skills.com/skills/mengto/3d-paper-material), [simulações de papel de recibo](https://kimi-k26-ollama.pages.dev/physics/PROMPT.md), [campos do DANFE](https://www.nuvemshop.com.br/blog/o-que-e-danfe/) e [linha de leitura](https://codemyui.com/barcode-scan-line-animation-pure-css/). Só serviram de ideia; nenhum código ou imagem delas está no projeto. A simulação física do papel ficou de fora, porque uma curvatura calculada é mais leve e bastou para o efeito.
 
+## Mapa da tela Perto
+
+Refeito em 05/11/2026, depois de pesquisar mapas estilizados, marcadores de apps de entrega e os princípios de cartografia. O radar de cones virou uma cidade em miniatura, toda criada por código em `cena3d.js`:
+
+- **Chão:** pintado em canvas, com ruas claras, dois eixos largos em cruz e um lago curvo, um aceno a Brasília. Água e parque têm cores bem diferentes, e só os marcadores têm cor forte.
+- **Volume:** prédios e árvores são peças repetidas com `InstancedMesh`, para pesar pouco.
+- **Marcadores:** você é um ponto azul, e os pinos são gotas com um carrinho. O destaque é verde e maior, então não depende só da cor.
+- **Animação:** ondas saem da sua posição, um leque gira e cada pino salta e solta um eco quando ele passa. Uma rota tracejada anda até o pino verde. Com menos movimento pedido, tudo fica parado.
+
+**É ilustração.** Os pinos não mostram mercados reais, o traçado não é o mapa real de Brasília e o pino verde não indica um mercado de verdade. Os mercados aparecem na lista abaixo do mapa.
+
+Referências: [cartografia da Mapbox](https://mcpservers.org/pt-BR/agent-skills/mapbox/mapbox-cartography), [crítica às cores do Google Maps](https://www.techradar.com/computing/software/google-maps-now-looks-more-like-apple-maps-and-a-lot-of-people-arent-happy), [marcadores personalizados](https://www.digitalthriveai.com/en-ca/resources/how-to/web-design/building-custom-react-native-map-markers/), [movimento suave de marcadores](https://vp0.com/blogs/live-tracking-map-marker-animation-react-native), [elementos de mapa isométrico](https://stock.adobe.com/images/isometric-3d-map-elements-set-with-minimalist-buildings-trees-and-location-pins-for-a-city-constructor-or-navigation-app-design/1689285685) e [cidade procedural em Three.js](https://dev.to/bingkahu/building-the-round-city-of-baghdad-in-threejs-a-journey-through-history-and-performance-15pf). Só serviram de ideia; nenhum código ou imagem delas está no projeto.
+
 ## Como foi testado
 
 | Teste | Resultado |
