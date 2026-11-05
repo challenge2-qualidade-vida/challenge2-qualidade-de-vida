@@ -24,13 +24,30 @@ const COR = {
   feijao: 0x6d3f25, preto: 0x2a2a33, macarrao: 0xe8c04f, carne: 0xa8413a, frango: 0xe0b483, lata: 0xb9c2c9, leite: 0xf4f6f4,
 };
 
-const FUNDO_MOEDA = (ctx, t) => {
-  ctx.fillStyle = "#f5cf5f"; ctx.fillRect(0, 0, t, t);
-  ctx.strokeStyle = "#c98f1c"; ctx.lineWidth = t * 0.05;
-  ctx.beginPath(); ctx.arc(t / 2, t / 2, t * 0.4, 0, 7); ctx.stroke();
-  ctx.fillStyle = "#b87f12"; ctx.font = `800 ${t * 0.55}px Nunito, sans-serif`;
-  ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("$", t / 2, t * 0.53);
-};
+// Moedas da EconoMIA: inspiradas nas do real, sem copiar o desenho oficial.
+const MOEDAS = [
+  { peso: 0.5, escala: 1, serrilha: true, aro: "#e2b13c", miolo: "#dfe3e6", desenho: "real" },
+  { peso: 0.3, escala: 0.92, serrilha: true, aro: "#e6b23f", miolo: "#e6b23f", desenho: "real" },
+  { peso: 0.2, escala: 0.8, serrilha: false, aro: "#cf8450", miolo: "#cf8450", desenho: "pata" },
+];
+
+// O relevo é pintado em cinza: quanto mais claro, mais alto.
+function pintarRelevo(x, t, desenho, sombra) {
+  const c = t / 2;
+  x.fillStyle = sombra; x.fillRect(0, 0, t, t);
+  x.strokeStyle = "#fff"; x.lineWidth = t * 0.025;
+  x.beginPath(); x.arc(c, c, t * 0.345, 0, 7); x.stroke();
+  x.fillStyle = "#fff";
+  if (desenho === "real") {
+    x.font = `800 ${t * 0.3}px Nunito, sans-serif`;
+    x.textAlign = "center"; x.textBaseline = "middle";
+    x.fillText("R$", c, c * 1.03);
+  } else {
+    [[0, 0.09, 0.15, 0.125], [-0.17, -0.07, 0.055, 0.075], [-0.06, -0.15, 0.055, 0.08], [0.06, -0.15, 0.055, 0.08], [0.17, -0.07, 0.055, 0.075]].forEach(([px, py, rx, ry]) => {
+      x.beginPath(); x.ellipse(c + px * t, c + py * t, rx * t, ry * t, 0, 0, 7); x.fill();
+    });
+  }
+}
 
 async function iniciar() {
   if (!efeitosPermitidos()) return;
@@ -70,11 +87,14 @@ async function iniciar() {
 
   // Luz: um ambiente pintado em canvas dá brilho de metal às moedas sem baixar imagem.
   const ceu = document.createElement("canvas");
-  ceu.width = 64; ceu.height = 32;
+  ceu.width = 256; ceu.height = 128;
   const c = ceu.getContext("2d");
-  const grad = c.createLinearGradient(0, 0, 0, 32);
-  grad.addColorStop(0, "#fff4d6"); grad.addColorStop(0.5, "#d9b64f"); grad.addColorStop(1, "#463708");
-  c.fillStyle = grad; c.fillRect(0, 0, 64, 32);
+  const grad = c.createLinearGradient(0, 0, 0, 128);
+  grad.addColorStop(0, "#fff4d6"); grad.addColorStop(0.5, "#d9b64f"); grad.addColorStop(1, "#6b5614");
+  c.fillStyle = grad; c.fillRect(0, 0, 256, 128);
+  // Faixas de luz forte, que fazem o reflexo deslizar quando a moeda gira.
+  c.fillStyle = "#ffffff";
+  c.fillRect(30, 18, 46, 30); c.fillRect(150, 30, 26, 56); c.fillRect(205, 12, 34, 20);
   const texturaCeu = new THREE.CanvasTexture(ceu);
   texturaCeu.mapping = THREE.EquirectangularReflectionMapping;
   texturaCeu.colorSpace = THREE.SRGBColorSpace;
@@ -121,18 +141,71 @@ async function iniciar() {
     return grupo;
   }
 
-  const texturaMoeda = (() => {
-    const t = document.createElement("canvas");
-    t.width = t.height = 128;
-    FUNDO_MOEDA(t.getContext("2d"), 128);
-    const tx = new THREE.CanvasTexture(t);
-    tx.colorSpace = THREE.SRGBColorSpace;
-    return tx;
-  })();
-  const geoMoeda = new THREE.CylinderGeometry(0.5, 0.5, 0.09, 24);
-  const matLateral = new THREE.MeshStandardMaterial({ color: COR.ouro, metalness: 1, roughness: 0.3 });
-  const matFace = new THREE.MeshStandardMaterial({ map: texturaMoeda, metalness: 0.35, roughness: 0.4, emissive: 0x6e4a08, emissiveIntensity: 0.55 });
-  const matsMoeda = [matLateral, matFace, matFace];
+  // O perfil gira em torno do eixo Y; as duas faces usam a textura de frente, com o aro alto.
+  function criarGeoMoeda(serrilha) {
+    const voltas = fraco ? 24 : serrilha ? 96 : 48;
+    const meio = [[0, 0.05], [0.37, 0.05], [0.39, 0.066], [0.46, 0.066], [0.49, 0.05], [0.5, 0.025]];
+    const perfil = [...meio, ...meio.slice().reverse().map(([r, y]) => [r, -y])].map(([r, y]) => new THREE.Vector2(r, y));
+    const g = new THREE.LatheGeometry(perfil, voltas);
+    const pos = g.attributes.position, uv = g.attributes.uv;
+    for (let i = 0; i < pos.count; i++) {
+      let x = pos.getX(i), z = pos.getZ(i);
+      const r = Math.hypot(x, z);
+      if (serrilha && !fraco && r > 0.49 && Math.abs(pos.getY(i)) < 0.04) {
+        const a = Math.atan2(z, x);
+        const f = 1 + 0.014 * Math.sin(a * (voltas / 2));
+        x *= f; z *= f;
+        pos.setX(i, x); pos.setZ(i, z);
+      }
+      // A face de trás inverte o U, para o desenho não ficar espelhado.
+      uv.setXY(i, 0.5 + (pos.getY(i) < 0 ? -x : x), 0.5 + z);
+    }
+    g.computeVertexNormals();
+    return g;
+  }
+
+  function criarMatMoeda(tipo) {
+    const t = fraco ? 128 : 256;
+    const tela = () => {
+      const m = document.createElement("canvas");
+      m.width = m.height = t;
+      return [m, m.getContext("2d", { willReadFrequently: true })];
+    };
+    const [telaCor, cor] = tela();
+    cor.fillStyle = tipo.aro; cor.fillRect(0, 0, t, t);
+    cor.fillStyle = tipo.miolo;
+    cor.beginPath(); cor.arc(t / 2, t / 2, t * 0.345, 0, 7); cor.fill();
+    const [telaAltura, altura] = tela();
+    pintarRelevo(altura, t, tipo.desenho, "#000");
+    const px = altura.getImageData(0, 0, t, t).data;
+    const [telaNormal, normal] = tela();
+    const saida = normal.createImageData(t, t);
+    const alt = (i, j) => px[(((j + t) % t) * t + ((i + t) % t)) * 4];
+    for (let j = 0; j < t; j++) for (let i = 0; i < t; i++) {
+      const dx = (alt(i - 1, j) - alt(i + 1, j)) / 255, dy = (alt(i, j - 1) - alt(i, j + 1)) / 255;
+      const k = (j * t + i) * 4, n = Math.hypot(dx * 2.4, dy * 2.4, 1);
+      saida.data[k] = ((dx * 2.4) / n + 1) * 127.5;
+      saida.data[k + 1] = ((dy * 2.4) / n + 1) * 127.5;
+      saida.data[k + 2] = (1 / n + 1) * 127.5;
+      saida.data[k + 3] = 255;
+    }
+    normal.putImageData(saida, 0, 0);
+    // Campo mais fosco e relevo polido: é o que faz a moeda parecer moeda.
+    const [telaBrilho, brilho] = tela();
+    pintarRelevo(brilho, t, tipo.desenho, "#6b6b6b");
+    brilho.globalCompositeOperation = "multiply";
+    brilho.fillStyle = "#6b6b6b";
+    brilho.fillRect(0, 0, t, t);
+    const mapa = new THREE.CanvasTexture(telaCor);
+    mapa.colorSpace = THREE.SRGBColorSpace;
+    return new THREE.MeshPhysicalMaterial({
+      map: mapa, normalMap: new THREE.CanvasTexture(telaNormal), roughnessMap: new THREE.CanvasTexture(telaBrilho),
+      metalness: 1, roughness: 1, clearcoat: 0.3, clearcoatRoughness: 0.2,
+      emissive: 0x4a3208, emissiveIntensity: 0.35,
+    });
+  }
+
+  const tiposMoeda = MOEDAS.map((tipo) => ({ ...tipo, geo: criarGeoMoeda(tipo.serrilha), mat: criarMatMoeda(tipo) }));
 
   // Cestinha de mercado: parede vazada em duas camadas, para ter espessura, e borda dourada.
   const texturaTrama = (() => {
@@ -181,18 +254,27 @@ async function iniciar() {
   }
 
   // ---------- Chuva de moedas (e comida, conforme a pessoa rola a tela inicial) ----------
-  const TOTAL = fraco ? 34 : 80;
-  const moedas = new THREE.InstancedMesh(geoMoeda, matsMoeda, TOTAL);
-  moedas.frustumCulled = false;
-  cena.add(moedas);
+  const TOTAL = fraco ? 14 : 32;
+  let usados = 0;
+  tiposMoeda.forEach((tipo, n) => {
+    tipo.quantos = n === tiposMoeda.length - 1 ? TOTAL - usados : Math.round(TOTAL * tipo.peso);
+    usados += tipo.quantos;
+    tipo.malha = new THREE.InstancedMesh(tipo.geo, tipo.mat, tipo.quantos);
+    tipo.malha.frustumCulled = false;
+    cena.add(tipo.malha);
+  });
+  const tipoDaPeca = tiposMoeda.flatMap((tipo) => Array.from({ length: tipo.quantos }, (_, indice) => ({ tipo, indice })));
   const auxiliar = new THREE.Object3D();
   const IDS = ["tomate", "banana", "ovo", "arroz", "cenoura", "laranja", "feijao_carioca", "repolho", "abobora", "leite", "frango_coxa", "macarrao"];
-  const pecas = Array.from({ length: TOTAL }, (_, i) => ({
-    // As moedas ficam mais para a direita, longe do título, em telas largas.
-    x: innerWidth >= 1024 ? -0.1 + Math.random() * 0.62 : Math.random() - 0.5, y: Math.random(), z: innerWidth >= 1024 ? -5 + Math.random() * 4 : -13 + Math.random() * 5,
-    v: 0.05 + Math.random() * 0.08, r: Math.random() * 6, rv: 0.6 + Math.random() * 1.6, s: 0.55 + Math.random() * 0.5,
-    comida: i < (fraco ? 10 : 16) ? criarAlimento(IDS[i % IDS.length]) : null,
+  // Sorteia para os tipos ficarem misturados na chuva; u é a posição dentro da coluna livre.
+  const pecas = tipoDaPeca.sort(() => Math.random() - 0.5).map(({ tipo, indice }, i) => ({
+    tipo, indice, u: Math.random(), y: Math.random(), z: -6 + Math.random() * 5,
+    r: Math.random() * 6, rv: 0.6 + Math.random() * 1.6, oscila: Math.random() * 6, s: (0.72 + Math.random() * 0.5) * tipo.escala,
+    v: 0, visivel: 1,
+    comida: i < (fraco ? 6 : 12) ? criarAlimento(IDS[i % IDS.length]) : null,
   }));
+  // As do fundo são menores na tela e caem mais devagar, o que dá profundidade.
+  pecas.forEach((q) => { q.v = 0.05 + (q.z + 6) * 0.018; });
   const comidaChuva = new THREE.Group();
   pecas.forEach((p) => p.comida && comidaChuva.add(p.comida));
   cena.add(comidaChuva);
@@ -200,7 +282,7 @@ async function iniciar() {
   // ---------- Objetos presos aos palcos ----------
   const cestaHero = criarCesta();
   const cestaResultado = criarCesta();
-  const moedaGrande = new THREE.Mesh(geoMoeda, matsMoeda);
+  const moedaGrande = new THREE.Mesh(tiposMoeda[0].geo, tiposMoeda[0].mat);
   const radar = new THREE.Group();
   [0.45, 0.8, 1.15].forEach((r, i) => {
     const anel = new THREE.Mesh(new THREE.RingGeometry(r - 0.012, r + 0.012, 48), new THREE.MeshBasicMaterial({ color: i === 2 ? COR.ouro : COR.mata, side: THREE.DoubleSide, transparent: true, opacity: 0.8 }));
@@ -277,7 +359,7 @@ async function iniciar() {
     });
     if (animar && coube && !reduzirMovimento) {
       for (let i = 0; i < (fraco ? 12 : 26); i++) {
-        const obj = new THREE.Mesh(geoMoeda, matsMoeda);
+        const obj = new THREE.Mesh(tiposMoeda[0].geo, tiposMoeda[0].mat);
         obj.scale.setScalar(0);
         obj.position.y = 0.3;
         cestaResultado.add(obj);
@@ -298,6 +380,10 @@ async function iniciar() {
   // ---------- Quadro a quadro ----------
   let ultimo = performance.now(), tempo = 0, quadros = 0, inicioMedida = ultimo, avisos = 0, ligado = true;
 
+  // Título, texto e botão: moeda nenhuma passa por trás deles.
+  const zonasSeguras = () => [...document.querySelectorAll("#palco-hero h1, #palco-hero .hero-texto, #palco-hero .botao-hero")]
+    .map((el) => el.getBoundingClientRect()).filter((z) => z.height);
+
   function atualizarChuva(dt) {
     const aba = window.economia?.aba ?? "inicio";
     const hero = document.querySelector("#palco-hero");
@@ -306,28 +392,41 @@ async function iniciar() {
     const p = caixa ? Math.min(1, Math.max(0, -caixa.top / (caixa.height * 0.55))) : 0;
     const e = p * p * (3 - 2 * p);
     // Fora do hero, poucas moedas nas beiradas, para não atrapalhar a leitura.
-    const ativos = noHero ? TOTAL : Math.ceil(TOTAL * 0.22);
+    const ativos = noHero ? TOTAL : Math.min(6, TOTAL);
     const alvo = cestaHero.position;
+    const zonas = noHero ? zonasSeguras() : [];
+    // Em tela larga, a chuva fica só na coluna à direita do texto.
+    const conteudo = noHero && innerWidth >= 1024 ? document.querySelector("#palco-hero .hero-conteudo")?.getBoundingClientRect() : null;
+    const esquerda = conteudo ? conteudo.right / innerWidth - 0.5 + 0.03 : -0.5;
     pecas.forEach((q, i) => {
       q.y -= q.v * dt;
-      if (q.y < -0.1) q.y = 1.1;
+      if (q.y < -0.1) { q.y = 1.1; q.u = Math.random(); }
       q.r += q.rv * dt;
-      let x = q.x * larguraMundo, y = (q.y - 0.5) * alturaMundo, z = q.z;
-      if (!noHero) x = Math.sign(q.x || 1) * (0.33 + Math.abs(q.x) * 0.35) * larguraMundo;
+      q.oscila += dt * 1.3;
+      const profundidade = (camera.position.z - q.z) / camera.position.z;
+      let x = (esquerda + q.u * (0.48 - esquerda)) * larguraMundo * profundidade;
+      let y = (q.y - 0.5) * alturaMundo * profundidade;
+      let z = q.z;
+      if (!noHero) x = (i % 2 ? 1 : -1) * (0.36 + (q.u * 0.12)) * larguraMundo * profundidade;
       if (noHero && cestaHero.visible) {
         const giro = i * 2.4, raio = 0.35 * cestaHero.scale.x * Math.sqrt((i % 16 + 0.5) / 16);
         x += (alvo.x + Math.cos(giro) * raio - x) * e;
         y += (alvo.y + cestaHero.scale.x * (-0.1 + (i % 16) * 0.024) - y) * e;
         z += (Math.sin(giro) * raio - z) * e;
       }
-      const visivel = i < ativos ? 1 : 0;
+      // Longe do texto a moeda aparece; perto dele, encolhe até sumir.
+      const px = (x / (larguraMundo * profundidade) + 0.5) * innerWidth, py = (0.5 - y / (alturaMundo * profundidade)) * innerHeight;
+      const folga = 46;
+      const naZona = zonas.some((r) => px > r.left - folga && px < r.right + folga && py > r.top - folga && py < r.bottom + folga);
+      q.visivel += ((naZona || i >= ativos ? 0 : 1) - q.visivel) * Math.min(1, dt * 9);
       auxiliar.position.set(x, y, z);
-      auxiliar.rotation.set(q.r, q.r * 0.7, 0);
-      const escalaMoeda = (q.comida && noHero ? 1 - e : 1) * q.s * visivel * (noHero ? 1 : 0.7);
+      // Duas rotações com oscilação: a moeda nunca gira em um eixo só.
+      auxiliar.rotation.set(Math.PI / 2 + q.r, Math.sin(q.oscila) * 0.5, Math.cos(q.oscila * 0.7) * 0.4);
+      const escalaMoeda = (q.comida && noHero ? 1 - e : 1) * q.s * q.visivel * (noHero ? 1 : 0.7);
       // As moedas somem ao entrar na cesta; quem fica é a comida.
       auxiliar.scale.setScalar(Math.max(escalaMoeda * (noHero ? 1 - e : 1), 0.0001));
       auxiliar.updateMatrix();
-      moedas.setMatrixAt(i, auxiliar.matrix);
+      q.tipo.malha.setMatrixAt(q.indice, auxiliar.matrix);
       if (q.comida) {
         q.comida.visible = noHero && e > 0.02;
         q.comida.position.set(x, y, z);
@@ -335,7 +434,7 @@ async function iniciar() {
         q.comida.scale.setScalar(Math.max(e * (cestaHero.scale.x * 0.26 || 0.6), 0.0001));
       }
     });
-    moedas.instanceMatrix.needsUpdate = true;
+    tiposMoeda.forEach((tipo) => { tipo.malha.instanceMatrix.needsUpdate = true; });
   }
 
   function quadro(agora) {
@@ -363,7 +462,7 @@ async function iniciar() {
     cestaHero.rotation.x = 0.34;
     cestaResultado.rotation.y = Math.sin(tempo * 0.4) * 0.25;
     cestaResultado.rotation.x = 0.34;
-    moedaGrande.rotation.set(Math.PI / 2 + Math.sin(tempo) * 0.12, 0, tempo * 1.1);
+    moedaGrande.rotation.set(Math.PI / 2 + Math.sin(tempo) * 0.2, 0, Math.sin(tempo * 0.8) * 0.5);
     varredura.rotation.z = -tempo * 1.2;
     pinos.children.forEach((pino, i) => { pino.position.z = 0.11 + Math.abs(Math.sin(tempo * 1.5 + i)) * 0.06; });
     cupom.rotation.y = Math.sin(tempo * 0.6) * 0.3;
