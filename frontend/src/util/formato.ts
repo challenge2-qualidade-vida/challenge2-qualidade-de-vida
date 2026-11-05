@@ -14,3 +14,11 @@ export const km = (v: number) => `${String(v).replace(".", ",")} km`;
 /** O LLM às vezes responde em Markdown; a tela mostra texto simples. */
 export const semMarkdown = (t: string) =>
   t.replace(/^#{1,6}\s*/gm, "").replace(/\*\*(.+?)\*\*/g, "$1").replace(/^\s*[-*]\s+/gm, "• ");
+
+/** Próximo valor das setas em reais: passos redondos, nunca abaixo do mínimo (de 799,92 vai a 800 ou 790). */
+export function proximoValorRedondo(atual: number, passo: number, sentido: 1 | -1, minimo: number) {
+  const proximo = sentido > 0
+    ? Math.floor(atual / passo + 1e-9) * passo + passo
+    : Math.ceil(atual / passo - 1e-9) * passo - passo;
+  return Math.max(minimo, proximo);
+}
