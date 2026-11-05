@@ -12,6 +12,7 @@ from scipy import ndimage as nd
 # patas: centro e raios de cada pata, para o contorno da base, onde fundo e pelo branco se confundem.
 # corpo e canto: elipse que arredonda o que sobrou atrás do corpo, a partir do ponto de `canto`.
 # moeda: troca a moeda por outra, com (x, y, raio) na imagem e na fonte.
+# remendo: cobre uma parte com outra esticada, de (origem) para (destino).
 # incluir: polígonos que a máscara perdeu, como o recibo branco sobre o fundo claro.
 # soltos: elipses onde vale procurar pelo longe do corpo, como a ponta do rabo.
 # corte: retângulo final, com folga para a cabeça girar.
@@ -31,7 +32,9 @@ GATOS = {
         "corte": (55, 0, 880, 985),
     },
     "recibaldo": {
-        "patas": [(215, 870, 75, 80), (362, 923, 80, 42), (538, 923, 82, 42), (697, 880, 79, 68)],
+        # A imagem veio com cinco patas: a da frente, abaixo do braço com a lupa, virou barriga.
+        "remendo": ((470, 770, 610, 880), (448, 770, 628, 975)),
+        "patas": [(215, 870, 75, 80), (362, 923, 80, 42), (535, 902, 84, 50), (697, 880, 79, 68)],
         "incluir": [[(722, 543), (830, 572), (748, 885), (647, 853)]],
         "soltos": [(815, 855, 85, 65)],
         "corte": (80, 40, 896, 985),
@@ -44,6 +47,14 @@ def main():
     nome, original, mascara, saida = sys.argv[1:5]
     g = GATOS[nome]
     img = Image.open(original).convert("RGB")
+    if "remendo" in g:
+        origem, (x0, y0, x1, y1) = g["remendo"]
+        pedaco = img.crop(origem).resize((x1 - x0, y1 - y0), Image.BICUBIC)
+        borda = Image.new("L", pedaco.size, 0)
+        ImageDraw.Draw(borda).rectangle((4, 0, x1 - x0 - 4, y1 - y0), fill=255)
+        for y in range(40):  # topo suave, para o remendo sumir no pelo
+            ImageDraw.Draw(borda).line((0, y, x1 - x0, y), fill=int(255 * y / 40))
+        img.paste(pedaco, (x0, y0), borda.filter(ImageFilter.GaussianBlur(2)))
     c = np.asarray(img, float) / 255
     base = np.asarray(Image.open(mascara).getchannel("A"), float) / 255
 
