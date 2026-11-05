@@ -78,7 +78,7 @@ Também há `<meta name="darkreader-lock">`, que impede a extensão Dark Reader 
 |------------|--------|----------|
 | [FastAPI](https://fastapi.tiangolo.com) (`StaticFiles`, `GZipMiddleware`) | 0.162.0 | Entrega e comprime os arquivos e responde à API |
 | [Uvicorn](https://www.uvicorn.org) | 0.54.0 | Servidor local |
-| pytest | Ver `requirements.txt` | 223 testes do projeto, incluindo os que conferem arquivos do site |
+| pytest | 9.2.0 | 223 testes do projeto, incluindo os que conferem arquivos do site |
 | GitHub Actions | `testes.yml` | Roda os testes a cada envio |
 | Chrome, com a extensão Claude in Chrome | Não se aplica | Conferência visual, console e larguras de tela |
 
@@ -90,7 +90,7 @@ Nada disto roda no site. São ferramentas usadas durante o desenvolvimento.
 |------------|--------|----------|---------|
 | [esbuild](https://esbuild.github.io), via `npx` | Não registrada | Gerar o Three.js reduzido | MIT |
 | [Pillow](https://python-pillow.org) | 13.0.0 | Redimensionar, cortar e salvar em WebP | MIT-CMU |
-| [NumPy](https://numpy.org) e [SciPy](https://scipy.org) | NumPy 2.5.4; SciPy em `requirements.txt` | Recorte dos gatos | BSD |
+| [NumPy](https://numpy.org) e [SciPy](https://scipy.org) | NumPy 2.5.4 e SciPy 1.18.1 | Recorte dos gatos | BSD |
 | [FLUX.1 schnell](https://huggingface.co/black-forest-labs/FLUX.1-schnell) | Versão de 4 bits no Mac | Gerar as imagens dos gatos | Apache 2.0 |
 | [Hugging Face Spaces](https://huggingface.co/spaces/black-forest-labs/FLUX.1-schnell) | Não se aplica | Rodar o FLUX online, sem conta (Mia) | Não se aplica |
 | [mflux](https://github.com/mflux-community/mflux) e MLX | 0.24.0 e 0.32.4 | Rodar o FLUX no Mac (Cifrão, Miau-ricio, Recibaldo) | MIT |
