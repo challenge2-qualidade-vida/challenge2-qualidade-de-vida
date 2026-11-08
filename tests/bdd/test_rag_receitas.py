@@ -41,6 +41,13 @@ def test_receita_sugerida_cita_a_fonte():
     pass
 
 
+@scenario(
+    FEATURE, "Receitas completas aparecem antes das que têm ingredientes faltando"
+)
+def test_receitas_completas_primeiro():
+    pass
+
+
 @scenario(FEATURE, "Pergunta sobre conservação é respondida com a fonte")
 def test_pergunta_sobre_conservacao():
     pass
@@ -77,9 +84,18 @@ def adicionar_receita(contexto, titulo: str, ingredientes: list[str]) -> None:
 # ---------------------------------------------------------------- Dado
 
 
-@given(parsers.parse('que a base de receitas contém a receita "{titulo}"'))
+@given(parsers.re(r'que a base de receitas contém a receita "(?P<titulo>[^"]+)"$'))
 def base_com_receita(contexto, titulo):
     adicionar_receita(contexto, titulo, [])
+
+
+@given(
+    parsers.re(
+        r'que a base de receitas contém a receita "(?P<titulo>[^"]+)", que usa (?P<lista>.+)'
+    )
+)
+def base_com_receita_e_ingredientes(contexto, titulo, lista):
+    adicionar_receita(contexto, titulo, aspas(lista))
 
 
 @given(parsers.re(r"que essa receita usa (?P<lista>.+)"))
@@ -132,6 +148,9 @@ def perguntar(contexto, pergunta):
         contexto["llm"],
         prompt_do_sistema="",
         limiar=contexto["limiar"],
+        prompt_de_extracao="extrair ingredientes",
+        ingredientes_basicos=("sal", "agua", "oleo"),
+        tolerancia=contexto["tolerancia"],
     )
     contexto["resposta"] = caso.responder(pergunta)
 
@@ -181,3 +200,27 @@ def aviso_de_preco(contexto):
     resposta = contexto["resposta"]
     assert not resposta.encontrou
     assert resposta.texto == AVISO_DE_PRECO
+
+
+@then(
+    parsers.re(
+        r'a receita "(?P<primeira>[^"]+)" aparece antes da receita "(?P<segunda>[^"]+)"'
+    )
+)
+def aparece_antes(contexto, primeira, segunda):
+    titulos = titulos_sugeridos(contexto)
+    assert titulos.index(primeira) < titulos.index(segunda)
+
+
+@then(
+    parsers.re(
+        r'a resposta informa que faltam (?P<lista>.+) para a receita "(?P<titulo>[^"]+)"'
+    )
+)
+def informa_o_que_falta(contexto, lista, titulo):
+    resposta = contexto["resposta"]
+    [receita] = [r.trecho for r in resposta.trechos if r.trecho.titulo == titulo]
+    assert resposta.faltando_na_receita(receita.id) == tuple(aspas(lista))
+    assert f"{titulo} [" in resposta.texto
+    for ingrediente in aspas(lista):
+        assert ingrediente in resposta.texto

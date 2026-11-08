@@ -53,7 +53,13 @@ class LLMQueCitaTudo:
         return "Veja: " + " ".join(f"[{n}]" for n in numeros)
 
     def gerar_json(self, sistema, mensagem, esquema):
-        raise NotImplementedError
+        """Extração ingênua: o que vem depois de "com", separado por vírgula e "e"."""
+        trecho = mensagem.split(" com ", 1)[1] if " com " in mensagem else ""
+        itens = re.split(r",| e ", trecho.rstrip("?"))
+        return {
+            "ingredientes_pt": [i.strip() for i in itens if i.strip()],
+            "ingredientes_en": [],
+        }
 
 
 @pytest.fixture
@@ -66,4 +72,5 @@ def contexto():
         "llm": LLMQueCitaTudo(),
         # o saco de palavras dá scores menores que um modelo de verdade
         "limiar": 0.2,
+        "tolerancia": 0.01,
     }

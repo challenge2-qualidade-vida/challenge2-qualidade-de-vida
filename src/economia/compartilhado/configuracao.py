@@ -27,7 +27,8 @@ class Configuracao(BaseSettings):
     dispositivo_embeddings: Literal["auto", "cpu", "mps", "cuda"] = "auto"
     limiar_similaridade: float = Field(default=0.80, ge=0.0, le=1.0)
     tolerancia_empate: float = Field(default=0.01, ge=0.0, le=1.0)
-    ingredientes_basicos: list[str] = ["sal", "agua", "oleo"]
+    # sempre disponíveis, em português e em inglês (receitas do RecipeNLG); lista provisória
+    ingredientes_basicos: list[str] = ["sal", "agua", "oleo", "salt", "water", "oil"]
 
     @property
     def nome_do_modelo_de_embeddings(self) -> str:

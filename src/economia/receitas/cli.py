@@ -105,6 +105,9 @@ def criar_responder(configuracao: Configuracao):
         ModeloOllama(url=configuracao.ollama_url, modelo=configuracao.ollama_modelo),
         prompt_do_sistema=carregar_prompt("miau-ricio", "resposta_com_fontes_v1"),
         limiar=configuracao.limiar_similaridade,
+        prompt_de_extracao=carregar_prompt("miau-ricio", "extrair_ingredientes_v1"),
+        ingredientes_basicos=configuracao.ingredientes_basicos,
+        tolerancia=configuracao.tolerancia_empate,
     )
 
 
@@ -131,6 +134,10 @@ def comando_perguntar(args: argparse.Namespace) -> None:
 
     inicio = time.perf_counter()
     resposta = caso.responder(args.pergunta)
+    if resposta.ingredientes_disponiveis:
+        print(
+            f"\nIngredientes da pergunta: {', '.join(resposta.ingredientes_disponiveis)}"
+        )
     print(f"\nResposta ({time.perf_counter() - inicio:.0f} s):\n{resposta.texto}")
     if resposta.trechos:
         print("\nFontes:")

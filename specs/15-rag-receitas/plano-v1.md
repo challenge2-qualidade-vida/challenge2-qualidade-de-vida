@@ -26,8 +26,8 @@ Cada fase termina com os testes e o Ruff passando e **um commit**, em Convention
 | 5 | Domínio (`Fonte`, `Trecho`, `Receita`, `Ingrediente`, `RespostaComFontes`) e fragmentação, com testes de unidade | `feat(receitas): adiciona os trechos e a estratégia de fragmentação` | Feita (termos `Documento` e `RespostaComFontes` propostos no modelo de domínio) |
 | 6 | Carregadores, os dois adaptadores de embeddings, o repositório Qdrant e o caso de uso `indexar` | `feat(receitas): indexa os trechos no Qdrant` | Feita |
 | 7 | Caso de uso `responder`, adaptador do Ollama, prompt versionado, CLI e passos BDD | `feat(receitas): responde perguntas com os trechos e as fontes` | Feita (teste ponta a ponta pendente da indexação) |
-| 7b | Extração dos ingredientes da pergunta, contagem dos que faltam e desempate do top-5, com testes; regra proposta no modelo de domínio | `feat(receitas): desempata as receitas pelos ingredientes que faltam` | **Próxima** |
-| 8 | Ingestão das receitas e dos textos de orientação; FONTES.md preenchido | `feat(receitas): adiciona a base de conhecimento curada` | |
+| 7b | Extração dos ingredientes da pergunta, contagem dos que faltam e desempate do top-5, com testes; regra proposta no modelo de domínio | `feat(receitas): desempata as receitas pelos ingredientes que faltam` | Feita (RN31 proposta no modelo de domínio) |
+| 8 | Ingestão das receitas e dos textos de orientação; FONTES.md preenchido | `feat(receitas): adiciona a base de conhecimento curada` | **Próxima** |
 | 9 | Conjunto de avaliação, comando `comparar`, escolha do modelo de embeddings, comparação de "uma receita por trecho" com trechos menores (ingredientes e modo de preparo separados) e limiar calibrado | `feat(receitas): compara os modelos de embeddings` + `docs(decisoes): registra o modelo de embeddings escolhido` | |
 | 10 | Notebook da demonstração `notebooks/01-rag-receitas-passo-a-passo.ipynb` | `docs(receitas): adiciona o notebook de demonstração do RAG` | |
 

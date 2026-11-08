@@ -131,17 +131,18 @@ def test_fontes_sao_as_dos_trechos_citados_renumeradas(trecho):
     )
     resposta = caso.responder("pergunta")
     assert resposta.encontrou
-    assert resposta.texto == "Use a receita [1] e depois a [2]. Ignore ."
-    assert [r.trecho.id for r in resposta.trechos] == ["c", "a"]
-    assert [f.titulo for f in resposta.fontes] == ["Guia", "afrodite.json"]
+    # a lista de fontes segue o ranking, não a ordem em que o LLM citou
+    assert resposta.texto == "Use a receita [2] e depois a [1]. Ignore ."
+    assert [r.trecho.id for r in resposta.trechos] == ["a", "c"]
+    assert [f.titulo for f in resposta.fontes] == ["afrodite.json", "Guia"]
 
 
 def test_citacoes_validas_ignora_numeros_inexistentes_e_repetidos():
     assert citacoes_validas("[2] [1] [2] [7] [0]", quantidade=3) == [2, 1]
 
 
-def test_renumerar_segue_a_ordem_das_citacoes():
-    assert renumerar("[3] e [1]", [3, 1]) == "[1] e [2]"
+def test_renumerar_segue_a_ordem_do_ranking():
+    assert renumerar("[3] e [1]", [3, 1]) == "[2] e [1]"
 
 
 def test_mensagem_numera_os_trechos_com_titulo_e_conteudo(trecho):
@@ -190,3 +191,97 @@ def test_formatar_fonte_de_receita_e_de_orientacao():
         "Guia Alimentar (Ministério da Saúde), 2014. Dez passos. "
         "Evitar o consumo de alimentos ultraprocessados. p. 126."
     )
+
+
+# ---------------------------------------------------------------- desempate (fase 7b)
+
+
+class LLMComExtracao(LLMFalso):
+    def __init__(self, resposta, ingredientes):
+        super().__init__(resposta)
+        self.ingredientes = ingredientes
+        self.extracoes = 0
+
+    def gerar_json(self, sistema, mensagem, esquema):
+        self.extracoes += 1
+        return self.ingredientes
+
+
+def criar_com_desempate(recuperados, ingredientes, resposta="[1] [2]", tolerancia=0.01):
+    llm = LLMComExtracao(resposta, ingredientes)
+    caso = ResponderPergunta(
+        GeradorFalso(),
+        RepositorioFalso(recuperados),
+        llm,
+        "sistema",
+        limiar=0.5,
+        prompt_de_extracao="extrair",
+        ingredientes_basicos=("sal",),
+        tolerancia=tolerancia,
+    )
+    return caso, llm
+
+
+def test_empate_vem_primeiro_a_receita_com_menos_ingredientes_faltando(trecho):
+    recuperados = [
+        recuperado(
+            trecho, "torta", 0.905, ingredientes=("ovo", "cenoura", "farinha", "leite")
+        ),
+        recuperado(
+            trecho, "omelete", 0.900, ingredientes=("2 ovos", "1 cenoura", "sal")
+        ),
+    ]
+    caso, _ = criar_com_desempate(
+        recuperados, {"ingredientes_pt": ["ovo", "cenoura"], "ingredientes_en": []}
+    )
+    resposta = caso.responder("o que posso fazer com ovo e cenoura?")
+    assert [r.trecho.id for r in resposta.trechos] == ["omelete", "torta"]
+    assert resposta.faltando_na_receita("omelete") == ()
+    assert resposta.faltando_na_receita("torta") == ("farinha", "leite")
+    assert resposta.ingredientes_disponiveis == ("ovo", "cenoura")
+    assert "Ingredientes que faltam:" in resposta.texto
+    assert "- Título torta [2]: farinha, leite" in resposta.texto
+    assert "- Título omelete [1]: nenhum" in resposta.texto
+
+
+def test_fora_da_tolerancia_vale_o_score(trecho):
+    recuperados = [
+        recuperado(trecho, "torta", 0.95, ingredientes=("ovo", "farinha")),
+        recuperado(trecho, "omelete", 0.90, ingredientes=("ovo",)),
+    ]
+    caso, _ = criar_com_desempate(recuperados, {"ingredientes_pt": ["ovo"]})
+    resposta = caso.responder("o que faço com ovo?")
+    assert [r.trecho.id for r in resposta.trechos] == ["torta", "omelete"]
+
+
+def test_receita_em_ingles_usa_os_ingredientes_em_ingles(trecho):
+    from dataclasses import replace
+
+    em_ingles = replace(trecho("en", ingredientes=("eggs", "flour")), idioma="en")
+    recuperados = [TrechoRecuperado(trecho=em_ingles, score=0.9)]
+    caso, _ = criar_com_desempate(
+        recuperados,
+        {"ingredientes_pt": ["ovo"], "ingredientes_en": ["egg"]},
+        resposta="[1]",
+    )
+    assert caso.responder("o que faço com ovo?").faltando_na_receita("en") == ("flour",)
+
+
+def test_sem_receitas_recuperadas_nao_chama_a_extracao(trecho):
+    recuperados = [recuperado(trecho, "guia", 0.9, tipo=TipoDeTrecho.CONHECIMENTO)]
+    caso, llm = criar_com_desempate(
+        recuperados, {"ingredientes_pt": ["ovo"]}, resposta="[1]"
+    )
+    resposta = caso.responder("como conservo alface?")
+    assert llm.extracoes == 0
+    assert "Ingredientes que faltam" not in resposta.texto
+
+
+def test_extracao_invalida_vale_como_nenhum_ingrediente(trecho):
+    recuperados = [recuperado(trecho, "a", 0.9, ingredientes=("ovo",))]
+    caso, _ = criar_com_desempate(
+        recuperados, {"ingredientes_pt": "não é lista"}, resposta="[1]"
+    )
+    resposta = caso.responder("o que faço?")
+    assert resposta.encontrou
+    assert resposta.faltando == ()

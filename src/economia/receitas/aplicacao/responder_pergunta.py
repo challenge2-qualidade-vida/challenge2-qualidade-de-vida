@@ -1,24 +1,29 @@
 """Caso de uso: responder uma pergunta com os trechos da base e as fontes.
 
-Fluxo: preço atual (RN04) → recuperar → limiar (RN11) → LLM com trechos numerados → fontes (RN10).
-As fontes são montadas pelo código a partir dos trechos citados, nunca escritas pelo LLM.
+Fluxo: preço atual (RN04) → recuperar → limiar (RN11) → ingredientes da pergunta → desempate
+pelos ingredientes que faltam → LLM com trechos numerados → fontes (RN10).
+As fontes e os ingredientes que faltam são montados pelo código, nunca escritos pelo LLM (RN01).
 """
 
 import re
 import unicodedata
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
+
+from pydantic import BaseModel, ValidationError
 
 from economia.receitas.aplicacao.portas import (
     GeradorDeEmbeddings,
     ModeloDeLinguagem,
     RepositorioDeTrechos,
 )
+from economia.receitas.dominio.correspondencia import ingredientes_que_faltam
 from economia.receitas.dominio.modelos import (
     Fonte,
     RespostaComFontes,
     TipoDeTrecho,
     TrechoRecuperado,
 )
+from economia.receitas.dominio.ordenacao import desempatar
 
 AVISO_DE_PRECO = (
     "Preços atuais não vêm da base de conhecimento de receitas e alimentação. "
@@ -77,8 +82,12 @@ def citacoes_validas(texto: str, quantidade: int) -> list[int]:
 
 
 def renumerar(texto: str, citados: Sequence[int]) -> str:
-    """Troca os números do LLM pela ordem das fontes e apaga citações de trechos inexistentes."""
-    novo = {antigo: n for n, antigo in enumerate(citados, start=1)}
+    """Numera as citações de 1 a n na ordem do ranking e apaga as de trechos inexistentes.
+
+    A ordem do ranking (score e desempate) vale para a lista de fontes, não a ordem em que
+    o LLM citou: a receita completa continua antes da que tem ingredientes faltando.
+    """
+    novo = {antigo: n for n, antigo in enumerate(sorted(citados), start=1)}
 
     def trocar(m: re.Match) -> str:
         antigo = int(m.group(1))
@@ -119,6 +128,29 @@ def _fontes_unicas(trechos: Sequence[TrechoRecuperado]) -> tuple[Fonte, ...]:
     return tuple(fontes)
 
 
+class IngredientesDaPergunta(BaseModel):
+    """Saída do LLM ao interpretar a pergunta: só os ingredientes citados, em dois idiomas."""
+
+    ingredientes_pt: list[str] = []
+    ingredientes_en: list[str] = []
+
+    def no_idioma(self, idioma: str) -> list[str]:
+        return self.ingredientes_en if idioma == "en" else self.ingredientes_pt
+
+
+def bloco_de_ingredientes_que_faltam(
+    trechos: Iterable[TrechoRecuperado], faltando: dict[str, tuple[str, ...]]
+) -> str:
+    """Texto montado pelo código com o que falta em cada receita usada (RN01, RN13)."""
+    linhas = []
+    for n, recuperado in enumerate(trechos, start=1):
+        trecho = recuperado.trecho
+        if trecho.tipo is TipoDeTrecho.RECEITA and trecho.id in faltando:
+            itens = ", ".join(faltando[trecho.id]) or "nenhum"
+            linhas.append(f"- {trecho.titulo} [{n}]: {itens}")
+    return "Ingredientes que faltam:\n" + "\n".join(linhas) if linhas else ""
+
+
 class ResponderPergunta:
     def __init__(
         self,
@@ -128,6 +160,9 @@ class ResponderPergunta:
         prompt_do_sistema: str,
         limiar: float,
         quantidade: int = 5,
+        prompt_de_extracao: str | None = None,
+        ingredientes_basicos: Sequence[str] = (),
+        tolerancia: float = 0.0,
     ):
         self._gerador = gerador
         self._repositorio = repositorio
@@ -135,6 +170,9 @@ class ResponderPergunta:
         self._prompt = prompt_do_sistema
         self._limiar = limiar
         self._quantidade = quantidade
+        self._prompt_de_extracao = prompt_de_extracao
+        self._basicos = tuple(ingredientes_basicos)
+        self._tolerancia = tolerancia
 
     def recuperar(self, pergunta: str) -> list[TrechoRecuperado]:
         """Top-k trechos acima do limiar, do maior score para o menor."""
@@ -142,11 +180,52 @@ class ResponderPergunta:
         recuperados = self._repositorio.buscar(vetor, self._quantidade)
         return [r for r in recuperados if r.score >= self._limiar]
 
+    def extrair_ingredientes(self, pergunta: str) -> IngredientesDaPergunta:
+        """O LLM só interpreta a pergunta. Saída inválida vale como "nenhum ingrediente"."""
+        if not self._prompt_de_extracao:
+            return IngredientesDaPergunta()
+        try:
+            dados = self._llm.gerar_json(
+                self._prompt_de_extracao,
+                f"Pergunta: {pergunta}",
+                IngredientesDaPergunta.model_json_schema(),
+            )
+            return IngredientesDaPergunta.model_validate(dados)
+        except (ValidationError, ValueError):
+            return IngredientesDaPergunta()
+
+    def contar_faltantes(
+        self,
+        recuperados: Sequence[TrechoRecuperado],
+        disponiveis: IngredientesDaPergunta,
+    ) -> dict[str, tuple[str, ...]]:
+        """Ingredientes que faltam em cada receita recuperada, por função determinística."""
+        return {
+            r.trecho.id: tuple(
+                ingredientes_que_faltam(
+                    r.trecho.ingredientes,
+                    disponiveis.no_idioma(r.trecho.idioma),
+                    self._basicos,
+                    r.trecho.idioma,
+                )
+            )
+            for r in recuperados
+            if r.trecho.tipo is TipoDeTrecho.RECEITA
+        }
+
     def ordenar(
-        self, pergunta: str, recuperados: list[TrechoRecuperado]
+        self, recuperados: list[TrechoRecuperado], faltando: dict[str, tuple[str, ...]]
     ) -> list[TrechoRecuperado]:
-        """Ponto de extensão para o desempate pelos ingredientes que faltam (fase 7b)."""
-        return recuperados
+        """Desempate do top-k: com scores na faixa de tolerância, menos ingredientes faltando primeiro.
+
+        Trechos de orientação não têm ingredientes e contam como 0 faltando.
+        """
+        return desempatar(
+            recuperados,
+            score=lambda r: r.score,
+            faltando=lambda r: len(faltando.get(r.trecho.id, ())),
+            tolerancia=self._tolerancia,
+        )
 
     def responder(self, pergunta: str) -> RespostaComFontes:
         if e_pergunta_de_preco(pergunta):
@@ -155,7 +234,14 @@ class ResponderPergunta:
         recuperados = self.recuperar(pergunta)
         if not recuperados:
             return RespostaComFontes(texto=NAO_ENCONTREI, encontrou=False)
-        recuperados = self.ordenar(pergunta, recuperados)
+
+        disponiveis = IngredientesDaPergunta()
+        faltando: dict[str, tuple[str, ...]] = {}
+        if any(r.trecho.tipo is TipoDeTrecho.RECEITA for r in recuperados):
+            disponiveis = self.extrair_ingredientes(pergunta)
+            if disponiveis.ingredientes_pt or disponiveis.ingredientes_en:
+                faltando = self.contar_faltantes(recuperados, disponiveis)
+                recuperados = self.ordenar(recuperados, faltando)
 
         texto = self._llm.gerar(self._prompt, montar_mensagem(pergunta, recuperados))
         citados = citacoes_validas(texto, len(recuperados))
@@ -163,10 +249,18 @@ class ResponderPergunta:
             # sem citação não há como dizer de onde veio a resposta (RN10): vale a RN11
             return RespostaComFontes(texto=NAO_ENCONTREI, encontrou=False)
 
-        usados = tuple(recuperados[n - 1] for n in citados)
+        usados = tuple(recuperados[n - 1] for n in sorted(citados))
+        texto = renumerar(texto, citados)
+        bloco = bloco_de_ingredientes_que_faltam(usados, faltando)
         return RespostaComFontes(
-            texto=renumerar(texto, citados),
+            texto=f"{texto}\n\n{bloco}" if bloco else texto,
             encontrou=True,
             trechos=usados,
             fontes=_fontes_unicas(usados),
+            ingredientes_disponiveis=tuple(disponiveis.ingredientes_pt),
+            faltando=tuple(
+                (r.trecho.id, faltando[r.trecho.id])
+                for r in usados
+                if r.trecho.id in faltando
+            ),
         )

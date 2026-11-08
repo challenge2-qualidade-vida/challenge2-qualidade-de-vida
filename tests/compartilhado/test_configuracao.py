@@ -15,7 +15,14 @@ def test_valores_padrao(monkeypatch):
     configuracao = criar()
     assert configuracao.modelo_embeddings == "e5"
     assert configuracao.limiar_similaridade == 0.80
-    assert configuracao.ingredientes_basicos == ["sal", "agua", "oleo"]
+    assert configuracao.ingredientes_basicos == [
+        "sal",
+        "agua",
+        "oleo",
+        "salt",
+        "water",
+        "oil",
+    ]
 
 
 def test_le_das_variaveis_de_ambiente(monkeypatch):

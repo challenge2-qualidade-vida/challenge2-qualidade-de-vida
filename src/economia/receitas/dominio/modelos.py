@@ -121,12 +121,20 @@ class RespostaComFontes:
 
     `encontrou` é falso quando a base não tem a informação (RN11) ou quando a pergunta
     é sobre preço atual (RN04). Nesses casos, não há trechos nem fontes.
+
+    `ingredientes_disponiveis` são os que a pessoa disse ter. `faltando` liga o id de cada
+    receita usada aos ingredientes dela que não estão disponíveis, contados pelo código (RN01).
     """
 
     texto: str
     encontrou: bool
     trechos: tuple[TrechoRecuperado, ...] = ()
     fontes: tuple[Fonte, ...] = field(default=())
+    ingredientes_disponiveis: tuple[str, ...] = ()
+    faltando: tuple[tuple[str, tuple[str, ...]], ...] = ()
+
+    def faltando_na_receita(self, trecho_id: str) -> tuple[str, ...]:
+        return dict(self.faltando).get(trecho_id, ())
 
     def __post_init__(self) -> None:
         if self.encontrou and not self.fontes:

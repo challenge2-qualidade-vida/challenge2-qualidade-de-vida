@@ -174,6 +174,7 @@ flowchart LR
 | RN28 | Uma receita pode ser sugerida quando faltam até 2 ingredientes, ou quando os ingredientes que faltam podem ser substituídos por outros disponíveis. A sugestão informa quais ingredientes faltam e quais substituições foram consideradas. Receitas sem nada faltando aparecem primeiro | Receitas e nutrição |
 | RN29 | A pessoa pode adicionar os ingredientes que faltam numa receita à lista de compras com uma única ação | Receitas e nutrição, Planejamento |
 | RN30 | Dados pessoais e dados sensíveis (nome, e-mail, restrições de saúde como alergias, itens e estabelecimentos das notas fiscais) não são enviados ao Langfuse. Eles são retirados ou mascarados antes do registro das chamadas ao LLM, porque o Langfuse Cloud guarda os dados fora do Brasil, o que seria transferência internacional (LGPD, art. 33), e restrições de saúde são dado sensível | Todos |
+| RN31 | **Proposta (08/11/2026, RAG v1).** Entre receitas recuperadas com similaridade quase igual (diferença de até `TOLERANCIA_EMPATE`, 0,01 na versão 1, medida a partir da primeira do grupo), vem primeiro a que tem menos ingredientes faltando. O LLM só extrai da pergunta os ingredientes disponíveis; a contagem do que falta e a ordenação são funções determinísticas (RN01). Aplica a RN13 na ordem do top-5 enquanto a correspondência completa por `Alimento` (RN28) não existe | Receitas e nutrição |
 
 As specs citam as regras pelo número (ex.: "Atende RN02 e RN03").
 
