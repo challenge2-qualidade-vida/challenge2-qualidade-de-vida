@@ -23,6 +23,8 @@ class Configuracao(BaseSettings):
     ollama_url: str = "http://localhost:11434"
     ollama_modelo: str = "qwen2.5:7b"
     modelo_embeddings: Literal["e5", "qwen3"] = "e5"
+    # auto: mps no Mac com Apple Silicon, cuda se houver GPU NVIDIA, senão cpu
+    dispositivo_embeddings: Literal["auto", "cpu", "mps", "cuda"] = "auto"
     limiar_similaridade: float = Field(default=0.80, ge=0.0, le=1.0)
     tolerancia_empate: float = Field(default=0.01, ge=0.0, le=1.0)
     ingredientes_basicos: list[str] = ["sal", "agua", "oleo"]

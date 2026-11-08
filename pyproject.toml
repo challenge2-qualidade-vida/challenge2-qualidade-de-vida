@@ -21,15 +21,19 @@ packages = [
     { include = "economia", from = "src" }
 ]
 
-# O torch vem do índice só de CPU: a máquina de desenvolvimento e a VM não têm GPU,
-# e a versão do PyPI traz as bibliotecas da CUDA (vários GB).
+# Dois ambientes: Mac (Apple Silicon, prioritário) e Linux sem GPU (outra máquina e VM).
+# No Mac, o torch do PyPI já traz o MPS (GPU do chip). No Linux, ele vem do índice só de CPU,
+# porque a versão do PyPI traz as bibliotecas da CUDA (vários GB).
 [[tool.poetry.source]]
 name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 priority = "explicit"
 
 [tool.poetry.dependencies]
-torch = { source = "pytorch-cpu" }
+torch = [
+    { markers = "sys_platform == 'linux'", source = "pytorch-cpu" },
+    { markers = "sys_platform == 'darwin'", source = "pypi" },
+]
 
 [dependency-groups]
 dev = [

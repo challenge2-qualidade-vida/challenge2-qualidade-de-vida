@@ -28,7 +28,7 @@ Cada fase termina com os testes e o Ruff passando e **um commit**, em Convention
 | 7 | Caso de uso `responder`, adaptador do Ollama, prompt versionado, CLI e passos BDD | `feat(receitas): responde perguntas com os trechos e as fontes` | |
 | 7b | Extração dos ingredientes da pergunta, contagem dos que faltam e desempate do top-5, com testes; regra proposta no modelo de domínio | `feat(receitas): desempata as receitas pelos ingredientes que faltam` | |
 | 8 | Ingestão das receitas e dos textos de orientação; FONTES.md preenchido | `feat(receitas): adiciona a base de conhecimento curada` | |
-| 9 | Conjunto de avaliação, comando `comparar`, escolha do modelo de embeddings e limiar calibrado | `feat(receitas): compara os modelos de embeddings` + `docs(decisoes): registra o modelo de embeddings escolhido` | |
+| 9 | Conjunto de avaliação, comando `comparar`, escolha do modelo de embeddings, comparação de "uma receita por trecho" com trechos menores (ingredientes e modo de preparo separados) e limiar calibrado | `feat(receitas): compara os modelos de embeddings` + `docs(decisoes): registra o modelo de embeddings escolhido` | |
 | 10 | Notebook da demonstração `notebooks/01-rag-receitas-passo-a-passo.ipynb` | `docs(receitas): adiciona o notebook de demonstração do RAG` | |
 
 O PR só é aberto quando a pessoa pedir. Atualize a coluna "Situação" a cada fase concluída.
@@ -130,6 +130,17 @@ O repositório oficial do RecipeNLG no Hugging Face (`mbien/recipe_nlg`) não te
 | Poetry | `brew install poetry` ou `python3 -m pip install --user poetry` | dependências Python |
 | GitHub CLI | `brew install gh` e `gh auth login` | `scripts/nova-branch.sh` e o PR |
 | pre-commit | `pipx install pre-commit` e `pre-commit install` | hooks do repositório |
+
+### Dois ambientes
+
+O ambiente prioritário é um **Mac M4 com 24 GB de RAM**. O outro é um **Linux sem GPU** (notebook com Ryzen 5 3450U e 13 GB de RAM, parecido com a VM de 2 vCPUs).
+
+| | Mac M4 (prioritário) | Linux sem GPU |
+| --- | --- | --- |
+| PyTorch | PyPI, com MPS (`DISPOSITIVO_EMBEDDINGS=auto` escolhe `mps`) | Índice só de CPU (definido no `pyproject.toml`) |
+| Ollama | App do Ollama, usa a GPU do chip (Metal) | Serviço do systemd, só CPU, com `OLLAMA_MAX_LOADED_MODELS=1`, `OLLAMA_NUM_PARALLEL=1` e `OLLAMA_KEEP_ALIVE=2m` |
+| Memória | LLM e embeddings cabem juntos | Um modelo por vez. Fechar o navegador e outros contêineres durante as indexações |
+| Indexação do qwen3 | Base inteira | Pode exigir uma amostra fixa, igual para os dois modelos |
 
 A máquina do laboratório não deixa usar o Homebrew sem `sudo`. Lá, o Poetry foi instalado com `pip --user`, em `~/Library/Python/3.14/bin`, e o `gh` pelo binário oficial, em `~/.local/bin`. As duas pastas precisam estar no `PATH`.
 

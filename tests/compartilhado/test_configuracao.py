@@ -46,6 +46,16 @@ def test_recusa_modelo_desconhecido():
         criar(modelo_embeddings="outro")
 
 
+def test_dispositivo_padrao_e_automatico(monkeypatch):
+    monkeypatch.delenv("DISPOSITIVO_EMBEDDINGS", raising=False)
+    assert criar().dispositivo_embeddings == "auto"
+
+
+def test_recusa_dispositivo_desconhecido():
+    with pytest.raises(ValidationError):
+        criar(dispositivo_embeddings="tpu")
+
+
 def test_recusa_limiar_fora_de_0_a_1():
     with pytest.raises(ValidationError):
         criar(limiar_similaridade=1.5)
