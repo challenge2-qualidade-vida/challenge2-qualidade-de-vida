@@ -13,6 +13,7 @@ class ModeloOllama:
         url: str = "http://localhost:11434",
         modelo: str = "qwen2.5:7b",
         temperatura: float = 0.2,
+        contexto: int = 8192,
         cliente: Any = None,
     ):
         if cliente is None:
@@ -21,7 +22,9 @@ class ModeloOllama:
             cliente = ollama.Client(host=url, timeout=600)
         self._cliente = cliente
         self.modelo = modelo
-        self._opcoes = {"temperature": temperatura}
+        # o padrão do Ollama é 4096 tokens; cinco receitas longas mais as instruções passam
+        # disso, e o Ollama corta o começo do prompt sem avisar
+        self._opcoes = {"temperature": temperatura, "num_ctx": contexto}
 
     def _conversar(self, sistema: str, mensagem: str, formato: Any = None) -> str:
         resposta = self._cliente.chat(

@@ -100,11 +100,13 @@ def formatar_fonte(recuperado: TrechoRecuperado) -> str:
     """Citação legível de um trecho: título, origem, ano, lugar no documento, link e licença."""
     trecho, fonte = recuperado.trecho, recuperado.trecho.fonte
     partes = [trecho.titulo] if trecho.tipo is TipoDeTrecho.RECEITA else []
-    origem = (
-        fonte.titulo
-        if fonte.instituicao in fonte.titulo
-        else f"{fonte.titulo} ({fonte.instituicao})"
-    )
+    # sem repetir o nome quando um contém o outro (ex.: "afrodite.json (dataset no GitHub)")
+    if fonte.instituicao in fonte.titulo:
+        origem = fonte.titulo
+    elif fonte.titulo in fonte.instituicao:
+        origem = fonte.instituicao
+    else:
+        origem = f"{fonte.titulo} ({fonte.instituicao})"
     partes.append(f"{origem}, {fonte.ano}" if fonte.ano else origem)
     if trecho.capitulo:
         partes.append(trecho.capitulo)

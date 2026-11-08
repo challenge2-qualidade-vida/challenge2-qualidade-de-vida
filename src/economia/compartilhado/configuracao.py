@@ -22,6 +22,7 @@ class Configuracao(BaseSettings):
     qdrant_url: str = "http://localhost:6333"
     ollama_url: str = "http://localhost:11434"
     ollama_modelo: str = "qwen2.5:7b"
+    ollama_contexto: int = Field(default=8192, ge=2048)
     modelo_embeddings: Literal["e5", "qwen3"] = "e5"
     # auto: mps no Mac com Apple Silicon, cuda se houver GPU NVIDIA, senão cpu
     dispositivo_embeddings: Literal["auto", "cpu", "mps", "cuda"] = "auto"
@@ -38,7 +39,12 @@ class Configuracao(BaseSettings):
     @property
     def colecao(self) -> str:
         """Coleção do Qdrant do modelo em uso: uma por modelo, porque as dimensões diferem."""
-        return f"base_conhecimento_{self.modelo_embeddings}"
+        return self.colecao_da_amostra(None)
+
+    def colecao_da_amostra(self, amostra: int | None) -> str:
+        """Coleção da base inteira ou de uma amostra fixa de receitas (ex.: _amostra400)."""
+        sufixo = f"_amostra{amostra}" if amostra else ""
+        return f"base_conhecimento_{self.modelo_embeddings}{sufixo}"
 
 
 @lru_cache

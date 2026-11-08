@@ -35,7 +35,7 @@ def test_gerar_manda_sistema_e_mensagem_com_a_temperatura():
         {"role": "system", "content": "instruções"},
         {"role": "user", "content": "pergunta"},
     ]
-    assert chamada["options"] == {"temperature": 0.1}
+    assert chamada["options"] == {"temperature": 0.1, "num_ctx": 8192}
     assert chamada["format"] is None
 
 

@@ -285,3 +285,17 @@ def test_extracao_invalida_vale_como_nenhum_ingrediente(trecho):
     resposta = caso.responder("o que faço?")
     assert resposta.encontrou
     assert resposta.faltando == ()
+
+
+def test_formatar_fonte_nao_repete_o_nome_contido_na_instituicao(trecho):
+    from dataclasses import replace
+
+    receita = replace(
+        trecho("a", titulo="Bolo"),
+        fonte=Fonte(
+            titulo="afrodite.json", instituicao="afrodite.json (dataset no GitHub)"
+        ),
+    )
+    assert formatar_fonte(TrechoRecuperado(receita, 0.9)) == (
+        "Bolo. afrodite.json (dataset no GitHub)."
+    )
