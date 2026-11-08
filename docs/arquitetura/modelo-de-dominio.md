@@ -80,6 +80,8 @@ flowchart LR
 | Informação nutricional | Calorias e nutrientes de um alimento, vindos da tabela TACO | Receitas e nutrição | `InformacaoNutricional` |
 | Fonte | Documento de onde veio uma informação (título, instituição, ano) | Receitas e nutrição | `Fonte` |
 | Trecho | Parte de um documento da base de conhecimento usada pelo RAG | Receitas e nutrição | `Trecho` |
+| Documento | **Proposto (08/11/2026, RAG v1).** Texto de orientação da base de conhecimento (ex.: Guia Alimentar), com `Fonte` e dividido em seções (`Secao`). É de onde saem os trechos que não são receitas | Receitas e nutrição | `Documento` |
+| Resposta com fontes | **Proposto (08/11/2026, RAG v1).** Resposta do Miau-ricio com os trechos usados e as fontes montadas pelo código (RN10), ou a indicação de que a base não tem a informação (RN11) | Receitas e nutrição | `RespostaComFontes` |
 | Nota fiscal | Comprovante de compra (NFC-e) com itens, valores, loja e data | Leitura de documentos | `NotaFiscal` |
 | Encarte | Folheto de promoções de um estabelecimento | Leitura de documentos | `Encarte` |
 | Item extraído | Produto, quantidade e valor lidos de uma imagem, com nível de confiança | Leitura de documentos | `ItemExtraido` |
