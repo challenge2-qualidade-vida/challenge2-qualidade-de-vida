@@ -164,6 +164,7 @@ def criar_responder(configuracao: Configuracao, amostra: int | None = None):
             url=configuracao.ollama_url,
             modelo=configuracao.ollama_modelo,
             contexto=configuracao.ollama_contexto,
+            tempo_limite=configuracao.ollama_tempo_limite,
         ),
         prompt_do_sistema=carregar_prompt("miau-ricio", "resposta_com_fontes_v1"),
         limiar=configuracao.limiar_similaridade,

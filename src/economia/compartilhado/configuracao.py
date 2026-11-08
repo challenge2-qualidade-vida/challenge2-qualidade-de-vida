@@ -23,6 +23,8 @@ class Configuracao(BaseSettings):
     ollama_url: str = "http://localhost:11434"
     ollama_modelo: str = "qwen2.5:7b"
     ollama_contexto: int = Field(default=8192, ge=2048)
+    # segundos de espera por resposta do LLM; na CPU, cinco receitas no prompt passam de 10 min
+    ollama_tempo_limite: float = Field(default=1800, gt=0)
     modelo_embeddings: Literal["e5", "qwen3"] = "e5"
     # auto: mps no Mac com Apple Silicon, cuda se houver GPU NVIDIA, senão cpu
     dispositivo_embeddings: Literal["auto", "cpu", "mps", "cuda"] = "auto"

@@ -14,12 +14,13 @@ class ModeloOllama:
         modelo: str = "qwen2.5:7b",
         temperatura: float = 0.2,
         contexto: int = 8192,
+        tempo_limite: float = 1800,
         cliente: Any = None,
     ):
         if cliente is None:
             import ollama
 
-            cliente = ollama.Client(host=url, timeout=600)
+            cliente = ollama.Client(host=url, timeout=tempo_limite)
         self._cliente = cliente
         self.modelo = modelo
         # o padrão do Ollama é 4096 tokens; cinco receitas longas mais as instruções passam

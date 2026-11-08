@@ -45,3 +45,12 @@ def test_gerar_json_restringe_ao_esquema_e_decodifica():
     resultado = ModeloOllama(cliente=cliente).gerar_json("s", "m", esquema)
     assert resultado == {"ingredientes": ["ovo"]}
     assert cliente.chamadas[0]["format"] == esquema
+
+
+def test_tempo_limite_vai_para_o_cliente_do_ollama(monkeypatch):
+    import ollama
+
+    criados = []
+    monkeypatch.setattr(ollama, "Client", lambda **kwargs: criados.append(kwargs))
+    ModeloOllama(url="http://ollama:11434", tempo_limite=42)
+    assert criados == [{"host": "http://ollama:11434", "timeout": 42}]

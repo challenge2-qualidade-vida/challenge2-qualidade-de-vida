@@ -10,11 +10,17 @@ def criar(**kwargs) -> Configuracao:
 
 
 def test_valores_padrao(monkeypatch):
-    for nome in ("MODELO_EMBEDDINGS", "LIMIAR_SIMILARIDADE", "INGREDIENTES_BASICOS"):
+    for nome in (
+        "MODELO_EMBEDDINGS",
+        "LIMIAR_SIMILARIDADE",
+        "INGREDIENTES_BASICOS",
+        "OLLAMA_TEMPO_LIMITE",
+    ):
         monkeypatch.delenv(nome, raising=False)
     configuracao = criar()
     assert configuracao.modelo_embeddings == "e5"
     assert configuracao.limiar_similaridade == 0.845
+    assert configuracao.ollama_tempo_limite == 1800
     assert configuracao.ingredientes_basicos == [
         "sal",
         "agua",
