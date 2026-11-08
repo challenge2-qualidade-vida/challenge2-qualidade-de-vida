@@ -20,8 +20,8 @@ Cada fase termina com os testes e o Ruff passando e **um commit**, em Convention
 | --- | --- | --- | --- |
 | 0 | Branch `feat/15-rag-receitas` | — | Feita |
 | 1 | Troca da fonte de receitas na documentação, RN26 a definir, seção "Versão 1" na spec | `docs(receitas): troca a fonte de receitas para afrodite.json e RecipeNLG` | Feita |
-| 2 | `docs/semana-2/estrategia-rag.md`: fluxo do RAG, chunking, embeddings, banco vetorial, limitações (entregável descritivo, sai no site) | `docs(receitas): descreve a estratégia de chunking e de embeddings do RAG` | **Próxima** |
-| 3 | `pyproject.toml` (Poetry), `docker-compose.yml` com o Qdrant, `.env.example`, configuração com pydantic-settings | `build(receitas): configura o projeto Python e o Qdrant no Docker Compose` | |
+| 2 | `docs/semana-2/estrategia-rag.md`: fluxo do RAG, chunking, embeddings, banco vetorial, limitações (entregável descritivo, sai no site) | `docs(receitas): descreve a estratégia de chunking e de embeddings do RAG` | Feita |
+| 3 | `pyproject.toml` (Poetry), `docker-compose.yml` com o Qdrant, `.env.example`, configuração com pydantic-settings | `build(receitas): configura o projeto Python e o Qdrant no Docker Compose` | **Próxima** |
 | 4 | Decisões das bibliotecas, do Ollama, dos candidatos de embeddings e da estratégia de chunking, com a justificativa perguntada à pessoa (skill `registrar-decisao`) | `docs(decisoes): registra as escolhas do RAG de receitas` | |
 | 5 | Domínio (`Fonte`, `Trecho`, `Receita`, `Ingrediente`, `RespostaComFontes`) e fragmentação, com testes de unidade | `feat(receitas): adiciona os trechos e a estratégia de fragmentação` | |
 | 6 | Carregadores, os dois adaptadores de embeddings, o repositório Qdrant e o caso de uso `indexar` | `feat(receitas): indexa os trechos no Qdrant` | |
