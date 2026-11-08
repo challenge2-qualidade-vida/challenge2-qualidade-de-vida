@@ -4,16 +4,33 @@ version = "0.1.0"
 description = "Backend da aplicação EconoMIA"
 readme = "README.md"
 requires-python = ">=3.11,<4.0"
-dependencies = ["fastapi (>=0.162.0,<0.163.0)", "uvicorn (>=0.54.0,<0.55.0)"]
+dependencies = [
+    "fastapi (>=0.162.0,<0.163.0)",
+    "uvicorn (>=0.54.0,<0.55.0)",
+    "torch (>=2.15.0,<3.0.0)",
+    "qdrant-client (>=1.20.0,<2.0.0)",
+    "sentence-transformers (>=6.2.0,<7.0.0)",
+    "ollama (>=0.6.3,<0.7.0)",
+    "pypdf (>=7.0.0,<8.0.0)",
+    "pydantic-settings (>=2.16.2,<3.0.0)",
+    "pyarrow (>=26.0.1,<27.0.0)",
+]
 
 [tool.poetry]
 packages = [
     { include = "economia", from = "src" }
 ]
 
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+# O torch vem do índice só de CPU: a máquina de desenvolvimento e a VM não têm GPU,
+# e a versão do PyPI traz as bibliotecas da CUDA (vários GB).
+[[tool.poetry.source]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
+
+[tool.poetry.dependencies]
+torch = { source = "pytorch-cpu" }
+
 [dependency-groups]
 dev = [
     "pytest (>=9.2.0,<10.0.0)",
@@ -23,3 +40,12 @@ dev = [
     "import-linter (>=2.15,<3.0)",
     "pre-commit (>=4.7.0,<5.0.0)"
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--import-mode=importlib"
+bdd_features_base_dir = "specs/"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
