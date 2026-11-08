@@ -24,8 +24,8 @@ Cada fase termina com os testes e o Ruff passando e **um commit**, em Convention
 | 3 | `pyproject.toml` (Poetry), `docker-compose.yml` com o Qdrant, `.env.example`, configuração com pydantic-settings | `build(receitas): configura o projeto Python e o Qdrant no Docker Compose` | Feita |
 | 4 | Decisões das bibliotecas, do Ollama, dos candidatos de embeddings e da estratégia de chunking, com a justificativa perguntada à pessoa (skill `registrar-decisao`) | `docs(decisoes): registra as escolhas do RAG de receitas` | Feita (4 decisões sem justificativa) |
 | 5 | Domínio (`Fonte`, `Trecho`, `Receita`, `Ingrediente`, `RespostaComFontes`) e fragmentação, com testes de unidade | `feat(receitas): adiciona os trechos e a estratégia de fragmentação` | Feita (termos `Documento` e `RespostaComFontes` propostos no modelo de domínio) |
-| 6 | Carregadores, os dois adaptadores de embeddings, o repositório Qdrant e o caso de uso `indexar` | `feat(receitas): indexa os trechos no Qdrant` | **Próxima** |
-| 7 | Caso de uso `responder`, adaptador do Ollama, prompt versionado, CLI e passos BDD | `feat(receitas): responde perguntas com os trechos e as fontes` | |
+| 6 | Carregadores, os dois adaptadores de embeddings, o repositório Qdrant e o caso de uso `indexar` | `feat(receitas): indexa os trechos no Qdrant` | Feita |
+| 7 | Caso de uso `responder`, adaptador do Ollama, prompt versionado, CLI e passos BDD | `feat(receitas): responde perguntas com os trechos e as fontes` | **Próxima** |
 | 7b | Extração dos ingredientes da pergunta, contagem dos que faltam e desempate do top-5, com testes; regra proposta no modelo de domínio | `feat(receitas): desempata as receitas pelos ingredientes que faltam` | |
 | 8 | Ingestão das receitas e dos textos de orientação; FONTES.md preenchido | `feat(receitas): adiciona a base de conhecimento curada` | |
 | 9 | Conjunto de avaliação, comando `comparar`, escolha do modelo de embeddings, comparação de "uma receita por trecho" com trechos menores (ingredientes e modo de preparo separados) e limiar calibrado | `feat(receitas): compara os modelos de embeddings` + `docs(decisoes): registra o modelo de embeddings escolhido` | |
@@ -115,7 +115,8 @@ O que já foi verificado nesses arquivos:
 
 | Arquivo | O que tem |
 | --- | --- |
-| `afrodite.json` (3 MB) | 8.183 receitas: `nome` e `secao[]` com `nome` e `conteudo`. Só 7.924 têm "Ingredientes" e 7.283 têm "Modo de Preparo". Há subseções como "Massa:" e "Recheio:". Os nomes das seções podem ter espaço no começo |
+| `afrodite.json` (3 MB) | 8.183 receitas: `nome` e `secao[]` com `nome` e `conteudo`. 7.924 têm a seção "Ingredientes" e 7.283 a "Modo de Preparo", mas **a maioria das seções está vazia** (`[""]`): só 1.037 receitas têm ingredientes e modo de preparo preenchidos, e **1.004** depois de tirar as duplicatas (conferido em 08/11/2026). As receitas com subseções ("Massa:", "Recheio:") não têm modo de preparo. Os nomes das seções podem ter espaço no começo |
+| Guia Alimentar (texto extraído) | O PDF não tem marcadores. A página do PDF é a impressa mais 1. Os títulos em versalete saem com maiúscula no meio da palavra ("AlimentAção é mAis"), e não há linha em branco entre parágrafos: a linha que continua o parágrafo termina com espaço. O carregador gera 76 seções e 167 trechos, com os Dez passos separados |
 | `recipenlg_0000.parquet` (218 MB) | O primeiro dos 5 arquivos Parquet: 780 mil receitas, todas da origem `Gathered` e com `link`. Colunas: `title`, `ingredients`, `directions`, `link`, `source`, `NER`. As listas `ingredients`, `directions` e `NER` vêm como texto JSON |
 | Guia Alimentar (4,2 MB) | PDF oficial. Falta confirmar o texto exato da nota de reprodução na ficha catalográfica |
 

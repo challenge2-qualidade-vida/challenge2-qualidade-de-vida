@@ -48,6 +48,10 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "--import-mode=importlib"
+filterwarnings = [
+    # o Qdrant em memória, usado nos testes, ignora os índices de payload
+    "ignore:Payload indexes have no effect:UserWarning",
+]
 bdd_features_base_dir = "specs/"
 
 [build-system]
