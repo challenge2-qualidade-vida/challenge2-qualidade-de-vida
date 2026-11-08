@@ -67,6 +67,8 @@ def contador_de_tokens_e5():
     from transformers import AutoTokenizer
 
     tokenizador = AutoTokenizer.from_pretrained(NOME_DO_MODELO)
+    # o corte conta textos maiores que 512 antes de cortar; sem isso, o tokenizador avisa a cada vez
+    tokenizador.model_max_length = 1_000_000
 
     def contar(texto: str) -> int:
         return len(

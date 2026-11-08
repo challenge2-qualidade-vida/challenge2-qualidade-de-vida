@@ -65,11 +65,17 @@ def indexar(
     ao_progredir: Callable[[int, int], None] | None = None,
     receitas_descartadas: int = 0,
 ) -> ResultadoDaIndexacao:
-    """Gera os vetores em lotes e grava no repositório. Lotes pequenos poupam memória."""
+    """Gera os vetores em lotes e grava no repositório. Lotes pequenos poupam memória.
+
+    Os trechos são processados do mais curto para o mais longo: cada lote é preenchido até o
+    tamanho do maior texto dele, e lotes com textos de tamanho parecido desperdiçam menos.
+    A ordem não muda o resultado, porque cada trecho é gravado com o próprio id.
+    """
     if tamanho_do_lote < 1:
         raise ValueError("O lote precisa ter pelo menos 1 trecho.")
     inicio = time.perf_counter()
     repositorio.preparar(gerador.dimensao, recriar=recriar)
+    trechos = sorted(trechos, key=lambda t: len(t.texto))
     for n in range(0, len(trechos), tamanho_do_lote):
         lote = trechos[n : n + tamanho_do_lote]
         vetores = gerador.gerar_para_trechos([t.texto for t in lote])

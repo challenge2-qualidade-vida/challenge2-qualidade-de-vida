@@ -119,3 +119,16 @@ def test_amostra_fixa_mantem_a_orientacao_e_divide_as_receitas_entre_as_fontes(t
     amostra = amostra_fixa(trechos, receitas=4)
     assert [t.id for t in amostra] == ["a0", "a1", "r0", "r1", "g0", "g1", "g2"]
     assert amostra_fixa(trechos, receitas=4) == amostra
+
+
+def test_indexar_processa_do_trecho_mais_curto_para_o_mais_longo(trecho):
+    from dataclasses import replace
+
+    trechos = [
+        replace(trecho(id), texto=texto)
+        for id, texto in [("longo", "a b c d"), ("curto", "a")]
+    ]
+    gerador, repositorio = GeradorFalso(), RepositorioFalso()
+    indexar(trechos, gerador, repositorio, tamanho_do_lote=1)
+    assert gerador.lotes == [["a"], ["a b c d"]]
+    assert [t.id for t, _ in repositorio.gravados] == ["curto", "longo"]
