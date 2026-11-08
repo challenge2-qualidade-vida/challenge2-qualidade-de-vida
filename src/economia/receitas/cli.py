@@ -14,7 +14,8 @@ from economia.compartilhado.configuracao import Configuracao, obter_configuracao
 PASTA_DE_DADOS = Path("data/raw")
 ARQUIVO_AFRODITE = PASTA_DE_DADOS / "receitas/afrodite.json"
 ARQUIVO_RECIPENLG = PASTA_DE_DADOS / "receitas/recipenlg_0000.parquet"
-ARQUIVO_GUIA = PASTA_DE_DADOS / "orientacao/guia_alimentar_populacao_brasileira_2ed.pdf"
+PASTA_DE_ORIENTACAO = PASTA_DE_DADOS / "orientacao"
+ARQUIVO_GUIA = PASTA_DE_ORIENTACAO / "guia_alimentar_populacao_brasileira_2ed.pdf"
 
 
 def criar_gerador(configuracao: Configuracao):
@@ -33,19 +34,46 @@ def criar_repositorio(configuracao: Configuracao):
     return RepositorioQdrant.conectar(configuracao.qdrant_url, configuracao.colecao)
 
 
-def carregar_trechos(quantidade_recipenlg: int, amostra_de_receitas: int | None):
+def carregar_documentos():
+    """Guia Alimentar e os PDFs do catálogo. Arquivo que falta é avisado e fica de fora."""
+    from economia.receitas.infraestrutura.carregadores import (
+        DOCUMENTOS_DE_ORIENTACAO,
+        carregar_documento_de_orientacao,
+        carregar_guia_alimentar,
+    )
+
+    documentos = [carregar_guia_alimentar(ARQUIVO_GUIA)]
+    for especificacao in DOCUMENTOS_DE_ORIENTACAO:
+        if (PASTA_DE_ORIENTACAO / especificacao.arquivo).is_file():
+            documentos.append(
+                carregar_documento_de_orientacao(PASTA_DE_ORIENTACAO, especificacao)
+            )
+        else:
+            print(
+                f"Aviso: {especificacao.arquivo} não encontrado, fica fora",
+                file=sys.stderr,
+            )
+    return documentos
+
+
+def carregar_trechos(
+    quantidade_recipenlg: int,
+    amostra_de_receitas: int | None,
+    so_orientacao: bool = False,
+):
     from economia.receitas.aplicacao.indexar_base import amostra_fixa, montar_trechos
     from economia.receitas.infraestrutura.carregadores import (
         carregar_afrodite,
-        carregar_guia_alimentar,
         carregar_recipenlg,
     )
     from economia.receitas.infraestrutura.embeddings_e5 import contador_de_tokens_e5
 
-    receitas = carregar_afrodite(ARQUIVO_AFRODITE) + carregar_recipenlg(
-        ARQUIVO_RECIPENLG, quantidade=quantidade_recipenlg
-    )
-    documentos = [carregar_guia_alimentar(ARQUIVO_GUIA)]
+    receitas = []
+    if not so_orientacao:
+        receitas = carregar_afrodite(ARQUIVO_AFRODITE) + carregar_recipenlg(
+            ARQUIVO_RECIPENLG, quantidade=quantidade_recipenlg
+        )
+    documentos = carregar_documentos()
     trechos, descartadas = montar_trechos(
         receitas, documentos, contar=contador_de_tokens_e5()
     )
@@ -65,7 +93,9 @@ def comando_indexar(args: argparse.Namespace) -> None:
     from economia.receitas.aplicacao.indexar_base import indexar
 
     configuracao = configuracao_com_modelo(args.modelo)
-    trechos, descartadas = carregar_trechos(args.quantidade_recipenlg, args.amostra)
+    trechos, descartadas = carregar_trechos(
+        args.quantidade_recipenlg, args.amostra, args.so_orientacao
+    )
     print(f"{len(trechos)} trechos ({descartadas} receitas incompletas descartadas)")
     gerador = criar_gerador(configuracao)
     repositorio = criar_repositorio(configuracao)
@@ -166,6 +196,11 @@ def main(argv: list[str] | None = None) -> None:
         "--amostra",
         type=int,
         help="indexa só N receitas (metade de cada fonte) e todos os trechos de orientação",
+    )
+    indexar_parser.add_argument(
+        "--so-orientacao",
+        action="store_true",
+        help="indexa só os textos de orientação (as receitas já gravadas ficam)",
     )
     indexar_parser.set_defaults(funcao=comando_indexar)
 

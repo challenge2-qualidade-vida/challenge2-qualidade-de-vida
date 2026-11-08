@@ -210,3 +210,54 @@ def test_markdown_divide_por_cabecalhos_e_paragrafos():
         ),
         ("Folhas", "Alface", ("Use um pote com papel toalha.",)),
     ]
+
+
+# ---------------------------------------------------------------- outros PDFs
+
+
+def test_paragrafos_da_pagina_junta_linhas_e_corrige_o_pdf():
+    from economia.receitas.infraestrutura.carregadores import paragrafos_da_pagina
+
+    linhas = [
+        "CAPÍTULO 3",
+        "O consumo de frutas é re -",
+        "comendado todos os dias.",
+        "Use a geladeira para con/f_irmar",
+        "a durabilidade:",
+        "30",
+        "sem ponto no fim",
+    ]
+    assert paragrafos_da_pagina("\n".join(linhas)) == [
+        "O consumo de frutas é recomendado todos os dias.",
+        "Use a geladeira para confirmar a durabilidade:",
+        "sem ponto no fim",
+    ]
+
+
+def test_secoes_por_pagina_seguem_o_capitulo_e_a_pagina():
+    from economia.receitas.infraestrutura.carregadores import secoes_por_pagina
+
+    paginas = ["capa.", "texto um.", "", "texto três.", "referências."]
+    secoes = secoes_por_pagina(
+        paginas,
+        "Livro",
+        capitulos=((2, "Apresentação"), (4, "Capítulo 1")),
+        inicio=2,
+        fim=5,
+    )
+    assert [(s.pagina, s.capitulo, s.paragrafos) for s in secoes] == [
+        (2, "Apresentação", ("texto um.",)),
+        (4, "Capítulo 1", ("texto três.",)),
+    ]
+    assert secoes[0].titulo == "Apresentação"
+
+
+def test_catalogo_de_orientacao_tem_fonte_e_licenca():
+    from economia.receitas.infraestrutura.carregadores import DOCUMENTOS_DE_ORIENTACAO
+
+    ids = [d.documento_id for d in DOCUMENTOS_DE_ORIENTACAO]
+    assert len(ids) == len(set(ids))
+    assert all(
+        d.fonte.licenca and d.fonte.url and d.fonte.ano
+        for d in DOCUMENTOS_DE_ORIENTACAO
+    )

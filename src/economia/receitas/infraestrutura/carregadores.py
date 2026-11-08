@@ -1,10 +1,11 @@
-"""Carregadores dos documentos-fonte: afrodite.json, RecipeNLG (Parquet), Guia Alimentar (PDF) e Markdown."""
+"""Carregadores dos documentos-fonte: afrodite.json, RecipeNLG (Parquet), Guia Alimentar e outros PDFs de orientação, e Markdown."""
 
 import json
 import random
 import re
 import unicodedata
 from collections.abc import Iterable
+from dataclasses import dataclass
 from pathlib import Path
 
 from economia.receitas.dominio.modelos import (
@@ -345,4 +346,189 @@ def documento_de_markdown(
         secoes=tuple(secoes),
         fonte=fonte,
         idioma=idioma,
+    )
+
+
+# ---------------------------------------------------------------- outros PDFs de orientação
+
+_LIGADURAS = {"/f_i": "fi", "/f_l": "fl", "/f_f": "ff", "/f_t": "ft"}
+_CABECALHO_DE_CAPITULO = re.compile(r"^cap[ií]tulo\s+\d+\s*$", re.IGNORECASE)
+
+
+def _limpar_linha(linha: str) -> str:
+    for errado, certo in _LIGADURAS.items():
+        linha = linha.replace(errado, certo)
+    return linha.strip()
+
+
+def paragrafos_da_pagina(texto: str) -> list[str]:
+    """Parágrafos de uma página de folheto ou livro diagramado.
+
+    Uma linha que termina com pontuação fecha o parágrafo. Linhas só com número (página)
+    e cabeçalhos "Capítulo N" saem. A hifenização "re -" ou "re-" no fim da linha é juntada.
+    """
+    paragrafos: list[str] = []
+    atual = ""
+    for bruta in texto.splitlines():
+        linha = _limpar_linha(bruta)
+        if not linha or linha.isdigit() or _CABECALHO_DE_CAPITULO.match(linha):
+            continue
+        if re.search(r"\w ?-$", atual):
+            atual = re.sub(r" ?-$", "", atual) + linha
+        else:
+            atual = f"{atual} {linha}" if atual else linha
+        if atual[-1:] in ".!?:":
+            paragrafos.append(" ".join(atual.split()))
+            atual = ""
+    if atual:
+        paragrafos.append(" ".join(atual.split()))
+    return paragrafos
+
+
+def secoes_por_pagina(
+    paginas: list[str],
+    titulo: str,
+    capitulos: tuple[tuple[int, str], ...] = (),
+    inicio: int = 1,
+    fim: int | None = None,
+) -> list[Secao]:
+    """Uma seção por página (índice 0 = página 1), com o capítulo vigente.
+
+    A página da citação é exata. Páginas sem texto ficam de fora.
+    """
+    secoes = []
+    ultima = fim if fim is not None else len(paginas) + 1
+    for numero in range(inicio, min(ultima, len(paginas) + 1)):
+        capitulo = None
+        for comeco, nome in capitulos:
+            if numero >= comeco:
+                capitulo = nome
+        paragrafos = paragrafos_da_pagina(paginas[numero - 1])
+        if paragrafos:
+            secoes.append(
+                Secao(
+                    titulo=capitulo or titulo,
+                    paragrafos=tuple(paragrafos),
+                    capitulo=capitulo,
+                    pagina=numero,
+                )
+            )
+    return secoes
+
+
+def _paginas_do_pdf(caminho: Path) -> list[str]:
+    import logging
+
+    from pypdf import PdfReader
+    from pypdf.errors import PyPdfError
+
+    logging.getLogger("pypdf").setLevel(logging.ERROR)
+    leitor = PdfReader(caminho, strict=False)
+    paginas = []
+    for pagina in leitor.pages:
+        try:
+            paginas.append(pagina.extract_text() or "")
+        except (PyPdfError, KeyError, ValueError):  # página corrompida: segue sem ela
+            paginas.append("")
+    return paginas
+
+
+@dataclass(frozen=True)
+class DocumentoDeOrientacao:
+    """Como carregar um PDF de orientação: arquivo, fonte, capítulos e páginas que entram."""
+
+    documento_id: str
+    arquivo: str
+    titulo: str
+    fonte: Fonte
+    capitulos: tuple[tuple[int, str], ...] = ()
+    inicio: int = 1
+    fim: int | None = None
+
+
+LICENCA_EMBRAPA = "CC BY-NC-ND 4.0 (Infoteca-e, Embrapa)"
+LICENCA_MS = (
+    "CC BY-NC-SA 4.0. Reprodução parcial ou total permitida, desde que citada a fonte"
+)
+
+DOCUMENTOS_DE_ORIENTACAO = (
+    DocumentoDeOrientacao(
+        documento_id="ms-na-cozinha-flv",
+        arquivo="na_cozinha_com_as_frutas_legumes_e_verduras.pdf",
+        titulo="Na cozinha com as frutas, legumes e verduras",
+        fonte=Fonte(
+            titulo="Na cozinha com as frutas, legumes e verduras",
+            instituicao="Ministério da Saúde e Universidade Federal de Minas Gerais",
+            ano=2016,
+            url="https://repositorio.ufmg.br/handle/1843/65672",
+            licenca=LICENCA_MS,
+        ),
+        capitulos=(
+            (4, "Apresentação"),
+            (6, "Introdução"),
+            (8, "Capítulo 1. As frutas, legumes e verduras"),
+            (26, "Capítulo 2. Pré-preparando as frutas, legumes e verduras"),
+            (30, "Capítulo 3. Preparando as frutas, legumes e verduras"),
+            (42, "Capítulo 4. Na cozinha com as frutas, legumes e verduras"),
+        ),
+        inicio=4,
+        fim=112,  # as referências começam na página 112
+    ),
+    DocumentoDeOrientacao(
+        documento_id="embrapa-geladeira",
+        arquivo="embrapa_hortalica_nao_e_so_salada_geladeira_2020.pdf",
+        titulo="Hortaliça não é só salada: Geladeira",
+        fonte=Fonte(
+            titulo="Hortaliça não é só salada: Geladeira (2ª ed. rev.)",
+            instituicao="Embrapa Hortaliças",
+            ano=2020,
+            url="https://www.infoteca.cnptia.embrapa.br/infoteca/handle/doc/1129028",
+            licenca=LICENCA_EMBRAPA,
+        ),
+    ),
+    DocumentoDeOrientacao(
+        documento_id="embrapa-congelador",
+        arquivo="embrapa_hortalica_nao_e_so_salada_congelador_2020.pdf",
+        titulo="Hortaliça não é só salada: Congelador",
+        fonte=Fonte(
+            titulo="Hortaliça não é só salada: Congelador (2ª ed. rev.)",
+            instituicao="Embrapa Hortaliças",
+            ano=2020,
+            url="https://www.infoteca.cnptia.embrapa.br/infoteca/handle/doc/1129067",
+            licenca=LICENCA_EMBRAPA,
+        ),
+    ),
+    DocumentoDeOrientacao(
+        documento_id="embrapa-recomendacoes-compras",
+        arquivo="embrapa_recomendacoes_compras_armazenamento_consumo_2020.pdf",
+        titulo="Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+        fonte=Fonte(
+            titulo="Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            instituicao="Embrapa Instrumentação e Ceagesp",
+            ano=2020,
+            url="https://www.infoteca.cnptia.embrapa.br/infoteca/handle/doc/1122781",
+            licenca=LICENCA_EMBRAPA,
+        ),
+    ),
+)
+
+
+def carregar_documento_de_orientacao(
+    pasta: Path, especificacao: DocumentoDeOrientacao
+) -> Documento:
+    """Carrega um PDF de orientação do catálogo, com uma seção por página."""
+    paginas = _paginas_do_pdf(Path(pasta) / especificacao.arquivo)
+    return Documento(
+        documento_id=especificacao.documento_id,
+        titulo=especificacao.titulo,
+        secoes=tuple(
+            secoes_por_pagina(
+                paginas,
+                especificacao.titulo,
+                especificacao.capitulos,
+                especificacao.inicio,
+                especificacao.fim,
+            )
+        ),
+        fonte=especificacao.fonte,
     )

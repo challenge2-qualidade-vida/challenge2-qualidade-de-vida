@@ -27,8 +27,8 @@ Cada fase termina com os testes e o Ruff passando e **um commit**, em Convention
 | 6 | Carregadores, os dois adaptadores de embeddings, o repositório Qdrant e o caso de uso `indexar` | `feat(receitas): indexa os trechos no Qdrant` | Feita |
 | 7 | Caso de uso `responder`, adaptador do Ollama, prompt versionado, CLI e passos BDD | `feat(receitas): responde perguntas com os trechos e as fontes` | Feita (teste ponta a ponta pendente da indexação) |
 | 7b | Extração dos ingredientes da pergunta, contagem dos que faltam e desempate do top-5, com testes; regra proposta no modelo de domínio | `feat(receitas): desempata as receitas pelos ingredientes que faltam` | Feita (RN31 proposta no modelo de domínio) |
-| 8 | Ingestão das receitas e dos textos de orientação; FONTES.md preenchido | `feat(receitas): adiciona a base de conhecimento curada` | **Próxima** |
-| 9 | Conjunto de avaliação, comando `comparar`, escolha do modelo de embeddings, comparação de "uma receita por trecho" com trechos menores (ingredientes e modo de preparo separados) e limiar calibrado | `feat(receitas): compara os modelos de embeddings` + `docs(decisoes): registra o modelo de embeddings escolhido` | |
+| 8 | Ingestão das receitas e dos textos de orientação; FONTES.md preenchido | `feat(receitas): adiciona a base de conhecimento curada` | Feita |
+| 9 | Conjunto de avaliação, comando `comparar`, escolha do modelo de embeddings, comparação de "uma receita por trecho" com trechos menores (ingredientes e modo de preparo separados) e limiar calibrado | `feat(receitas): compara os modelos de embeddings` + `docs(decisoes): registra o modelo de embeddings escolhido` | **Próxima** |
 | 10 | Notebook da demonstração `notebooks/01-rag-receitas-passo-a-passo.ipynb` | `docs(receitas): adiciona o notebook de demonstração do RAG` | |
 
 O PR só é aberto quando a pessoa pedir. Atualize a coluna "Situação" a cada fase concluída.
@@ -109,7 +109,17 @@ curl -fL -o data/raw/receitas/recipenlg_0000.parquet \
   "https://huggingface.co/datasets/SandhyaKilari/RecipeNLG_dataset/resolve/refs%2Fconvert%2Fparquet/default/train/0000.parquet"
 curl -fL -o data/raw/orientacao/guia_alimentar_populacao_brasileira_2ed.pdf \
   https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf
+curl -fL -o data/raw/orientacao/na_cozinha_com_as_frutas_legumes_e_verduras.pdf \
+  "https://repositorio.ufmg.br/bitstream/1843/65672/2/Na%20cozinha%20com%20as%20frutas%2c%20legumes%20e%20verduras.pdf"
+curl -fL -o data/raw/orientacao/embrapa_hortalica_nao_e_so_salada_geladeira_2020.pdf \
+  https://www.infoteca.cnptia.embrapa.br/infoteca/bitstream/doc/1129028/1/HDJF-01-Geladeira-2020-08-17.pdf
+curl -fL -o data/raw/orientacao/embrapa_hortalica_nao_e_so_salada_congelador_2020.pdf \
+  https://www.infoteca.cnptia.embrapa.br/infoteca/bitstream/doc/1129067/1/HDJF-02-Congelador-2020-08-17.pdf
+curl -fL -o data/raw/orientacao/embrapa_recomendacoes_compras_armazenamento_consumo_2020.pdf \
+  "https://www.infoteca.cnptia.embrapa.br/infoteca/bitstream/doc/1122781/1/P-Recomendacoes-para-compras-armazenamento-e-consumo-....pdf"
 ```
+
+Fontes, licenças e motivo de cada uma: [data/base-conhecimento/FONTES.md](../../data/base-conhecimento/FONTES.md).
 
 O que já foi verificado nesses arquivos:
 
@@ -118,7 +128,9 @@ O que já foi verificado nesses arquivos:
 | `afrodite.json` (3 MB) | 8.183 receitas: `nome` e `secao[]` com `nome` e `conteudo`. 7.924 têm a seção "Ingredientes" e 7.283 a "Modo de Preparo", mas **a maioria das seções está vazia** (`[""]`): só 1.037 receitas têm ingredientes e modo de preparo preenchidos, e **1.004** depois de tirar as duplicatas (conferido em 08/11/2026). As receitas com subseções ("Massa:", "Recheio:") não têm modo de preparo. Os nomes das seções podem ter espaço no começo |
 | Guia Alimentar (texto extraído) | O PDF não tem marcadores. A página do PDF é a impressa mais 1. Os títulos em versalete saem com maiúscula no meio da palavra ("AlimentAção é mAis"), e não há linha em branco entre parágrafos: a linha que continua o parágrafo termina com espaço. O carregador gera 76 seções e 167 trechos, com os Dez passos separados |
 | `recipenlg_0000.parquet` (218 MB) | O primeiro dos 5 arquivos Parquet: 780 mil receitas, todas da origem `Gathered` e com `link`. Colunas: `title`, `ingredients`, `directions`, `link`, `source`, `NER`. As listas `ingredients`, `directions` e `NER` vêm como texto JSON |
-| Guia Alimentar (4,2 MB) | PDF oficial. Falta confirmar o texto exato da nota de reprodução na ficha catalográfica |
+| Guia Alimentar (4,2 MB) | PDF oficial. Nota da ficha catalográfica: "Esta obra é disponibilizada nos termos da Licença Creative Commons – Atribuição – Não Comercial – Compartilhamento pela mesma licença 4.0 Internacional. É permitida a reprodução parcial ou total desta obra, desde que citada a fonte." |
+| Na cozinha com as FLV (4,1 MB) | 116 páginas, página do PDF = página impressa. Mesma nota de licença do Guia. O capítulo 4 (p. 42 a 111) tem receitas com aproveitamento integral, hoje indexadas como orientação, uma seção por página |
+| Folhetos da Embrapa | 2 páginas cada (Geladeira e Congelador) e a cartilha de recomendações. O texto não traz licença; vale a do repositório Infoteca-e, CC BY-NC-ND 4.0 |
 
 O repositório oficial do RecipeNLG no Hugging Face (`mbien/recipe_nlg`) não tem os dados, só um script que exige download manual. A cópia `SandhyaKilari/RecipeNLG_dataset` está completa. Ela se declara "cc-by-4.0", mas os termos que valem são os do dataset original (uso não comercial em pesquisa e ensino).
 
@@ -148,8 +160,9 @@ A máquina do laboratório não deixa usar o Homebrew sem `sudo`. Lá, o Poetry 
 ## Pendências
 
 - Conferir os termos de uso do RecipeNLG no site oficial e atualizar a validação no decisoes.md.
-- Confirmar a nota de reprodução do Guia Alimentar.
-- Escolher de 2 a 5 textos de conservação e aproveitamento, com a licença conferida.
+- **Fontes para uso comercial:** todas as fontes atuais têm licença não comercial ou não declaram licença. O produto comercial vai precisar de outras (ver decisões de 08/11/2026).
+- **CC BY-NC-ND da Embrapa:** a base guarda os trechos literais com a fonte, mas a resposta do LLM resume o texto, o que é zona cinzenta para o "sem derivações".
+- Receitas do capítulo 4 do "Na cozinha com as FLV": hoje entram como orientação; podem virar `Receita` com ingredientes, para a contagem do que falta.
 - Pontos em aberto do modelo de domínio que a versão 1 contorna: ingredientes básicos sempre disponíveis, origem das substituições da RN28, RN26.
 
 ## Como retomar com um assistente de IA
