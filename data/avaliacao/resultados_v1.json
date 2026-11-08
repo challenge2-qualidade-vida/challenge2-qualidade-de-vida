@@ -1,0 +1,399 @@
+{
+  "maquina": "Linux x86_64, 8 CPUs lógicas",
+  "k": 5,
+  "modelos": [
+    {
+      "colecao": "base_conhecimento_e5",
+      "trechos_na_colecao": 4346,
+      "indexacao": null,
+      "modelo": "intfloat/multilingual-e5-base",
+      "k": 5,
+      "recall": 0.7619047619047619,
+      "mrr": 0.6309523809523809,
+      "score_medio_com_resposta": 0.8863886085714285,
+      "score_medio_sem_resposta": 0.8230883775,
+      "menor_score_com_resposta": 0.8394151,
+      "maior_score_sem_resposta": 0.84449196,
+      "latencia_media": 0.45557788588223047,
+      "resultados": [
+        {
+          "id": "r01",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.91384274,
+          "segundos": 0.8978301140014082,
+          "titulos": [
+            "Bolo de Cenoura de Micro-ondas",
+            "Bolo cremoso de cenouras",
+            "Bolo Nutritivo de Microondas",
+            "Bolo Prático de Cenoura",
+            "Na cozinha com as frutas, legumes e verduras"
+          ]
+        },
+        {
+          "id": "r02",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": null,
+          "melhor_score": 0.87373495,
+          "segundos": 0.29471415700390935,
+          "titulos": [
+            "Pão Doce - Romeu e Julieta",
+            "Falso Pastel (de pão)",
+            "Pão com linguiça",
+            "Pão de Alho com Linguiça",
+            "Pão de queijo rápido"
+          ]
+        },
+        {
+          "id": "r03",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": 2,
+          "melhor_score": 0.9054482,
+          "segundos": 0.250758186011808,
+          "titulos": [
+            "Bolinho de Bacalhau Mais Você",
+            "Bolinho de bacalhau",
+            "Risotto de bacalhau",
+            "Petisco de Bacalhau",
+            "Medalhão de bacalhau"
+          ]
+        },
+        {
+          "id": "r04",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": 2,
+          "melhor_score": 0.8666711,
+          "segundos": 0.5845288860145956,
+          "titulos": [
+            "Pão de arroz",
+            "Arroz de forno",
+            "Risotto de Pelatti aos 4 Queijos",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Bolo de Arroz"
+          ]
+        },
+        {
+          "id": "r05",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.88860977,
+          "segundos": 0.35500650797621347,
+          "titulos": [
+            "Feijoada a la Vidigal",
+            "Feijoada Expressa",
+            "Sopa de Feijão com Queijo - (sopa bicolor)",
+            "Caldinho de feijão preto do Rio de Janeiro",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "r06",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": 2,
+          "melhor_score": 0.8394151,
+          "segundos": 0.3014860060065985,
+          "titulos": [
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Creme de couve flor",
+            "Aprenda a fazer 3 receitas surpreendentes com couve-flor",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Na cozinha com as frutas, legumes e verduras"
+          ]
+        },
+        {
+          "id": "r07",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.8793036,
+          "segundos": 0.35171769600128755,
+          "titulos": [
+            "Omelete de forno",
+            "Ovo molett",
+            "Omelete Japonesa",
+            "Pão com ovo diferente",
+            "Omelete de saco"
+          ]
+        },
+        {
+          "id": "r08",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.88355994,
+          "segundos": 0.20831214901409112,
+          "titulos": [
+            "Pastel de carne",
+            "Carne Moída de Férias",
+            "Bolo de Carne Úmido",
+            "Burrito fácil",
+            "Molho bolonhesa"
+          ]
+        },
+        {
+          "id": "e01",
+          "categoria": "receita_entre_idiomas",
+          "tem_resposta": true,
+          "posicao": 4,
+          "melhor_score": 0.8903848,
+          "segundos": 0.192382767010713,
+          "titulos": [
+            "Banana Bread",
+            "Banana Bread",
+            "Banana Bread",
+            "Banana Bread",
+            "Banana Bread(Diabetic)"
+          ]
+        },
+        {
+          "id": "e02",
+          "categoria": "receita_entre_idiomas",
+          "tem_resposta": true,
+          "posicao": null,
+          "melhor_score": 0.8930329,
+          "segundos": 0.3819732940173708,
+          "titulos": [
+            "Frango Assado ao Leite",
+            "Frango Aperitivo Crocante",
+            "Frango com manga e coco",
+            "Frango ao molho de laranja",
+            "Frango Ensopado ao Creme de Milho"
+          ]
+        },
+        {
+          "id": "e03",
+          "categoria": "receita_entre_idiomas",
+          "tem_resposta": true,
+          "posicao": null,
+          "melhor_score": 0.8804492,
+          "segundos": 0.25633318899781443,
+          "titulos": [
+            "Palitinho de Amendoim",
+            "Cookie de Amendoim",
+            "Bolo de amendoim",
+            "Torta de Amendoim",
+            "Bolo de amendoin da Tia Maria"
+          ]
+        },
+        {
+          "id": "e04",
+          "categoria": "receita_entre_idiomas",
+          "tem_resposta": true,
+          "posicao": null,
+          "melhor_score": 0.8529674,
+          "segundos": 0.26884375599911436,
+          "titulos": [
+            "Risotto de Berinjela com Carne",
+            "Sopa de beterraba Polonesa ( Borscht )",
+            "Sopa de Baixas Calorias",
+            "Sopa ou Creme De Raiz",
+            "Sopa de Creme de Milho"
+          ]
+        },
+        {
+          "id": "e05",
+          "categoria": "receita_entre_idiomas",
+          "tem_resposta": true,
+          "posicao": null,
+          "melhor_score": 0.86424065,
+          "segundos": 0.4103568400023505,
+          "titulos": [
+            "Peito de Boi Confitado",
+            "Rabada assada",
+            "Croquete de Panela de Pressão",
+            "Carne ao Molho de Leite",
+            "Bolo de Carne Úmido"
+          ]
+        },
+        {
+          "id": "g01",
+          "categoria": "guia_alimentar",
+          "tem_resposta": true,
+          "posicao": 2,
+          "melhor_score": 0.88572574,
+          "segundos": 0.648863195994636,
+          "titulos": [
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "g02",
+          "categoria": "guia_alimentar",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.9083681,
+          "segundos": 0.323253698006738,
+          "titulos": [
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "g03",
+          "categoria": "guia_alimentar",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.86038303,
+          "segundos": 0.4034043170104269,
+          "titulos": [
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "g04",
+          "categoria": "guia_alimentar",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.8937316,
+          "segundos": 0.2808987910102587,
+          "titulos": [
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "c01",
+          "categoria": "conservacao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.90524405,
+          "segundos": 0.4819771809852682,
+          "titulos": [
+            "Hortaliça não é só salada: Geladeira",
+            "Hortaliça não é só salada: Geladeira",
+            "Hortaliça não é só salada: Geladeira",
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Hortaliça não é só salada: Geladeira"
+          ]
+        },
+        {
+          "id": "c02",
+          "categoria": "conservacao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.90185654,
+          "segundos": 0.7401286509993952,
+          "titulos": [
+            "Hortaliça não é só salada: Congelador",
+            "Hortaliça não é só salada: Congelador",
+            "Hortaliça não é só salada: Congelador",
+            "Hortaliça não é só salada: Geladeira",
+            "Hortaliça não é só salada: Congelador"
+          ]
+        },
+        {
+          "id": "c03",
+          "categoria": "conservacao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.917107,
+          "segundos": 0.7402173340087757,
+          "titulos": [
+            "Na cozinha com as frutas, legumes e verduras",
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Hortaliça não é só salada: Geladeira",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "c04",
+          "categoria": "conservacao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.91008437,
+          "segundos": 0.7147904519806616,
+          "titulos": [
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Hortaliça não é só salada: Geladeira",
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Hortaliça não é só salada: Geladeira"
+          ]
+        },
+        {
+          "id": "s01",
+          "categoria": "sem_resposta",
+          "tem_resposta": false,
+          "posicao": null,
+          "melhor_score": 0.84449196,
+          "segundos": 0.7218780090042856,
+          "titulos": [
+            "Hortaliça não é só salada: Geladeira",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Massa de pizza básica",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Hortaliça não é só salada: Congelador"
+          ]
+        },
+        {
+          "id": "s02",
+          "categoria": "sem_resposta",
+          "tem_resposta": false,
+          "posicao": null,
+          "melhor_score": 0.8306082,
+          "segundos": 0.7976249110070057,
+          "titulos": [
+            "Guia Alimentar para a População Brasileira",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Guia Alimentar para a População Brasileira",
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Na cozinha com as frutas, legumes e verduras"
+          ]
+        },
+        {
+          "id": "s03",
+          "categoria": "sem_resposta",
+          "tem_resposta": false,
+          "posicao": null,
+          "melhor_score": 0.8044083,
+          "segundos": 0.6051006799971219,
+          "titulos": [
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Pão de Mel diferente",
+            "Guia Alimentar para a População Brasileira",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "s04",
+          "categoria": "sem_resposta",
+          "tem_resposta": false,
+          "posicao": null,
+          "melhor_score": 0.81284505,
+          "segundos": 0.17706637899391353,
+          "titulos": [
+            "Na cozinha com as frutas, legumes e verduras",
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Doce de Manga VAPT/VUPT",
+            "Gelado de Abacaxi na Pressão",
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças"
+          ]
+        }
+      ],
+      "separacao": -0.0051,
+      "limiar_sugerido": 0.842
+    }
+  ]
+}

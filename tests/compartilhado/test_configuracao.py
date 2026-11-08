@@ -14,7 +14,7 @@ def test_valores_padrao(monkeypatch):
         monkeypatch.delenv(nome, raising=False)
     configuracao = criar()
     assert configuracao.modelo_embeddings == "e5"
-    assert configuracao.limiar_similaridade == 0.80
+    assert configuracao.limiar_similaridade == 0.845
     assert configuracao.ingredientes_basicos == [
         "sal",
         "agua",
@@ -66,3 +66,9 @@ def test_recusa_dispositivo_desconhecido():
 def test_recusa_limiar_fora_de_0_a_1():
     with pytest.raises(ValidationError):
         criar(limiar_similaridade=1.5)
+
+
+def test_colecao_da_amostra_tem_sufixo():
+    configuracao = criar(modelo_embeddings="qwen3")
+    assert configuracao.colecao_da_amostra(400) == "base_conhecimento_qwen3_amostra400"
+    assert configuracao.colecao_da_amostra(None) == configuracao.colecao

@@ -1,0 +1,182 @@
+{
+  "descricao": "Conjunto de avaliação da versão 1 do RAG de receitas (fase 9). Cada pergunta com resposta lista os documentos (e, na orientação, as seções) que deveriam aparecer no top-5. As perguntas sem resposta calibram o limiar da RN11. As receitas foram escolhidas entre as que entram na amostra fixa de 400 receitas (as 200 primeiras de cada fonte), para valer também na comparação feita com a amostra.",
+  "versao": 1,
+  "data": "2026-11-08",
+  "perguntas": [
+    {
+      "id": "r01",
+      "pergunta": "Como faço bolo de cenoura no micro-ondas?",
+      "categoria": "receita_pt",
+      "esperados": [{"documento_id": "afrodite:5744eff20ca7832b5c745b08"}]
+    },
+    {
+      "id": "r02",
+      "pergunta": "Quero uma receita de pão de queijo",
+      "categoria": "receita_pt",
+      "esperados": [{"documento_id": "afrodite:5744eff20ca7832b5c745a97"}]
+    },
+    {
+      "id": "r03",
+      "pergunta": "Como fazer bolinho de bacalhau?",
+      "categoria": "receita_pt",
+      "esperados": [{"documento_id": "afrodite:5744eff20ca7832b5c745abb"}]
+    },
+    {
+      "id": "r04",
+      "pergunta": "Tenho arroz que sobrou, tomate e queijo. Dá para fazer um arroz no forno?",
+      "categoria": "receita_pt",
+      "esperados": [{"documento_id": "afrodite:5744eff20ca7832b5c745b27"}]
+    },
+    {
+      "id": "r05",
+      "pergunta": "Como preparar uma feijoada com feijão preto, linguiça e carne seca?",
+      "categoria": "receita_pt",
+      "esperados": [{"documento_id": "afrodite:5744eff20ca7832b5c745aae"}]
+    },
+    {
+      "id": "r06",
+      "pergunta": "Tenho uma couve-flor em casa, o que posso fazer com ela?",
+      "categoria": "receita_pt",
+      "esperados": [
+        {"documento_id": "afrodite:5744eff20ca7832b5c745a91"},
+        {"documento_id": "afrodite:5744eff20ca7832b5c745acb"}
+      ]
+    },
+    {
+      "id": "r07",
+      "pergunta": "Receita de omelete assada no forno com muitos ovos",
+      "categoria": "receita_pt",
+      "esperados": [{"documento_id": "afrodite:5744eff20ca7832b5c745b2f"}]
+    },
+    {
+      "id": "r08",
+      "pergunta": "Como fazer pastel de carne?",
+      "categoria": "receita_pt",
+      "esperados": [{"documento_id": "afrodite:5744eff20ca7832b5c745b03"}]
+    },
+    {
+      "id": "e01",
+      "pergunta": "Como fazer pão de banana?",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [
+        {"documento_id": "recipenlg:38105"},
+        {"documento_id": "recipenlg:38479"}
+      ]
+    },
+    {
+      "id": "e02",
+      "pergunta": "Receita de frango assado com limão",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [{"documento_id": "recipenlg:425"}]
+    },
+    {
+      "id": "e03",
+      "pergunta": "Como fazer biscoitos de pasta de amendoim?",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [
+        {"documento_id": "recipenlg:47489"},
+        {"documento_id": "recipenlg:57174"}
+      ]
+    },
+    {
+      "id": "e04",
+      "pergunta": "Tenho uma berinjela e leite. Dá para fazer uma sopa?",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [{"documento_id": "recipenlg:47670"}]
+    },
+    {
+      "id": "e05",
+      "pergunta": "Como fazer um ensopado de carne de boi?",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [{"documento_id": "recipenlg:54714"}]
+    },
+    {
+      "id": "g01",
+      "pergunta": "O que são alimentos ultraprocessados e por que devo evitá-los?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {"documento_id": "guia-alimentar", "secao": "Alimentos ultraprocessados"},
+        {"documento_id": "guia-alimentar", "secao": "Evitar o consumo de alimentos ultraprocessados"},
+        {"documento_id": "guia-alimentar", "secao": "Prefira sempre alimentos in natura ou minimamente processados e preparações culinárias a alimentos ultraprocessados"}
+      ]
+    },
+    {
+      "id": "g02",
+      "pergunta": "Posso usar sal, óleo e açúcar na comida? Quanto?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {"documento_id": "guia-alimentar", "secao": "Óleos, gorduras, sal e açúcar"},
+        {"documento_id": "guia-alimentar", "secao": "Por que óleos, gorduras, sal e açúcar devem ser utilizados em pequenas quantidades em preparações culinárias?"},
+        {"documento_id": "guia-alimentar", "secao": "Utilizar óleos, gorduras, sal e açúcar em pequenas quantidades ao temperar e cozinhar alimentos e criar preparações culinárias"}
+      ]
+    },
+    {
+      "id": "g03",
+      "pergunta": "Faz mal comer sozinho, rápido ou na frente da televisão?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {"documento_id": "guia-alimentar", "secao": "Comer com regularidade e com atenção"},
+        {"documento_id": "guia-alimentar", "secao": "Comer com regularidade e atenção, em ambientes apropriados e, sempre que possível, com companhia"}
+      ]
+    },
+    {
+      "id": "g04",
+      "pergunta": "Não tenho tempo para cozinhar. Como organizar a semana para comer melhor?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {"documento_id": "guia-alimentar", "secao": "Tempo"},
+        {"documento_id": "guia-alimentar", "secao": "Planejar o uso do tempo para dar à alimentação o espaço que ela merece"}
+      ]
+    },
+    {
+      "id": "c01",
+      "pergunta": "Quais hortaliças não devem ser guardadas na geladeira?",
+      "categoria": "conservacao",
+      "esperados": [{"documento_id": "embrapa-geladeira"}]
+    },
+    {
+      "id": "c02",
+      "pergunta": "Posso congelar hortaliças? Como faço?",
+      "categoria": "conservacao",
+      "esperados": [{"documento_id": "embrapa-congelador"}]
+    },
+    {
+      "id": "c03",
+      "pergunta": "Como higienizar frutas e verduras antes de comer?",
+      "categoria": "conservacao",
+      "esperados": [
+        {"documento_id": "ms-na-cozinha-flv", "secao": "Capítulo 2. Pré-preparando as frutas, legumes e verduras"},
+        {"documento_id": "embrapa-recomendacoes-compras"}
+      ]
+    },
+    {
+      "id": "c04",
+      "pergunta": "Que cuidados tomar ao comprar frutas e hortaliças para durarem mais?",
+      "categoria": "conservacao",
+      "esperados": [
+        {"documento_id": "embrapa-recomendacoes-compras"},
+        {"documento_id": "ms-na-cozinha-flv", "secao": "Capítulo 1. As frutas, legumes e verduras"}
+      ]
+    },
+    {
+      "id": "s01",
+      "pergunta": "Quanto tempo dura o fermento biológico depois de aberto?",
+      "categoria": "sem_resposta"
+    },
+    {
+      "id": "s02",
+      "pergunta": "Qual a dose diária recomendada de vitamina D para adultos?",
+      "categoria": "sem_resposta"
+    },
+    {
+      "id": "s03",
+      "pergunta": "Como trocar o pneu do carro?",
+      "categoria": "sem_resposta"
+    },
+    {
+      "id": "s04",
+      "pergunta": "Qual a melhor marca de panela de pressão?",
+      "categoria": "sem_resposta"
+    }
+  ]
+}

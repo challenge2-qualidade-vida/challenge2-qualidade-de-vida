@@ -1,8 +1,9 @@
 """Linha de comando do RAG de receitas.
 
 Uso:
-    poetry run python -m economia.receitas.cli indexar [--modelo e5|qwen3] [--recriar]
+    poetry run python -m economia.receitas.cli indexar [--modelo e5|qwen3] [--recriar] [--amostra 400]
     poetry run python -m economia.receitas.cli perguntar "o que faço com arroz e ovo?"
+    poetry run python -m economia.receitas.cli comparar [--amostra 400]
 """
 
 import argparse
@@ -15,6 +16,8 @@ PASTA_DE_DADOS = Path("data/raw")
 ARQUIVO_AFRODITE = PASTA_DE_DADOS / "receitas/afrodite.json"
 ARQUIVO_RECIPENLG = PASTA_DE_DADOS / "receitas/recipenlg_0000.parquet"
 PASTA_DE_ORIENTACAO = PASTA_DE_DADOS / "orientacao"
+PASTA_DE_AVALIACAO = Path("data/avaliacao")
+ARQUIVO_DE_PERGUNTAS = PASTA_DE_AVALIACAO / "perguntas_rag_v1.json"
 ARQUIVO_GUIA = PASTA_DE_ORIENTACAO / "guia_alimentar_populacao_brasileira_2ed.pdf"
 
 
@@ -28,10 +31,19 @@ def criar_gerador(configuracao: Configuracao):
     return GeradorOllama(url=configuracao.ollama_url)
 
 
-def criar_repositorio(configuracao: Configuracao):
+def criar_repositorio(configuracao: Configuracao, amostra: int | None = None):
     from economia.receitas.infraestrutura.repositorio_qdrant import RepositorioQdrant
 
-    return RepositorioQdrant.conectar(configuracao.qdrant_url, configuracao.colecao)
+    return RepositorioQdrant.conectar(
+        configuracao.qdrant_url, configuracao.colecao_da_amostra(amostra)
+    )
+
+
+def descrever_maquina() -> str:
+    import os
+    import platform
+
+    return f"{platform.system()} {platform.machine()}, {os.cpu_count()} CPUs lógicas"
 
 
 def carregar_documentos():
@@ -98,11 +110,12 @@ def comando_indexar(args: argparse.Namespace) -> None:
     )
     print(f"{len(trechos)} trechos ({descartadas} receitas incompletas descartadas)")
     gerador = criar_gerador(configuracao)
-    repositorio = criar_repositorio(configuracao)
+    repositorio = criar_repositorio(configuracao, args.amostra)
+    colecao = repositorio.colecao
 
     def progresso(feitos: int, total: int) -> None:
         print(
-            f"\r{configuracao.colecao}: {feitos}/{total}",
+            f"\r{colecao}: {feitos}/{total}",
             end="",
             file=sys.stderr,
             flush=True,
@@ -119,20 +132,39 @@ def comando_indexar(args: argparse.Namespace) -> None:
     )
     print(file=sys.stderr)
     print(
-        f"{resultado.trechos} trechos gravados em {configuracao.colecao} "
+        f"{resultado.trechos} trechos gravados em {colecao} "
         f"em {resultado.segundos:.0f} s ({repositorio.contar()} na coleção)"
     )
+    if not args.so_orientacao:
+        import json
+
+        PASTA_DE_AVALIACAO.mkdir(parents=True, exist_ok=True)
+        registro = {
+            "colecao": colecao,
+            "modelo": gerador.nome,
+            "trechos": resultado.trechos,
+            "segundos": round(resultado.segundos, 1),
+            "trechos_por_segundo": round(resultado.trechos / resultado.segundos, 2),
+            "maquina": descrever_maquina(),
+        }
+        (PASTA_DE_AVALIACAO / f"indexacao_{colecao}.json").write_text(
+            json.dumps(registro, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
 
 
-def criar_responder(configuracao: Configuracao):
+def criar_responder(configuracao: Configuracao, amostra: int | None = None):
     from economia.compartilhado.infraestrutura.llm_ollama import ModeloOllama
     from economia.compartilhado.infraestrutura.prompts import carregar_prompt
     from economia.receitas.aplicacao.responder_pergunta import ResponderPergunta
 
     return ResponderPergunta(
         criar_gerador(configuracao),
-        criar_repositorio(configuracao),
-        ModeloOllama(url=configuracao.ollama_url, modelo=configuracao.ollama_modelo),
+        criar_repositorio(configuracao, amostra),
+        ModeloOllama(
+            url=configuracao.ollama_url,
+            modelo=configuracao.ollama_modelo,
+            contexto=configuracao.ollama_contexto,
+        ),
         prompt_do_sistema=carregar_prompt("miau-ricio", "resposta_com_fontes_v1"),
         limiar=configuracao.limiar_similaridade,
         prompt_de_extracao=carregar_prompt("miau-ricio", "extrair_ingredientes_v1"),
@@ -148,11 +180,10 @@ def comando_perguntar(args: argparse.Namespace) -> None:
     from economia.receitas.aplicacao.responder_pergunta import formatar_fonte
 
     configuracao = configuracao_com_modelo(args.modelo)
-    caso = criar_responder(configuracao)
+    caso = criar_responder(configuracao, args.amostra)
+    colecao = configuracao.colecao_da_amostra(args.amostra)
     print(f"Pergunta: {args.pergunta}")
-    print(
-        f"Coleção: {configuracao.colecao} | limiar: {configuracao.limiar_similaridade}"
-    )
+    print(f"Coleção: {colecao} | limiar: {configuracao.limiar_similaridade}")
 
     if args.trechos:
         print("\nTrechos recuperados (acima do limiar):")
@@ -175,6 +206,73 @@ def comando_perguntar(args: argparse.Namespace) -> None:
             print(f"  [{n}] {formatar_fonte(recuperado)}")
 
 
+def comando_comparar(args: argparse.Namespace) -> None:
+    """Avalia cada modelo no conjunto de perguntas e grava o resultado em data/avaliacao/."""
+    import json
+    from dataclasses import asdict
+
+    from economia.receitas.aplicacao.avaliacao import avaliar, carregar_perguntas
+
+    perguntas = carregar_perguntas(args.perguntas)
+    resumos = []
+    for modelo in args.modelos:
+        configuracao = configuracao_com_modelo(modelo)
+        repositorio = criar_repositorio(configuracao, args.amostra)
+        if repositorio.contar() == 0:
+            print(
+                f"{repositorio.colecao}: coleção vazia; rode indexar --modelo {modelo} antes"
+            )
+            continue
+        resumo = avaliar(perguntas, criar_gerador(configuracao), repositorio, k=args.k)
+        indexacao = PASTA_DE_AVALIACAO / f"indexacao_{repositorio.colecao}.json"
+        resumos.append(
+            {
+                "colecao": repositorio.colecao,
+                "trechos_na_colecao": repositorio.contar(),
+                "indexacao": json.loads(indexacao.read_text())
+                if indexacao.is_file()
+                else None,
+                **asdict(resumo),
+                "separacao": round(resumo.separacao, 4),
+                "limiar_sugerido": resumo.limiar_sugerido,
+            }
+        )
+
+    print(f"\n{len(perguntas)} perguntas, top-{args.k} | {descrever_maquina()}\n")
+    cabecalho = (
+        f"{'coleção':<38} {'Recall@k':>8} {'MRR':>6} {'score c/':>8} {'score s/':>8} "
+        f"{'separação':>9} {'limiar':>6} {'s/consulta':>10}"
+    )
+    print(cabecalho)
+    for r in resumos:
+        print(
+            f"{r['colecao']:<38} {r['recall']:>8.2f} {r['mrr']:>6.2f} "
+            f"{r['score_medio_com_resposta']:>8.3f} {r['score_medio_sem_resposta']:>8.3f} "
+            f"{r['separacao']:>9.3f} {r['limiar_sugerido']:>6.3f} {r['latencia_media']:>10.3f}"
+        )
+    for r in resumos:
+        erros = [
+            p for p in r["resultados"] if p["tem_resposta"] and p["posicao"] is None
+        ]
+        if erros:
+            print(f"\n{r['colecao']}: perguntas sem acerto no top-{args.k}:")
+            for p in erros:
+                print(f"  {p['id']} ({p['categoria']}): {' | '.join(p['titulos'][:3])}")
+
+    sufixo = f"_amostra{args.amostra}" if args.amostra else ""
+    saida = PASTA_DE_AVALIACAO / f"resultados_v1{sufixo}.json"
+    saida.write_text(
+        json.dumps(
+            {"maquina": descrever_maquina(), "k": args.k, "modelos": resumos},
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    print(f"\nResultado gravado em {saida}")
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="economia.receitas.cli", description=__doc__)
     comandos = parser.add_subparsers(dest="comando", required=True)
@@ -195,7 +293,8 @@ def main(argv: list[str] | None = None) -> None:
     indexar_parser.add_argument(
         "--amostra",
         type=int,
-        help="indexa só N receitas (metade de cada fonte) e todos os trechos de orientação",
+        help="indexa só N receitas (metade de cada fonte) e todos os trechos de orientação, "
+        "numa coleção própria (ex.: base_conhecimento_e5_amostra400)",
     )
     indexar_parser.add_argument(
         "--so-orientacao",
@@ -217,7 +316,23 @@ def main(argv: list[str] | None = None) -> None:
         action="store_false",
         help="não mostra os trechos recuperados",
     )
+    perguntar_parser.add_argument(
+        "--amostra", type=int, help="usa a coleção da amostra (ex.: 400)"
+    )
     perguntar_parser.set_defaults(funcao=comando_perguntar)
+
+    comparar_parser = comandos.add_parser(
+        "comparar", help="compara os modelos de embeddings no conjunto de avaliação"
+    )
+    comparar_parser.add_argument(
+        "--modelos", nargs="+", choices=["e5", "qwen3"], default=["e5", "qwen3"]
+    )
+    comparar_parser.add_argument(
+        "--amostra", type=int, help="usa as coleções da amostra (ex.: 400)"
+    )
+    comparar_parser.add_argument("--k", type=int, default=5)
+    comparar_parser.add_argument("--perguntas", type=Path, default=ARQUIVO_DE_PERGUNTAS)
+    comparar_parser.set_defaults(funcao=comando_comparar)
 
     args = parser.parse_args(argv)
     args.funcao(args)
