@@ -129,7 +129,24 @@ Conjunto de avaliação em `data/avaliacao/perguntas_rag_v1.json`, com cerca de 
 | **Separação dos scores** | Diferença entre os scores das perguntas com resposta e sem resposta. Serve para calibrar o limiar da RN11 |
 | **Latência por consulta** e **tempo de indexação** | Custo de rodar o modelo |
 
-A VM de produção tem 2 vCPUs e nenhuma GPU, então a latência na CPU pesa tanto quanto a qualidade. Os resultados e o modelo escolhido entram em [decisoes.md](../decisoes.md) quando a comparação terminar.
+A VM de produção tem 2 vCPUs e nenhuma GPU, então a latência na CPU pesa tanto quanto a qualidade. ### Resultado da versão 1
+
+Na versão 1, só o e5 foi avaliado. A comparação com o qwen3 fica para quando o projeto rodar no Mac (ver [decisoes.md](../decisoes.md)). Medição na coleção completa (4.346 trechos), com as 25 perguntas, numa máquina Linux de 8 CPUs lógicas e sem GPU:
+
+| Métrica | e5 |
+| --- | --- |
+| Recall@5 | 0,76 (16 de 21) |
+| MRR | 0,63 |
+| Score médio com resposta / sem resposta | 0,886 / 0,823 |
+| Separação | -0,005 (s01 com 0,844; r06 com 0,839) |
+| Latência por consulta (só a recuperação) | 0,46 s |
+| Indexação | cerca de 47 min |
+
+- As receitas e os textos de orientação em português são recuperados bem: só a r02 (pão de queijo) ficou fora do top-5.
+- A busca entre idiomas é o ponto fraco: 4 das 5 perguntas em português sobre receitas em inglês erraram. O top-5 trouxe receitas brasileiras parecidas, e não a receita em inglês do gabarito.
+- Com o limiar de 0,845, as 4 perguntas sem resposta são barradas e só a r06 se perde. Quando o score fica acima do limiar e a resposta não está nos trechos, o LLM ainda responde `NAO_ENCONTRADO`, uma segunda barreira para a RN11.
+
+Os resultados por pergunta estão em `data/avaliacao/resultados_v1.json`.
 
 ## 6. Banco vetorial
 
@@ -142,7 +159,7 @@ O **Qdrant** roda em Docker, como na VM de produção.
 ## 7. Da recuperação à resposta
 
 1. **Pergunta sobre preço atual:** recebe o aviso de que a base de conhecimento não é fonte de preço atual (RN04), sem passar pela busca.
-2. **Limiar de similaridade:** se o melhor score fica abaixo do limiar, a resposta diz que não encontrou (RN11). O valor inicial é 0,80 e é calibrado com a separação dos scores na comparação dos modelos.
+2. **Limiar de similaridade:** se o melhor score fica abaixo do limiar, a resposta diz que não encontrou (RN11). O valor inicial era 0,80. Na avaliação com o e5 (seção 5), as perguntas sem resposta chegaram a 0,844, então o limiar passou para 0,845.
 3. **Desempate pelos ingredientes que faltam:** o LLM extrai da pergunta os ingredientes que a pessoa tem, em português e em inglês, num formato validado. Uma função determinística normaliza o texto (minúsculas, sem acento, singular simples) e conta quantos ingredientes de cada receita faltam. Entre receitas com scores dentro de uma faixa de tolerância (0,01), vem primeiro a que tem menos ingredientes faltando. Sal, água e óleo contam como sempre disponíveis, por uma lista provisória na configuração.
 4. **Redação:** o LLM local (`qwen2.5:7b`, no Ollama) recebe os trechos numerados [1]…[n] e cita os números. O prompt fica num arquivo versionado em `prompts/miau-ricio/`.
 5. **Fontes:** o código troca cada número citado pela fonte do payload (título, origem, ano, link e licença). O LLM nunca escreve a fonte.

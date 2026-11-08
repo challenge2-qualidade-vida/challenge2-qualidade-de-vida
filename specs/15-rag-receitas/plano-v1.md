@@ -28,7 +28,7 @@ Cada fase termina com os testes e o Ruff passando e **um commit**, em Convention
 | 7 | Caso de uso `responder`, adaptador do Ollama, prompt versionado, CLI e passos BDD | `feat(receitas): responde perguntas com os trechos e as fontes` | Feita (teste ponta a ponta pendente da indexação) |
 | 7b | Extração dos ingredientes da pergunta, contagem dos que faltam e desempate do top-5, com testes; regra proposta no modelo de domínio | `feat(receitas): desempata as receitas pelos ingredientes que faltam` | Feita (RN31 proposta no modelo de domínio) |
 | 8 | Ingestão das receitas e dos textos de orientação; FONTES.md preenchido | `feat(receitas): adiciona a base de conhecimento curada` | Feita |
-| 9 | Conjunto de avaliação, comando `comparar`, escolha do modelo de embeddings, comparação de "uma receita por trecho" com trechos menores (ingredientes e modo de preparo separados) e limiar calibrado | `feat(receitas): compara os modelos de embeddings` + `docs(decisoes): registra o modelo de embeddings escolhido` | **Próxima** |
+| 9 | Conjunto de avaliação, comando `comparar`, escolha do modelo de embeddings, comparação de "uma receita por trecho" com trechos menores (ingredientes e modo de preparo separados) e limiar calibrado | `feat(receitas): compara os modelos de embeddings` + `docs(decisoes): registra o modelo de embeddings escolhido` | Feita, só com o e5 (Recall@5 de 0,76, MRR de 0,63, limiar de 0,845). Ficam para o Mac a avaliação do qwen3 e a comparação com trechos menores |
 | 10 | Notebook da demonstração `notebooks/01-rag-receitas-passo-a-passo.ipynb` | `docs(receitas): adiciona o notebook de demonstração do RAG` | |
 
 O PR só é aberto quando a pessoa pedir. Atualize a coluna "Situação" a cada fase concluída.
@@ -68,7 +68,7 @@ Tomadas por Paulo Vitor em 05/11/2026. As que já estão em `docs/decisoes.md` d
 - Vetores normalizados, distância cosseno, **uma coleção por modelo** (`base_conhecimento_e5` e `base_conhecimento_qwen3`).
 - Comparação justa: os mesmos trechos, o mesmo chunking e o mesmo top-k (5).
 - Conjunto de avaliação em `data/avaliacao/perguntas_rag_v1.json`, com cerca de 20 perguntas e gabarito: receitas brasileiras, receitas em inglês com pergunta em português (busca entre idiomas), pelo menos 4 sobre o Guia Alimentar e 3 sem resposta na base.
-- Métricas: Recall@5, MRR, separação dos scores entre perguntas com e sem resposta (para calibrar o limiar da RN11, valor inicial 0,80), latência por consulta e tempo de indexação.
+- Métricas: Recall@5, MRR, separação dos scores entre perguntas com e sem resposta (para calibrar o limiar da RN11, valor inicial 0,80, calibrado para 0,845 na fase 9), latência por consulta e tempo de indexação.
 - Critério de produção: a VM tem 2 vCPUs e não tem GPU, então a latência na CPU pesa tanto quanto a qualidade.
 
 ## Arquitetura do código
