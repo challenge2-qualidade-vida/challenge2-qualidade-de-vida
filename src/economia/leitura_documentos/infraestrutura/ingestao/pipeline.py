@@ -47,7 +47,7 @@ def preparar_documentos(pasta_entrada: Path, caminho_manifesto: Path,
             LOGGER.exception("Falha ao processar %s", relativo)
             relatorio["erros"].append({"arquivo": relativo, "motivo": str(erro)})
     caminho_saida.parent.mkdir(parents=True, exist_ok=True)
-    caminho_saida.write_text("".join(json.dumps(x, ensure_ascii=False) + "\\n" for x in registros), encoding="utf-8")
+    caminho_saida.write_text("".join(json.dumps(x, ensure_ascii=False) + "\n" for x in registros), encoding="utf-8")
     caminho_relatorio.parent.mkdir(parents=True, exist_ok=True)
     caminho_relatorio.write_text(json.dumps(relatorio, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
     return {chave: len(valor) for chave, valor in relatorio.items()}
