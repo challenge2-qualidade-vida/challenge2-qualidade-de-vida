@@ -1,60 +1,81 @@
 # Fontes da base de conhecimento
 
-Toda fonte utilizada no RAG deve ser listada aqui, respeitando a restrição do desafio: utilizar evidências confiáveis.
+Catálogo de documentos selecionados para a base de conhecimento do EconoMIA, projeto que utiliza RAG para responder perguntas relacionadas à alimentação, nutrição, receitas, conservação, segurança alimentar e aproveitamento de alimentos.
 
-Uma URL pública não significa autorização para redistribuição. O armazenamento de cópias deve respeitar os direitos autorais e as condições de uso de cada publicação.
+**Critério de inclusão:** publicações com licença aberta ou autorização expressa de reprodução identificada na publicação original, na ficha editorial ou nos créditos institucionais.
+
+A presença de uma referência neste catálogo não significa que o arquivo já foi baixado. O campo `Arquivo` será preenchido somente após o download e a conferência do PDF.
+
+As condições de cada licença devem ser respeitadas, incluindo atribuição, uso não comercial, compartilhamento pela mesma licença e restrições aplicáveis a materiais de terceiros.
 
 ## 1. Orientação alimentar e nutrição
 
-| Arquivo | Título | Autor / instituição | Ano | Tipo de conteúdo | Link | Licença / permissão | Por que é confiável |
-|---------|--------|---------------------|-----|------------------|------|---------------------|---------------------|
-| PENDENTE | Guia Alimentar para a População Brasileira | Ministério da Saúde | 2014 | orientação | [Documento oficial](https://www.gov.br/secretariageral/pt-br/consea/acervo-consea/publicacoes/alimentacao-adequada-e-saudavel/guia-alimentar-para-a-populacao-brasileira-2014.pdf) | Reprodução sujeita às condições da publicação; verificar antes de armazenar | Guia oficial baseado em evidências científicas e recomendações nacionais. |
-| PENDENTE | Guia Alimentar para Crianças Brasileiras Menores de Dois Anos | Ministério da Saúde | 2019 | orientação | [Guias alimentares — Ministério da Saúde](https://www.gov.br/saude/pt-br/composicao/saps/promocao-da-saude/guias-alimentares/guias-alimentares) | Reprodução sujeita às condições da publicação | Documento oficial com recomendações alimentares para crianças. |
-| PENDENTE | Protocolos de Uso do Guia Alimentar — Fascículo 1 | Ministério da Saúde / Universidade de São Paulo | 2021 | orientação | [PDF oficial](https://bvsms.saude.gov.br/bvs/publicacoes/protocolos_guia_alimentar_fasciculo1.pdf) | Verificar condições específicas de reprodução | Material técnico produzido por instituições públicas e acadêmicas. |
-| PENDENTE | Política Nacional de Alimentação e Nutrição | Ministério da Saúde | 2013 | orientação | [PDF oficial](https://bvsms.saude.gov.br/bvs/publicacoes/politica_nacional_alimentacao_nutricao.pdf) | Verificar condições específicas de reprodução | Documento oficial que orienta políticas públicas de alimentação e nutrição. |
-| PENDENTE | Guia Alimentar — Como Ter uma Alimentação Saudável | Ministério da Saúde | 2013 | orientação | [PDF oficial](https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_alimentacao_saudavel_1edicao.pdf) | Verificar condições específicas de reprodução | Publicação institucional de educação alimentar. |
-| PENDENTE | Alimentação Saudável — Fique Esperto! | ANVISA | 2018 | orientação | [PDF oficial](https://bibliotecadigital.anvisa.gov.br/jspui/bitstream/anvisa/16596/1/Alimenta%C3%A7%C3%A3o%20Saud%C3%A1vel%20-%20Fique%20Esperto%21.pdf) | Reprodução parcial ou total permitida com citação da fonte, conforme publicação | Material educativo produzido pela agência reguladora. |
-| PENDENTE | Guia de Boas Práticas Nutricionais — Documento de Referência | ANVISA | 2012 | orientação | [Registro oficial](https://bibliotecadigital.anvisa.gov.br/jspui/handle/anvisa/229) | Direitos reservados salvo indicação contrária; não presumir autorização | Publicação técnica sobre composição nutricional dos alimentos. |
-| PENDENTE | Dietary Guidelines for the Brazilian Population | Ministério da Saúde | 2026 (reimpressão) | orientação | [Registro bibliográfico oficial](https://biblioteca.saude.gov.br/TerminalWeb/Acervo/Detalhe/79012) | Verificar condições específicas da edição | Tradução oficial do guia alimentar brasileiro, publicada pelo Ministério da Saúde. |
-| PENDENTE | Guia de Boas Práticas para Bancos de Alimentos — Guia nº 26, versão 2 | ANVISA / Ministério da Cidadania | 2021 | conservação | [PDF oficial](https://www.gov.br/mds/pt-br/acoes-e-programas/acesso-a-alimentos-e-a-agua/rede-brasileira-de-bancos-de-alimentos/guia-de-boas-praticas-para-bancos-de-alimentos-anvisa.pdf) | Reprodução parcial ou total permitida com citação da fonte; comercialização proibida | Guia técnico da ANVISA com recomendações sanitárias para bancos de alimentos. |
-| PENDENTE | E-book de Receitas — Lanches Saudáveis | Universidade Federal do Oeste do Pará (UFOPA) | 2024 | receita | [PDF oficial](https://www.ufopa.edu.br/media/file/site/progep/documentos/2024/c66256abc2c5b9956aaf83b88b170c3c.pdf) | Verificar condições específicas de reprodução | Publicação elaborada por nutricionistas vinculados à Diretoria de Saúde e Qualidade de Vida da universidade. |
+| Arquivo | Título | Autor / instituição | Ano | Tipo de conteúdo | Publicação / download | Licença / evidência | Por que é confiável |
+|---|---|---|---|---|---|---|---|
+| PENDENTE | Guia Alimentar para Crianças Brasileiras Menores de Dois Anos | Ministério da Saúde | 2019 | orientação | [Página oficial](https://www.gov.br/saude/pt-br/composicao/saps/promocao-da-saude/guias-alimentares/guias-alimentares) | CC BY-NC-SA 4.0, conforme ficha da obra | Documento oficial com recomendações alimentares para crianças. |
+| PENDENTE | Protocolos de Uso do Guia Alimentar para a População Brasileira na Orientação Alimentar: Bases Teóricas e Metodológicas e Protocolo para a População Adulta — Fascículo 1 | Ministério da Saúde / Universidade de São Paulo | 2021 | orientação | [PDF oficial](https://bvsms.saude.gov.br/bvs/publicacoes/protocolos_guia_alimentar_fasciculo1.pdf) | CC BY-NC-SA 4.0, conforme ficha da obra | Material técnico produzido por instituições públicas e acadêmicas. |
+| PENDENTE | Laboratório de Inovação: Incentivo à Produção, à Disponibilidade, ao Acesso e ao Consumo de Frutas, Legumes e Verduras | OPAS / Ministério da Saúde / INCA / FAO / WFP | 2022 | orientação | [PDF oficial](https://ninho.inca.gov.br/jspui/bitstream/123456789/13758/1/9789275725146_por.pdf) | CC BY-NC-SA 3.0 IGO, conforme créditos do repositório do INCA | Publicação interinstitucional sobre produção, disponibilidade, acesso e consumo de frutas, legumes e verduras. |
+| PENDENTE | Percepção do consumidor frente aos riscos associados aos alimentos, sua segurança e rastreabilidade | Autores do artigo / Brazilian Journal of Food Technology | 2013 | orientação / segurança alimentar | [Publicação e PDF](https://www.scielo.br/j/bjft/a/G6NXXPM79sRRX78HKm6xb8t/) | CC BY 4.0, conforme página editorial | Artigo científico sobre percepção do consumidor e riscos relacionados aos alimentos. |
+| PENDENTE | Trajetória das políticas de educação alimentar e nutricional | Autores do artigo / Trabalho, Educação e Saúde — Fiocruz | 2024 | orientação / políticas alimentares | [Publicação e PDF](https://www.tes.epsjv.fiocruz.br/index.php/tes/article/view/2587) | CC BY 4.0, conforme política editorial da revista; conferir indicação individual no artigo | Publicação científica vinculada à Fiocruz sobre políticas de educação alimentar e nutricional. |
+| PENDENTE | Desafios para uso do Guia Alimentar na prática profissional | Autores do artigo / Trabalho, Educação e Saúde — Fiocruz | 2025 | orientação | [Publicação e PDF](https://www.tes.epsjv.fiocruz.br/index.php/tes/article/view/2896/1136) | CC BY 4.0, conforme política editorial da revista; conferir indicação individual no artigo | Artigo científico sobre aplicação profissional das recomendações do Guia Alimentar. |
+| PENDENTE | Alimentos ultraprocessados e seus riscos | Autores do artigo / RACA — Fiocruz | 2023 | orientação / nutrição | [Publicação e PDF](https://raca.fiocruz.br/index.php/raca/article/view/145) | CC BY 4.0, conforme página editorial | Publicação científica sobre alimentos ultraprocessados e seus riscos. |
+| PENDENTE | O que envolve o consumo alimentar e a pandemia | Autores do artigo / RACA — Fiocruz | 2024 | orientação / comportamento alimentar | [Publicação e PDF](https://raca.fiocruz.br/index.php/raca/article/view/182) | CC BY 4.0, conforme página editorial | Artigo sobre fatores relacionados ao consumo alimentar no contexto da pandemia. |
+| PENDENTE | Impactos da pandemia na alimentação e comensalidade | Autores do artigo / RACA — Fiocruz | 2024 | orientação / comportamento alimentar | [Publicação e PDF](https://raca.fiocruz.br/index.php/raca/article/view/192/122) | CC BY 4.0, conforme página editorial | Publicação científica sobre mudanças na alimentação e nas práticas de comensalidade. |
+| PENDENTE | Ambiente Escolar e práticas alimentares familiares e escolares | Autores do artigo / RACA — Fiocruz | 2023 | orientação / alimentação escolar | [Publicação e PDF](https://raca.fiocruz.br/index.php/raca/article/view/154) | CC BY 4.0, conforme página editorial | Estudo sobre ambiente escolar e práticas alimentares em contextos familiares e escolares. |
+| PENDENTE | Análise do Programa de Alimentação Escolar na pandemia | Autores do artigo / RACA — Fiocruz | 2023 | orientação / alimentação escolar | [Publicação e PDF](https://raca.fiocruz.br/index.php/raca/article/view/176) | CC BY 4.0, conforme página editorial | Artigo científico sobre alimentação escolar durante a pandemia. |
+| PENDENTE | Promoção do consumo alimentar sustentável na alimentação escolar | Autores do artigo / Trabalho, Educação e Saúde — Fiocruz | 2015 | orientação / sustentabilidade alimentar | [Publicação e PDF](https://www.tes.epsjv.fiocruz.br/index.php/tes/article/view/1369) | CC BY 4.0, conforme política editorial da revista; conferir indicação individual no artigo | Publicação científica relacionada à alimentação escolar sustentável. |
 
 ## 2. Conservação e segurança dos alimentos
 
-| Arquivo | Título | Autor / instituição | Ano | Tipo de conteúdo | Link | Licença / permissão | Por que é confiável |
-|---------|--------|---------------------|-----|------------------|------|---------------------|---------------------|
-| PENDENTE | Cartilha sobre Boas Práticas para Serviços de Alimentação | ANVISA | 2005 | conservação | [Registro oficial](https://bibliotecadigital.anvisa.gov.br/jspui/handle/anvisa/225) | Reprodução parcial ou total permitida com citação da fonte; comercialização proibida | Material técnico sobre higiene, manipulação e armazenamento de alimentos. |
-| PENDENTE | Resolução RDC nº 216/2004 | ANVISA | 2004 | conservação | [Texto oficial](https://anvisalegis-empresa.datalegis.net/action/ActionDatalegis.php?acao=abrirTextoAto&cod_menu=8542&cod_modulo=310&link=S&numeroAto=00000216&orgao=RDC%2FDC%2FANVISA%2FMS&seqAto=000&tipo=RDC&valorAno=2004) | Texto normativo oficial; observar condições de reprodução da fonte | Regulamento técnico de boas práticas para serviços de alimentação. |
-| PENDENTE | Recomendações para Compras, Armazenamento e Consumo de Frutas e Hortaliças | Embrapa / CEAGESP | 2020 | conservação | [Registro e PDF](https://www.infoteca.cnptia.embrapa.br/handle/doc/1122781) | Acesso aberto; verificar condições de redistribuição | Publicação técnica de pesquisa agropecuária e abastecimento. |
-| PENDENTE | Guia 16 — Orientações para Determinação do Prazo de Validade de Alimentos, terceira versão | ANVISA | 2025 | conservação | [Publicação oficial](https://www.gov.br/anvisa/pt-br/assuntos/noticias-anvisa/2025/anvisa-atualiza-guia-sobre-validade-de-alimentos) | Consultar condições do documento original | Guia técnico baseado em referências internacionais para segurança dos alimentos. |
+| Arquivo | Título | Autor / instituição | Ano | Tipo de conteúdo | Publicação / download | Licença / evidência | Por que é confiável |
+|---|---|---|---|---|---|---|---|
+| PENDENTE | Food Safety Handbook | International Finance Corporation (IFC) | 2020 | conservação / segurança alimentar | [PDF oficial](https://www.ifc.org/content/dam/ifc/doc/2020/food-safety-handbook-2020-edition-ifc-2023.pdf) | CC BY 3.0 IGO, conforme seção Rights and Permissions do PDF | Manual técnico internacional sobre segurança dos alimentos. Observar as ressalvas para materiais de terceiros. |
+| PENDENTE | Coberturas comestíveis protetoras em frutas | Autores do artigo / Brazilian Journal of Food Technology | 2014 | conservação | [Publicação e PDF](https://www.scielo.br/j/bjft/a/PSw3gjR3H8Q3Z7DDV5vNPcL/) | CC BY 4.0, conforme página editorial | Artigo científico sobre tecnologias de proteção e conservação de frutas. |
+| PENDENTE | Uso de microfiltração para melhoria da qualidade e extensão da vida de prateleira de leite pasteurizado | Autores do artigo / Brazilian Journal of Food Technology | 2014 | conservação | [Publicação e PDF](https://www.scielo.br/j/bjft/a/5LHR6cnXcYfqYDL7YQPLcQr/) | CC BY 4.0, conforme página editorial | Estudo científico sobre tecnologia de processamento e conservação de leite. |
+| PENDENTE | Avaliação sensorial, físico-química e microbiológica do pirarucu (Arapaima gigas, Schinz 1822) durante estocagem em gelo | Autores do artigo / Brazilian Journal of Food Technology | 2014 | conservação | [Publicação e PDF](https://www.scielo.br/j/bjft/a/6NkrS8zHGFLYZhZmSBkK5RJ/) | CC BY 4.0, conforme página editorial | Pesquisa sobre qualidade e conservação de pescado durante armazenamento em gelo. |
+| PENDENTE | Diagnóstico das condições higiênicas de serviços de alimentação | Autores do artigo / Brazilian Journal of Food Technology | 2012 | segurança alimentar | [Publicação e PDF](https://www.scielo.br/j/bjft/a/db7TDPqpcFvZdcWFH3YTwJG/) | CC BY 4.0, conforme página editorial | Artigo científico sobre condições higiênico-sanitárias em serviços de alimentação. |
+| PENDENTE | Redefinindo para melhor refletir: práticas de higiene em serviços de alimentação | Autores do artigo / RACA — Fiocruz | 2019 | segurança alimentar | [Publicação e PDF](https://raca.fiocruz.br/index.php/raca/article/view/5/13) | CC BY 4.0, conforme página editorial | Publicação científica sobre práticas de higiene em serviços de alimentação. |
 
 ## 3. Receitas e aproveitamento culinário
 
-| Arquivo | Título | Autor / instituição | Ano | Tipo de conteúdo | Link | Licença / permissão | Por que é confiável |
-|---------|--------|---------------------|-----|------------------|------|---------------------|---------------------|
-| PENDENTE | Saúde no Prato | Ministério da Cidadania / Instituto Federal do Tocantins / FAPTO | 2022 | receita | [Publicação institucional](https://www.gov.br/mds/pt-br/noticias-e-conteudos/desenvolvimento-social/noticias-desenvolvimento-social/ministerio-da-cidadania-e-instituto-federal-do-tocantins-publicam-livro-com-receitas-e-dicas-para-aproveitamento-integral-de-alimentos) | Verificar condições da publicação original | Livro de receitas com aproveitamento integral de alimentos, desenvolvido com instituições públicas. |
-| PENDENTE | Hortaliça Não É Só Salada: Como Comprar, Conservar e Consumir Hortaliças | Embrapa Hortaliças | 2009 | receita | [Registro oficial](https://www.embrapa.br/busca-de-publicacoes/-/publicacao/782734/hortalica-nao-e-so-salada-como-comprar-conservar-e-consumir-hortalicas) | Verificar condições de reprodução da publicação | Pesquisa e material técnico sobre hortaliças, conservação e receitas acessíveis. |
-| PENDENTE | Sabor sem Desperdício — Receitas com Aproveitamento Integral | SESC Mesa Brasil | 2019 | receita | [PDF da publicação](https://sescmesabrasil.sescsp.org.br/wp-content/uploads/2019/07/mesa-brasil-sabor-sem-desperdicio-aproveitamento-integral.pdf) | Verificar condições de reprodução | Material educativo de programa de segurança alimentar e aproveitamento integral. |
+| Arquivo | Título | Autor / instituição | Ano | Tipo de conteúdo | Publicação / download | Licença / evidência | Por que é confiável |
+|---|---|---|---|---|---|---|---|
+| PENDENTE | Na Cozinha com as Frutas, Legumes e Verduras | Ministério da Saúde / Universidade Federal de Minas Gerais (UFMG) | 2016 | receita | [PDF do repositório da UFMG](https://repositorio.ufmg.br/bitstream/1843/65672/2/Na%20cozinha%20com%20as%20frutas%2c%20legumes%20e%20verduras.pdf) | CC BY-NC-SA 4.0, conforme página de créditos do PDF | Publicação acadêmico-institucional sobre utilização culinária de frutas, legumes e verduras. |
 
-## 4. Desperdício e aproveitamento integral
+## 4. Composição nutricional
 
-| Arquivo | Título | Autor / instituição | Ano | Tipo de conteúdo | Link | Licença / permissão | Por que é confiável |
-|---------|--------|---------------------|-----|------------------|------|---------------------|---------------------|
-| PENDENTE | Manual do Banco de Alimentos | Ministério do Desenvolvimento e Assistência Social | 2026 | desperdício | [Documento oficial](https://www.gov.br/mds/pt-br/noticias-e-conteudos/marcas-e-manuais/banco-de-alimentos/manual.pdf/view) | CC BY-ND 3.0, conforme página oficial | Material institucional sobre bancos de alimentos e combate ao desperdício. |
-| PENDENTE | Lei nº 15.224/2025 — Política Nacional de Combate à Perda e ao Desperdício de Alimentos | Presidência da República | 2025 | desperdício | [Publicação oficial](https://www.gov.br/agricultura/pt-br/assuntos/noticias/governo-federal-institui-politica-nacional-de-combate-a-perda-e-ao-desperdicio-de-alimentos) | Texto legal oficial; observar condições da fonte | Institui política pública nacional de combate às perdas e ao desperdício. |
+| Arquivo | Título | Autor / instituição | Ano | Tipo de conteúdo | Publicação / download | Licença / evidência | Por que é confiável |
+|---|---|---|---|---|---|---|---|
+| PENDENTE | Tabela Brasileira de Composição de Alimentos — TACO, 4ª edição revisada e ampliada | NEPA / Universidade Estadual de Campinas (UNICAMP) | 2011 | composição nutricional | [PDF oficial](https://nepa.unicamp.br/wp-content/uploads/sites/27/2023/10/taco_4_edicao_ampliada_e_revisada.pdf) | Reprodução total ou parcial permitida mediante citação da fonte, conforme autorização expressa na publicação | Dados de composição de alimentos produzidos por pesquisa acadêmica e análises laboratoriais. |
 
-## 5. Composição nutricional
+## 5. Desperdício e aproveitamento de alimentos
 
-| Arquivo | Título | Autor / instituição | Ano | Tipo de conteúdo | Link | Licença / permissão | Por que é confiável |
-|---------|--------|---------------------|-----|------------------|------|---------------------|---------------------|
-| PENDENTE | Tabela Brasileira de Composição de Alimentos — TACO, 4ª edição | NEPA / UNICAMP | 2011 | TACO | [PDF oficial](https://nepa.unicamp.br/wp-content/uploads/sites/27/2023/10/taco_4_edicao_ampliada_e_revisada.pdf) | Reprodução total ou parcial permitida mediante citação da fonte, conforme publicação | Dados de composição de alimentos produzidos por pesquisa acadêmica e análises laboratoriais. |
+| Arquivo | Título | Autor / instituição | Ano | Tipo de conteúdo | Publicação / download | Licença / evidência | Por que é confiável |
+|---|---|---|---|---|---|---|---|
+| PENDENTE | Efetividade de uma campanha para redução de desperdício em uma unidade de alimentação e nutrição | Mayara Barbosa Miranda; Jeferson Marques Santos; Gisliane Barbosa Bezerra; Juliana Maranhão de Oliveira / Cadernos Saúde Coletiva | 2022 | desperdício alimentar / intervenção | [PDF original — SciELO](https://www.scielo.br/j/cadsc/a/yGYP7nfb9NKybvFDqfxdsJS/?format=pdf&ilang=pt_BR&lang=pt) | Declaração de acesso aberto no PDF, página 1, com licença Creative Commons Attribution; [licença CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) | Artigo científico que avalia uma campanha de redução de desperdício em uma unidade de alimentação e nutrição. |
 
-## Orientações
+**Evidência da licença do documento:** a página 1 do PDF original contém a declaração de que o artigo é publicado em acesso aberto sob licença Creative Commons Attribution, permitindo uso, distribuição e reprodução, desde que o trabalho original seja citado. A ficha editorial e a licença oficial devem ser preservadas junto ao PDF como evidência complementar.
 
-- Priorizar fontes oficiais, institucionais e publicações científicas.
-- Registrar a licença ou permissão de uso de cada documento.
-- Quando a licença não estiver clara, registrar os metadados e o link, sem armazenar cópia do conteúdo no repositório.
+## Orientações de armazenamento e uso
+
+- Armazenar somente documentos cuja licença ou autorização tenha sido identificada.
+- Respeitar integralmente as condições de cada licença.
+- Preservar os créditos e a atribuição às instituições e aos autores.
+- Verificar separadamente imagens, tabelas e outros elementos de terceiros que possam não estar cobertos pela licença principal.
+- Não realizar adaptações de materiais licenciados com cláusula ND (NoDerivatives).
+- Preencher o campo `Arquivo` somente após baixar e conferir o documento.
 - Manter este catálogo alinhado ao arquivo `fontes.json`.
-- Preencher o campo `Arquivo` com o caminho relativo somente quando o documento estiver disponível e autorizado para armazenamento.
 - Não processar documentos sem metadados ou sem permissão de uso verificada.
-- A presença de uma fonte neste catálogo não significa autorização automática para redistribuição ou armazenamento de seu conteúdo.
+- Preservar os PDFs originais e as evidências individuais de licença.
+- Para cada documento, armazenar a evidência de autorização junto ao respectivo PDF, sempre que disponível.
+
+## Situação da coleta
+
+- Documentos anteriormente aprovados: 5.
+- Novos documentos aprovados na auditoria preliminar: 14.
+- Documento adicional incluído nesta versão: 1.
+- **Total catalogado nesta versão: 20 referências.**
+- Meta mínima do projeto: 20 documentos.
+- Arquivos efetivamente baixados e conferidos: ainda precisam ser registrados.
+
+**Importante:** a aprovação da licença não substitui a conferência final do PDF, dos metadados e dos elementos de terceiros. O campo `PENDENTE` deve ser substituído pelo caminho relativo do arquivo somente depois que ele estiver efetivamente armazenado no repositório. As referências cuja licença ainda exige conferência individual devem permanecer sujeitas a essa validação antes de serem incorporadas à base.
