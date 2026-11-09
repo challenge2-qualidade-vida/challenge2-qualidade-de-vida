@@ -1,7 +1,17 @@
+
 # Fontes da base de conhecimento
 
-Toda fonte usada no RAG deve ser listada aqui (restrição do desafio: "Utilizar evidências confiáveis").
+Toda fonte utilizada no RAG deve ser listada aqui, respeitando a restrição do desafio: utilizar evidências confiáveis.
 
-| Arquivo | Título | Autor / instituição | Ano | Link | Por que é confiável |
-|---------|--------|---------------------|-----|------|---------------------|
-| | | | | | |
+Antes de armazenar qualquer documento, verifique sua licença e as permissões de uso. Uma URL pública não significa autorização para redistribuição.
+
+| Arquivo | Título | Autor / instituição | Ano | Tipo de conteúdo | Link | Licença / permissão | Por que é confiável |
+|---------|--------|---------------------|-----|------------------|------|---------------------|---------------------|
+| | | | | | | | |
+
+## Orientações
+
+- Priorizar fontes oficiais, institucionais e publicações científicas.
+- Registrar a licença ou permissão de uso de cada documento.
+- Quando a licença não estiver clara, registrar os metadados e o link, sem armazenar uma cópia do conteúdo no repositório.
+- Manter este catálogo alinhado ao arquivo `fontes.json`.
