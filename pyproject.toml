@@ -4,8 +4,7 @@ version = "0.1.0"
 description = "Backend da aplicação EconoMIA"
 readme = "README.md"
 requires-python = ">=3.11,<4.0"
-dependencies = ["fastapi (>=0.162.0,<0.163.0)", "uvicorn (>=0.54.0,<0.55.0)"]
-
+dependencies = ["fastapi (>=0.162.0,<0.163.0)", "uvicorn (>=0.54.0,<0.55.0)", "pymupdf (>=1.26,<2.0)"]
 [tool.poetry]
 packages = [
     { include = "economia", from = "src" }
