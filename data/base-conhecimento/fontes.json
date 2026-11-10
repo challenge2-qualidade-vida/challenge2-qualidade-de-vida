@@ -1,3 +1,28 @@
 {
-  "fontes": []
-}\n
+  "fontes": [
+    {
+      "arquivo": "orientacao-alimentar/guia_criancas_menores_2_anos_edicao_revisada_2022.pdf",
+      "titulo": "Guia Alimentar para Crianças Brasileiras Menores de Dois Anos",
+      "instituicao": "Ministério da Saúde",
+      "ano": 2019,
+      "tipo_conteudo": "orientacao",
+      "url": "https://www.gov.br/saude/pt-br/composicao/saps/promocao-da-saude/guias-alimentares/guias-alimentares"
+    },
+    {
+      "arquivo": "orientacao-alimentar/protocolos_guia_alimentar_adultos_2021.pdf",
+      "titulo": "Protocolos de Uso do Guia Alimentar para a População Brasileira na Orientação Alimentar: Fascículo 1",
+      "instituicao": "Ministério da Saúde / Universidade de São Paulo",
+      "ano": 2021,
+      "tipo_conteudo": "orientacao",
+      "url": "https://bvsms.saude.gov.br/bvs/publicacoes/protocolos_guia_alimentar_fasciculo1.pdf"
+    },
+    {
+      "arquivo": "orientacao-alimentar/laboratorio_inovacao_flv_2022.pdf",
+      "titulo": "Laboratório de Inovação: Incentivo à Produção, à Disponibilidade, ao Acesso e ao Consumo de Frutas, Legumes e Verduras",
+      "instituicao": "OPAS / Ministério da Saúde / INCA / FAO / WFP",
+      "ano": 2022,
+      "tipo_conteudo": "orientacao",
+      "url": "https://ninho.inca.gov.br/jspui/bitstream/123456789/13758/1/9789275725146_por.pdf"
+    }
+  ]
+}

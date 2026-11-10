@@ -4,7 +4,7 @@ Catálogo de documentos selecionados para a base de conhecimento do EconoMIA, pr
 
 **Critério de inclusão:** publicações com licença aberta ou autorização expressa de reprodução identificada na publicação original, na ficha editorial ou nos créditos institucionais.
 
-A presença de uma referência neste catálogo não significa que o arquivo já foi baixado. O campo `Arquivo` será preenchido somente após o download e a conferência do PDF.
+O campo `Arquivo` indica o caminho relativo do PDF dentro de `data/base-conhecimento/`. Quando o documento ainda não tiver sido baixado e conferido, o campo permanecerá como `PENDENTE`.
 
 As condições de cada licença devem ser respeitadas, incluindo atribuição, uso não comercial, compartilhamento pela mesma licença e restrições aplicáveis a materiais de terceiros.
 
@@ -12,9 +12,9 @@ As condições de cada licença devem ser respeitadas, incluindo atribuição, u
 
 | Arquivo | Título | Autor / instituição | Ano | Tipo de conteúdo | Publicação / download | Licença / evidência | Por que é confiável |
 |---|---|---|---|---|---|---|---|
-| PENDENTE | Guia Alimentar para Crianças Brasileiras Menores de Dois Anos | Ministério da Saúde | 2019 | orientação | [Página oficial](https://www.gov.br/saude/pt-br/composicao/saps/promocao-da-saude/guias-alimentares/guias-alimentares) | CC BY-NC-SA 4.0, conforme ficha da obra | Documento oficial com recomendações alimentares para crianças. |
-| PENDENTE | Protocolos de Uso do Guia Alimentar para a População Brasileira na Orientação Alimentar: Bases Teóricas e Metodológicas e Protocolo para a População Adulta — Fascículo 1 | Ministério da Saúde / Universidade de São Paulo | 2021 | orientação | [PDF oficial](https://bvsms.saude.gov.br/bvs/publicacoes/protocolos_guia_alimentar_fasciculo1.pdf) | CC BY-NC-SA 4.0, conforme ficha da obra | Material técnico produzido por instituições públicas e acadêmicas. |
-| PENDENTE | Laboratório de Inovação: Incentivo à Produção, à Disponibilidade, ao Acesso e ao Consumo de Frutas, Legumes e Verduras | OPAS / Ministério da Saúde / INCA / FAO / WFP | 2022 | orientação | [PDF oficial](https://ninho.inca.gov.br/jspui/bitstream/123456789/13758/1/9789275725146_por.pdf) | CC BY-NC-SA 3.0 IGO, conforme créditos do repositório do INCA | Publicação interinstitucional sobre produção, disponibilidade, acesso e consumo de frutas, legumes e verduras. |
+| `orientacao-alimentar/guia_criancas_menores_2_anos_edicao_revisada_2022.pdf` | Guia Alimentar para Crianças Brasileiras Menores de Dois Anos | Ministério da Saúde | 2019 | orientação | [Página oficial](https://www.gov.br/saude/pt-br/composicao/saps/promocao-da-saude/guias-alimentares/guias-alimentares) | CC BY-NC-SA 4.0, conforme créditos do PDF; evidência: [guia-criancas.md](evidencias-licencas/guia-criancas.md), p. 5 | Documento oficial com recomendações alimentares para crianças. Os créditos indicam 2019; o arquivo baixado corresponde à edição revisada, 3ª reimpressão de 2022. |
+| `orientacao-alimentar/protocolos_guia_alimentar_adultos_2021.pdf` | Protocolos de Uso do Guia Alimentar para a População Brasileira na Orientação Alimentar: Bases Teóricas e Metodológicas e Protocolo para a População Adulta — Fascículo 1 | Ministério da Saúde / Universidade de São Paulo | 2021 | orientação | [PDF oficial](https://bvsms.saude.gov.br/bvs/publicacoes/protocolos_guia_alimentar_fasciculo1.pdf) | CC BY-NC-SA 4.0, conforme créditos do PDF; evidência: [protocolos-guia.md](evidencias-licencas/protocolos-guia.md), p. 3 | Material técnico produzido por instituições públicas e acadêmicas. |
+| `orientacao-alimentar/laboratorio_inovacao_flv_2022.pdf` | Laboratório de Inovação: Incentivo à Produção, à Disponibilidade, ao Acesso e ao Consumo de Frutas, Legumes e Verduras | OPAS / Ministério da Saúde / INCA / FAO / WFP | 2022 | orientação | [PDF oficial](https://ninho.inca.gov.br/jspui/bitstream/123456789/13758/1/9789275725146_por.pdf) | CC BY-NC-SA 3.0 IGO, conforme créditos do PDF; evidência: [laboratorio-flv.md](evidencias-licencas/laboratorio-flv.md), p. 4 | Publicação interinstitucional sobre produção, disponibilidade, acesso e consumo de frutas, legumes e verduras. A licença alerta que componentes atribuídos a terceiros podem exigir autorização específica. |
 | PENDENTE | Percepção do consumidor frente aos riscos associados aos alimentos, sua segurança e rastreabilidade | Autores do artigo / Brazilian Journal of Food Technology | 2013 | orientação / segurança alimentar | [Publicação e PDF](https://www.scielo.br/j/bjft/a/G6NXXPM79sRRX78HKm6xb8t/) | CC BY 4.0, conforme página editorial | Artigo científico sobre percepção do consumidor e riscos relacionados aos alimentos. |
 | PENDENTE | Trajetória das políticas de educação alimentar e nutricional | Autores do artigo / Trabalho, Educação e Saúde — Fiocruz | 2024 | orientação / políticas alimentares | [Publicação e PDF](https://www.tes.epsjv.fiocruz.br/index.php/tes/article/view/2587) | CC BY 4.0, conforme política editorial da revista; conferir indicação individual no artigo | Publicação científica vinculada à Fiocruz sobre políticas de educação alimentar e nutricional. |
 | PENDENTE | Desafios para uso do Guia Alimentar na prática profissional | Autores do artigo / Trabalho, Educação e Saúde — Fiocruz | 2025 | orientação | [Publicação e PDF](https://www.tes.epsjv.fiocruz.br/index.php/tes/article/view/2896/1136) | CC BY 4.0, conforme política editorial da revista; conferir indicação individual no artigo | Artigo científico sobre aplicação profissional das recomendações do Guia Alimentar. |
@@ -29,7 +29,7 @@ As condições de cada licença devem ser respeitadas, incluindo atribuição, u
 
 | Arquivo | Título | Autor / instituição | Ano | Tipo de conteúdo | Publicação / download | Licença / evidência | Por que é confiável |
 |---|---|---|---|---|---|---|---|
-| PENDENTE | Food Safety Handbook | International Finance Corporation (IFC) | 2020 | conservação / segurança alimentar | [PDF oficial](https://www.ifc.org/content/dam/ifc/doc/2020/food-safety-handbook-2020-edition-ifc-2023.pdf) | CC BY 3.0 IGO, conforme seção Rights and Permissions do PDF | Manual técnico internacional sobre segurança dos alimentos. Observar as ressalvas para materiais de terceiros. |
+| PENDENTE | Food Safety Handbook | International Finance Corporation (IFC) | 2020 | conservação / segurança alimentar | [PDF oficial](https://www.ifc.org/content/dam/ifc/doc/2020/food-safety-handbook-2020-edition-ifc-2023.pdf) | CC BY 3.0 IGO, conforme seção Rights and Permissions, p. 5; inclusão pendente de análise dos avisos de direitos de terceiros (FBO), registrados em [auditoria-inicial.md](evidencias-licencas/auditoria-inicial.md) | Manual técnico internacional sobre segurança dos alimentos. PDF mantido fora da pasta de ingestão até concluir a análise dos componentes de terceiros. |
 | PENDENTE | Coberturas comestíveis protetoras em frutas | Autores do artigo / Brazilian Journal of Food Technology | 2014 | conservação | [Publicação e PDF](https://www.scielo.br/j/bjft/a/PSw3gjR3H8Q3Z7DDV5vNPcL/) | CC BY 4.0, conforme página editorial | Artigo científico sobre tecnologias de proteção e conservação de frutas. |
 | PENDENTE | Uso de microfiltração para melhoria da qualidade e extensão da vida de prateleira de leite pasteurizado | Autores do artigo / Brazilian Journal of Food Technology | 2014 | conservação | [Publicação e PDF](https://www.scielo.br/j/bjft/a/5LHR6cnXcYfqYDL7YQPLcQr/) | CC BY 4.0, conforme página editorial | Estudo científico sobre tecnologia de processamento e conservação de leite. |
 | PENDENTE | Avaliação sensorial, físico-química e microbiológica do pirarucu (Arapaima gigas, Schinz 1822) durante estocagem em gelo | Autores do artigo / Brazilian Journal of Food Technology | 2014 | conservação | [Publicação e PDF](https://www.scielo.br/j/bjft/a/6NkrS8zHGFLYZhZmSBkK5RJ/) | CC BY 4.0, conforme página editorial | Pesquisa sobre qualidade e conservação de pescado durante armazenamento em gelo. |
@@ -71,11 +71,14 @@ As condições de cada licença devem ser respeitadas, incluindo atribuição, u
 
 ## Situação da coleta
 
-- Documentos anteriormente aprovados: 5.
-- Novos documentos aprovados na auditoria preliminar: 14.
-- Documento adicional incluído nesta versão: 1.
-- **Total catalogado nesta versão: 20 referências.**
-- Meta mínima do projeto: 20 documentos.
-- Arquivos efetivamente baixados e conferidos: ainda precisam ser registrados.
+- Referências listadas nas seções deste catálogo: **21**.
+- Meta mínima do projeto: **20 documentos-fonte**.
+- PDFs baixados, armazenados em `data/base-conhecimento/` e testados quanto à extração textual: **3**.
+- Registros incluídos em `fontes.json`: **3**.
+- Evidências individuais de licença registradas: **3**.
+- `Food Safety Handbook`: baixado, mas mantido fora da pasta de ingestão enquanto são analisadas as ressalvas de direitos de terceiros.
+- Demais referências: aguardam download, conferência do arquivo e verificação individual das condições de uso.
 
-**Importante:** a aprovação da licença não substitui a conferência final do PDF, dos metadados e dos elementos de terceiros. O campo `PENDENTE` deve ser substituído pelo caminho relativo do arquivo somente depois que ele estiver efetivamente armazenado no repositório. As referências cuja licença ainda exige conferência individual devem permanecer sujeitas a essa validação antes de serem incorporadas à base.
+**Conciliação da contagem:** a versão anterior registrava 5 documentos anteriormente aprovados, 14 novos documentos aprovados na auditoria preliminar e 1 documento adicional (total de 20). A contagem das linhas atualmente presentes nas cinco categorias resulta em 21 referências. A classificação histórica das aprovações deve ser conferida, mas a contagem deste catálogo passa a refletir as 21 linhas efetivamente listadas.
+
+**Importante:** a aprovação da licença não substitui a conferência final do PDF, dos metadados e dos elementos de terceiros. O campo `PENDENTE` deve ser substituído pelo caminho relativo do arquivo somente depois que ele estiver efetivamente armazenado no repositório e tiver passado pela conferência documental. As referências cuja licença ou cujos componentes de terceiros ainda exigem análise devem permanecer fora da ingestão até a conclusão dessa validação. Neste momento, somente três documentos estão cadastrados no `fontes.json` e prontos para a próxima etapa de validação do pipeline.
