@@ -3,7 +3,7 @@
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 NOMES_DOS_MODELOS_DE_EMBEDDINGS = {
@@ -28,7 +28,15 @@ class Configuracao(BaseSettings):
     modelo_embeddings: Literal["e5", "qwen3"] = "e5"
     # auto: mps no Mac com Apple Silicon, cuda se houver GPU NVIDIA, senão cpu
     dispositivo_embeddings: Literal["auto", "cpu", "mps", "cuda"] = "auto"
-    limiar_similaridade: float = Field(default=0.845, ge=0.0, le=1.0)
+    # Abaixo do limiar, a resposta diz que não encontrou (RN11). Um por modelo: os scores de cada
+    # modelo têm escalas diferentes. Calibrados com o `comparar` no conjunto perguntas_rag_v2.
+    limiar_similaridade_e5: float = Field(default=0.845, ge=0.0, le=1.0)
+    limiar_similaridade_qwen3: float = Field(default=0.620, ge=0.0, le=1.0)
+    # LIMIAR_SIMILARIDADE (um só limiar) foi substituído pelos dois acima. Lido só para dar erro:
+    # ignorado em silêncio, o .env antigo cairia no padrão sem aviso.
+    limiar_unico_antigo: float | None = Field(
+        default=None, validation_alias="limiar_similaridade", exclude=True
+    )
     tolerancia_empate: float = Field(default=0.01, ge=0.0, le=1.0)
     # sempre disponíveis, em português e em inglês (receitas do RecipeNLG); lista provisória
     ingredientes_basicos: list[str] = ["sal", "agua", "oleo", "salt", "water", "oil"]
@@ -37,6 +45,23 @@ class Configuracao(BaseSettings):
     prompt_de_resposta: str = "resposta_com_fontes_v1"
     resposta_estruturada: bool = False
     segunda_tentativa_de_citacao: bool = False
+
+    @field_validator("limiar_unico_antigo")
+    @classmethod
+    def _recusar_limiar_unico(cls, valor: float | None) -> None:
+        if valor is not None:
+            raise ValueError(
+                "LIMIAR_SIMILARIDADE não existe mais: use LIMIAR_SIMILARIDADE_E5 e "
+                "LIMIAR_SIMILARIDADE_QWEN3 (cada modelo tem a sua escala de score)"
+            )
+
+    @property
+    def limiar_similaridade(self) -> float:
+        """Limiar do modelo de embeddings em uso."""
+        return {
+            "e5": self.limiar_similaridade_e5,
+            "qwen3": self.limiar_similaridade_qwen3,
+        }[self.modelo_embeddings]
 
     @property
     def nome_do_modelo_de_embeddings(self) -> str:

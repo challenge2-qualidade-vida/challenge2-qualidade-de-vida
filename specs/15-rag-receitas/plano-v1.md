@@ -76,7 +76,7 @@ Tomadas por Paulo Vitor em 05/11/2026. As que já estão em `docs/decisoes.md` d
 ```text
 pyproject.toml          Poetry: qdrant-client, sentence-transformers, ollama, pypdf, pydantic-settings; dev: pytest, pytest-bdd, ruff
 docker-compose.yml      Qdrant (a #36 completa com os outros serviços)
-.env.example            QDRANT_URL, OLLAMA_URL, OLLAMA_MODELO, MODELO_EMBEDDINGS, LIMIAR_SIMILARIDADE, TOLERANCIA_EMPATE
+.env.example            QDRANT_URL, OLLAMA_URL, OLLAMA_MODELO, MODELO_EMBEDDINGS, LIMIAR_SIMILARIDADE_E5, LIMIAR_SIMILARIDADE_QWEN3, TOLERANCIA_EMPATE
 prompts/miau-ricio/resposta_com_fontes_v1.md
 prompts/miau-ricio/extrair_ingredientes_v1.md
 src/economia/compartilhado/configuracao.py
@@ -130,14 +130,19 @@ curl -fL --retry 3 -o $B/bjft_diagnostico_higiene_servicos_alimentacao_2012.pdf 
 curl -fL --retry 3 -o $B/cadsc_campanha_reducao_desperdicio_2022.pdf "https://www.scielo.br/j/cadsc/a/yGYP7nfb9NKybvFDqfxdsJS/?format=pdf&lang=pt"
 # RACA (Fiocruz): o servidor não envia o certificado intermediário; monte a cadeia antes
 curl -fsSL http://secure.globalsign.com/cacert/rnpicpedugr46ovtlsca2025.crt | openssl x509 -inform DER -out /tmp/rnp.pem
-cat /etc/ssl/certs/ca-certificates.crt /tmp/rnp.pem > /tmp/cadeia-raca.pem
+# certificados do sistema: /etc/ssl/certs/ca-certificates.crt no Linux, /etc/ssl/cert.pem no macOS
+CA=/etc/ssl/certs/ca-certificates.crt; [ -f "$CA" ] || CA=/etc/ssl/cert.pem
+cat "$CA" /tmp/rnp.pem > /tmp/cadeia-raca.pem
+# `read` separa nome e número no bash e no zsh (no zsh, `set -- $par` não separa)
 for par in "raca_ultraprocessados_riscos_2022 145" "raca_consumo_alimentar_pandemia_2024 182" \
            "raca_comensalidade_pandemia_2024 192" "raca_ambiente_escolar_praticas_alimentares_2023 154" \
            "raca_praticas_higiene_servicos_alimentacao_2019 5"; do
-  set -- $par; base=https://raca.fiocruz.br/index.php/raca/article/view/$2
+  read -r nome numero <<< "$par"; base=https://raca.fiocruz.br/index.php/raca/article/view/$numero
   galeria=$(curl -fsSL --cacert /tmp/cadeia-raca.pem "$base" | grep -oE "$base/[0-9]+" | head -1)
-  curl -fL --cacert /tmp/cadeia-raca.pem -o $B/$1.pdf "${galeria/article\/view/article\/download}"
+  curl -fL --cacert /tmp/cadeia-raca.pem -o "$B/$nome.pdf" "$(echo "$galeria" | sed 's|article/view|article/download|')"
 done
+# conferência: 18 PDFs
+ls data/raw/orientacao | wc -l
 ```
 
 Fontes, licenças e motivo de cada uma: [data/base-conhecimento/FONTES.md](../../data/base-conhecimento/FONTES.md).

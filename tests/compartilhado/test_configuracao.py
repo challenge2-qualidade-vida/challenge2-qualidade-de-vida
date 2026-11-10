@@ -12,7 +12,8 @@ def criar(**kwargs) -> Configuracao:
 def test_valores_padrao(monkeypatch):
     for nome in (
         "MODELO_EMBEDDINGS",
-        "LIMIAR_SIMILARIDADE",
+        "LIMIAR_SIMILARIDADE_E5",
+        "LIMIAR_SIMILARIDADE_QWEN3",
         "INGREDIENTES_BASICOS",
         "OLLAMA_TEMPO_LIMITE",
     ):
@@ -20,6 +21,7 @@ def test_valores_padrao(monkeypatch):
     configuracao = criar()
     assert configuracao.modelo_embeddings == "e5"
     assert configuracao.limiar_similaridade == 0.845
+    assert configuracao.limiar_similaridade_qwen3 == 0.620
     assert configuracao.ollama_tempo_limite == 1800
     assert configuracao.ingredientes_basicos == [
         "sal",
@@ -33,12 +35,32 @@ def test_valores_padrao(monkeypatch):
 
 def test_le_das_variaveis_de_ambiente(monkeypatch):
     monkeypatch.setenv("MODELO_EMBEDDINGS", "qwen3")
-    monkeypatch.setenv("LIMIAR_SIMILARIDADE", "0.75")
+    monkeypatch.setenv("LIMIAR_SIMILARIDADE_QWEN3", "0.75")
     monkeypatch.setenv("INGREDIENTES_BASICOS", '["sal"]')
     configuracao = criar()
     assert configuracao.modelo_embeddings == "qwen3"
     assert configuracao.limiar_similaridade == 0.75
     assert configuracao.ingredientes_basicos == ["sal"]
+
+
+@pytest.mark.parametrize(("modelo", "limiar"), [("e5", 0.8), ("qwen3", 0.6)])
+def test_limiar_acompanha_o_modelo(modelo, limiar):
+    # os scores de cada modelo têm escalas diferentes; o limiar de um não serve para o outro
+    configuracao = criar(limiar_similaridade_e5=0.8, limiar_similaridade_qwen3=0.6)
+    trocada = configuracao.model_copy(update={"modelo_embeddings": modelo})
+    assert trocada.limiar_similaridade == limiar
+
+
+def test_limiar_unico_antigo_e_recusado():
+    # LIMIAR_SIMILARIDADE valia para os dois modelos e escondia o limiar errado
+    with pytest.raises(ValidationError, match="LIMIAR_SIMILARIDADE_E5"):
+        criar(limiar_similaridade=0.845)
+
+
+def test_limiar_unico_antigo_no_ambiente_e_recusado(monkeypatch):
+    monkeypatch.setenv("LIMIAR_SIMILARIDADE", "0.845")
+    with pytest.raises(ValidationError, match="LIMIAR_SIMILARIDADE_QWEN3"):
+        criar()
 
 
 @pytest.mark.parametrize(
@@ -69,9 +91,12 @@ def test_recusa_dispositivo_desconhecido():
         criar(dispositivo_embeddings="tpu")
 
 
-def test_recusa_limiar_fora_de_0_a_1():
+@pytest.mark.parametrize(
+    "campo", ["limiar_similaridade_e5", "limiar_similaridade_qwen3"]
+)
+def test_recusa_limiar_fora_de_0_a_1(campo):
     with pytest.raises(ValidationError):
-        criar(limiar_similaridade=1.5)
+        criar(**{campo: 1.5})
 
 
 def test_colecao_da_amostra_tem_sufixo():

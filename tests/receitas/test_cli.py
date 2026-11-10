@@ -17,6 +17,7 @@ def sem_servicos(monkeypatch):
 @pytest.mark.parametrize("deterministico", [False, True])
 def test_criar_responder_com_as_opcoes_da_redacao(sem_servicos, deterministico):
     configuracao = Configuracao(
+        _env_file=None,
         prompt_de_resposta="resposta_com_fontes_v2",
         resposta_estruturada=True,
         segunda_tentativa_de_citacao=True,
