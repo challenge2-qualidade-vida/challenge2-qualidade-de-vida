@@ -36,6 +36,16 @@ NAO_ENCONTREI = (
 MARCA_DE_NAO_ENCONTRADO = "NAO_ENCONTRADO"
 
 _CITACAO = re.compile(r"\[(\d+)\]")
+_CITACAO_AGRUPADA = re.compile(r"\[(\d+(?:\s*[,;]\s*\d+)+)\]")
+
+
+def desagrupar_citacoes(texto: str) -> str:
+    """Troca citações agrupadas, como "[1, 3]", por citações separadas: "[1][3]"."""
+    return _CITACAO_AGRUPADA.sub(
+        lambda m: "".join(f"[{n}]" for n in re.findall(r"\d+", m.group(1))), texto
+    )
+
+
 # Só o preço *atual* fica fora da base (RN04). Perguntas de consumo, como "como avaliar uma
 # promoção" ou "o que é preço por unidade", são respondidas pela base.
 _PERGUNTA_DE_PRECO = (
@@ -373,7 +383,7 @@ class ResponderPergunta:
     ) -> tuple[str, list[int], bool]:
         """Uma chamada ao LLM: texto, trechos citados e se ele disse que não encontrou."""
         if not self._estruturada:
-            texto = self._llm.gerar(self._prompt, mensagem)
+            texto = desagrupar_citacoes(self._llm.gerar(self._prompt, mensagem))
             if MARCA_DE_NAO_ENCONTRADO in texto:
                 return texto, [], True
             return texto, citacoes_validas(texto, quantidade), False
@@ -389,6 +399,7 @@ class ResponderPergunta:
             return saida.resposta, [], True
         if not saida.resposta.strip():
             return "", [], False
+        saida.resposta = desagrupar_citacoes(saida.resposta)
         citados = numeros_validos(
             [*citacoes_validas(saida.resposta, quantidade), *saida.trechos_usados],
             quantidade,

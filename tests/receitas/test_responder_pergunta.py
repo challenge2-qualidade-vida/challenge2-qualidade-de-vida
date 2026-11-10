@@ -584,3 +584,25 @@ def test_llm_sem_citacao_mantem_os_trechos_recuperados(trecho):
 def test_pergunta_de_preco_nao_busca_nada(trecho):
     caso, _ = criar([recuperado(trecho, "a", 0.9)])
     assert caso.responder("quanto custa o arroz hoje?").recuperados == ()
+
+
+def test_desagrupar_citacoes():
+    from economia.receitas.aplicacao.responder_pergunta import desagrupar_citacoes
+
+    assert desagrupar_citacoes("Evite açúcar [1, 3].") == "Evite açúcar [1][3]."
+    assert desagrupar_citacoes("Veja [2;4] e [5].") == "Veja [2][4] e [5]."
+    assert desagrupar_citacoes("Sem grupo [1].") == "Sem grupo [1]."
+
+
+def test_citacao_agrupada_e_renumerada_junto_com_as_fontes(trecho):
+    recuperados = [recuperado(trecho, i, 0.9 - n / 100) for n, i in enumerate("abc")]
+    llm = LLMEmSequencia(
+        {
+            "encontrou": True,
+            "resposta": "Evite açúcar [1, 3].",
+            "trechos_usados": [1, 3],
+        }
+    )
+    resposta = criar_com(llm, recuperados, resposta_estruturada=True).responder("?")
+    assert resposta.texto == "Evite açúcar [1][2]."
+    assert [r.trecho.id for r in resposta.trechos] == ["a", "c"]
