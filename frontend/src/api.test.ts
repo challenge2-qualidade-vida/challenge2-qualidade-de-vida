@@ -12,7 +12,7 @@ function respostaHttp(status: number, corpo: unknown): Response {
 describe("perguntar", () => {
   it("envia a pergunta sem espaços nas pontas e devolve a resposta", async () => {
     const chamadas: [string, RequestInit][] = [];
-    const corpo = { texto: "Ok [1].", encontrou: true, fontes: [], ingredientes_disponiveis: [], faltando: [], segundos: 1 };
+    const corpo = { texto: "Ok [1].", encontrou: true, fontes: [], ingredientes_disponiveis: [], faltando: [], trechos_recuperados: [], limiar: 0.845, segundos: 1 };
     const buscar = (async (url: string, init: RequestInit) => {
       chamadas.push([url, init]);
       return respostaHttp(200, corpo);

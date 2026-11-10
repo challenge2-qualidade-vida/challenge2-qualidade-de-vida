@@ -32,3 +32,9 @@ Funcionalidade: Perguntar ao Miau-ricio pela API
     Dado que o banco vetorial está fora do ar
     Quando eu envio a pergunta "como conservar folhas?" para a API
     Então a API responde que o Miau-ricio está indisponível
+
+  Cenário: A resposta mostra os trechos recuperados com o score
+    Dado que a base contém a orientação "Conservação de folhas" da "Embrapa"
+    Quando eu envio a pergunta "como conservar folhas?" para a API
+    Então a resposta lista o trecho "Conservação de folhas" com o score e marcado como fonte 1
+    E a resposta informa o limiar usado

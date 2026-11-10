@@ -203,10 +203,22 @@ class ResponderPergunta:
         # "não encontrei"; sem ele, vale a regra da versão 1 (descarta na primeira)
         self._pedido_de_citacao = pedido_de_citacao
 
+    @property
+    def limiar(self) -> float:
+        return self._limiar
+
+    def buscar(self, pergunta: str) -> list[TrechoRecuperado]:
+        """Top-k trechos mais próximos da pergunta, sem aplicar o limiar."""
+        vetor = self._gerador.gerar_para_pergunta(pergunta)
+        return self._repositorio.buscar(vetor, self._quantidade)
+
     def recuperar(self, pergunta: str) -> list[TrechoRecuperado]:
         """Top-k trechos acima do limiar, do maior score para o menor."""
-        vetor = self._gerador.gerar_para_pergunta(pergunta)
-        recuperados = self._repositorio.buscar(vetor, self._quantidade)
+        return self._acima_do_limiar(self.buscar(pergunta))
+
+    def _acima_do_limiar(
+        self, recuperados: Sequence[TrechoRecuperado]
+    ) -> list[TrechoRecuperado]:
         return [r for r in recuperados if r.score >= self._limiar]
 
     def extrair_ingredientes(self, pergunta: str) -> IngredientesDaPergunta:
@@ -300,9 +312,12 @@ class ResponderPergunta:
         if e_pergunta_de_preco(pergunta):
             return RespostaComFontes(texto=AVISO_DE_PRECO, encontrou=False)
 
-        recuperados = self.recuperar(pergunta)
+        mais_proximos = self.buscar(pergunta)
+        recuperados = self._acima_do_limiar(mais_proximos)
         if not recuperados:
-            return RespostaComFontes(texto=NAO_ENCONTREI, encontrou=False)
+            return RespostaComFontes(
+                texto=NAO_ENCONTREI, encontrou=False, recuperados=tuple(mais_proximos)
+            )
 
         disponiveis = IngredientesDaPergunta()
         faltando: dict[str, tuple[str, ...]] = {}
@@ -318,7 +333,9 @@ class ResponderPergunta:
         texto, citados = self.redigir(pergunta, recuperados)
         if not citados:
             # sem citação não há como dizer de onde veio a resposta (RN10): vale a RN11
-            return RespostaComFontes(texto=NAO_ENCONTREI, encontrou=False)
+            return RespostaComFontes(
+                texto=NAO_ENCONTREI, encontrou=False, recuperados=tuple(recuperados)
+            )
 
         usados = tuple(recuperados[n - 1] for n in sorted(citados))
         texto = renumerar(texto, citados)
@@ -334,6 +351,7 @@ class ResponderPergunta:
                 for r in usados
                 if r.trecho.id in faltando
             ),
+            recuperados=tuple(recuperados),
         )
 
     def redigir(

@@ -124,6 +124,10 @@ class RespostaComFontes:
 
     `ingredientes_disponiveis` são os que a pessoa disse ter. `faltando` liga o id de cada
     receita usada aos ingredientes dela que não estão disponíveis, contados pelo código (RN01).
+
+    `recuperados` é a evidência da busca: os trechos enviados ao LLM, com o score de cada um,
+    ou, quando nenhum passou do limiar, os mais próximos que a busca achou. Não são fontes:
+    só os trechos citados (`trechos`) sustentam a resposta.
     """
 
     texto: str
@@ -132,6 +136,7 @@ class RespostaComFontes:
     fontes: tuple[Fonte, ...] = field(default=())
     ingredientes_disponiveis: tuple[str, ...] = ()
     faltando: tuple[tuple[str, tuple[str, ...]], ...] = ()
+    recuperados: tuple[TrechoRecuperado, ...] = ()
 
     def faltando_na_receita(self, trecho_id: str) -> tuple[str, ...]:
         return dict(self.faltando).get(trecho_id, ())

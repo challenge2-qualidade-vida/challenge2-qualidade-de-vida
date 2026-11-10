@@ -552,3 +552,35 @@ def test_responder_usa_as_receitas_de_cada_ingrediente(trecho):
     resposta = caso.responder("almoço com arroz e carne")
     assert resposta.encontrou
     assert resposta.trechos[0].trecho.id == "arroz-forno"
+
+
+# ---------------------------------------------------------------- evidência da busca
+
+
+def test_resposta_traz_os_trechos_enviados_ao_llm(trecho):
+    recuperados = [recuperado(trecho, "a", 0.95), recuperado(trecho, "b", 0.90)]
+    caso, _ = criar(recuperados, resposta="Use a [2].")
+    resposta = caso.responder("pergunta")
+    assert [r.trecho.id for r in resposta.recuperados] == ["a", "b"]
+    assert [r.trecho.id for r in resposta.trechos] == ["b"]
+    assert caso.limiar == 0.8
+
+
+def test_abaixo_do_limiar_traz_os_mais_proximos_como_evidencia(trecho):
+    caso, _ = criar([recuperado(trecho, "a", 0.79), recuperado(trecho, "b", 0.70)])
+    resposta = caso.responder("pergunta")
+    assert not resposta.encontrou
+    assert [r.score for r in resposta.recuperados] == [0.79, 0.70]
+    assert resposta.trechos == () and resposta.fontes == ()
+
+
+def test_llm_sem_citacao_mantem_os_trechos_recuperados(trecho):
+    caso, _ = criar([recuperado(trecho, "a", 0.9)], resposta="NAO_ENCONTRADO")
+    resposta = caso.responder("pergunta")
+    assert not resposta.encontrou
+    assert [r.trecho.id for r in resposta.recuperados] == ["a"]
+
+
+def test_pergunta_de_preco_nao_busca_nada(trecho):
+    caso, _ = criar([recuperado(trecho, "a", 0.9)])
+    assert caso.responder("quanto custa o arroz hoje?").recuperados == ()

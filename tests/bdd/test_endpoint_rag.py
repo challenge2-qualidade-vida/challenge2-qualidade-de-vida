@@ -41,6 +41,11 @@ def test_servico_fora_do_ar():
     pass
 
 
+@scenario(FEATURE, "A resposta mostra os trechos recuperados com o score")
+def test_trechos_recuperados():
+    pass
+
+
 @pytest.fixture
 def cliente(contexto):
     def caso_de_uso():
@@ -141,3 +146,21 @@ def invalida(contexto):
 def indisponivel(contexto):
     assert contexto["http"].status_code == 503
     assert contexto["http"].json()["detail"] == INDISPONIVEL
+
+
+@then(
+    parsers.parse(
+        'a resposta lista o trecho "{titulo}" com o score e marcado como fonte {numero:d}'
+    )
+)
+def trecho_recuperado(contexto, titulo, numero):
+    [trecho] = contexto["http"].json()["trechos_recuperados"]
+    assert trecho["titulo"] == titulo
+    assert 0 < trecho["score"] <= 1
+    assert trecho["acima_do_limiar"] is True
+    assert trecho["fonte"] == numero
+
+
+@then("a resposta informa o limiar usado")
+def limiar_informado(contexto):
+    assert contexto["http"].json()["limiar"] == contexto["limiar"]

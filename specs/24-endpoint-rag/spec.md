@@ -20,6 +20,7 @@ Hoje o RAG do Miau-ricio só responde pela linha de comando (`perguntar "..."`) 
    - o aviso de que a resposta pode levar alguns segundos;
    - a resposta, com as citações `[n]` ligadas à lista de fontes;
    - a lista de fontes (título, instituição, ano, link e licença);
+   - os trechos recuperados, com o score de cada um numa barra, o limiar e a marcação dos que foram citados;
    - os ingredientes que faltam, quando a resposta sugere receitas;
    - uma mensagem clara quando a base não tem a informação (RN11), quando a pergunta é de preço (RN04) e quando a API está fora do ar.
 3. **Rota de saúde.** `GET /saude` responde se a API está no ar.
@@ -65,12 +66,26 @@ Resposta 200:
   ],
   "ingredientes_disponiveis": [],
   "faltando": [],
+  "trechos_recuperados": [
+    {
+      "posicao": 1,
+      "titulo": "Hortaliça não é só salada: Geladeira",
+      "tipo": "conhecimento",
+      "origem": "Hortaliça não é só salada: Geladeira (2ª ed. rev.)",
+      "score": 0.9171,
+      "acima_do_limiar": true,
+      "fonte": 1,
+      "resumo": "Folhas: retirar as folhas danificadas..."
+    }
+  ],
+  "limiar": 0.845,
   "segundos": 3.2
 }
 ```
 
 - `fontes[n].numero` é o número usado no texto (`[1]`, `[2]`...).
 - `faltando` traz, para cada receita usada, o título e os ingredientes que faltam.
+- `trechos_recuperados` é a evidência da busca: os trechos enviados ao LLM, com o score de similaridade, e o número da fonte quando o trecho foi citado. Quando nenhum trecho passa do `limiar`, a lista traz os mais próximos, todos com `acima_do_limiar: false`, para mostrar por que a resposta foi "não encontrei".
 - Com `encontrou: false`, `fontes` e `faltando` vêm vazios e `texto` traz a mensagem da RN11 ou o aviso da RN04.
 - Se o LLM ou o banco vetorial estiver fora do ar, a resposta é 503, com a mensagem "O Miau-ricio está indisponível agora. Tente de novo em instantes."
 

@@ -1,7 +1,8 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 
-import { ErroDaApi, MENSAGEM_FORA_DO_AR, perguntar, type Resposta } from "./api";
+import { ErroDaApi, MENSAGEM_FORA_DO_AR, perguntar, type Resposta, type TrechoDaBusca } from "./api";
 import { paragrafos, separarCitacoes } from "./citacoes";
+import { decimal, ESCALA_MINIMA, larguraDaBarra, plural } from "./escala";
 
 const EXEMPLOS = [
   "Como guardar folhas verdes na geladeira?",
@@ -36,6 +37,13 @@ export default function App() {
       setEstado({ fase: "erro", pergunta: limpa, mensagem });
     }
   }
+
+  // ?pergunta=... na URL envia a pergunta ao abrir a página (link de demonstração)
+  useEffect(() => {
+    const daUrl = new URLSearchParams(window.location.search).get("pergunta");
+    if (daUrl) void enviar(daUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function aoEnviar(evento: FormEvent) {
     evento.preventDefault();
@@ -123,7 +131,7 @@ export default function App() {
           </section>
         )}
 
-        {estado.fase === "resposta" && <CartaoDeResposta resposta={estado.resposta} />}
+        {estado.fase === "resposta" && <CartaoComTrechos resposta={estado.resposta} />}
       </main>
 
       <footer className="rodape">
@@ -137,9 +145,18 @@ export default function App() {
 function CartaoDeResposta({ resposta }: { resposta: Resposta }) {
   if (!resposta.encontrou) {
     return (
-      <section className="cartao aviso" aria-live="polite">
-        <p>{resposta.texto}</p>
-      </section>
+      <>
+        <section className="cartao aviso" aria-live="polite">
+          <p>{resposta.texto}</p>
+        </section>
+        {resposta.trechos_recuperados.length > 0 && (
+          <PainelDeTrechos
+            trechos={resposta.trechos_recuperados}
+            limiar={resposta.limiar}
+            explicacao="Nenhum trecho foi usado. Estes são os mais próximos que a busca encontrou."
+          />
+        )}
+      </>
     );
   }
   const numeros = new Set(resposta.fontes.map((f) => f.numero));
@@ -193,7 +210,81 @@ function CartaoDeResposta({ resposta }: { resposta: Resposta }) {
           ))}
         </ol>
       </div>
-      <p className="tempo">Respondido em {resposta.segundos.toFixed(1)} s</p>
+      <p className="tempo">Respondido em {decimal(resposta.segundos, 1)} s</p>
+    </section>
+  );
+}
+
+function CartaoComTrechos({ resposta }: { resposta: Resposta }) {
+  return (
+    <>
+      <CartaoDeResposta resposta={resposta} />
+      {resposta.encontrou && resposta.trechos_recuperados.length > 0 && (
+        <PainelDeTrechos
+          trechos={resposta.trechos_recuperados}
+          limiar={resposta.limiar}
+          explicacao="Trechos que a busca entregou ao LLM, do mais parecido com a pergunta ao menos parecido."
+        />
+      )}
+    </>
+  );
+}
+
+function PainelDeTrechos({
+  trechos,
+  limiar,
+  explicacao,
+}: {
+  trechos: TrechoDaBusca[];
+  limiar: number | null;
+  explicacao: string;
+}) {
+  const [aberto, setAberto] = useState(true);
+  const citados = trechos.filter((t) => t.fonte !== null).length;
+  return (
+    <section className="cartao trechos" aria-label="Trechos recuperados">
+      <button type="button" className="cabecalho-painel" onClick={() => setAberto(!aberto)} aria-expanded={aberto}>
+        <span>
+          <strong>Trechos recuperados</strong> · {plural(trechos.length, "trecho", "trechos")},{" "}
+          {plural(citados, "citado", "citados")}
+          {limiar !== null && <> · limiar {decimal(limiar)}</>}
+        </span>
+        <span aria-hidden="true">{aberto ? "▾" : "▸"}</span>
+      </button>
+      {aberto && (
+        <>
+          <p className="explicacao">
+            {explicacao} O score é a similaridade de cosseno entre a pergunta e o trecho (barra de{" "}
+            {decimal(ESCALA_MINIMA, 2)} a 1{limiar !== null && "; a linha marca o limiar"}).
+          </p>
+          <ol className="lista-trechos">
+            {trechos.map((t) => (
+              <li key={t.posicao} className={t.acima_do_limiar ? "" : "abaixo"}>
+                <div className="linha-score">
+                  <span className="score">{decimal(t.score)}</span>
+                  <div className="barra" aria-hidden="true">
+                    <div className="preenchimento" style={{ width: `${larguraDaBarra(t.score)}%` }} />
+                    {limiar !== null && <div className="marca-limiar" style={{ left: `${larguraDaBarra(limiar)}%` }} />}
+                  </div>
+                  {t.fonte !== null ? (
+                    <a className="selo citado" href={`#fonte-${t.fonte}`}>
+                      citado [{t.fonte}]
+                    </a>
+                  ) : (
+                    <span className="selo neutro">{t.acima_do_limiar ? "não citado" : "abaixo do limiar"}</span>
+                  )}
+                </div>
+                <div className="titulo-trecho">
+                  <span className={`selo ${t.tipo}`}>{t.tipo === "receita" ? "Receita" : "Orientação"}</span>{" "}
+                  <strong>{t.titulo}</strong>
+                  {t.origem !== t.titulo && <span className="origem"> · {t.origem}</span>}
+                </div>
+                <p className="resumo">{t.resumo}</p>
+              </li>
+            ))}
+          </ol>
+        </>
+      )}
     </section>
   );
 }

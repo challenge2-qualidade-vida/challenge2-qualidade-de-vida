@@ -83,3 +83,33 @@ def test_pergunta_chega_sem_espacos_nas_pontas():
         assert recebidas == ["arroz?"]
     finally:
         app.dependency_overrides.clear()
+
+
+def test_para_a_api_traz_os_trechos_recuperados_com_score_e_fonte():
+    a, b = receita("a", "Omelete"), receita("b", "Bolo")
+    resposta = RespostaComFontes(
+        texto="Faça o bolo [1].",
+        encontrou=True,
+        trechos=(TrechoRecuperado(b, 0.88),),
+        fontes=(b.fonte,),
+        recuperados=(TrechoRecuperado(a, 0.9), TrechoRecuperado(b, 0.88)),
+    )
+    saida = para_a_api(resposta, 1.0, limiar=0.885)
+    assert [
+        (t.posicao, t.titulo, t.score, t.acima_do_limiar, t.fonte)
+        for t in saida.trechos_recuperados
+    ] == [
+        (1, "Omelete", 0.9, True, None),
+        (2, "Bolo", 0.88, False, 1),
+    ]
+    assert saida.limiar == 0.885
+    assert saida.trechos_recuperados[0].origem == "afrodite.json"
+
+
+def test_resumo_do_trecho_e_curto_e_corta_na_palavra():
+    from economia.api.app import TAMANHO_DO_RESUMO, _resumo
+
+    assert _resumo("  arroz   e\nfeijão ") == "arroz e feijão"
+    longo = _resumo("palavra " * 100)
+    assert len(longo) <= TAMANHO_DO_RESUMO + 1
+    assert longo.endswith("palavra…")

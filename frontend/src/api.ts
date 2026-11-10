@@ -14,12 +14,25 @@ export type IngredientesQueFaltam = {
   ingredientes: string[];
 };
 
+export type TrechoDaBusca = {
+  posicao: number;
+  titulo: string;
+  tipo: "receita" | "conhecimento";
+  origem: string;
+  score: number;
+  acima_do_limiar: boolean;
+  fonte: number | null;
+  resumo: string;
+};
+
 export type Resposta = {
   texto: string;
   encontrou: boolean;
   fontes: Fonte[];
   ingredientes_disponiveis: string[];
   faltando: IngredientesQueFaltam[];
+  trechos_recuperados: TrechoDaBusca[];
+  limiar: number | null;
   segundos: number;
 };
 
