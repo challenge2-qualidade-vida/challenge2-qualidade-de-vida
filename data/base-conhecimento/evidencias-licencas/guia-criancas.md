@@ -1,6 +1,6 @@
 # Evidência de licença — Guia Alimentar para Crianças
 
-Arquivo: guia_criancas_menores_2_anos_edicao_revisada_2022.pdf
+- Arquivo: `orientacao-alimentar/guia_criancas_menores_2_anos_edicao_revisada_2022.pdf`
 
 - Instituição: Ministério da Saúde
 - Ano indicado nos créditos: 2019

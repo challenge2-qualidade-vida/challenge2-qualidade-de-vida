@@ -23,6 +23,150 @@
       "ano": 2022,
       "tipo_conteudo": "orientacao",
       "url": "https://ninho.inca.gov.br/jspui/bitstream/123456789/13758/1/9789275725146_por.pdf"
+    },
+    {
+      "arquivo": "orientacao-alimentar/guia_alimentar_populacao_brasileira_2014.pdf",
+      "titulo": "Guia Alimentar para a População Brasileira",
+      "instituicao": "Ministério da Saúde",
+      "ano": 2014,
+      "tipo_conteudo": "orientacao",
+      "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf"
+    },
+    {
+      "arquivo": "orientacao-alimentar/diretrizes_guia_alimentar_criancas_2024.pdf",
+      "titulo": "Diretrizes e recomendações do Guia Alimentar para Crianças Brasileiras Menores de 2 Anos: documento de evidências",
+      "instituicao": "Ministério da Saúde",
+      "ano": 2024,
+      "tipo_conteudo": "orientacao",
+      "url": "https://bvsms.saude.gov.br/bvs/publicacoes/diretrizes_recomendacoes_guia_alimentar_criancas.pdf"
+    },
+    {
+      "arquivo": "seguranca-alimentar/instrutivo_inseguranca_alimentar_aps_2022.pdf",
+      "titulo": "Insegurança Alimentar na Atenção Primária à Saúde: Manual de Identificação dos Domicílios e Organização da Rede",
+      "instituicao": "Ministério da Saúde",
+      "ano": 2022,
+      "tipo_conteudo": "seguranca_alimentar",
+      "url": "https://bvsms.saude.gov.br/bvs/publicacoes/manual_identificacao_domicilios_organizacao_rede.pdf"
+    },
+    {
+      "arquivo": "artigos-cientificos/desperdicio_campanha_2022.pdf",
+      "titulo": "Efetividade de uma campanha para redução de desperdício em uma unidade de alimentação e nutrição",
+      "instituicao": "Universidade Federal de Sergipe / Cadernos Saúde Coletiva",
+      "ano": 2022,
+      "tipo_conteudo": "desperdicio",
+      "url": "https://www.scielo.br/j/cadsc/a/yGYP7nfb9NKybvFDqfxdsJS/"
+    },
+    {
+      "arquivo": "artigos-cientificos/emocoes_reducao_desperdicio_2024.pdf",
+      "titulo": "Papel das emoções na redução do desperdício de alimentos",
+      "instituicao": "Fundação Getulio Vargas / Revista de Administração de Empresas",
+      "ano": 2024,
+      "tipo_conteudo": "desperdicio",
+      "url": "https://www.scielo.br/j/rae/a/mv79YmrDpNX8BN45TkFnjzx/"
+    },
+    {
+      "arquivo": "artigos-cientificos/economia_compartilhada_desperdicio_2021.pdf",
+      "titulo": "Economia compartilhada na prática: um estudo exploratório sobre aceitação e uso de plataformas digitais para a redução do desperdício de alimentos",
+      "instituicao": "Fundação Getulio Vargas / Revista de Administração de Empresas",
+      "ano": 2021,
+      "tipo_conteudo": "desperdicio",
+      "url": "https://www.scielo.br/j/rae/a/7HLBxmmzqn57KxBhCDSgqQM/"
+    },
+    {
+      "arquivo": "artigos-cientificos/avaliacao_participativa_seguranca_alimentar_2020.pdf",
+      "titulo": "Avaliação participativa da segurança alimentar e nutricional em uma comunidade de Salvador, Brasil",
+      "instituicao": "Universidade Federal da Bahia / Ciência & Saúde Coletiva",
+      "ano": 2020,
+      "tipo_conteudo": "seguranca_alimentar",
+      "url": "https://www.scielo.br/j/csc/a/FDWFMHfvDbgXLSsJ7dtQrmM/"
+    },
+    {
+      "arquivo": "artigos-cientificos/armazenamento_frio_suco_umbu_2017.pdf",
+      "titulo": "Avaliação do armazenamento a frio sobre os compostos bioativos e as características físico-químicas e microbiológicas do suco de umbu pasteurizado",
+      "instituicao": "UFRJ / Embrapa Agroindústria de Alimentos / Brazilian Journal of Food Technology",
+      "ano": 2017,
+      "tipo_conteudo": "conservacao",
+      "url": "https://www.scielo.br/j/bjft/a/DwjjHvVBf77VB7w4pjNKnGz/"
+    },
+    {
+      "arquivo": "artigos-cientificos/conservacao_vagem_minimamente_processada_2016.pdf",
+      "titulo": "Conservação de vagem minimamente processada em embalagem com atmosfera modificada passiva",
+      "instituicao": "APTA / Instituto de Tecnologia de Alimentos / Brazilian Journal of Food Technology",
+      "ano": 2016,
+      "tipo_conteudo": "conservacao",
+      "url": "https://www.scielo.br/j/bjft/a/GbZVqktRVLSmpkbmm77bMpc/"
+    },
+    {
+      "arquivo": "artigos-cientificos/guias_alimentares_dimensoes_culturais_2020.pdf",
+      "titulo": "Guias alimentares para a população brasileira: uma análise a partir das dimensões culturais e sociais da alimentação",
+      "instituicao": "Universidade Federal da Bahia / Ciência & Saúde Coletiva",
+      "ano": 2020,
+      "tipo_conteudo": "orientacao",
+      "url": "https://www.scielo.br/j/csc/a/fygwP4WtxNyXvKPmrxKJ46m/"
+    },
+    {
+      "arquivo": "artigos-cientificos/politicas_sus_agenda_2030_2025.pdf",
+      "titulo": "Alimentação e Nutrição: Interface das Políticas Públicas do SUS e de Segurança Alimentar e Nutricional para a Agenda 2030",
+      "instituicao": "Universidade de São Paulo / Interface",
+      "ano": 2025,
+      "tipo_conteudo": "politicas_alimentares",
+      "url": "https://www.scielo.br/j/icse/a/YLnJjzqBzy35HHKx6pMsvcS/"
+    },
+    {
+      "arquivo": "artigos-cientificos/compras_publicas_agricultura_familiar_2025.pdf",
+      "titulo": "Construção de sistemas alimentares saudáveis, sustentáveis e inclusivos através das compras públicas de alimentos da agricultura familiar: uma revisão integrativa",
+      "instituicao": "Revista de Economia e Sociologia Rural",
+      "ano": 2025,
+      "tipo_conteudo": "sistemas_alimentares",
+      "url": "https://www.scielo.br/j/resr/a/Xp9Nx4v6hTsBwwnvKzhy3Nh/"
+    },
+    {
+      "arquivo": "artigos-cientificos/monitoramento_seguranca_alimentar_brasil_argentina_2025.pdf",
+      "titulo": "Monitoramento e Avaliação da segurança alimentar (e nutricional) no Brasil e na Argentina",
+      "instituicao": "Saúde em Debate",
+      "ano": 2025,
+      "tipo_conteudo": "seguranca_alimentar",
+      "url": "https://www.scielo.br/j/sdeb/a/zXMcjdZqpCgVdWC5rVPBKMy/"
+    },
+    {
+      "arquivo": "artigos-cientificos/politica_distrital_alimentacao_nutricao_2022.pdf",
+      "titulo": "A consulta pública na construção da Política Distrital de Alimentação e Nutrição",
+      "instituicao": "Escola Superior de Ciências da Saúde / Universidade de Brasília / Saúde em Debate",
+      "ano": 2022,
+      "tipo_conteudo": "politicas_alimentares",
+      "url": "https://www.scielo.br/j/sdeb/a/rGXBMYRjqKHZcnjBHPKMz3q/"
+    },
+    {
+      "arquivo": "artigos-cientificos/ambiente_alimentar_inseguranca_escolar_2025.pdf",
+      "titulo": "Food environment as an aggravating factor of food insecurity among Brazilian public school students: ESANP study",
+      "instituicao": "Universidade Federal de Minas Gerais / Ciência & Saúde Coletiva",
+      "ano": 2025,
+      "tipo_conteudo": "seguranca_alimentar",
+      "url": "https://www.scielo.br/j/csc/a/7yxHVSnGH7FWFj6tDH6TJGS/"
+    },
+    {
+      "arquivo": "artigos-cientificos/competencias_nutricao_sistemas_sustentaveis_2020.pdf",
+      "titulo": "Desenvolvimento de competências para Nutrição no contexto de Sistemas Alimentares Sustentáveis",
+      "instituicao": "Universidade Federal do Rio Grande do Norte / Ciência & Saúde Coletiva",
+      "ano": 2020,
+      "tipo_conteudo": "nutricao",
+      "url": "https://www.scielo.br/j/csc/a/5RhPkyFBFGRfbSyddMsgL7D/"
+    },
+    {
+      "arquivo": "artigos-cientificos/pandemia_inseguranca_alimentar_2020.pdf",
+      "titulo": "Pandemia de COVID-19: implicações para (in)segurança alimentar e nutricional",
+      "instituicao": "Universidade de São Paulo / Ciência & Saúde Coletiva",
+      "ano": 2020,
+      "tipo_conteudo": "seguranca_alimentar",
+      "url": "https://www.scielo.br/j/csc/a/hgG5jm5b4TKPMSKX9Jw7hzp/"
+    },
+    {
+      "arquivo": "composicao-nutricional/taco_4_edicao_2011.pdf",
+      "titulo": "Tabela Brasileira de Composição de Alimentos (TACO)",
+      "instituicao": "NEPA/UNICAMP",
+      "ano": 2011,
+      "tipo_conteudo": "composicao_nutricional",
+      "url": "https://nepa.unicamp.br/wp-content/uploads/sites/27/2023/10/taco_4_edicao_ampliada_e_revisada.pdf"
     }
   ]
 }
