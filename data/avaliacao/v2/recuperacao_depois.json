@@ -1,0 +1,1079 @@
+{
+  "maquina": "Linux x86_64, 16 CPUs lógicas",
+  "data": "2026-11-10T00:54:34",
+  "perguntas": "data/avaliacao/perguntas_rag_v2.json",
+  "k": 5,
+  "modelos": [
+    {
+      "colecao": "base_conhecimento_e5",
+      "trechos_na_colecao": 6151,
+      "indexacao": {
+        "colecao": "base_conhecimento_e5",
+        "modelo": "intfloat/multilingual-e5-base",
+        "trechos": 4346,
+        "segundos": 378.8,
+        "trechos_por_segundo": 11.47,
+        "maquina": "Linux x86_64, 16 CPUs lógicas"
+      },
+      "modelo": "intfloat/multilingual-e5-base",
+      "k": 5,
+      "recall": 0.8333333333333334,
+      "mrr": 0.7638888888888888,
+      "score_medio_com_resposta": 0.8807857883333333,
+      "score_medio_sem_resposta": 0.8320929210000001,
+      "menor_score_com_resposta": 0.8394151,
+      "maior_score_sem_resposta": 0.85171103,
+      "latencia_media": 0.03370117587498811,
+      "resultados": [
+        {
+          "id": "r01",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.91384274,
+          "segundos": 0.05329129199981253,
+          "titulos": [
+            "Bolo de Cenoura de Micro-ondas",
+            "Bolo cremoso de cenouras",
+            "Bolo Nutritivo de Microondas",
+            "Bolo Prático de Cenoura",
+            "Na cozinha com as frutas, legumes e verduras"
+          ]
+        },
+        {
+          "id": "r02",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": null,
+          "melhor_score": 0.87373495,
+          "segundos": 0.035380262000217044,
+          "titulos": [
+            "Pão Doce - Romeu e Julieta",
+            "Falso Pastel (de pão)",
+            "Pão com linguiça",
+            "Pão de Alho com Linguiça",
+            "Pão de queijo rápido"
+          ]
+        },
+        {
+          "id": "r03",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": 2,
+          "melhor_score": 0.9054482,
+          "segundos": 0.03477180799973212,
+          "titulos": [
+            "Bolinho de Bacalhau Mais Você",
+            "Bolinho de bacalhau",
+            "Risotto de bacalhau",
+            "Petisco de Bacalhau",
+            "Medalhão de bacalhau"
+          ]
+        },
+        {
+          "id": "r04",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": 2,
+          "melhor_score": 0.8666711,
+          "segundos": 0.04725691299972823,
+          "titulos": [
+            "Pão de arroz",
+            "Arroz de forno",
+            "Risotto de Pelatti aos 4 Queijos",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Bolo de Arroz"
+          ]
+        },
+        {
+          "id": "r05",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.88860977,
+          "segundos": 0.034151103000112926,
+          "titulos": [
+            "Feijoada a la Vidigal",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Feijoada Expressa",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)"
+          ]
+        },
+        {
+          "id": "r06",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": 2,
+          "melhor_score": 0.8394151,
+          "segundos": 0.032118380999691,
+          "titulos": [
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Creme de couve flor",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Aprenda a fazer 3 receitas surpreendentes com couve-flor",
+            "Tabela Brasileira de Composição de Alimentos (TACO)"
+          ]
+        },
+        {
+          "id": "r07",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.8793036,
+          "segundos": 0.0306838820001758,
+          "titulos": [
+            "Omelete de forno",
+            "Ovo molett",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Omelete Japonesa"
+          ]
+        },
+        {
+          "id": "r08",
+          "categoria": "receita_pt",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.8835599,
+          "segundos": 0.032078691000151593,
+          "titulos": [
+            "Pastel de carne",
+            "Carne Moída de Férias",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Bolo de Carne Úmido",
+            "Tabela Brasileira de Composição de Alimentos (TACO)"
+          ]
+        },
+        {
+          "id": "e01",
+          "categoria": "receita_entre_idiomas",
+          "tem_resposta": true,
+          "posicao": 4,
+          "melhor_score": 0.8903848,
+          "segundos": 0.03251787599992895,
+          "titulos": [
+            "Banana Bread",
+            "Banana Bread",
+            "Banana Bread",
+            "Banana Bread",
+            "Banana Bread(Diabetic)"
+          ]
+        },
+        {
+          "id": "e02",
+          "categoria": "receita_entre_idiomas",
+          "tem_resposta": true,
+          "posicao": null,
+          "melhor_score": 0.8930329,
+          "segundos": 0.03243392800004585,
+          "titulos": [
+            "Frango Assado ao Leite",
+            "Frango Aperitivo Crocante",
+            "Frango com manga e coco",
+            "Frango ao molho de laranja",
+            "Frango Ensopado ao Creme de Milho"
+          ]
+        },
+        {
+          "id": "e03",
+          "categoria": "receita_entre_idiomas",
+          "tem_resposta": true,
+          "posicao": null,
+          "melhor_score": 0.8804492,
+          "segundos": 0.03160913400006393,
+          "titulos": [
+            "Palitinho de Amendoim",
+            "Cookie de Amendoim",
+            "Bolo de amendoim",
+            "Torta de Amendoim",
+            "Bolo de amendoin da Tia Maria"
+          ]
+        },
+        {
+          "id": "e04",
+          "categoria": "receita_entre_idiomas",
+          "tem_resposta": true,
+          "posicao": null,
+          "melhor_score": 0.85670024,
+          "segundos": 0.03156307499966715,
+          "titulos": [
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Risotto de Berinjela com Carne",
+            "Sopa de beterraba Polonesa ( Borscht )",
+            "Sopa de Baixas Calorias",
+            "Sopa ou Creme De Raiz"
+          ]
+        },
+        {
+          "id": "e05",
+          "categoria": "receita_entre_idiomas",
+          "tem_resposta": true,
+          "posicao": null,
+          "melhor_score": 0.86424065,
+          "segundos": 0.03426506200003132,
+          "titulos": [
+            "Peito de Boi Confitado",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Rabada assada",
+            "Croquete de Panela de Pressão",
+            "Carne ao Molho de Leite"
+          ]
+        },
+        {
+          "id": "g01",
+          "categoria": "guia_alimentar",
+          "tem_resposta": true,
+          "posicao": null,
+          "melhor_score": 0.897215,
+          "segundos": 0.03186568199998874,
+          "titulos": [
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Alimentos ultraprocessados e seus riscos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Protocolos de uso do Guia Alimentar: população adulta"
+          ]
+        },
+        {
+          "id": "g02",
+          "categoria": "guia_alimentar",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.9083681,
+          "segundos": 0.030548143000032724,
+          "titulos": [
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "g03",
+          "categoria": "guia_alimentar",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.860383,
+          "segundos": 0.03146425500017358,
+          "titulos": [
+            "Guia Alimentar para a População Brasileira",
+            "O que envolve o consumo alimentar e a pandemia",
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "g04",
+          "categoria": "guia_alimentar",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.8937316,
+          "segundos": 0.03394366500015167,
+          "titulos": [
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para a População Brasileira",
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "c01",
+          "categoria": "conservacao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.9052441,
+          "segundos": 0.03461251899989293,
+          "titulos": [
+            "Hortaliça não é só salada: Geladeira",
+            "Hortaliça não é só salada: Geladeira",
+            "Hortaliça não é só salada: Geladeira",
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Hortaliça não é só salada: Geladeira"
+          ]
+        },
+        {
+          "id": "c02",
+          "categoria": "conservacao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.9018565,
+          "segundos": 0.04295954899998833,
+          "titulos": [
+            "Hortaliça não é só salada: Congelador",
+            "Hortaliça não é só salada: Congelador",
+            "Hortaliça não é só salada: Congelador",
+            "Hortaliça não é só salada: Geladeira",
+            "Hortaliça não é só salada: Congelador"
+          ]
+        },
+        {
+          "id": "c03",
+          "categoria": "conservacao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.917107,
+          "segundos": 0.033869564999804425,
+          "titulos": [
+            "Na cozinha com as frutas, legumes e verduras",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças"
+          ]
+        },
+        {
+          "id": "c04",
+          "categoria": "conservacao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.91008437,
+          "segundos": 0.03702265899983104,
+          "titulos": [
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Hortaliça não é só salada: Geladeira",
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Hortaliça não é só salada: Geladeira"
+          ]
+        },
+        {
+          "id": "s01",
+          "categoria": "sem_resposta",
+          "tem_resposta": false,
+          "posicao": null,
+          "melhor_score": 0.844492,
+          "segundos": 0.03254088700032298,
+          "titulos": [
+            "Hortaliça não é só salada: Geladeira",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Massa de pizza básica",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos"
+          ]
+        },
+        {
+          "id": "s02",
+          "categoria": "sem_resposta",
+          "tem_resposta": false,
+          "posicao": null,
+          "melhor_score": 0.84148455,
+          "segundos": 0.03148455499967895,
+          "titulos": [
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Laboratório de Inovação: frutas, legumes e verduras",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Tabela Brasileira de Composição de Alimentos (TACO)"
+          ]
+        },
+        {
+          "id": "s03",
+          "categoria": "sem_resposta",
+          "tem_resposta": false,
+          "posicao": null,
+          "melhor_score": 0.8192483,
+          "segundos": 0.030722922000222752,
+          "titulos": [
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Tabela Brasileira de Composição de Alimentos (TACO)"
+          ]
+        },
+        {
+          "id": "s04",
+          "categoria": "sem_resposta",
+          "tem_resposta": false,
+          "posicao": null,
+          "melhor_score": 0.8359543,
+          "segundos": 0.03647461399987151,
+          "titulos": [
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Tabela Brasileira de Composição de Alimentos (TACO)"
+          ]
+        },
+        {
+          "id": "g05",
+          "categoria": "guia_alimentar",
+          "tem_resposta": true,
+          "posicao": 2,
+          "melhor_score": 0.86983997,
+          "segundos": 0.03783004200022333,
+          "titulos": [
+            "Percepção do consumidor sobre riscos, segurança e rastreabilidade dos alimentos",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "g06",
+          "categoria": "guia_alimentar",
+          "tem_resposta": true,
+          "posicao": 2,
+          "melhor_score": 0.8750558,
+          "segundos": 0.031054690000019036,
+          "titulos": [
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "c05",
+          "categoria": "conservacao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.882358,
+          "segundos": 0.03299680299960528,
+          "titulos": [
+            "Na cozinha com as frutas, legumes e verduras",
+            "Hortaliça não é só salada: Geladeira",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Hortaliça não é só salada: Geladeira"
+          ]
+        },
+        {
+          "id": "c06",
+          "categoria": "conservacao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.8537099,
+          "segundos": 0.031200108000120963,
+          "titulos": [
+            "Na cozinha com as frutas, legumes e verduras",
+            "Guia Alimentar para a População Brasileira",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos"
+          ]
+        },
+        {
+          "id": "n01",
+          "categoria": "nutricao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.84749705,
+          "segundos": 0.032204479000029096,
+          "titulos": [
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Guia Alimentar para a População Brasileira",
+            "Bolo de Arroz",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)"
+          ]
+        },
+        {
+          "id": "n02",
+          "categoria": "nutricao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.86914337,
+          "segundos": 0.032317367999894486,
+          "titulos": [
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)"
+          ]
+        },
+        {
+          "id": "n03",
+          "categoria": "nutricao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.85966766,
+          "segundos": 0.03216749000011987,
+          "titulos": [
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "n04",
+          "categoria": "nutricao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.83971536,
+          "segundos": 0.03181967299997268,
+          "titulos": [
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Guia Alimentar para a População Brasileira",
+            "Banana Bread(Diabetic)",
+            "Na cozinha com as frutas, legumes e verduras"
+          ]
+        },
+        {
+          "id": "n05",
+          "categoria": "nutricao",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.84175193,
+          "segundos": 0.03266196599997784,
+          "titulos": [
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)"
+          ]
+        },
+        {
+          "id": "i01",
+          "categoria": "alimentacao_infantil",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.89567494,
+          "segundos": 0.03306025200026852,
+          "titulos": [
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos"
+          ]
+        },
+        {
+          "id": "i02",
+          "categoria": "alimentacao_infantil",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.9072552,
+          "segundos": 0.03002989799961142,
+          "titulos": [
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos"
+          ]
+        },
+        {
+          "id": "i03",
+          "categoria": "alimentacao_infantil",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.8590925,
+          "segundos": 0.03472851799961063,
+          "titulos": [
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos"
+          ]
+        },
+        {
+          "id": "i04",
+          "categoria": "alimentacao_infantil",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.8951353,
+          "segundos": 0.033331739000004745,
+          "titulos": [
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos"
+          ]
+        },
+        {
+          "id": "i05",
+          "categoria": "alimentacao_infantil",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.89926946,
+          "segundos": 0.02955736200010506,
+          "titulos": [
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos"
+          ]
+        },
+        {
+          "id": "d01",
+          "categoria": "desperdicio",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.87782526,
+          "segundos": 0.03092913000000408,
+          "titulos": [
+            "Campanha para redução do desperdício em uma unidade de alimentação e nutrição",
+            "Campanha para redução do desperdício em uma unidade de alimentação e nutrição",
+            "Campanha para redução do desperdício em uma unidade de alimentação e nutrição",
+            "Campanha para redução do desperdício em uma unidade de alimentação e nutrição",
+            "Campanha para redução do desperdício em uma unidade de alimentação e nutrição"
+          ]
+        },
+        {
+          "id": "d02",
+          "categoria": "desperdicio",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.8764583,
+          "segundos": 0.03557437099971139,
+          "titulos": [
+            "Campanha para redução do desperdício em uma unidade de alimentação e nutrição",
+            "Campanha para redução do desperdício em uma unidade de alimentação e nutrição",
+            "Campanha para redução do desperdício em uma unidade de alimentação e nutrição",
+            "Campanha para redução do desperdício em uma unidade de alimentação e nutrição",
+            "Campanha para redução do desperdício em uma unidade de alimentação e nutrição"
+          ]
+        },
+        {
+          "id": "d03",
+          "categoria": "desperdicio",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.87123954,
+          "segundos": 0.03432646100009151,
+          "titulos": [
+            "Na cozinha com as frutas, legumes e verduras",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos"
+          ]
+        },
+        {
+          "id": "d04",
+          "categoria": "desperdicio",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.87551737,
+          "segundos": 0.030838251000204764,
+          "titulos": [
+            "Laboratório de Inovação: frutas, legumes e verduras",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Laboratório de Inovação: frutas, legumes e verduras"
+          ]
+        },
+        {
+          "id": "h01",
+          "categoria": "seguranca_alimentar",
+          "tem_resposta": true,
+          "posicao": null,
+          "melhor_score": 0.88577414,
+          "segundos": 0.03086581000025035,
+          "titulos": [
+            "Guia Alimentar para a População Brasileira",
+            "Hortaliça não é só salada: Geladeira",
+            "Diagnóstico das condições higiênicas de serviços de alimentação",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos"
+          ]
+        },
+        {
+          "id": "h02",
+          "categoria": "seguranca_alimentar",
+          "tem_resposta": true,
+          "posicao": null,
+          "melhor_score": 0.86155427,
+          "segundos": 0.06119329600005585,
+          "titulos": [
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Diagnóstico das condições higiênicas de serviços de alimentação",
+            "Hambúrguer de grão-de-bico",
+            "Hambúrguer com molho rústico",
+            "Hambúrguer paulista do Jimmy"
+          ]
+        },
+        {
+          "id": "h03",
+          "categoria": "seguranca_alimentar",
+          "tem_resposta": true,
+          "posicao": 2,
+          "melhor_score": 0.8720504,
+          "segundos": 0.03363244699994539,
+          "titulos": [
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Práticas de higiene em serviços de alimentação",
+            "Diagnóstico das condições higiênicas de serviços de alimentação",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "h04",
+          "categoria": "seguranca_alimentar",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.9017586,
+          "segundos": 0.03520007399993119,
+          "titulos": [
+            "Percepção do consumidor sobre riscos, segurança e rastreabilidade dos alimentos",
+            "Percepção do consumidor sobre riscos, segurança e rastreabilidade dos alimentos",
+            "Percepção do consumidor sobre riscos, segurança e rastreabilidade dos alimentos",
+            "Percepção do consumidor sobre riscos, segurança e rastreabilidade dos alimentos",
+            "Percepção do consumidor sobre riscos, segurança e rastreabilidade dos alimentos"
+          ]
+        },
+        {
+          "id": "h05",
+          "categoria": "seguranca_alimentar",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.8809085,
+          "segundos": 0.033159382000121695,
+          "titulos": [
+            "Percepção do consumidor sobre riscos, segurança e rastreabilidade dos alimentos",
+            "Percepção do consumidor sobre riscos, segurança e rastreabilidade dos alimentos",
+            "Percepção do consumidor sobre riscos, segurança e rastreabilidade dos alimentos",
+            "Diagnóstico das condições higiênicas de serviços de alimentação",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos"
+          ]
+        },
+        {
+          "id": "u01",
+          "categoria": "orientacao_nutricional",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.906391,
+          "segundos": 0.03277968400016107,
+          "titulos": [
+            "Alimentos ultraprocessados e seus riscos",
+            "Alimentos ultraprocessados e seus riscos",
+            "Guia Alimentar para a População Brasileira",
+            "Alimentos ultraprocessados e seus riscos",
+            "Alimentos ultraprocessados e seus riscos"
+          ]
+        },
+        {
+          "id": "u02",
+          "categoria": "orientacao_nutricional",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.9007046,
+          "segundos": 0.032366968000133056,
+          "titulos": [
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Protocolos de uso do Guia Alimentar: população adulta"
+          ]
+        },
+        {
+          "id": "p01",
+          "categoria": "comportamento_alimentar",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.8872514,
+          "segundos": 0.031656694000048446,
+          "titulos": [
+            "Impactos da pandemia na alimentação e na comensalidade",
+            "Impactos da pandemia na alimentação e na comensalidade",
+            "O que envolve o consumo alimentar e a pandemia",
+            "O que envolve o consumo alimentar e a pandemia",
+            "O que envolve o consumo alimentar e a pandemia"
+          ]
+        },
+        {
+          "id": "p02",
+          "categoria": "comportamento_alimentar",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.8733417,
+          "segundos": 0.03089289999979883,
+          "titulos": [
+            "Impactos da pandemia na alimentação e na comensalidade",
+            "Impactos da pandemia na alimentação e na comensalidade",
+            "Impactos da pandemia na alimentação e na comensalidade",
+            "Impactos da pandemia na alimentação e na comensalidade",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos"
+          ]
+        },
+        {
+          "id": "p03",
+          "categoria": "comportamento_alimentar",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.87695956,
+          "segundos": 0.02983072999995784,
+          "titulos": [
+            "Ambiente escolar e práticas alimentares familiares e escolares",
+            "Ambiente escolar e práticas alimentares familiares e escolares",
+            "Ambiente escolar e práticas alimentares familiares e escolares",
+            "Ambiente escolar e práticas alimentares familiares e escolares",
+            "Ambiente escolar e práticas alimentares familiares e escolares"
+          ]
+        },
+        {
+          "id": "b01",
+          "categoria": "robustez",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.9022031,
+          "segundos": 0.03719276800029547,
+          "titulos": [
+            "Bolo de Cenoura de Micro-ondas",
+            "Bolo Nutritivo de Microondas",
+            "Bolo cremoso de cenouras",
+            "Pão Árabe de Micro-ondas",
+            "Falso Brigadeirão de Microondas"
+          ]
+        },
+        {
+          "id": "b02",
+          "categoria": "robustez",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.86185837,
+          "segundos": 0.03180358300005537,
+          "titulos": [
+            "Creme de couve flor",
+            "Sopa Creme de Couve-flor",
+            "Aprenda a fazer 3 receitas surpreendentes com couve-flor",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Tabela Brasileira de Composição de Alimentos (TACO)"
+          ]
+        },
+        {
+          "id": "b03",
+          "categoria": "robustez",
+          "tem_resposta": true,
+          "posicao": null,
+          "melhor_score": 0.87618744,
+          "segundos": 0.03157322500010196,
+          "titulos": [
+            "Sopa de Feijão com Queijo - (sopa bicolor)",
+            "Brownie Tradicional",
+            "Bolo de carne e espinafre",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Peanut Patties"
+          ]
+        },
+        {
+          "id": "b04",
+          "categoria": "robustez",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.87756336,
+          "segundos": 0.03330098000014914,
+          "titulos": [
+            "Alimentos ultraprocessados e seus riscos",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "b05",
+          "categoria": "robustez",
+          "tem_resposta": true,
+          "posicao": 1,
+          "melhor_score": 0.8723364,
+          "segundos": 0.03159028500022032,
+          "titulos": [
+            "Hortaliça não é só salada: Congelador",
+            "Na cozinha com as frutas, legumes e verduras",
+            "Hortaliça não é só salada: Congelador",
+            "Hortaliça não é só salada: Congelador",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos"
+          ]
+        },
+        {
+          "id": "s05",
+          "categoria": "sem_resposta",
+          "tem_resposta": false,
+          "posicao": null,
+          "melhor_score": 0.8251351,
+          "segundos": 0.02968760999965525,
+          "titulos": [
+            "O que envolve o consumo alimentar e a pandemia",
+            "Guia Alimentar para a População Brasileira",
+            "Recomendações para compras, armazenamento e consumo de frutas e hortaliças",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos"
+          ]
+        },
+        {
+          "id": "s06",
+          "categoria": "sem_resposta",
+          "tem_resposta": false,
+          "posicao": null,
+          "melhor_score": 0.82106626,
+          "segundos": 0.029857589000130247,
+          "titulos": [
+            "Guia Alimentar para a População Brasileira",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Protocolos de uso do Guia Alimentar: população adulta"
+          ]
+        },
+        {
+          "id": "s07",
+          "categoria": "sem_resposta",
+          "tem_resposta": false,
+          "posicao": null,
+          "melhor_score": 0.85171103,
+          "segundos": 0.030270325999936176,
+          "titulos": [
+            "Hortaliça não é só salada: Geladeira",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Guia Alimentar para a População Brasileira",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos"
+          ]
+        },
+        {
+          "id": "s08",
+          "categoria": "sem_resposta",
+          "tem_resposta": false,
+          "posicao": null,
+          "melhor_score": 0.81966037,
+          "segundos": 0.030427833999965515,
+          "titulos": [
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Laboratório de Inovação: frutas, legumes e verduras",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Guia Alimentar para a População Brasileira"
+          ]
+        },
+        {
+          "id": "s09",
+          "categoria": "sem_resposta",
+          "tem_resposta": false,
+          "posicao": null,
+          "melhor_score": 0.8176687,
+          "segundos": 0.03316492099975221,
+          "titulos": [
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Laboratório de Inovação: frutas, legumes e verduras",
+            "Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            "Laboratório de Inovação: frutas, legumes e verduras",
+            "Práticas de higiene em serviços de alimentação"
+          ]
+        },
+        {
+          "id": "s10",
+          "categoria": "sem_resposta",
+          "tem_resposta": false,
+          "posicao": null,
+          "melhor_score": 0.8445086,
+          "segundos": 0.030169126999680884,
+          "titulos": [
+            "Protocolos de uso do Guia Alimentar: população adulta",
+            "Laboratório de Inovação: frutas, legumes e verduras",
+            "Laboratório de Inovação: frutas, legumes e verduras",
+            "Tabela Brasileira de Composição de Alimentos (TACO)",
+            "Tabela Brasileira de Composição de Alimentos (TACO)"
+          ]
+        }
+      ],
+      "separacao": -0.0123,
+      "limiar_sugerido": 0.846,
+      "por_categoria": {
+        "alimentacao_infantil": {
+          "perguntas": 5,
+          "recall": 1.0,
+          "mrr": 1.0,
+          "score_medio": 0.8913,
+          "maior_score": 0.9073
+        },
+        "comportamento_alimentar": {
+          "perguntas": 3,
+          "recall": 1.0,
+          "mrr": 1.0,
+          "score_medio": 0.8792,
+          "maior_score": 0.8873
+        },
+        "conservacao": {
+          "perguntas": 6,
+          "recall": 1.0,
+          "mrr": 1.0,
+          "score_medio": 0.8951,
+          "maior_score": 0.9171
+        },
+        "desperdicio": {
+          "perguntas": 4,
+          "recall": 1.0,
+          "mrr": 1.0,
+          "score_medio": 0.8753,
+          "maior_score": 0.8778
+        },
+        "guia_alimentar": {
+          "perguntas": 6,
+          "recall": 0.8333333333333334,
+          "mrr": 0.6666666666666666,
+          "score_medio": 0.8841,
+          "maior_score": 0.9084
+        },
+        "nutricao": {
+          "perguntas": 5,
+          "recall": 1.0,
+          "mrr": 1.0,
+          "score_medio": 0.8516,
+          "maior_score": 0.8691
+        },
+        "orientacao_nutricional": {
+          "perguntas": 2,
+          "recall": 1.0,
+          "mrr": 1.0,
+          "score_medio": 0.9035,
+          "maior_score": 0.9064
+        },
+        "receita_entre_idiomas": {
+          "perguntas": 5,
+          "recall": 0.2,
+          "mrr": 0.05,
+          "score_medio": 0.877,
+          "maior_score": 0.893
+        },
+        "receita_pt": {
+          "perguntas": 8,
+          "recall": 0.875,
+          "mrr": 0.6875,
+          "score_medio": 0.8813,
+          "maior_score": 0.9138
+        },
+        "robustez": {
+          "perguntas": 5,
+          "recall": 0.8,
+          "mrr": 0.8,
+          "score_medio": 0.878,
+          "maior_score": 0.9022
+        },
+        "seguranca_alimentar": {
+          "perguntas": 5,
+          "recall": 0.6,
+          "mrr": 0.5,
+          "score_medio": 0.8804,
+          "maior_score": 0.9018
+        },
+        "sem_resposta": {
+          "perguntas": 10,
+          "recall": null,
+          "mrr": null,
+          "score_medio": 0.8321,
+          "maior_score": 0.8517
+        }
+      }
+    }
+  ]
+}
