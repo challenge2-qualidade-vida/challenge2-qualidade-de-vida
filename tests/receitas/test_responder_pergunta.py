@@ -299,3 +299,146 @@ def test_formatar_fonte_nao_repete_o_nome_contido_na_instituicao(trecho):
     assert formatar_fonte(TrechoRecuperado(receita, 0.9)) == (
         "Bolo. afrodite.json (dataset no GitHub)."
     )
+
+
+class LLMEmSequencia:
+    """LLM falso que devolve uma resposta por chamada, em ordem, nos dois modos."""
+
+    def __init__(self, *respostas):
+        self.respostas = list(respostas)
+        self.mensagens = []
+
+    def _proxima(self, mensagem):
+        self.mensagens.append(mensagem)
+        return self.respostas.pop(0)
+
+    def gerar(self, sistema, mensagem):
+        return self._proxima(mensagem)
+
+    def gerar_json(self, sistema, mensagem, esquema):
+        resposta = self._proxima(mensagem)
+        if isinstance(resposta, Exception):
+            raise resposta
+        return resposta
+
+
+def criar_com(llm, recuperados, **kwargs):
+    return ResponderPergunta(
+        GeradorFalso(),
+        RepositorioFalso(recuperados),
+        llm,
+        "sistema",
+        limiar=0.8,
+        **kwargs,
+    )
+
+
+def test_resposta_estruturada_usa_a_lista_de_trechos(trecho):
+    recuperados = [recuperado(trecho, "a", 0.95), recuperado(trecho, "b", 0.90)]
+    llm = LLMEmSequencia(
+        {
+            "encontrou": True,
+            "resposta": "Guarde na geladeira.",
+            "trechos_usados": [2, 7],
+        }
+    )
+    resposta = criar_com(llm, recuperados, resposta_estruturada=True).responder("?")
+    assert resposta.encontrou
+    assert resposta.texto == "Guarde na geladeira."
+    assert [r.trecho.id for r in resposta.trechos] == ["b"]
+
+
+def test_resposta_estruturada_junta_citacoes_do_texto_e_da_lista(trecho):
+    recuperados = [recuperado(trecho, "a", 0.95), recuperado(trecho, "b", 0.90)]
+    llm = LLMEmSequencia(
+        {"encontrou": True, "resposta": "Use a [2].", "trechos_usados": [1]}
+    )
+    resposta = criar_com(llm, recuperados, resposta_estruturada=True).responder("?")
+    assert [r.trecho.id for r in resposta.trechos] == ["a", "b"]
+    assert resposta.texto == "Use a [2]."
+
+
+@pytest.mark.parametrize(
+    "saida",
+    [
+        {"encontrou": False, "resposta": "", "trechos_usados": []},
+        {"encontrou": True, "resposta": "   ", "trechos_usados": [1]},
+        {"encontrou": True, "resposta": "Sem fonte.", "trechos_usados": []},
+        {"resposta": "faltou o campo encontrou"},
+        ValueError("JSON inválido"),
+    ],
+)
+def test_resposta_estruturada_invalida_ou_sem_citacao_vira_nao_encontrei(trecho, saida):
+    llm = LLMEmSequencia(saida)
+    caso = criar_com(llm, [recuperado(trecho, "a", 0.9)], resposta_estruturada=True)
+    resposta = caso.responder("?")
+    assert not resposta.encontrou
+    assert resposta.texto == NAO_ENCONTREI
+
+
+def test_segunda_tentativa_pede_a_citacao_e_aceita_a_resposta_citada(trecho):
+    llm = LLMEmSequencia("Faça um bolo.", "Faça um bolo [1].")
+    caso = criar_com(
+        llm,
+        [recuperado(trecho, "a", 0.9)],
+        pedido_de_citacao="Antes: {resposta}. Cite.",
+    )
+    resposta = caso.responder("?")
+    assert resposta.encontrou
+    assert resposta.texto == "Faça um bolo [1]."
+    assert len(llm.mensagens) == 2
+    assert llm.mensagens[1].endswith("Antes: Faça um bolo.. Cite.")
+    assert llm.mensagens[1].startswith(llm.mensagens[0])
+
+
+def test_segunda_tentativa_acontece_uma_vez_so(trecho):
+    llm = LLMEmSequencia("Faça um bolo.", "Ainda sem citar.")
+    caso = criar_com(
+        llm, [recuperado(trecho, "a", 0.9)], pedido_de_citacao="{resposta}"
+    )
+    assert not caso.responder("?").encontrou
+    assert len(llm.mensagens) == 2
+
+
+def test_sem_segunda_tentativa_quando_o_llm_diz_que_nao_encontrou(trecho):
+    llm = LLMEmSequencia("NAO_ENCONTRADO")
+    caso = criar_com(
+        llm, [recuperado(trecho, "a", 0.9)], pedido_de_citacao="{resposta}"
+    )
+    assert not caso.responder("?").encontrou
+    assert len(llm.mensagens) == 1
+
+
+def test_sem_pedido_de_citacao_vale_a_regra_da_versao_1(trecho):
+    llm = LLMEmSequencia("Faça um bolo.")
+    caso = criar_com(llm, [recuperado(trecho, "a", 0.9)])
+    assert not caso.responder("?").encontrou
+    assert len(llm.mensagens) == 1
+
+
+def test_segunda_tentativa_no_modo_estruturado(trecho):
+    llm = LLMEmSequencia(
+        {"encontrou": True, "resposta": "Faça um bolo.", "trechos_usados": []},
+        {"encontrou": True, "resposta": "Faça um bolo [1].", "trechos_usados": [1]},
+    )
+    caso = criar_com(
+        llm,
+        [recuperado(trecho, "a", 0.9)],
+        resposta_estruturada=True,
+        pedido_de_citacao="{resposta}",
+    )
+    assert caso.responder("?").encontrou
+    assert len(llm.mensagens) == 2
+
+
+def test_numeros_validos():
+    from economia.receitas.aplicacao.responder_pergunta import numeros_validos
+
+    assert numeros_validos([3, 1, 3, 0, 9, 2], 3) == [3, 1, 2]
+
+
+def test_prompts_versionados_da_resposta_existem():
+    from economia.compartilhado.infraestrutura.prompts import carregar_prompt
+
+    assert "trechos_usados" in carregar_prompt("miau-ricio", "resposta_com_fontes_v2")
+    assert "{resposta}" in carregar_prompt("miau-ricio", "pedido_de_citacao_v1")

@@ -191,3 +191,89 @@ def comparar(contexto):
 @then(parsers.parse("a diferença do Recall@5 é {valor}"))
 def diferenca_do_recall(contexto, valor):
     assert contexto["diferencas"]["recall"].delta == float(valor.replace(",", "."))
+
+
+# Redação da resposta: saída estruturada e segunda tentativa
+
+
+@scenario(
+    FEATURE,
+    "A resposta estruturada cita os trechos usados mesmo sem colchetes no texto",
+)
+def test_resposta_estruturada():
+    pass
+
+
+@scenario(FEATURE, "A resposta sem citação ganha uma segunda tentativa")
+def test_segunda_tentativa():
+    pass
+
+
+class LLMRoteirizado:
+    """LLM falso com as respostas da redação em ordem; a extração de ingredientes devolve vazio."""
+
+    def __init__(self, *respostas):
+        self.respostas = list(respostas)
+        self.chamadas_de_redacao = 0
+
+    def gerar(self, sistema, mensagem):
+        self.chamadas_de_redacao += 1
+        return self.respostas.pop(0)
+
+    def gerar_json(self, sistema, mensagem, esquema):
+        if "trechos_usados" not in esquema.get("properties", {}):
+            return {"ingredientes_pt": [], "ingredientes_en": []}
+        self.chamadas_de_redacao += 1
+        return self.respostas.pop(0)
+
+
+@given("que o LLM responde em JSON usando o trecho 1, sem colchetes no texto")
+def llm_em_json(contexto):
+    contexto["llm"] = LLMRoteirizado(
+        {"encontrou": True, "resposta": "Bata tudo e asse.", "trechos_usados": [1]}
+    )
+
+
+@given("que o LLM responde sem citar na primeira vez e citando na segunda")
+def llm_que_esquece_de_citar(contexto):
+    contexto["llm"] = LLMRoteirizado("Bata tudo e asse.", "Bata tudo e asse [1].")
+
+
+def _perguntar(contexto, pergunta, **opcoes):
+    caso = ResponderPergunta(
+        contexto["gerador"],
+        contexto["repositorio"],
+        contexto["llm"],
+        prompt_do_sistema="sistema",
+        limiar=contexto["limiar"],
+        prompt_de_extracao="extração",
+        **opcoes,
+    )
+    contexto["resposta"] = caso.responder(pergunta)
+
+
+@when(parsers.parse('eu pergunto "{pergunta}" com a resposta estruturada'))
+def perguntar_estruturada(contexto, pergunta):
+    _perguntar(contexto, pergunta, resposta_estruturada=True)
+
+
+@when(parsers.parse('eu pergunto "{pergunta}" com a segunda tentativa'))
+def perguntar_com_segunda_tentativa(contexto, pergunta):
+    _perguntar(
+        contexto, pergunta, pedido_de_citacao="Antes: {resposta}. Cite os trechos."
+    )
+
+
+@then("a resposta é aceita")
+def resposta_aceita(contexto):
+    assert contexto["resposta"].encontrou, contexto["resposta"].texto
+
+
+@then(parsers.parse('a fonte da resposta é a da receita "{titulo}"'))
+def fonte_da_receita(contexto, titulo):
+    assert [r.trecho.titulo for r in contexto["resposta"].trechos] == [titulo]
+
+
+@then(parsers.parse("o LLM foi chamado {vezes:d} vezes"))
+def chamadas_do_llm(contexto, vezes):
+    assert contexto["llm"].chamadas_de_redacao == vezes

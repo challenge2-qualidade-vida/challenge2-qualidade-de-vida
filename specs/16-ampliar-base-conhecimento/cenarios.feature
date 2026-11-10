@@ -31,3 +31,17 @@ Funcionalidade: Base de conhecimento com 20 fontes e avaliação do RAG
     E uma execução seguinte com Recall@5 de 0,75
     Quando eu comparo as duas execuções
     Então a diferença do Recall@5 é +0,25
+
+  Cenário: A resposta estruturada cita os trechos usados mesmo sem colchetes no texto
+    Dado que a base contém só a receita "Bolo de cenoura"
+    E que o LLM responde em JSON usando o trecho 1, sem colchetes no texto
+    Quando eu pergunto "como fazer bolo de cenoura?" com a resposta estruturada
+    Então a resposta é aceita
+    E a fonte da resposta é a da receita "Bolo de cenoura"
+
+  Cenário: A resposta sem citação ganha uma segunda tentativa
+    Dado que a base contém só a receita "Bolo de cenoura"
+    E que o LLM responde sem citar na primeira vez e citando na segunda
+    Quando eu pergunto "como fazer bolo de cenoura?" com a segunda tentativa
+    Então a resposta é aceita
+    E o LLM foi chamado 2 vezes

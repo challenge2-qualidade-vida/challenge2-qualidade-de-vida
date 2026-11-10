@@ -72,13 +72,18 @@ def montar_mensagem(pergunta: str, trechos: Sequence[TrechoRecuperado]) -> str:
     return f"Pergunta: {pergunta}\n\nTrechos:\n\n" + "\n\n".join(blocos)
 
 
-def citacoes_validas(texto: str, quantidade: int) -> list[int]:
-    """Números citados pelo LLM que existem, na ordem da primeira citação."""
+def numeros_validos(numeros: Iterable[int], quantidade: int) -> list[int]:
+    """Números de trechos que existem, sem repetição, na ordem em que apareceram."""
     vistos: list[int] = []
-    for numero in (int(n) for n in _CITACAO.findall(texto)):
+    for numero in numeros:
         if 1 <= numero <= quantidade and numero not in vistos:
             vistos.append(numero)
     return vistos
+
+
+def citacoes_validas(texto: str, quantidade: int) -> list[int]:
+    """Números citados pelo LLM que existem, na ordem da primeira citação."""
+    return numeros_validos((int(n) for n in _CITACAO.findall(texto)), quantidade)
 
 
 def renumerar(texto: str, citados: Sequence[int]) -> str:
@@ -153,6 +158,18 @@ def bloco_de_ingredientes_que_faltam(
     return "Ingredientes que faltam:\n" + "\n".join(linhas) if linhas else ""
 
 
+class RespostaDoLLM(BaseModel):
+    """Saída estruturada do LLM ao redigir a resposta (prompt resposta_com_fontes_v2).
+
+    Com o esquema JSON, a lista dos trechos usados não depende de o modelo lembrar de escrever
+    os colchetes no texto. As fontes continuam montadas pelo código a partir desses números (RN10).
+    """
+
+    encontrou: bool
+    resposta: str = ""
+    trechos_usados: list[int] = []
+
+
 class ResponderPergunta:
     def __init__(
         self,
@@ -165,6 +182,8 @@ class ResponderPergunta:
         prompt_de_extracao: str | None = None,
         ingredientes_basicos: Sequence[str] = (),
         tolerancia: float = 0.0,
+        resposta_estruturada: bool = False,
+        pedido_de_citacao: str | None = None,
     ):
         self._gerador = gerador
         self._repositorio = repositorio
@@ -175,6 +194,10 @@ class ResponderPergunta:
         self._prompt_de_extracao = prompt_de_extracao
         self._basicos = tuple(ingredientes_basicos)
         self._tolerancia = tolerancia
+        self._estruturada = resposta_estruturada
+        # com o pedido, uma resposta sem citação ganha uma segunda tentativa antes de virar
+        # "não encontrei"; sem ele, vale a regra da versão 1 (descarta na primeira)
+        self._pedido_de_citacao = pedido_de_citacao
 
     def recuperar(self, pergunta: str) -> list[TrechoRecuperado]:
         """Top-k trechos acima do limiar, do maior score para o menor."""
@@ -245,9 +268,8 @@ class ResponderPergunta:
                 faltando = self.contar_faltantes(recuperados, disponiveis)
                 recuperados = self.ordenar(recuperados, faltando)
 
-        texto = self._llm.gerar(self._prompt, montar_mensagem(pergunta, recuperados))
-        citados = citacoes_validas(texto, len(recuperados))
-        if MARCA_DE_NAO_ENCONTRADO in texto or not citados:
+        texto, citados = self.redigir(pergunta, recuperados)
+        if not citados:
             # sem citação não há como dizer de onde veio a resposta (RN10): vale a RN11
             return RespostaComFontes(texto=NAO_ENCONTREI, encontrou=False)
 
@@ -266,3 +288,44 @@ class ResponderPergunta:
                 if r.trecho.id in faltando
             ),
         )
+
+    def redigir(
+        self, pergunta: str, recuperados: Sequence[TrechoRecuperado]
+    ) -> tuple[str, list[int]]:
+        """Texto do LLM e os números dos trechos citados. Sem citação válida, a lista vem vazia."""
+        mensagem = montar_mensagem(pergunta, recuperados)
+        texto, citados, recusou = self._uma_tentativa(mensagem, len(recuperados))
+        if citados or recusou or not self._pedido_de_citacao or not texto.strip():
+            return texto, citados
+        pedido = self._pedido_de_citacao.replace("{resposta}", texto)
+        texto, citados, _ = self._uma_tentativa(
+            f"{mensagem}\n\n{pedido}", len(recuperados)
+        )
+        return texto, citados
+
+    def _uma_tentativa(
+        self, mensagem: str, quantidade: int
+    ) -> tuple[str, list[int], bool]:
+        """Uma chamada ao LLM: texto, trechos citados e se ele disse que não encontrou."""
+        if not self._estruturada:
+            texto = self._llm.gerar(self._prompt, mensagem)
+            if MARCA_DE_NAO_ENCONTRADO in texto:
+                return texto, [], True
+            return texto, citacoes_validas(texto, quantidade), False
+        try:
+            saida = RespostaDoLLM.model_validate(
+                self._llm.gerar_json(
+                    self._prompt, mensagem, RespostaDoLLM.model_json_schema()
+                )
+            )
+        except (ValidationError, ValueError):
+            return "", [], False
+        if not saida.encontrou:
+            return saida.resposta, [], True
+        if not saida.resposta.strip():
+            return "", [], False
+        citados = numeros_validos(
+            [*citacoes_validas(saida.resposta, quantidade), *saida.trechos_usados],
+            quantidade,
+        )
+        return saida.resposta, citados, False

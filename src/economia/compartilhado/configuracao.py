@@ -32,6 +32,11 @@ class Configuracao(BaseSettings):
     tolerancia_empate: float = Field(default=0.01, ge=0.0, le=1.0)
     # sempre disponíveis, em português e em inglês (receitas do RecipeNLG); lista provisória
     ingredientes_basicos: list[str] = ["sal", "agua", "oleo", "salt", "water", "oil"]
+    # redação da resposta do Miau-ricio: prompt versionado, saída estruturada (JSON com os
+    # trechos usados) e segunda tentativa quando o LLM responde sem citar os trechos
+    prompt_de_resposta: str = "resposta_com_fontes_v1"
+    resposta_estruturada: bool = False
+    segunda_tentativa_de_citacao: bool = False
 
     @property
     def nome_do_modelo_de_embeddings(self) -> str:

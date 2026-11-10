@@ -178,6 +178,9 @@ def criar_responder(
             tempo_limite=configuracao.ollama_tempo_limite,
             **(
                 {
+                    "prompt_de_resposta": configuracao.prompt_de_resposta,
+                    "resposta_estruturada": configuracao.resposta_estruturada,
+                    "segunda_tentativa_de_citacao": configuracao.segunda_tentativa_de_citacao,
                     "temperatura": TEMPERATURA_DA_AVALIACAO,
                     "semente": SEMENTE_DA_AVALIACAO,
                 }
@@ -185,11 +188,17 @@ def criar_responder(
                 else {}
             ),
         ),
-        prompt_do_sistema=carregar_prompt("miau-ricio", "resposta_com_fontes_v1"),
+        prompt_do_sistema=carregar_prompt(
+            "miau-ricio", configuracao.prompt_de_resposta
+        ),
         limiar=configuracao.limiar_similaridade,
         prompt_de_extracao=carregar_prompt("miau-ricio", "extrair_ingredientes_v1"),
         ingredientes_basicos=configuracao.ingredientes_basicos,
         tolerancia=configuracao.tolerancia_empate,
+        resposta_estruturada=configuracao.resposta_estruturada,
+        pedido_de_citacao=carregar_prompt("miau-ricio", "pedido_de_citacao_v1")
+        if configuracao.segunda_tentativa_de_citacao
+        else None,
     )
 
 
@@ -332,6 +341,16 @@ def comando_avaliar_respostas(args: argparse.Namespace) -> None:
     from economia.receitas.aplicacao.avaliacao_respostas import avaliar_respostas
 
     configuracao = configuracao_com_modelo(args.modelo)
+    ajustes = {
+        chave: valor
+        for chave, valor in (
+            ("prompt_de_resposta", args.prompt),
+            ("resposta_estruturada", args.estruturada),
+            ("segunda_tentativa_de_citacao", args.segunda_tentativa),
+        )
+        if valor is not None
+    }
+    configuracao = configuracao.model_copy(update=ajustes)
     perguntas = carregar_perguntas(args.perguntas)
     if args.categorias:
         perguntas = [p for p in perguntas if p.categoria in args.categorias]
@@ -358,6 +377,9 @@ def comando_avaliar_respostas(args: argparse.Namespace) -> None:
         "modelo_embeddings": configuracao.modelo_embeddings,
         "modelo_llm": configuracao.ollama_modelo,
         "limiar": configuracao.limiar_similaridade,
+        "prompt_de_resposta": configuracao.prompt_de_resposta,
+        "resposta_estruturada": configuracao.resposta_estruturada,
+        "segunda_tentativa_de_citacao": configuracao.segunda_tentativa_de_citacao,
         "temperatura": TEMPERATURA_DA_AVALIACAO,
         "semente": SEMENTE_DA_AVALIACAO,
         **asdict(resumo),
@@ -510,6 +532,22 @@ def main(argv: list[str] | None = None) -> None:
         "--categorias", nargs="+", help="avalia só estas categorias"
     )
     respostas_parser.add_argument("--limite", type=int, help="avalia só as N primeiras")
+    respostas_parser.add_argument(
+        "--prompt",
+        help="prompt da resposta (padrão: PROMPT_DE_RESPOSTA, ex.: resposta_com_fontes_v2)",
+    )
+    respostas_parser.add_argument(
+        "--estruturada",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help="pede ao LLM um JSON com a resposta e os trechos usados",
+    )
+    respostas_parser.add_argument(
+        "--segunda-tentativa",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help="pede ao LLM que reescreva citando quando a resposta vier sem citação",
+    )
     respostas_parser.set_defaults(funcao=comando_avaliar_respostas)
 
     execucoes_parser = comandos.add_parser(
