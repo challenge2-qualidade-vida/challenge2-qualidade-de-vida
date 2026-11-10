@@ -8,7 +8,13 @@ Residência em IA Brasília (TIC em Trilhas / Mentes em Modo IA em Ação) — T
 
 Projetar e desenvolver uma solução baseada em IA capaz de apoiar a tomada de decisão em um contexto relacionado à qualidade de vida.
 
-**Essential Question do grupo:** *a definir na semana 1*
+**Essential Question do grupo:** Como podemos utilizar inteligência artificial para otimizar o orçamento de compras e reduzir o desperdício de alimentos por meio da gestão automatizada de inventário doméstico e rastreamento de preços locais?
+
+## Links do projeto
+
+- **Organização:** https://github.com/challenge2-qualidade-vida
+- **Repositório:** https://github.com/challenge2-qualidade-vida/challenge2-qualidade-de-vida
+- **Quadro de tarefas (GitHub Projects):** https://github.com/orgs/challenge2-qualidade-vida/projects/1
 
 ## Equipe
 
