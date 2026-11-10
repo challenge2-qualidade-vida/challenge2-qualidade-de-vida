@@ -1,0 +1,8 @@
+{
+  "colecao": "base_conhecimento_e5",
+  "modelo": "intfloat/multilingual-e5-base",
+  "trechos": 6151,
+  "segundos": 149.3,
+  "trechos_por_segundo": 41.2,
+  "maquina": "Darwin arm64, 10 CPUs lógicas"
+}
