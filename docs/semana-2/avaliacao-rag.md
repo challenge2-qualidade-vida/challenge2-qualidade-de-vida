@@ -18,7 +18,8 @@ Este documento registra como o RAG do Miau-ricio é avaliado, quais documentos e
 
 1. **A busca melhorou muito.** As 6 categorias que dependiam dos documentos novos saíram de Recall@5 0 (ou 0,5) para 0,6 a 1,0, sem piorar receitas nem conservação.
 2. **A resposta final melhorou pouco, e o gargalo agora é o LLM.** Depois da ampliação, 32 das 35 perguntas que deviam ser respondidas e não foram tinham trechos acima do limiar. O `qwen2.5:7b` respondeu `NAO_ENCONTRADO` ou escreveu sem citar os trechos, e a resposta foi descartada pela RN10. Só 3 caíram por falta de trecho relevante.
-3. **A TACO como texto é arriscada.** A busca acha a tabela certa em 5 de 5 perguntas, mas o LLM leu a coluna errada: disse que o ovo cozido tem 2,9 g de proteína (o certo é 13,3 g; 2,9 g é o teor de gordura saturada, em outra tabela). Isso reforça a #22: dados nutricionais devem vir de consulta estruturada, não do LLM.
+3. **O gargalo do LLM foi resolvido com a resposta estruturada** (seção 6): com o prompt v2 em JSON, a acurácia vai a 91%, e a 93% com a busca por ingrediente, mantendo 100% de recusa correta e de aviso de preço.
+4. **A TACO como texto é arriscada.** A busca acha a tabela certa em 5 de 5 perguntas, mas o LLM leu a coluna errada: disse que o ovo cozido tem 2,9 g de proteína (o certo é 13,3 g; 2,9 g é o teor de gordura saturada, em outra tabela). Isso reforça a #22: dados nutricionais devem vir de consulta estruturada, não do LLM.
 
 ## 2. Como a avaliação funciona
 
@@ -176,7 +177,55 @@ Das 7 que pioraram, 6 têm o trecho certo no top-5 nas duas execuções; o que m
 6. **Gabarito estrito na g01.** "O que são ultraprocessados" passou a trazer o Guia infantil e o artigo da RACA sobre ultraprocessados, que também respondem à pergunta. Como o gabarito só aceita seções do Guia adulto, a pergunta conta como erro de busca. O gabarito foi mantido, para não ajustar a medida ao resultado; numa v3, vale aceitar os documentos novos.
 7. **Licenças.** Todas as fontes novas são CC BY, CC BY-NC-SA ou de reprodução livre com citação. Para o uso acadêmico, servem. Para um produto comercial, as NC precisam ser trocadas.
 
-## 6. Ambiente da medição
+## 6. Redação da resposta: o que corrigiu o gargalo do LLM
+
+A seção 5 mostrou que a maior parte das falhas vinha do LLM: ele respondia sem citar os trechos, e a resposta era descartada pela RN10. Três mudanças foram testadas na base de 20 fontes, uma de cada vez, com o mesmo conjunto de 67 perguntas:
+
+1. **Segunda tentativa** (`pedido_de_citacao_v1`): se a resposta vem sem `[n]`, o LLM recebe a própria resposta e o pedido de reescrever citando. Só uma vez.
+2. **Resposta estruturada**: o LLM devolve um JSON `{encontrou, resposta, trechos_usados}`. O Ollama restringe a saída ao esquema, e a lista dos trechos usados não depende de o modelo lembrar dos colchetes.
+3. **Prompt v2** (`resposta_com_fontes_v2`): pede o JSON, mostra um exemplo e diz que uma resposta parcial ainda é uma resposta (`encontrou: false` só quando nenhum trecho tem relação com a pergunta).
+
+Depois, a **busca por ingrediente**: quando a pergunta lista 2 ou mais ingredientes, além da busca geral, o sistema busca "Receita com <ingrediente>" só entre as receitas e garante pelo menos uma por ingrediente. Ela resolveu uma pergunta real que voltava "não encontrei": "quero fazer um almoço completo com arroz, feijão, carne e alface".
+
+| Configuração | Acurácia | Taxa de resposta | Recusa correta | Aviso de preço | Fonte esperada | Latência média |
+| --- | --- | --- | --- | --- | --- | --- |
+| v1, texto livre (referência) | 48% | 35% | 100% | 100% | 84% | 2,9 s |
+| v1 + segunda tentativa | 72% | 65% | 100% | 100% | 83% | 3,1 s |
+| **v2 estruturada** | **91%** | **89%** | 100% | 100% | 77% | 2,5 s |
+| v2 estruturada + segunda tentativa | 91% | 89% | 100% | 100% | 77% | 2,2 s |
+| v2 estruturada + segunda tentativa + busca por ingrediente | **93%** | **91%** | 100% | 100% | 73% | 2,5 s |
+
+**Leitura:**
+
+- A **resposta estruturada com o prompt v2** é o que resolve: a acurácia vai de 48% para 91%, sem perder nenhuma recusa correta (RN11) nem aviso de preço (RN04). Com ela, a segunda tentativa nunca foi acionada, porque o modelo sempre devolveu a lista de trechos. Ela fica como proteção barata, já que só custa quando é usada.
+- Só a segunda tentativa, sem mudar o prompt, já sobe a acurácia de 48% para 72%.
+- A **fonte esperada citada cai** (84% para 73%) porque o sistema passa a responder mais. Nas receitas em inglês, por exemplo, ele responde com uma receita parecida do afrodite.json em vez da do gabarito. A resposta é útil, mas não é a que o gabarito esperava.
+- A busca por ingrediente quase não muda o conjunto v2 (+1,5 ponto), porque ele quase não tem pedidos de refeição com vários ingredientes. Uma v3 do conjunto deve incluir esse tipo de pergunta.
+
+**O que a avaliação não mede, e os erros que apareceram:** a acurácia confere o comportamento (respondeu, recusou ou avisou) e a fonte citada, não se cada frase é fiel ao trecho. Conferindo à mão as respostas da v2, apareceram números errados:
+
+- ovo cozido com 2,9 g de proteína (a TACO diz 13,3 g; 2,9 g é a gordura saturada);
+- feijão carioca com 62,92 g de fibra em 100 g (a TACO diz 8,5 g);
+- "comida refrigerada a no mínimo 70 °C" (70 °C é a temperatura de reaquecimento).
+
+Responder mais aumenta a chance desse tipo de erro. Dois próximos passos tratam disso: tirar os números nutricionais do LLM (consulta estruturada da TACO, #22) e medir a fidelidade (faithfulness, #29).
+
+**Na tela de perguntas** ([spec 24](../../specs/24-endpoint-rag/spec.md)), a configuração vem do `.env`. O padrão do código continua a v1 até a equipe decidir (ver `docs/decisoes.md`). Para usar a melhor configuração medida:
+
+```bash
+PROMPT_DE_RESPOSTA=resposta_com_fontes_v2
+RESPOSTA_ESTRUTURADA=true
+SEGUNDA_TENTATIVA_DE_CITACAO=true
+```
+
+Para repetir a comparação:
+
+```bash
+poetry run python -m economia.receitas.cli avaliar-respostas --prompt resposta_com_fontes_v2 --estruturada --segunda-tentativa --saida data/avaliacao/v2/respostas_teste.json
+poetry run python -m economia.receitas.cli comparar-execucoes data/avaliacao/v2/respostas_depois.json data/avaliacao/v2/respostas_teste.json
+```
+
+## 7. Ambiente da medição
 
 - Linux x86_64, 16 CPUs lógicas.
 - Ollama 0.40 com `qwen2.5:7b`, contexto de 8.192 tokens, temperatura 0, semente 42.

@@ -1,0 +1,925 @@
+{
+  "maquina": "Linux x86_64, 16 CPUs lógicas",
+  "data": "2026-11-10T01:16:19",
+  "perguntas_arquivo": "data/avaliacao/perguntas_rag_v2.json",
+  "colecao": "base_conhecimento_e5",
+  "modelo_embeddings": "e5",
+  "modelo_llm": "qwen2.5:7b",
+  "limiar": 0.845,
+  "prompt_de_resposta": "resposta_com_fontes_v2",
+  "resposta_estruturada": true,
+  "segunda_tentativa_de_citacao": true,
+  "temperatura": 0.0,
+  "semente": 42,
+  "perguntas": 67,
+  "acuracia": 0.9104477611940298,
+  "taxa_de_resposta": 0.8888888888888888,
+  "recusa_correta": 1.0,
+  "aviso_de_preco": 1.0,
+  "fonte_esperada": 0.7708333333333334,
+  "falsas_recusas": [
+    "r06",
+    "n01",
+    "n04",
+    "n05",
+    "d04",
+    "b03"
+  ],
+  "respostas_indevidas": [],
+  "latencia_media": 2.1601353790597724,
+  "latencia_maxima": 7.75427117199979,
+  "por_categoria": {
+    "alimentacao_infantil": {
+      "perguntas": 5,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0
+    },
+    "comportamento_alimentar": {
+      "perguntas": 3,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0
+    },
+    "conservacao": {
+      "perguntas": 6,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.8333333333333334
+    },
+    "desperdicio": {
+      "perguntas": 4,
+      "acuracia": 0.75,
+      "taxa_de_resposta": 0.75,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0
+    },
+    "guia_alimentar": {
+      "perguntas": 6,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.6666666666666666
+    },
+    "nutricao": {
+      "perguntas": 5,
+      "acuracia": 0.4,
+      "taxa_de_resposta": 0.4,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0
+    },
+    "orientacao_nutricional": {
+      "perguntas": 2,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0
+    },
+    "preco": {
+      "perguntas": 3,
+      "acuracia": 1.0,
+      "taxa_de_resposta": null,
+      "recusa_correta": null,
+      "aviso_de_preco": 1.0,
+      "fonte_esperada": null
+    },
+    "receita_entre_idiomas": {
+      "perguntas": 5,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.0
+    },
+    "receita_pt": {
+      "perguntas": 8,
+      "acuracia": 0.875,
+      "taxa_de_resposta": 0.875,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.8571428571428571
+    },
+    "robustez": {
+      "perguntas": 5,
+      "acuracia": 0.8,
+      "taxa_de_resposta": 0.8,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0
+    },
+    "seguranca_alimentar": {
+      "perguntas": 5,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.6
+    },
+    "sem_resposta": {
+      "perguntas": 10,
+      "acuracia": 1.0,
+      "taxa_de_resposta": null,
+      "recusa_correta": 1.0,
+      "aviso_de_preco": null,
+      "fonte_esperada": null
+    }
+  },
+  "resultados": [
+    {
+      "id": "r01",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 4.583652803000405,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b08"
+      ],
+      "texto": "Para fazer bolo de cenoura no micro-ondas, você pode seguir a Receita: Bolo de Cenoura de Micro-ondas [1]. Nela, você precisa de 2 ovos, ½ xícara (chá) de óleo, 250g de cenouras médias sem casca e cortadas em rodelas, 1 xícara (chá) de farinha de trigo, 1 xícara (chá) de açúcar e ½ colher (sopa) de fermento em pó. Misture todos os ingredientes em uma tigela e bata no liquidificador. Em uma forma para micro-ondas untada, coloque a massa e leve ao micro-ondas por 8 minutos na potência máxima, abrindo o forno por alguns segundos de 2 em 2 minutos para que a massa não derrame. Retire do micro-ondas e deixe esfriar antes de servir.\n\nIngredientes que faltam:\n- Bolo de Cenoura de Micro-ondas [1]: Calda, - 6 colheres (sopa) de chocolate em pó- 400 ml de leite- 1 colher (sopa) de manteiga- 4 colheres (sopa) de açúcar- 2 colheres (sopa) de amido de milho"
+    },
+    {
+      "id": "r02",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 4.881699714000206,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c7477e6"
+      ],
+      "texto": "Aqui está uma receita de Pão de Queijo Rápido [1]: Ingredientes: 2 ovos inteiros, 1 copo de leite, 1 copo de óleo de milho, 1 xícara de queijo parmesão ralado, 1 colher (sobremesa-rasa) de sal, 25ml de azeite, 3 xícaras de polvilho doce. Modo de preparo: Bata os ovos, leite, óleo de milho, sal e azeite no liquidificador. Adicione o polvilho doce e o queijo parmesão, misture bem. Unte forminhas, coloque a massa e polvilhe queijo ralado. Leve ao forno pré-aquecido a 200 ºC por aproximadamente 20 minutos.\n\nIngredientes que faltam:\n- Pão de queijo rápido [1]: nenhum"
+    },
+    {
+      "id": "r03",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 3.508175585000572,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745e7a",
+        "afrodite:5744eff20ca7832b5c745abb"
+      ],
+      "texto": "Para fazer bolinho de bacalhau, você pode seguir a receita do Bolinho de Bacalhau Mais Você [1] ou a Receita: Bolinho de bacalhau [2]. Ambas usam batata, bacalhau, gemas, azeite e temperos. A receita do Mais Você sugere fazer bolinhos em formato de croquete, enquanto a Receita: Bolinho de bacalhau sugere fazer bolinhas menores.\n\nIngredientes que faltam:\n- Bolinho de Bacalhau Mais Você [1]: nenhum\n- Bolinho de bacalhau [2]: nenhum"
+    },
+    {
+      "id": "r04",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.5485438030000296,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b27"
+      ],
+      "texto": "Você pode fazer um Arroz de Forno com o arroz que sobrou, tomate e queijo [1]. Neste modo de preparo, o arroz é refogado com tomates e alho, depois adicionados ovos mexidos, azeitonas e queijo parmesão, e assado no forno.\n\nIngredientes que faltam:\n- Arroz de forno [1]: 1 dente de alho amassado, 2 colheres (sopa) de manteiga, 4 ovos mexidos feitos no azeite, 6 azeitonas verdes sem caroço picadas, 6 azeitonas pretas sem caroço picadas, 3 colheres (sopa) de cebolinha verde picada, salsinha picadinha a gosto, 2 cenouras cortadas em cubos médios e cozidas al dente, 1 pacote de batata palha (140g), 500g de carne cozida e desfiada (acém ou pá)"
+    },
+    {
+      "id": "r05",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 7.75427117199979,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745aae",
+        "taco-2011"
+      ],
+      "texto": "Para preparar a feijoada, comece colocando 3 kg de feijão preto em 6 litros de água fria e deixando de remolho por 12 horas [2]. Depois, cozinhe o feijão em fogo médio em panela destampada por aproximadamente 2 horas ou até que o grão esteja macio, mas sem romper a casca [2]. Em seguida, pesar 300g de orelha de porco em pedaços, 300g de rabo de porco picado em pedaços de aproximadamente 10 cm, 300g de pé de porco, 300g de costelinha de porco salgada cortada seguindo as ripas, 150g de lombo de porco em pedaços de aproximadamente 10 cm, 300g de paio fatiado em rodelas, 450g de lingüiça portuguesa fatiada em rodelas, 100g de carne seca em pedaços de aproximadamente 10 cm [1]. Coloque as carnes em água e deixe de molho na geladeira, para dessalgar, por 12 horas, trocando a água a cada 3 horas [1]. Depois, cozinhe as carnes em fogo médio em panela destampada por aproximadamente 20 minutos [1]. Finalmente, refogue bacon picado, alho e couve, e prepare a farofa com alho, farinha de mandioca e margarina [1].\n\nIngredientes que faltam:\n- Feijoada a la Vidigal [1]: 500g de lombo, 2 paios em rodelas, 500g de costela, 1Kg de farinha de mandioca, 2 colheres (sopa) de margarina, 300g de bacon picado, 1 maço de couve cortada em tiras bem fininhas, 1 Kg de arroz branco, 1 laranja descascada e separada em gomos, 3 cabeças de alho descascadas e picadas, (divida esta quantidade em 3 partes para usar na feijoada, no arroz e na farofa)"
+    },
+    {
+      "id": "r06",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.03594981300011568,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "r07",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 4.730970558000081,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b2f"
+      ],
+      "texto": "Para fazer um omelete assado no forno com muitos ovos, você pode seguir a receita de omelete de forno [1]. Nela, são usados 10 ovos, leite, sal e pimenta-do-reino a gosto. Você pode escolher os recheios que preferir, como tomate, cheiro verde, azeitona, peito de peru, queijo minas e parmesão, presunto, salame, bacon e milho. Misture tudo em uma tigela, leve a forma ao forno pré-aquecido a 200°C por 13 a 20 minutos, dependendo do quanto você gosta que a omelete esteja cozida. Retire do forno, desenforme e sirva em seguida.\n\nIngredientes que faltam:\n- Omelete de forno [1]: ½ xícara (chá) de leite, Recheio a gosto, tomate sem semente picadinho, cheiro verde picadinho, azeitona verde picadinha, peito de peru picadinho, blanquet picadinho, queijo minas padrão ralado, queijo parmesão ralado, presunto picadinho, presunto parma picadinho, salame picadinho, bacon picadinho e frito, linguiça calabresa ralada e frita, milho, ervilha"
+    },
+    {
+      "id": "r08",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 4.030918778999876,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b03"
+      ],
+      "texto": "Para fazer pastel de carne, misture 1 lata de creme de leite com soro, 2 ¼ xícaras (chá) de farinha de trigo e sal a gosto até formar uma massa homogênea. Abra a massa, corte em discos, preencha com recheio e frite até dourar [1].\n\nIngredientes que faltam:\n- Pastel de carne [1]: nenhum"
+    },
+    {
+      "id": "e01",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 4.511253210000177,
+      "documentos_citados": [
+        "recipenlg:370774",
+        "recipenlg:145534"
+      ],
+      "texto": "Para fazer o pão de banana, você pode seguir a receita do Banana Bread tradicional [1] ou do Banana Bread para diabéticos [2]. Ambas contêm bananas amassadas, mas variam em outros ingredientes e procedimentos. Aqui está uma versão simplificada baseada na receita [1]: derreta a manteiga e misture com o açúcar; adicione o ovo e bata bem. Adicione as bananas amassadas. Misture a farinha e bata bem. Adicione as nozes (opcional). Forre um molde para pão com manteiga e farinha. Vá colocando a massa e leve ao forno pré-aquecido a 350°F por cerca de 1 hora.\n\nIngredientes que faltam:\n- Banana Bread [1]: sugar, egg, flour, butter, soda, nuts\n- Banana Bread(Diabetic) [2]: flour, baking soda, fructose, eggs, buttermilk, vanilla extract"
+    },
+    {
+      "id": "e02",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 2.8387358230002064,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745afb"
+      ],
+      "texto": "Aqui está uma receita de frango assado com limão, baseada no Frango Assado ao Leite [1]: Tempere o frango com alho, pimenta-do-reino e sálvia. Deixe marinar na geladeira por um dia. Retire o frango da marinada, seque e amarre. Regue com azeite e assar em forno a 220°C por 1 hora e 20 minutos. Sirva com arroz.\n\nIngredientes que faltam:\n- Frango Assado ao Leite [1]: - 6 dentes de alho levemente amassados, - 20 pimentas-do-reino em grãos levemente amassadas, - ½ maço de sálvia, - 1 litro de leite"
+    },
+    {
+      "id": "e03",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 4.406029366000439,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745a83"
+      ],
+      "texto": "Para fazer biscoitos de pasta de amendoim, você pode seguir a receita do Cookie de Amendoim [1]. Misture 70g de cacau em pó, 350g de açúcar de confeiteiro e 300g de amendoim torrado e picado grosseiramente. Adicione três claras em temperatura ambiente e essência de baunilha a gosto. Boleie a massa e asse em forno pré-aquecido a 160°C por 20 minutos.\n\nIngredientes que faltam:\n- Cookie de Amendoim [1]: 70g de cacau em pó (1 xícara de chá), 350g de açúcar de confeiteiro (2 ½ xícaras de chá), 300g de amendoim torrado e picado grosseiramente (2 1/3 xícaras de chá), 3 claras em temperatura ambiente, Essência de baunilha a gosto"
+    },
+    {
+      "id": "e04",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 2.8984706889996232,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c74666b"
+      ],
+      "texto": "Você pode fazer uma sopa com berinjela e leite seguindo a receita de Sopa de Baixas Calorias [1]. Cozinhe a berinjela com outros legumes e adicione o leite no final para dar um toque cremoso.\n\nIngredientes que faltam:\n- Sopa de Baixas Calorias [1]: nenhum"
+    },
+    {
+      "id": "e05",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 5.510355832000641,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745e8f"
+      ],
+      "texto": "Para fazer um ensopado de carne de boi, você pode seguir a receita de Rabada assada [1]. Coloque 2 rabos de boi (aproximadamente 1 kg cada) em uma assadeira, tempere com 2 cebolas picadinhas, 5 dentes de alho amassados, 2 xícaras (chá) de vinho tinto, sal e pimenta do reino a gosto. Deixe marinando na geladeira de um dia para o outro. Leve ao forno médio pré-aquecido a 180°C por 3h, coberta com papel alumínio, mantendo bem fechado. Após 3h, vire os rabos, cubra novamente com papel alumínio e volte ao forno por aproximadamente 1h ou até a carne estar bem macia. Retire do forno e sirva em seguida sobre 1 maço de agrião.\n\nIngredientes que faltam:\n- Rabada assada [1]: 2 rabos de boi (+/- 1 kg cada um), 2 cebolas picadinhas, 2 xícaras (chá) de vinho tinto, 1 maço de agrião"
+    },
+    {
+      "id": "g01",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 4.18313155999931,
+      "documentos_citados": [
+        "ms-guia-criancas-2019",
+        "raca-ultraprocessados-2022",
+        "ms-protocolo-guia-adultos-2021"
+      ],
+      "texto": "Alimentos ultraprocessados são aqueles que são desenhados industrialmente para ter longa vida de prateleira e serem consumidos em grande quantidade, frequentemente usando ingredientes de baixo custo e aditivos que dão sabor, cheiro, consistência e cor. Eles são pobres em nutrientes essenciais e frequentemente ricos em sódio, gorduras saturadas e açúcares, o que pode levar a problemas de saúde como hipertensão, doenças do coração, diabetes, obesidade, cárie dentária e câncer [2]. Devido a esses riscos, é recomendado que você evite esses alimentos [1, 3, 4, 5]."
+    },
+    {
+      "id": "g02",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.7199454689998674,
+      "documentos_citados": [
+        "guia-alimentar"
+      ],
+      "texto": "Sim, você pode usar sal, óleo e açúcar na comida, mas em pequenas quantidades [1, 2, 4]. Esses produtos ajudam a diversificar e tornar a alimentação mais saborosa, desde que utilizados com moderação em preparações culinárias com base em alimentos in natura ou minimamente processados."
+    },
+    {
+      "id": "g03",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 3.1780989250000857,
+      "documentos_citados": [
+        "raca-consumo-pandemia-2024",
+        "ms-protocolo-guia-adultos-2021",
+        "guia-alimentar"
+      ],
+      "texto": "Comer sozinho, rápido ou na frente da televisão pode afetar a quantidade de alimentos ingeridos e o prazer da refeição. É recomendável comer em ambientes apropriados e com atenção, evitando estímulos que podem levar a comer demais. Comer em companhia ajuda a evitar que se coma rapidamente e em grandes quantidades [2, 3, 4, 5]."
+    },
+    {
+      "id": "g04",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 4.233071440999993,
+      "documentos_citados": [
+        "guia-alimentar"
+      ],
+      "texto": "Planeje as compras de alimentos, organize a despensa doméstica e defina com antecedência o cardápio da semana. Divida com os membros de sua família a responsabilidade por todas as atividades domésticas relacionadas ao preparo de refeições. Faça da preparação de refeições e do ato de comer momentos privilegiados de convivência e prazer [1]. Para reduzir o tempo dedicado à aquisição de alimentos e ao preparo de refeições, planeje as compras, organize a despensa, defina com antecedência o cardápio da semana, aumente o seu domínio de técnicas culinárias e faça com que todos os membros de sua família compartilhem da responsabilidade pelas atividades domésticas relacionadas à alimentação [2]."
+    },
+    {
+      "id": "c01",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 1.9550808969997888,
+      "documentos_citados": [
+        "embrapa-geladeira"
+      ],
+      "texto": "Hortaliças como brócolis e morango deterioram-se rapidamente mesmo em geladeira, então não devem ser guardadas nela [1]."
+    },
+    {
+      "id": "c02",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.2234426089999033,
+      "documentos_citados": [
+        "embrapa-congelador"
+      ],
+      "texto": "Sim, você pode congelar hortaliças. Antes de congelar, lave-as, remova as partes danificadas e separe a quantidade que pretende usar naquele momento. Congele o resto em embalagens próprias para congelamento, fazendo porções que possam ser consumidas uma única vez. Após descongelado, o alimento deve ser consumido em até dois dias [1, 3]."
+    },
+    {
+      "id": "c03",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.807957410000199,
+      "documentos_citados": [
+        "ms-na-cozinha-flv",
+        "ms-guia-criancas-2019",
+        "embrapa-recomendacoes-compras"
+      ],
+      "texto": "Para higienizar frutas e verduras, é importante seguir esses passos: 1. Retirar as partes estragadas e machucadas; 2. Lavar em água corrente; 3. Deixar de molho em solução de hipoclorito de sódio (1 colher de sopa do produto para 1 litro de água) por 10 minutos [1, 3, 5]."
+    },
+    {
+      "id": "c04",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 2.303317019000133,
+      "documentos_citados": [
+        "embrapa-geladeira"
+      ],
+      "texto": "Ao comprar frutas e hortaliças, é importante considerar a qualidade dos produtos durante a colheita e após a compra. Além disso, planeje suas compras com mais frequência para adquirir produtos frescos e use a geladeira para armazenar hortaliças por até uma semana [1]."
+    },
+    {
+      "id": "s01",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.04359639199992671,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s02",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.04247783299979346,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s03",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.03236635200028104,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s04",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.029502350000257138,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "g05",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.4057745159998376,
+      "documentos_citados": [
+        "guia-alimentar"
+      ],
+      "texto": "Para comer melhor, é recomendado fazer compras em locais que ofertem variedades de alimentos in natura ou minimamente processados, como mercados, feiras livres e feiras de produtores [1]. Esses locais oferecem alimentos mais saudáveis e frescos, contribuindo para uma alimentação mais equilibrada."
+    },
+    {
+      "id": "g06",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 1.9514554630004568,
+      "documentos_citados": [
+        "guia-alimentar",
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "Para aprender a cozinhar, é importante desenvolver e compartilhar habilidades culinárias, principalmente com crianças e jovens [1]. Além disso, é necessário dividir as tarefas da cozinha com os outros membros da família [2]."
+    },
+    {
+      "id": "c05",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 1.633281659000204,
+      "documentos_citados": [
+        "ms-na-cozinha-flv"
+      ],
+      "texto": "A alface pode ser mantida na geladeira por até 5 dias, conforme mencionado no trecho [1]."
+    },
+    {
+      "id": "c06",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.390578985000502,
+      "documentos_citados": [
+        "ms-na-cozinha-flv",
+        "guia-alimentar"
+      ],
+      "texto": "Para a salsinha, você pode congelá-la já picada [3]. Para a cebolinha, pode ser congelada também [1]. Ambas as ervas devem ser mantidas sob refrigeração até o momento de servir [2] e podem ser congeladas para durarem mais [1][3]."
+    },
+    {
+      "id": "n01",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.7687350900005185,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "n02",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 1.018791582000631,
+      "documentos_citados": [
+        "taco-2011"
+      ],
+      "texto": "Um ovo de galinha inteiro, cozido por 10 minutos, contém 2,9 gramas de proteína [1]."
+    },
+    {
+      "id": "n03",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.266752247999648,
+      "documentos_citados": [
+        "taco-2011"
+      ],
+      "texto": "De acordo com a Tabela Brasileira de Composição de Alimentos (TACO), o feijão carioca cozido contém 62,92 gramas de fibra por 100 gramas [1]."
+    },
+    {
+      "id": "n04",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.03458119100014301,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "n05",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.02996297699974093,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "i01",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 0.9344845149998946,
+      "documentos_citados": [
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "O bebê pode começar a comer outros alimentos além do leite materno a partir dos 6 meses [1]."
+    },
+    {
+      "id": "i02",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 1.4843627960008234,
+      "documentos_citados": [
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "Não é recomendado dar açúcar para uma criança menor de 2 anos, pois isso pode causar danos à saúde, como cáries, obesidade e dificuldade de aceitação de alimentos saudáveis [1, 3]."
+    },
+    {
+      "id": "i03",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 1.541511532000186,
+      "documentos_citados": [
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "De acordo com o Guia Alimentar para Crianças Brasileiras Menores de 2 Anos, não se recomenda o uso de liquidificador para preparar a comida da criança, pois isso pode dificultar a aceitação de alimentos mais sólidos no futuro [1]."
+    },
+    {
+      "id": "i04",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.9106315139997605,
+      "documentos_citados": [
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "Para guardar o leite materno, coloque-o no congelador ou freezer (até 15 dias) ou na prateleira mais próxima ao congelador da geladeira (até 12 horas) [2]. Tampar bem o frasco e anotar a data da retirada [2]. Para descongelar, use banho-maria com o fogo apagado e consuma em até 12 horas após o descongelamento [1]."
+    },
+    {
+      "id": "i05",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.494086470000184,
+      "documentos_citados": [
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "As papinhas industrializadas não devem fazer parte da alimentação das crianças por vários motivos: não favorecem o desenvolvimento da mastigação, misturam diferentes alimentos no mesmo potinho o que dificulta a percepção dos diferentes sabores, não favorecem a criança a se acostumar com o tempero da comida da família e com os alimentos da sua região, e as vitaminas e minerais dos alimentos in natura são mais bem aproveitados pelo organismo do que as vitaminas e minerais adicionados nessas papinhas [1]."
+    },
+    {
+      "id": "d01",
+      "categoria": "desperdicio",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.5298413640002764,
+      "documentos_citados": [
+        "cadsc-campanha-desperdicio-2022"
+      ],
+      "texto": "Sim, uma campanha de conscientização ajuda a reduzir o desperdício de comida. Após a campanha, houve uma redução significativa do desperdício de alimentos, com a média per capita caindo de 60,0 ± 14,9 para 39,3 ± 13,4. Além disso, houve uma diminuição do custo financeiro médio em torno de 34,6% [1, 2, 4, 5]."
+    },
+    {
+      "id": "d02",
+      "categoria": "desperdicio",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 1.3626695270004348,
+      "documentos_citados": [
+        "cadsc-campanha-desperdicio-2022"
+      ],
+      "texto": "O resto-ingestão é a quantidade de alimentos que os consumidores deixam no prato e não consomem. Para medir o desperdício, é necessário pesar os restos alimentares após as refeições [1]."
+    },
+    {
+      "id": "d03",
+      "categoria": "desperdicio",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.540226182999504,
+      "documentos_citados": [
+        "ms-na-cozinha-flv"
+      ],
+      "texto": "As cascas e talos de legumes podem ser aproveitados para fazer pratos saborosos e saudáveis [1]. Por exemplo, a casca de couve-flor pode ser refogada e usada em bolinhos [1]. Além disso, essas partes concentram vitaminas, minerais e fibras importantes para a saúde [1]."
+    },
+    {
+      "id": "d04",
+      "categoria": "desperdicio",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.8878369200001544,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "h01",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 2.078203625000242,
+      "documentos_citados": [
+        "bjft-higiene-servicos-2012",
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "A comida refrigerada deve ser mantida a uma temperatura de, no mínimo, 70 °C para garantir a segurança alimentar, conforme o Guia Alimentar para Crianças Brasileiras Menores de 2 Anos [1]. Para conservação a longo prazo, os alimentos devem ser armazenados em geladeira, preferencialmente no congelador, onde a temperatura é ainda mais baixa [2]."
+    },
+    {
+      "id": "h02",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 1.0783629879997534,
+      "documentos_citados": [
+        "bjft-higiene-servicos-2012"
+      ],
+      "texto": "O centro do hambúrguer precisa atingir uma temperatura mínima de 70 °C para ser considerado seguro [1]."
+    },
+    {
+      "id": "h03",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 3.1497328280001966,
+      "documentos_citados": [
+        "ms-guia-criancas-2019",
+        "raca-praticas-higiene-2019",
+        "bjft-higiene-servicos-2012",
+        "guia-alimentar"
+      ],
+      "texto": "Um serviço de alimentação deve seguir boas práticas de higiene, como lavar bem as mãos e antebraços antes de preparar alimentos [1]. É importante limpar todos os utensílios e superfícies que entrarão em contato com os alimentos, usando água limpa e mantendo buchas ou esponjas de louça em local seco, trocando-as uma vez por semana [4]. Além disso, o serviço deve garantir a segurança do alimento através do controle rigoroso do 'binômio tempo-temperatura' e da vigilância dos corpos dos trabalhadores [2]. O descongelamento deve ser feito de forma a evitar contaminação cruzada [3]."
+    },
+    {
+      "id": "h04",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.813580679999177,
+      "documentos_citados": [
+        "bjft-percepcao-riscos-2013"
+      ],
+      "texto": "A rastreabilidade dos alimentos é a capacidade de identificar e trazer à luz a origem e o histórico de um produto ao longo de toda a cadeia produtiva, desde a produção até o consumo. Isso ajuda a garantir a segurança dos alimentos e aumenta a confiança do consumidor, pois mostra que há um controle sobre todas as etapas da cadeia [1][2]."
+    },
+    {
+      "id": "h05",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 1.6022559040002307,
+      "documentos_citados": [
+        "bjft-percepcao-riscos-2013"
+      ],
+      "texto": "A Salmonella é uma bactéria que representa um risco microbiológico para a segurança dos alimentos, conforme mencionado no trecho [1]: 'Em termos microbiológicos, ambas as praças destacaram os riscos com bactérias, especialmente a Salmonella'."
+    },
+    {
+      "id": "u01",
+      "categoria": "orientacao_nutricional",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.7613042339999083,
+      "documentos_citados": [
+        "raca-ultraprocessados-2022",
+        "guia-alimentar"
+      ],
+      "texto": "Alimentos ultraprocessados podem levar a impactos negativos na saúde, como obesidade, doenças cardiovasculares, diabetes e até depressão e demência [1][2]. Eles também podem contribuir para a degradação do ambiente e a redução da biodiversidade [3]. A cultura alimentar é importante para resistir a essa invasão, mas precisa ser preservada e fortalecida [1][2]."
+    },
+    {
+      "id": "u02",
+      "categoria": "orientacao_nutricional",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.796039521000239,
+      "documentos_citados": [
+        "ms-protocolo-guia-adultos-2021"
+      ],
+      "texto": "O profissional de saúde deve usar o Guia Alimentar para a População Brasileira em cada encontro com o usuário, identificando os marcadores de alimentação saudável e não-saudável e fazendo orientações alimentares conforme os pontos críticos são identificados. Pode optar por fazer recomendações prioritárias na primeira consulta e seguir com as demais orientações nas próximas consultas [1]."
+    },
+    {
+      "id": "p01",
+      "categoria": "comportamento_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 3.4395277240000723,
+      "documentos_citados": [
+        "raca-comensalidade-pandemia-2024",
+        "raca-consumo-pandemia-2024"
+      ],
+      "texto": "A pandemia de Covid-19 trouxe mudanças significativas na alimentação das famílias. Houve um aumento no interesse pelo preparo de alimentos em casa, em detrimento dos ultraprocessados [1]. No entanto, a classe média também foi afetada, com pessoas optando por alimentos de melhor qualidade quando possível [2]. Além disso, houve um aumento no consumo de produtos industrializados e no uso de aplicativos de entrega, especialmente entre as classes menos favorecidas [3]. As dificuldades financeiras também contribuíram para essas mudanças [4]."
+    },
+    {
+      "id": "p02",
+      "categoria": "comportamento_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.0078460479999194,
+      "documentos_citados": [
+        "raca-comensalidade-pandemia-2024"
+      ],
+      "texto": "A comensalidade é o ato de compartilhar a mesa ou a refeição com outro, ou seja, é o alimentar-se em conjunto, um momento de interação entre duas ou mais pessoas em uma situação cotidiana ou festiva [2, 3]."
+    },
+    {
+      "id": "p03",
+      "categoria": "comportamento_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 3.011560853999981,
+      "documentos_citados": [
+        "raca-ambiente-escolar-2023"
+      ],
+      "texto": "A escola pode influenciar o que a criança come em casa, mas essa influência é limitada. As escolas podem oferecer refeições, mas muitas vezes as famílias dependem delas, especialmente se a alimentação em casa é limitada ou inadequada [2]. Além disso, a escola pode proporcionar experiências com alimentos diferentes, mas a mudança de hábitos alimentares pode ser difícil sem a cooperação da família [1, 5]."
+    },
+    {
+      "id": "b01",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 5.978769968999586,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b08"
+      ],
+      "texto": "Para fazer o bolo de cenoura no microondas, bata 2 ovos, ½ xícara (chá) de óleo, 250g de cenouras médias sem casca e cortadas em rodelas, até formar uma mistura homogênea. Em uma tigela, misture 1 xícara (chá) de farinha de trigo, 1 xícara (chá) de açúcar, ½ colher (sopa) de fermento em pó, a mistura do liquidificador e forme uma massa. Coloque a massa em uma forma para micro-ondas untada com manteiga e leve ao micro-ondas por 8 minutos na potência máxima, abrindo o forno por alguns segundos de 2 em 2 minutos para que a massa não derrame. Retire do micro-ondas e deixe esfriar. Para a calda, misture 6 colheres (sopa) de chocolate em pó, 400 ml de leite, 1 colher (sopa) de manteiga, 4 colheres (sopa) de açúcar e 2 colheres (sopa) de amido de milho, leve ao micro-ondas por 2,5 minutos e sirva em seguida sobre o bolo [1].\n\nIngredientes que faltam:\n- Bolo de Cenoura de Micro-ondas [1]: Calda, - 6 colheres (sopa) de chocolate em pó- 400 ml de leite- 1 colher (sopa) de manteiga- 4 colheres (sopa) de açúcar- 2 colheres (sopa) de amido de milho"
+    },
+    {
+      "id": "b02",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.0553842389999772,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745a91",
+        "afrodite:5744eff20ca7832b5c7466d5",
+        "afrodite:5744eff20ca7832b5c745acb"
+      ],
+      "texto": "Com couve-flor você pode fazer Creme de couve-flor [1], Sopa Creme de Couve-flor [2] e Arroz de couve-flor, Bolinho de Arroz de couve-flor e Pão de couve-flor [3].\n\nIngredientes que faltam:\n- Creme de couve flor [1]: nenhum\n- Sopa Creme de Couve-flor [2]: nenhum\n- Aprenda a fazer 3 receitas surpreendentes com couve-flor [3]: nenhum"
+    },
+    {
+      "id": "b03",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 1.751196374000756,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "b04",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 2.3793051880002167,
+      "documentos_citados": [
+        "raca-ultraprocessados-2022",
+        "guia-alimentar"
+      ],
+      "texto": "Alimentos ultraprocessados podem fazer mal devido à sua composição nutricionalmente desbalanceada, sendo ricos em nutrientes críticos associados a doenças crônicas não-transmissíveis, como sódio, gorduras saturadas e açúcares. Além disso, sua produção e consumo podem afetar a cultura, a vida social e o meio ambiente, promovendo o consumo excessivo e a substituição de alimentos mais saudáveis [1, 3, 5]."
+    },
+    {
+      "id": "b05",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 1.8453422169995974,
+      "documentos_citados": [
+        "embrapa-congelador"
+      ],
+      "texto": "Sim, é possível congelar legumes. Segundo o trecho [1], quase todas as hortaliças podem ser congeladas, com exceção de algumas folhosas consumidas cruas, como alface e rúcula. O congelamento pode estender a durabilidade das hortaliças sem grandes perdas de valor nutritivo e sabor [1]."
+    },
+    {
+      "id": "s05",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.03555628600042837,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s06",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.03521350899973186,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s07",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.6337763760002417,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s08",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.03385793199959153,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s09",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.03287542199996096,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s10",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.03277375299967389,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "$01",
+      "categoria": "preco",
+      "esperado": "aviso_de_preco",
+      "obtido": "aviso_de_preco",
+      "fonte_esperada": null,
+      "segundos": 9.280000085709617e-06,
+      "documentos_citados": [],
+      "texto": "Preços atuais não vêm da base de conhecimento de receitas e alimentação. Para saber quanto um produto custa hoje, consulte os preços cadastrados dos mercados."
+    },
+    {
+      "id": "$02",
+      "categoria": "preco",
+      "esperado": "aviso_de_preco",
+      "obtido": "aviso_de_preco",
+      "fonte_esperada": null,
+      "segundos": 9.240000508725643e-06,
+      "documentos_citados": [],
+      "texto": "Preços atuais não vêm da base de conhecimento de receitas e alimentação. Para saber quanto um produto custa hoje, consulte os preços cadastrados dos mercados."
+    },
+    {
+      "id": "$03",
+      "categoria": "preco",
+      "esperado": "aviso_de_preco",
+      "obtido": "aviso_de_preco",
+      "fonte_esperada": null,
+      "segundos": 6.270000085351057e-06,
+      "documentos_citados": [],
+      "texto": "Preços atuais não vêm da base de conhecimento de receitas e alimentação. Para saber quanto um produto custa hoje, consulte os preços cadastrados dos mercados."
+    }
+  ]
+}
