@@ -353,13 +353,15 @@ Também é um **app instalável** (PWA): o [`manifest.webmanifest`](../../fronte
 
 ## 12. Acessibilidade e desempenho
 
-**Acessibilidade**
+### 12.1 Acessibilidade
+
 - Respeita **`prefers-reduced-motion`**: se a pessoa pediu menos movimento no sistema, as animações, o 3D e os gatos vivos param.
 - Navegação com `role="tablist"`, `aria-selected` e `aria-label` nos botões de ícone, para leitor de tela.
 - Gatos decorativos com `aria-hidden`; gatos com significado com `role="img"` e descrição.
 - Página em `lang="pt-BR"`.
 
-**Desempenho**
+### 12.2 Desempenho
+
 - Three.js baixado **só quando precisa** (importação dinâmica).
 - Imagens em **WebP** e fotos com carregamento preguiçoso (`loading="lazy"`).
 - Só os gatos visíveis são desenhados.
