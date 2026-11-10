@@ -16,6 +16,7 @@ class ModeloOllama:
         contexto: int = 8192,
         tempo_limite: float = 1800,
         cliente: Any = None,
+        semente: int | None = None,
     ):
         if cliente is None:
             import ollama
@@ -26,6 +27,10 @@ class ModeloOllama:
         # o padrão do Ollama é 4096 tokens; cinco receitas longas mais as instruções passam
         # disso, e o Ollama corta o começo do prompt sem avisar
         self._opcoes = {"temperature": temperatura, "num_ctx": contexto}
+        if semente is not None:
+            # com temperatura 0 e semente fixa, a mesma pergunta gera a mesma resposta,
+            # o que permite comparar duas execuções da avaliação
+            self._opcoes["seed"] = semente
 
     def _conversar(self, sistema: str, mensagem: str, formato: Any = None) -> str:
         resposta = self._cliente.chat(

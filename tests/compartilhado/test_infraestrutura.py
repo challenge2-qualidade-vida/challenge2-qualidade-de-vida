@@ -54,3 +54,14 @@ def test_tempo_limite_vai_para_o_cliente_do_ollama(monkeypatch):
     monkeypatch.setattr(ollama, "Client", lambda **kwargs: criados.append(kwargs))
     ModeloOllama(url="http://ollama:11434", tempo_limite=42)
     assert criados == [{"host": "http://ollama:11434", "timeout": 42}]
+
+
+def test_semente_fixa_vai_nas_opcoes():
+    cliente = ClienteFalso("ok")
+    llm = ModeloOllama(temperatura=0.0, semente=42, cliente=cliente)
+    llm.gerar("instruções", "pergunta")
+    assert cliente.chamadas[0]["options"] == {
+        "temperature": 0.0,
+        "num_ctx": 8192,
+        "seed": 42,
+    }

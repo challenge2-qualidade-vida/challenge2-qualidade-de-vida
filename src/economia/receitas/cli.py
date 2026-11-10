@@ -154,7 +154,16 @@ def comando_indexar(args: argparse.Namespace) -> None:
         )
 
 
-def criar_responder(configuracao: Configuracao, amostra: int | None = None):
+# A avaliação das respostas usa o LLM sem aleatoriedade, para que duas execuções sejam comparáveis.
+TEMPERATURA_DA_AVALIACAO = 0.0
+SEMENTE_DA_AVALIACAO = 42
+
+
+def criar_responder(
+    configuracao: Configuracao,
+    amostra: int | None = None,
+    deterministico: bool = False,
+):
     from economia.compartilhado.infraestrutura.llm_ollama import ModeloOllama
     from economia.compartilhado.infraestrutura.prompts import carregar_prompt
     from economia.receitas.aplicacao.responder_pergunta import ResponderPergunta
@@ -167,6 +176,14 @@ def criar_responder(configuracao: Configuracao, amostra: int | None = None):
             modelo=configuracao.ollama_modelo,
             contexto=configuracao.ollama_contexto,
             tempo_limite=configuracao.ollama_tempo_limite,
+            **(
+                {
+                    "temperatura": TEMPERATURA_DA_AVALIACAO,
+                    "semente": SEMENTE_DA_AVALIACAO,
+                }
+                if deterministico
+                else {}
+            ),
         ),
         prompt_do_sistema=carregar_prompt("miau-ricio", "resposta_com_fontes_v1"),
         limiar=configuracao.limiar_similaridade,
@@ -320,7 +337,7 @@ def comando_avaliar_respostas(args: argparse.Namespace) -> None:
         perguntas = [p for p in perguntas if p.categoria in args.categorias]
     if args.limite:
         perguntas = perguntas[: args.limite]
-    caso = criar_responder(configuracao, args.amostra)
+    caso = criar_responder(configuracao, args.amostra, deterministico=True)
     colecao = configuracao.colecao_da_amostra(args.amostra)
 
     def progresso(n, total, r) -> None:
@@ -341,6 +358,8 @@ def comando_avaliar_respostas(args: argparse.Namespace) -> None:
         "modelo_embeddings": configuracao.modelo_embeddings,
         "modelo_llm": configuracao.ollama_modelo,
         "limiar": configuracao.limiar_similaridade,
+        "temperatura": TEMPERATURA_DA_AVALIACAO,
+        "semente": SEMENTE_DA_AVALIACAO,
         **asdict(resumo),
     }
 
