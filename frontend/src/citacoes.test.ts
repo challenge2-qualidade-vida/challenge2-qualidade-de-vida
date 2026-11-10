@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { paragrafos, separarCitacoes } from "./citacoes";
+import { paragrafos, separarCitacoes, separarNegrito } from "./citacoes";
 
 describe("separarCitacoes", () => {
   it("separa o texto e as citações que têm fonte", () => {
@@ -37,5 +37,19 @@ describe("paragrafos", () => {
       "Primeiro.",
       "Segundo\ncom quebra.",
     ]);
+  });
+});
+
+describe("separarNegrito", () => {
+  it("tira os asteriscos e marca o negrito", () => {
+    expect(separarNegrito("- **Feijoada**: use o feijão")).toEqual([
+      { valor: "- ", negrito: false },
+      { valor: "Feijoada", negrito: true },
+      { valor: ": use o feijão", negrito: false },
+    ]);
+  });
+
+  it("deixa o texto sem negrito como está", () => {
+    expect(separarNegrito("Guarde na geladeira.")).toEqual([{ valor: "Guarde na geladeira.", negrito: false }]);
   });
 });

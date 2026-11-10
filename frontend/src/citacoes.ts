@@ -31,3 +31,19 @@ export function paragrafos(texto: string): string[] {
     .map((p) => p.trim())
     .filter((p) => p && !p.startsWith("Ingredientes que faltam:"));
 }
+
+export type Trecho = { valor: string; negrito: boolean };
+
+/** Separa o negrito em Markdown (**texto**), que o LLM às vezes usa, para a tela mostrar sem asteriscos. */
+export function separarNegrito(texto: string): Trecho[] {
+  const partes: Trecho[] = [];
+  let inicio = 0;
+  for (const encontrado of texto.matchAll(/\*\*(.+?)\*\*/g)) {
+    const posicao = encontrado.index ?? 0;
+    if (posicao > inicio) partes.push({ valor: texto.slice(inicio, posicao), negrito: false });
+    partes.push({ valor: encontrado[1], negrito: true });
+    inicio = posicao + encontrado[0].length;
+  }
+  if (inicio < texto.length) partes.push({ valor: texto.slice(inicio), negrito: false });
+  return partes;
+}

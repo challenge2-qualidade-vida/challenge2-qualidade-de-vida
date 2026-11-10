@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 
 import { ErroDaApi, MENSAGEM_FORA_DO_AR, perguntar, type Resposta, type TrechoDaBusca } from "./api";
-import { paragrafos, separarCitacoes } from "./citacoes";
+import { paragrafos, separarCitacoes, separarNegrito } from "./citacoes";
 import { decimal, ESCALA_MINIMA, larguraDaBarra, plural } from "./escala";
 
 const EXEMPLOS = [
@@ -167,7 +167,11 @@ function CartaoDeResposta({ resposta }: { resposta: Resposta }) {
           <p key={i}>
             {separarCitacoes(paragrafo, numeros).map((parte, j) =>
               parte.tipo === "texto" ? (
-                <span key={j}>{parte.valor}</span>
+                <span key={j}>
+                  {separarNegrito(parte.valor).map((pedaco, k) =>
+                    pedaco.negrito ? <strong key={k}>{pedaco.valor}</strong> : <span key={k}>{pedaco.valor}</span>,
+                  )}
+                </span>
               ) : (
                 <a key={j} className="citacao" href={`#fonte-${parte.numero}`}>
                   [{parte.numero}]
