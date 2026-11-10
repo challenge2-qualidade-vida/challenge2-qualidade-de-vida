@@ -223,7 +223,7 @@ function CartaoComTrechos({ resposta }: { resposta: Resposta }) {
         <PainelDeTrechos
           trechos={resposta.trechos_recuperados}
           limiar={resposta.limiar}
-          explicacao="Trechos que a busca entregou ao LLM, do mais parecido com a pergunta ao menos parecido."
+          explicacao="Trechos que a busca entregou ao LLM, na ordem em que ele os recebeu: pelo score e, entre receitas com score parecido, primeiro a que tem menos ingredientes faltando."
         />
       )}
     </>
