@@ -119,6 +119,7 @@ Proposta para a #31. O formato final de cada rota fica no OpenAPI.
 | `POST /api/v1/notas`, `GET /notas/{id}`, `POST /notas/{id}/revisao` | Nota fiscal e revisão |
 | `GET /api/v1/notificacoes`, `POST /notificacoes/{id}/lida` | Central de notificações |
 | `DELETE /api/v1/conta` | Exclusão da conta e de todos os dados (RN15, RN25) |
+| `POST /api/v1/receitas/perguntas` | Pergunta ao Miau-ricio (RAG): resposta com as fontes, sem passar pelo orquestrador. Implementada para a demonstração da semana 2 ([spec 24](../../specs/24-endpoint-rag/spec.md)) |
 | `GET /saude` | Rota de saúde |
 
 ## 6. Contratos dos agentes

@@ -1,0 +1,377 @@
+:root {
+  --fundo: #f6f4ef;
+  --cartao: #ffffff;
+  --texto: #1f2421;
+  --suave: #5f6b63;
+  --borda: #e3dfd6;
+  --primaria: #2f7d4f;
+  --primaria-escura: #23603c;
+  --primaria-clara: #e5f2ea;
+  --destaque: #c2611f;
+  --aviso: #fff6e5;
+  --aviso-borda: #f0d39b;
+  --erro: #fdecec;
+  --erro-borda: #f1b5b5;
+  --sombra: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.05);
+  color-scheme: light;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  color: var(--texto);
+  background: var(--fundo);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: #141816;
+    --cartao: #1d2320;
+    --texto: #e8ece9;
+    --suave: #a3aea7;
+    --borda: #2f3833;
+    --primaria: #5fbf86;
+    --primaria-escura: #7fd3a1;
+    --primaria-clara: #203a2b;
+    --destaque: #f0a36a;
+    --aviso: #2e2717;
+    --aviso-borda: #6b5527;
+    --erro: #351f1f;
+    --erro-borda: #7a3b3b;
+    --sombra: none;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--fundo);
+}
+
+.pagina {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 32px 16px 24px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cabecalho {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.avatar {
+  font-size: 40px;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: var(--primaria-clara);
+  flex-shrink: 0;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.cabecalho p {
+  margin: 2px 0 0;
+  color: var(--suave);
+}
+
+h2 {
+  font-size: 0.95rem;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--suave);
+}
+
+.formulario,
+.cartao {
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: var(--sombra);
+}
+
+.rotulo {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 84px;
+  padding: 12px;
+  font: inherit;
+  color: inherit;
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+}
+
+textarea:focus {
+  outline: 2px solid var(--primaria);
+  outline-offset: 1px;
+}
+
+.acoes {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  gap: 12px;
+}
+
+.contador {
+  font-size: 0.85rem;
+  color: var(--suave);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-weight: 600;
+  background: var(--primaria);
+  color: #fff;
+}
+
+button:hover:not(:disabled) {
+  background: var(--primaria-escura);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+button.secundario {
+  background: transparent;
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  margin-top: 8px;
+}
+
+.exemplos p {
+  margin: 0 0 8px;
+  color: var(--suave);
+}
+
+.exemplos ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  background: var(--cartao);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  font-weight: 500;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.chip:hover:not(:disabled) {
+  background: var(--primaria-clara);
+  border-color: var(--primaria);
+}
+
+.carregando {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.carregando p {
+  margin: 0;
+}
+
+.dica {
+  font-size: 0.85rem;
+  color: var(--suave);
+}
+
+.pontos {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.pontos span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--primaria);
+  animation: pulo 1s infinite ease-in-out;
+}
+
+.pontos span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.pontos span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes pulo {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+.aviso {
+  background: var(--aviso);
+  border-color: var(--aviso-borda);
+}
+
+.aviso p {
+  margin: 0;
+}
+
+.erro {
+  background: var(--erro);
+  border-color: var(--erro-borda);
+}
+
+.texto p {
+  margin: 0 0 12px;
+  white-space: pre-line;
+}
+
+.citacao {
+  font-size: 0.8em;
+  vertical-align: super;
+  color: var(--primaria);
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 1px;
+}
+
+.citacao:hover {
+  text-decoration: underline;
+}
+
+.faltando,
+.fontes {
+  border-top: 1px solid var(--borda);
+  padding-top: 14px;
+  margin-top: 6px;
+}
+
+.faltando ul {
+  margin: 0 0 8px;
+  padding-left: 20px;
+}
+
+.fontes ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fontes li {
+  display: flex;
+  gap: 10px;
+  scroll-margin-top: 16px;
+}
+
+.fontes li:target {
+  background: var(--primaria-clara);
+  border-radius: 8px;
+}
+
+.fontes .numero {
+  font-weight: 700;
+  color: var(--primaria);
+  min-width: 28px;
+}
+
+.fontes p {
+  margin: 4px 0;
+  font-size: 0.92rem;
+  overflow-wrap: anywhere;
+}
+
+.fontes a {
+  font-size: 0.88rem;
+  color: var(--primaria);
+}
+
+.selo {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--primaria-clara);
+  color: var(--primaria-escura);
+}
+
+.selo.receita {
+  background: color-mix(in srgb, var(--destaque) 18%, transparent);
+  color: var(--destaque);
+}
+
+.tempo {
+  margin: 12px 0 0;
+  font-size: 0.8rem;
+  color: var(--suave);
+  text-align: right;
+}
+
+.rodape {
+  font-size: 0.8rem;
+  color: var(--suave);
+  text-align: center;
+}
+
+@media (max-width: 520px) {
+  .pagina {
+    padding-top: 20px;
+  }
+  h1 {
+    font-size: 1.35rem;
+  }
+  .avatar {
+    width: 52px;
+    height: 52px;
+    font-size: 32px;
+  }
+}
