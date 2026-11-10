@@ -117,6 +117,27 @@ curl -fL -o data/raw/orientacao/embrapa_hortalica_nao_e_so_salada_congelador_202
   https://www.infoteca.cnptia.embrapa.br/infoteca/bitstream/doc/1129067/1/HDJF-02-Congelador-2020-08-17.pdf
 curl -fL -o data/raw/orientacao/embrapa_recomendacoes_compras_armazenamento_consumo_2020.pdf \
   "https://www.infoteca.cnptia.embrapa.br/infoteca/bitstream/doc/1122781/1/P-Recomendacoes-para-compras-armazenamento-e-consumo-....pdf"
+# Base ampliada para 20 fontes (#16)
+B=data/raw/orientacao
+curl -fL -o $B/ms_guia_alimentar_criancas_menores_2_anos_2019.pdf http://189.28.128.100/dab/docs/portaldab/publicacoes/guia_da_crianca_2019.pdf
+curl -fL -o $B/ms_protocolo_guia_alimentar_adultos_fasciculo1_2021.pdf https://bvsms.saude.gov.br/bvs/publicacoes/protocolos_guia_alimentar_fasciculo1.pdf
+curl -fL -o $B/opas_laboratorio_inovacao_flv_2022.pdf https://ninho.inca.gov.br/jspui/bitstream/123456789/13758/1/9789275725146_por.pdf
+curl -fL -o $B/ifc_food_safety_handbook_2020.pdf https://www.ifc.org/content/dam/ifc/doc/2020/food-safety-handbook-2020-edition-ifc-2023.pdf
+curl -fL -o $B/taco_4_edicao_2011.pdf https://nepa.unicamp.br/wp-content/uploads/sites/27/2023/10/taco_4_edicao_ampliada_e_revisada.pdf
+# SciELO (pode demorar; use --retry)
+curl -fL --retry 3 -o $B/bjft_percepcao_consumidor_riscos_rastreabilidade_2013.pdf "https://www.scielo.br/j/bjft/a/G6NXXPM79sRRX78HKm6xb8t/?format=pdf&lang=pt"
+curl -fL --retry 3 -o $B/bjft_diagnostico_higiene_servicos_alimentacao_2012.pdf "https://www.scielo.br/j/bjft/a/db7TDPqpcFvZdcWFH3YTwJG/?format=pdf&lang=pt"
+curl -fL --retry 3 -o $B/cadsc_campanha_reducao_desperdicio_2022.pdf "https://www.scielo.br/j/cadsc/a/yGYP7nfb9NKybvFDqfxdsJS/?format=pdf&lang=pt"
+# RACA (Fiocruz): o servidor não envia o certificado intermediário; monte a cadeia antes
+curl -fsSL http://secure.globalsign.com/cacert/rnpicpedugr46ovtlsca2025.crt | openssl x509 -inform DER -out /tmp/rnp.pem
+cat /etc/ssl/certs/ca-certificates.crt /tmp/rnp.pem > /tmp/cadeia-raca.pem
+for par in "raca_ultraprocessados_riscos_2022 145" "raca_consumo_alimentar_pandemia_2024 182" \
+           "raca_comensalidade_pandemia_2024 192" "raca_ambiente_escolar_praticas_alimentares_2023 154" \
+           "raca_praticas_higiene_servicos_alimentacao_2019 5"; do
+  set -- $par; base=https://raca.fiocruz.br/index.php/raca/article/view/$2
+  galeria=$(curl -fsSL --cacert /tmp/cadeia-raca.pem "$base" | grep -oE "$base/[0-9]+" | head -1)
+  curl -fL --cacert /tmp/cadeia-raca.pem -o $B/$1.pdf "${galeria/article\/view/article\/download}"
+done
 ```
 
 Fontes, licenças e motivo de cada uma: [data/base-conhecimento/FONTES.md](../../data/base-conhecimento/FONTES.md).

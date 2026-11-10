@@ -50,7 +50,10 @@ O LLM só **interpreta** a pergunta (quais ingredientes a pessoa tem) e **redige
 | Receitas brasileiras | afrodite.json | Português | Todas as receitas com ingredientes e modo de preparo (de 8.183 no arquivo) |
 | Receitas internacionais | RecipeNLG, amostra com semente fixa | Inglês | Cerca de 3.000 |
 | Alimentação saudável | Guia Alimentar para a População Brasileira (Ministério da Saúde, 2014) | Português | Documento inteiro, por seção |
-| Conservação e aproveitamento | De 2 a 5 textos de instituições públicas (Embrapa, Ministério da Saúde, FAO) | Português | A definir na curadoria |
+| Conservação e aproveitamento | "Na cozinha com as frutas, legumes e verduras" (MS e UFMG) e três materiais da Embrapa | Português | Documento inteiro, por página |
+| Base ampliada (#16) | Guia para menores de 2 anos, protocolo do Guia para adultos, TACO, manual de segurança dos alimentos da IFC e 9 artigos e publicações sobre desperdício, higiene, ultraprocessados e comportamento alimentar | Português e inglês (IFC) | 13 documentos, 1.805 trechos |
+
+Ao todo, a base tem **20 documentos-fonte** e 6.151 trechos. A escolha dos documentos novos e o efeito deles no RAG, medido antes e depois, estão em [avaliacao-rag.md](avaliacao-rag.md).
 
 Cada documento, com a instituição, o ano, o link e a licença, fica listado em `data/base-conhecimento/FONTES.md`.
 
