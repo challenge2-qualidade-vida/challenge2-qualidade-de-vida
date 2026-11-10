@@ -458,6 +458,7 @@ class DocumentoDeOrientacao:
 
 
 LICENCA_EMBRAPA = "CC BY-NC-ND 4.0 (Infoteca-e, Embrapa)"
+LICENCA_CC_BY = "CC BY 4.0"
 LICENCA_MS = (
     "CC BY-NC-SA 4.0. Reprodução parcial ou total permitida, desde que citada a fonte"
 )
@@ -519,6 +520,168 @@ DOCUMENTOS_DE_ORIENTACAO = (
             ano=2020,
             url="https://www.infoteca.cnptia.embrapa.br/infoteca/handle/doc/1122781",
             licenca=LICENCA_EMBRAPA,
+        ),
+    ),
+    # Base ampliada para 20 fontes (#16): documentos do catálogo da equipe, escolhidos pelo
+    # impacto nas perguntas do Miau-ricio (critérios em docs/semana-2/avaliacao-rag.md).
+    DocumentoDeOrientacao(
+        documento_id="ms-guia-criancas-2019",
+        arquivo="ms_guia_alimentar_criancas_menores_2_anos_2019.pdf",
+        titulo="Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+        fonte=Fonte(
+            titulo="Guia Alimentar para Crianças Brasileiras Menores de 2 Anos",
+            instituicao="Ministério da Saúde",
+            ano=2019,
+            url="http://189.28.128.100/dab/docs/portaldab/publicacoes/guia_da_crianca_2019.pdf",
+            licenca=LICENCA_MS,
+        ),
+    ),
+    DocumentoDeOrientacao(
+        documento_id="ms-protocolo-guia-adultos-2021",
+        arquivo="ms_protocolo_guia_alimentar_adultos_fasciculo1_2021.pdf",
+        titulo="Protocolos de uso do Guia Alimentar: população adulta",
+        fonte=Fonte(
+            titulo="Protocolos de Uso do Guia Alimentar para a População Brasileira na Orientação Alimentar, Fascículo 1",
+            instituicao="Ministério da Saúde e Universidade de São Paulo",
+            ano=2021,
+            url="https://bvsms.saude.gov.br/bvs/publicacoes/protocolos_guia_alimentar_fasciculo1.pdf",
+            licenca=LICENCA_MS,
+        ),
+    ),
+    DocumentoDeOrientacao(
+        documento_id="opas-laboratorio-flv-2022",
+        arquivo="opas_laboratorio_inovacao_flv_2022.pdf",
+        titulo="Laboratório de Inovação: frutas, legumes e verduras",
+        fonte=Fonte(
+            titulo="Laboratório de Inovação: Incentivo à Produção, à Disponibilidade, ao Acesso e ao Consumo de Frutas, Legumes e Verduras",
+            instituicao="OPAS, Ministério da Saúde, INCA, FAO e WFP",
+            ano=2022,
+            url="https://ninho.inca.gov.br/jspui/bitstream/123456789/13758/1/9789275725146_por.pdf",
+            licenca="CC BY-NC-SA 3.0 IGO",
+        ),
+    ),
+    DocumentoDeOrientacao(
+        documento_id="bjft-percepcao-riscos-2013",
+        arquivo="bjft_percepcao_consumidor_riscos_rastreabilidade_2013.pdf",
+        titulo="Percepção do consumidor sobre riscos, segurança e rastreabilidade dos alimentos",
+        fonte=Fonte(
+            titulo="Percepção do consumidor frente aos riscos associados aos alimentos, sua segurança e rastreabilidade",
+            instituicao="Brazilian Journal of Food Technology (ITAL)",
+            ano=2013,
+            url="https://www.scielo.br/j/bjft/a/G6NXXPM79sRRX78HKm6xb8t/",
+            licenca=LICENCA_CC_BY,
+        ),
+    ),
+    DocumentoDeOrientacao(
+        documento_id="raca-ultraprocessados-2022",
+        arquivo="raca_ultraprocessados_riscos_2022.pdf",
+        titulo="Alimentos ultraprocessados e seus riscos",
+        fonte=Fonte(
+            titulo="Alimentos ultraprocessados e seus riscos à cultura alimentar e à saúde",
+            instituicao="Revista de Alimentação e Cultura das Américas (RACA), Fiocruz",
+            ano=2022,
+            url="https://raca.fiocruz.br/index.php/raca/article/view/145",
+            licenca=LICENCA_CC_BY,
+        ),
+    ),
+    DocumentoDeOrientacao(
+        documento_id="raca-consumo-pandemia-2024",
+        arquivo="raca_consumo_alimentar_pandemia_2024.pdf",
+        titulo="O que envolve o consumo alimentar e a pandemia",
+        fonte=Fonte(
+            titulo="O que envolve o consumo alimentar e como a pandemia por Covid-19 pode ter influenciado",
+            instituicao="Revista de Alimentação e Cultura das Américas (RACA), Fiocruz",
+            ano=2024,
+            url="https://raca.fiocruz.br/index.php/raca/article/view/182",
+            licenca=LICENCA_CC_BY,
+        ),
+    ),
+    DocumentoDeOrientacao(
+        documento_id="raca-comensalidade-pandemia-2024",
+        arquivo="raca_comensalidade_pandemia_2024.pdf",
+        titulo="Impactos da pandemia na alimentação e na comensalidade",
+        fonte=Fonte(
+            titulo="Impactos da pandemia de Covid-19 na alimentação e comensalidade",
+            instituicao="Revista de Alimentação e Cultura das Américas (RACA), Fiocruz",
+            ano=2024,
+            url="https://raca.fiocruz.br/index.php/raca/article/view/192",
+            licenca=LICENCA_CC_BY,
+        ),
+    ),
+    DocumentoDeOrientacao(
+        documento_id="raca-ambiente-escolar-2023",
+        arquivo="raca_ambiente_escolar_praticas_alimentares_2023.pdf",
+        titulo="Ambiente escolar e práticas alimentares familiares e escolares",
+        fonte=Fonte(
+            titulo="Ambiente escolar e práticas alimentares familiares e escolares",
+            instituicao="Revista de Alimentação e Cultura das Américas (RACA), Fiocruz",
+            ano=2023,
+            url="https://raca.fiocruz.br/index.php/raca/article/view/154",
+            licenca=LICENCA_CC_BY,
+        ),
+    ),
+    DocumentoDeOrientacao(
+        documento_id="ifc-food-safety-handbook-2020",
+        arquivo="ifc_food_safety_handbook_2020.pdf",
+        titulo="Food Safety Handbook",
+        fonte=Fonte(
+            titulo="Food Safety Handbook: A Practical Guide for Building a Robust Food Safety Management System",
+            instituicao="International Finance Corporation (IFC), Grupo Banco Mundial",
+            ano=2020,
+            url="https://www.ifc.org/content/dam/ifc/doc/2020/food-safety-handbook-2020-edition-ifc-2023.pdf",
+            licenca="CC BY 3.0 IGO",
+        ),
+        # só o capítulo 3 (perigos, APPCC e temperaturas); os outros tratam de normas,
+        # regulamentação e gestão de empresas, e geravam mais de mil trechos de ruído
+        inicio=72,
+        fim=226,
+    ),
+    DocumentoDeOrientacao(
+        documento_id="bjft-higiene-servicos-2012",
+        arquivo="bjft_diagnostico_higiene_servicos_alimentacao_2012.pdf",
+        titulo="Diagnóstico das condições higiênicas de serviços de alimentação",
+        fonte=Fonte(
+            titulo="Diagnóstico das condições higiênicas de serviços de alimentação de acordo com a NBR 15635:2008",
+            instituicao="Brazilian Journal of Food Technology (ITAL)",
+            ano=2012,
+            url="https://www.scielo.br/j/bjft/a/db7TDPqpcFvZdcWFH3YTwJG/",
+            licenca=LICENCA_CC_BY,
+        ),
+    ),
+    DocumentoDeOrientacao(
+        documento_id="raca-praticas-higiene-2019",
+        arquivo="raca_praticas_higiene_servicos_alimentacao_2019.pdf",
+        titulo="Práticas de higiene em serviços de alimentação",
+        fonte=Fonte(
+            titulo="Redefinindo para melhor refletir: práticas de higiene em serviços de alimentação",
+            instituicao="Revista de Alimentação e Cultura das Américas (RACA), Fiocruz",
+            ano=2019,
+            url="https://raca.fiocruz.br/index.php/raca/article/view/5",
+            licenca=LICENCA_CC_BY,
+        ),
+    ),
+    DocumentoDeOrientacao(
+        documento_id="taco-2011",
+        arquivo="taco_4_edicao_2011.pdf",
+        titulo="Tabela Brasileira de Composição de Alimentos (TACO)",
+        fonte=Fonte(
+            titulo="Tabela Brasileira de Composição de Alimentos (TACO), 4ª edição revisada e ampliada",
+            instituicao="NEPA, Universidade Estadual de Campinas (Unicamp)",
+            ano=2011,
+            url="https://nepa.unicamp.br/wp-content/uploads/sites/27/2023/10/taco_4_edicao_ampliada_e_revisada.pdf",
+            licenca="Reprodução total ou parcial permitida, desde que citada a fonte",
+        ),
+    ),
+    DocumentoDeOrientacao(
+        documento_id="cadsc-campanha-desperdicio-2022",
+        arquivo="cadsc_campanha_reducao_desperdicio_2022.pdf",
+        titulo="Campanha para redução do desperdício em uma unidade de alimentação e nutrição",
+        fonte=Fonte(
+            titulo="Efetividade de uma campanha para redução de desperdício em uma unidade de alimentação e nutrição",
+            instituicao="Cadernos Saúde Coletiva (UFRJ)",
+            ano=2022,
+            url="https://www.scielo.br/j/cadsc/a/yGYP7nfb9NKybvFDqfxdsJS/",
+            licenca=LICENCA_CC_BY,
         ),
     ),
 )
