@@ -1,6 +1,6 @@
 # Visão geral da arquitetura do EconoMIA
 
-> **Status:** proposta inicial, decidida pela equipe em 03/11/2026 (épico #30). As justificativas de cada escolha ficam em [decisoes.md](../decisoes.md).
+> **Status:** proposta inicial, decidida pela equipe em 03/11/2026 (épico #30), com o que já roda na semana 2 descrito na seção 2.1. As justificativas de cada escolha ficam em [decisoes.md](../decisoes.md).
 > Os contextos, termos e regras de negócio estão no [modelo de domínio](modelo-de-dominio.md).
 
 ## 1. Estilo: monolito modular
@@ -45,10 +45,42 @@ flowchart LR
 | Fila e worker | Redis + RQ | Tarefas assíncronas e agendamento da extração bimestral |
 | Banco relacional | PostgreSQL, acessado com SQLAlchemy Core (sem ORM) e migrações em SQL com Flyway | Contas, perfil, listas, notas, preços, catálogo de alimentos, receitas estruturadas |
 | Banco vetorial | Qdrant | Embeddings das receitas e da base de conhecimento do RAG, com payload para filtrar na busca por tipo, alimentos, ingredientes restritos e tema. O payload é sincronizado com o catálogo de alimentos do PostgreSQL |
-| LLM | API de provedor, atrás de um adaptador | Interpretação, redação das respostas e leitura de imagens. O provedor e o modelo são decididos na #13 |
+| LLM | API de provedor, atrás de um adaptador | Interpretação, redação das respostas e leitura de imagens. O provedor e o modelo são decididos na #13. Na versão 1 do RAG, o adaptador usa o `qwen2.5:7b` local, pelo Ollama |
 | LLMOps | Langfuse Cloud (plano gratuito, região US), fora da VM | Registro de prompts, respostas, custo, latência e avaliações. Acesso das 2 pessoas de DevOps. Os registros não levam dados pessoais nem sensíveis (RN30) |
 | Login | E-mail e senha no próprio backend | Senha com hash e token JWT |
 | Implantação | Uma VM no Azure (2 vCPUs, 16 GiB) com Docker Compose | Sobe API, worker, Redis, PostgreSQL, Qdrant e o frontend. O Langfuse fica fora da VM |
+
+### 2.1 O que já roda: RAG do Miau-ricio (semana 2)
+
+Da arquitetura acima, a semana 2 entregou o caminho da pergunta ao Miau-ricio: a tela de perguntas, a rota da API, o caso de uso `ResponderPergunta`, o Qdrant e o LLM local. Ainda não há orquestrador, fila, PostgreSQL nem Langfuse; a API chama o caso de uso do contexto `receitas` diretamente.
+
+```mermaid
+flowchart LR
+    Pessoa((Pessoa)) --> Tela["Tela de perguntas<br/>React + Vite<br/>frontend/"]
+    Tela -->|"POST /api/v1/receitas/perguntas"| API["API<br/>FastAPI<br/>economia.api.app"]
+    CLI["Linha de comando<br/>e notebook"] --> Caso
+    API --> Caso["ResponderPergunta<br/>receitas/aplicacao<br/>(1. RN04: pergunta de preço?)"]
+    Caso -->|"2. vetor da pergunta"| E5["multilingual-e5-base<br/>sentence-transformers"]
+    Caso -->|"3. top-5 + busca por ingrediente"| Qdrant[("Qdrant<br/>base_conhecimento_e5<br/>6.151 trechos")]
+    Caso -->|"4. ingredientes da pergunta (JSON)<br/>5. resposta com trechos_usados (JSON)"| Ollama["Ollama<br/>qwen2.5:7b"]
+    Caso -->|"6. fontes, ingredientes que faltam<br/>(código, RN01 e RN10)"| API
+    Indexacao["Pipeline de ingestão<br/>cli indexar"] --> Qdrant
+    Fontes[["20 documentos-fonte<br/>data/raw/"]] --> Indexacao
+    Prompts[["prompts/miau-ricio/<br/>versionados"]] --> Caso
+```
+
+| Peça | Onde está | Papel |
+| --- | --- | --- |
+| Tela de perguntas | `frontend/` (React, Vite, TypeScript) | Envia a pergunta e mostra a resposta, as fontes citadas, os ingredientes que faltam e os trechos recuperados com o score |
+| API | `src/economia/api/app.py` (FastAPI) | `POST /api/v1/receitas/perguntas` e `GET /saude`; documentação em `/docs` |
+| Caso de uso | `src/economia/receitas/aplicacao/responder_pergunta.py` | RN04, busca, limiar (RN11), busca por ingrediente, desempate (RN13), LLM e montagem das fontes (RN10) |
+| Embeddings | `receitas/infraestrutura/embeddings_e5.py` | `intfloat/multilingual-e5-base`, 768 dimensões, na CPU ou na GPU |
+| Banco vetorial | Qdrant 1.20 (`docker-compose.yml`) | Uma coleção por modelo de embeddings, distância cosseno, payload com a fonte |
+| LLM | Ollama com `qwen2.5:7b` (`compartilhado/infraestrutura/llm_ollama.py`) | Extrai os ingredientes da pergunta e redige a resposta, nos dois casos com saída JSON |
+| Ingestão | `cli indexar` | Carrega, faz a curadoria, divide em trechos, gera os embeddings e grava. Ver [pipeline de ingestão](../semana-2/pipeline-ingestao.md) |
+| Avaliação | `cli comparar`, `avaliar-respostas`, `comparar-execucoes` | Mede a busca e as respostas com 67 perguntas. Ver [avaliação do RAG](../semana-2/avaliacao-rag.md) |
+
+O LLM nunca é fonte: as fontes e os ingredientes que faltam são montados pelo código a partir dos trechos citados.
 
 ## 3. Onde o LLM entra
 
@@ -164,7 +196,7 @@ flowchart LR
 
 ## 7. A definir
 
-- **Provedor e modelo do LLM, e modelo de embeddings** (#13).
+- **Provedor e modelo do LLM para a produção** (#13). Para os embeddings, a versão 1 do RAG usa o `intfloat/multilingual-e5-base` (ver [decisoes.md](../decisoes.md)).
 - **Custo da VM:** conferir na calculadora do Azure quanto a VM de 2 vCPUs e 16 GiB consome dos US$ 100 de crédito e por quantos meses o crédito dura.
 - **Onde roda o Uptime Kuma** fora da VM: qual serviço ou máquina.
 - **Organização do código** a confirmar na #36 e **formato detalhado das rotas** na #31.
