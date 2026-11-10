@@ -3,6 +3,7 @@
 ## 1. Essential Question
 
 _Qual pergunta específica, derivada da Big Idea "Qualidade de Vida", o grupo vai responder?_
+
 Como podemos utilizar inteligência artificial para otimizar o orçamento de compras e reduzir o desperdício de alimentos por meio da gestão automatizada de inventário doméstico e rastreamento de preços locais?
 
 ## 2. Problema
@@ -21,6 +22,7 @@ citados no primeiro docs)
 ## 3. Stakeholders
 
 | Stakeholder | Interesse / necessidade | Como é afetado pela solução |
+|-------------|-------------------------|-----------------------------|
 |Gestor do lar / Consumidor|Controle do orçamento e facilidade no registro de compras|Consegue visualizar o inventário em tempo real, evitar desperdício e economizar utilizando o rastreio de preços locais.|
 | | | |
 
