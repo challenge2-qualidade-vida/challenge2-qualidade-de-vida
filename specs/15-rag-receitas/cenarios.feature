@@ -59,6 +59,8 @@ Funcionalidade: Receitas e perguntas sobre alimentação
     Quando eu adiciono os ingredientes que faltam à lista de compras
     Então a minha lista de compras contém "farinha" e "leite"
 
+  # RN26 a definir: sem fonte para a busca sob demanda (ver modelo de domínio).
+  @pendente
   Cenário: Sem receitas na base, o sistema busca novas e avisa quando termina
     Dado que a base de receitas não contém receitas com "jiló"
     Quando eu pergunto "o que posso fazer com jiló?"
@@ -66,6 +68,7 @@ Funcionalidade: Receitas e perguntas sobre alimentação
     E uma busca de receitas com "jiló" é iniciada
     E eu recebo uma notificação quando a busca termina
 
+  @pendente
   Cenário: Busca de receitas sem resultado
     Dado que uma busca de receitas com "jiló" terminou sem encontrar receitas
     Então eu recebo uma notificação explicando que não foram encontradas receitas

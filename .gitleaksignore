@@ -1,0 +1,2 @@
+# Falso positivo: hash sha256 do pacote parso no poetry.lock confundido com token da Square
+poetry.lock:square-access-token:2303

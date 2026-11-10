@@ -33,7 +33,7 @@ Eventos: `BuscaDeReceitasSolicitada`, `BuscaDeReceitasConcluida`.
 - **RN11:** sem informação na base, a resposta diz que não encontrou, sem inventar.
 - **RN13:** receitas priorizam os ingredientes disponíveis e, entre elas, as que não exigem comprar nada. Se a pessoa pedir receitas só com os itens que informou, nenhuma receita usa outro ingrediente.
 - **RN21:** não há despensa. Os itens das notas recentes viram ingredientes disponíveis só quando a pessoa pede, e ela pode tirar ou acrescentar itens.
-- **RN26:** sem receitas na base, o sistema avisa, dispara a busca de receitas e notifica a pessoa quando termina. Sem resultado, explica que não encontrou e pede desculpas.
+- **RN26 (a definir, fora da versão 1):** sem receitas na base, o sistema avisa, dispara a busca de receitas e notifica a pessoa quando termina. Sem resultado, explica que não encontrou e pede desculpas.
 - **RN27:** restrições do perfil filtram as receitas. O sistema informa quantas ficaram de fora e por qual restrição, e a pessoa pode vê-las mesmo assim, com o ingrediente restrito destacado.
 - **RN28:** uma receita pode faltar até 2 ingredientes, ou ter os que faltam substituíveis por outros disponíveis. A sugestão diz o que falta e quais substituições foram consideradas. Receitas completas vêm primeiro.
 - **RN29:** os ingredientes que faltam vão para a lista de compras com uma única ação.
@@ -75,6 +75,21 @@ Estão na seção "Receitas: a definir" do [modelo de domínio](../../docs/arqui
 - de onde vêm as substituições da RN28;
 - quantos dias contam como "notas recentes".
 
+## Versão 1 (entrega da semana 2)
+
+O que entra na primeira versão (épico #15, sub-issues #16 a #21):
+
+- Base de conhecimento curada: receitas do afrodite.json e de uma amostra do RecipeNLG, o Guia Alimentar para a População Brasileira (Ministério da Saúde, 2014) e textos de conservação e aproveitamento, todos listados em `data/base-conhecimento/FONTES.md`.
+- Divisão em trechos: uma receita é um trecho; os textos de orientação são divididos por seção e por parágrafo.
+- Embeddings comparados entre dois modelos, gravados no Qdrant.
+- Recuperação dos trechos mais parecidos com a pergunta, com limiar de similaridade: abaixo dele, a resposta diz que não encontrou (RN11).
+- Resposta redigida pelo LLM só com os trechos recuperados, com as fontes montadas pelo código a partir dos trechos usados (RN10).
+- Pergunta sobre preço atual respondida com o aviso da RN04.
+- Entre receitas com similaridade quase igual, vem primeiro a que tem menos ingredientes faltando. O LLM só interpreta os ingredientes da pergunta, e a contagem é determinística (RN01).
+- Demonstração pela linha de comando e por um notebook. O endpoint da API fica para a #24.
+
+Fica para depois: a correspondência completa por `Alimento` e as substituições (RN28), as restrições do perfil (RN27), as notas recentes (RN21), a lista de compras (RN29) e a busca sob demanda (RN26).
+
 ## Critérios de aceitação
 
 Cenários em [cenarios.feature](cenarios.feature).
@@ -83,15 +98,15 @@ Cenários em [cenarios.feature](cenarios.feature).
 
 - Escolhas técnicas do RAG (#13).
 - Documentos da base de conhecimento (#16, #17): aproveitamento e conservação, Guia Alimentar e consumo. O `FONTES.md` ainda não lista nenhum.
-- Extração inicial de receitas do TudoGostoso, que forma a base inicial de receitas, e conjunto de perguntas com gabarito para avaliação (#23).
+- Base inicial de receitas a partir do afrodite.json e de uma amostra do RecipeNLG (seção "Fonte de receitas" do modelo de domínio), e conjunto de perguntas com gabarito para avaliação (#23).
 - Catálogo de alimentos (`Alimento`), compartilhado com Preços e Planejamento.
 - Esqueleto da aplicação (#35).
 - RN21 depende da leitura de notas fiscais (Recibaldo). RN29 depende da lista de compras (Planejamento). RN26 depende de um meio de notificar a pessoa (Conversa).
 
 ## Riscos e limitações
 
-- **Risco jurídico da fonte de receitas:** os termos de uso do TudoGostoso proíbem copiar o conteúdo sem consentimento, e o robots.txt bloqueia as páginas de busca do site. A equipe decidiu manter a extração e validar esse risco depois (seção "Fonte de receitas: risco a validar" do modelo de domínio).
+- **Fonte de receitas:** o afrodite.json não declara licença nem o site de origem, e as receitas dele não têm link, então a citação aponta o dataset. O RecipeNLG está em inglês e é de uso não comercial. Ver a seção "Fonte de receitas" do modelo de domínio.
 - A qualidade das respostas depende da cobertura da base de conhecimento e da base de receitas.
 - A recuperação pode trazer trechos parecidos, mas de outro alimento. O Recall@k é medido no conjunto de perguntas com gabarito (#23).
-- A busca de receitas sob demanda depende de o site da fonte continuar no mesmo formato. Se ele mudar, a busca falha e a pessoa recebe a mensagem de que não foi possível encontrar receitas.
+- A busca de receitas sob demanda (RN26) está **a definir**: com datasets estáticos, não há onde buscar receitas novas. Enquanto isso, vale a RN11.
 - Ver receitas ocultadas por restrição é escolha da pessoa. O sistema destaca o ingrediente restrito, mas não substitui orientação médica ou de nutricionista.

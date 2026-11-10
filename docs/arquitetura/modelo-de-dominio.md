@@ -80,6 +80,8 @@ flowchart LR
 | Informação nutricional | Calorias e nutrientes de um alimento, vindos da tabela TACO | Receitas e nutrição | `InformacaoNutricional` |
 | Fonte | Documento de onde veio uma informação (título, instituição, ano) | Receitas e nutrição | `Fonte` |
 | Trecho | Parte de um documento da base de conhecimento usada pelo RAG | Receitas e nutrição | `Trecho` |
+| Documento | **Proposto (08/11/2026, RAG v1).** Texto de orientação da base de conhecimento (ex.: Guia Alimentar), com `Fonte` e dividido em seções (`Secao`). É de onde saem os trechos que não são receitas | Receitas e nutrição | `Documento` |
+| Resposta com fontes | **Proposto (08/11/2026, RAG v1).** Resposta do Miau-ricio com os trechos usados e as fontes montadas pelo código (RN10), ou a indicação de que a base não tem a informação (RN11) | Receitas e nutrição | `RespostaComFontes` |
 | Nota fiscal | Comprovante de compra (NFC-e) com itens, valores, loja e data | Leitura de documentos | `NotaFiscal` |
 | Encarte | Folheto de promoções de um estabelecimento | Leitura de documentos | `Encarte` |
 | Item extraído | Produto, quantidade e valor lidos de uma imagem, com nível de confiança | Leitura de documentos | `ItemExtraido` |
@@ -167,11 +169,12 @@ flowchart LR
 | RN23 | Todo item da lista tem um nível de prioridade: essencial, secundário ou supérfluo. O sistema atribui o nível pela categoria do produto, e a pessoa pode mudar | Planejamento |
 | RN24 | Quando a lista passa do orçamento, os ajustes sugeridos seguem esta ordem: (1) reduzir a quantidade dos itens de menor prioridade, (2) substituir por produto equivalente mais barato, sem trocar marca que a pessoa marcou como preferida (RN06), (3) remover temporariamente itens opcionais. Os ajustes são sugestões da lista de compras, e a pessoa decide (RN07) | Planejamento |
 | RN25 | Antes de cadastrar a primeira nota fiscal, a pessoa aceita o termo de consentimento. O termo informa que o sistema guarda o histórico de compras e um código derivado da chave de acesso de cada nota, para detectar notas repetidas, e que tudo é apagado quando a pessoa exclui a conta | Leitura de documentos, Planejamento |
-| RN26 | Quando a base não tem receitas para os ingredientes pedidos, o sistema avisa que vai buscar novas receitas, dispara a busca de receitas na fonte e notifica a pessoa quando ela termina. Se a busca não encontrar receitas, o sistema explica que não encontrou e pede desculpas, sem inventar receita (RN11) | Receitas e nutrição, Conversa |
+| RN26 | **A definir (05/11/2026): sem fonte para a busca sob demanda, ver "Fonte de receitas"; enquanto isso vale a RN11.** Quando a base não tem receitas para os ingredientes pedidos, o sistema avisa que vai buscar novas receitas, dispara a busca de receitas na fonte e notifica a pessoa quando ela termina. Se a busca não encontrar receitas, o sistema explica que não encontrou e pede desculpas, sem inventar receita (RN11) | Receitas e nutrição, Conversa |
 | RN27 | Receitas com ingrediente que viola uma restrição do perfil (alergia, dieta) não aparecem. O sistema informa quantas receitas ficaram de fora e por qual restrição, e a pessoa pode pedir para vê-las mesmo assim, com o ingrediente restrito destacado | Receitas e nutrição, Planejamento |
 | RN28 | Uma receita pode ser sugerida quando faltam até 2 ingredientes, ou quando os ingredientes que faltam podem ser substituídos por outros disponíveis. A sugestão informa quais ingredientes faltam e quais substituições foram consideradas. Receitas sem nada faltando aparecem primeiro | Receitas e nutrição |
 | RN29 | A pessoa pode adicionar os ingredientes que faltam numa receita à lista de compras com uma única ação | Receitas e nutrição, Planejamento |
 | RN30 | Dados pessoais e dados sensíveis (nome, e-mail, restrições de saúde como alergias, itens e estabelecimentos das notas fiscais) não são enviados ao Langfuse. Eles são retirados ou mascarados antes do registro das chamadas ao LLM, porque o Langfuse Cloud guarda os dados fora do Brasil, o que seria transferência internacional (LGPD, art. 33), e restrições de saúde são dado sensível | Todos |
+| RN31 | **Proposta (08/11/2026, RAG v1).** Entre receitas recuperadas com similaridade quase igual (diferença de até `TOLERANCIA_EMPATE`, 0,01 na versão 1, medida a partir da primeira do grupo), vem primeiro a que tem menos ingredientes faltando. O LLM só extrai da pergunta os ingredientes disponíveis; a contagem do que falta e a ordenação são funções determinísticas (RN01). Aplica a RN13 na ordem do top-5 enquanto a correspondência completa por `Alimento` (RN28) não existe | Receitas e nutrição |
 
 As specs citam as regras pelo número (ex.: "Atende RN02 e RN03").
 
@@ -222,18 +225,23 @@ Em todas as opções, a imagem da nota não é guardada depois da leitura, e os 
 - De onde vêm as substituições de ingrediente da RN28: da própria receita, dos produtos equivalentes do mesmo `Alimento` ou de uma tabela da equipe.
 - O que conta como "notas recentes" na RN21 (por exemplo, os últimos 30 dias).
 
-### Fonte de receitas: risco a validar
+### Fonte de receitas
 
-> **Decisão da equipe:** extrair as receitas do TudoGostoso (extração inicial e buscas sob demanda, RN26) e validar o risco depois.
+> **Decisão (05/11/2026, Paulo Vitor):** a base de receitas vem de dois datasets, o **afrodite.json** (português) e uma amostra do **RecipeNLG** (inglês). Ela substitui a extração do TudoGostoso, decidida em 03/11/2026. Ver [decisoes.md](../decisoes.md).
 
-Riscos encontrados em 03/11/2026:
+| Dataset | Idioma | Receitas | Link por receita | Licença |
+| --- | --- | --- | --- | --- |
+| [afrodite.json](https://github.com/adrianosferreira/afrodite.json) | Português, pratos brasileiros | 8.183 | Não | Não declarada. O repositório diz que os dados foram obtidos por um web crawler, sem informar o site |
+| [RecipeNLG](https://recipenlg.cs.put.poznan.pl/) (cópia completa no [Hugging Face](https://huggingface.co/datasets/SandhyaKilari/RecipeNLG_dataset)) | Inglês | cerca de 2,2 milhões; a versão 1 usa uma amostra | Sim (`link`) | Uso não comercial em pesquisa e ensino, pelos termos do dataset original (a conferir) |
 
-- Os [termos de uso](https://www.tudogostoso.com.br/termos-de-uso) proíbem copiar textos, imagens e materiais da plataforma sem consentimento prévio e dizem que o conteúdo é propriedade intelectual da Webedia. As receitas enviadas por usuários são licenciadas à Webedia.
-- O [robots.txt](https://www.tudogostoso.com.br/robots.txt) bloqueia as páginas de busca (`/busca`), que seriam o caminho natural para buscar receitas por ingrediente sob demanda. As páginas de receita (`/receita/...`) não estão bloqueadas.
+Riscos e limites:
 
-A primeira extração forma a **base inicial de receitas** do RAG. Separado dela, o projeto mantém um **conjunto de perguntas com gabarito** para medir a recuperação e comparar LLM × RAG (semana 3).
+- **afrodite.json:** sem licença e com origem desconhecida. É usado só para fins acadêmicos, e a citação diz que a receita vem do dataset, sem a página original.
+- **RecipeNLG:** em inglês. A pergunta em português recupera receitas em inglês pela busca semântica entre idiomas, e a resposta é sempre em português. A correspondência de ingredientes (RN28) vai precisar casar `Alimento` em português com ingredientes em inglês.
+- **RN26 sem fonte:** a busca sob demanda dependia do TudoGostoso. Com datasets estáticos, ela fica **a definir**. Opções: indexar sob demanda a parte do dataset que ficou de fora da base, ou uma nova fonte com licença.
+- O risco jurídico do TudoGostoso, registrado em 03/11/2026, deixou de valer: os [termos de uso](https://www.tudogostoso.com.br/termos-de-uso) proíbem copiar o conteúdo sem consentimento, e o [robots.txt](https://www.tudogostoso.com.br/robots.txt) bloqueia a busca.
 
-Caminhos para reduzir o risco, a avaliar: pedir autorização à Webedia para uso acadêmico; guardar só título, ingredientes e link, e mandar a pessoa ao site para o modo de preparo; trocar por fontes com licença aberta.
+A **base inicial de receitas** do RAG sai desses datasets, depois da curadoria (receitas sem ingredientes ou sem modo de preparo saem). Separado dela, o projeto mantém um **conjunto de perguntas com gabarito** para medir a recuperação e comparar LLM × RAG (semana 3).
 
 ### Fora do MVP
 
