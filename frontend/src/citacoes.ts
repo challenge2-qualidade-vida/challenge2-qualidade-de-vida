@@ -20,10 +20,14 @@ export function separarCitacoes(texto: string, fontesExistentes: Set<number>): P
   return partes;
 }
 
-/** Parágrafos da resposta: linhas em branco separam parágrafos; quebras simples são mantidas. */
+/**
+ * Parágrafos da resposta: linhas em branco separam parágrafos; quebras simples são mantidas.
+ * O bloco "Ingredientes que faltam:" que a API acrescenta ao texto sai, porque a tela mostra
+ * a mesma informação numa seção própria.
+ */
 export function paragrafos(texto: string): string[] {
   return texto
     .split(/\n\s*\n/)
     .map((p) => p.trim())
-    .filter(Boolean);
+    .filter((p) => p && !p.startsWith("Ingredientes que faltam:"));
 }

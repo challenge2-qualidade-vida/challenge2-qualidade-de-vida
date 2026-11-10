@@ -158,6 +158,10 @@ def bloco_de_ingredientes_que_faltam(
     return "Ingredientes que faltam:\n" + "\n".join(linhas) if linhas else ""
 
 
+MAXIMO_DE_INGREDIENTES_BUSCADOS = 6
+RECEITAS_POR_INGREDIENTE = 1
+
+
 class RespostaDoLLM(BaseModel):
     """Saída estruturada do LLM ao redigir a resposta (prompt resposta_com_fontes_v2).
 
@@ -219,6 +223,46 @@ class ResponderPergunta:
         except (ValidationError, ValueError):
             return IngredientesDaPergunta()
 
+    def somar_receitas_por_ingrediente(
+        self,
+        recuperados: list[TrechoRecuperado],
+        disponiveis: IngredientesDaPergunta,
+    ) -> list[TrechoRecuperado]:
+        """Com 2 ou mais ingredientes, busca receitas para cada um e soma às da busca geral.
+
+        Uma pergunta como "quero um almoço com arroz, feijão, carne e alface" vira um vetor só,
+        que costuma trazer textos gerais sobre refeições. Buscar "Receita com <ingrediente>"
+        só entre as receitas garante pelo menos uma opção para cada ingrediente, se houver
+        uma acima do limiar. A lista final vem sem repetição e com no máximo um trecho a mais
+        que o número de ingredientes, para caber no contexto do LLM.
+        """
+        ingredientes = disponiveis.ingredientes_pt
+        if len(ingredientes) < 2:
+            return recuperados
+        por_ingrediente: list[TrechoRecuperado] = []
+        for ingrediente in ingredientes[:MAXIMO_DE_INGREDIENTES_BUSCADOS]:
+            vetor = self._gerador.gerar_para_pergunta(f"Receita com {ingrediente}")
+            achados = self._repositorio.buscar(
+                vetor, RECEITAS_POR_INGREDIENTE, tipo=TipoDeTrecho.RECEITA
+            )
+            por_ingrediente += [r for r in achados if r.score >= self._limiar]
+        limite = max(self._quantidade, len(ingredientes) + 1)
+        # o score que vale é o da pergunta inteira; o da busca por ingrediente só entra para a
+        # receita que a busca geral não trouxe (senão o desempate da RN13 sai distorcido)
+        da_pergunta = {r.trecho.id: r for r in recuperados}
+        garantidos: dict[str, TrechoRecuperado] = {}
+        for achado in por_ingrediente:
+            garantidos.setdefault(
+                achado.trecho.id, da_pergunta.get(achado.trecho.id, achado)
+            )
+        escolhidos = list(garantidos.values())[:limite]
+        for recuperado in sorted(recuperados, key=lambda r: r.score, reverse=True):
+            if len(escolhidos) >= limite:
+                break
+            if recuperado.trecho.id not in garantidos:
+                escolhidos.append(recuperado)
+        return sorted(escolhidos, key=lambda r: r.score, reverse=True)
+
     def contar_faltantes(
         self,
         recuperados: Sequence[TrechoRecuperado],
@@ -265,6 +309,9 @@ class ResponderPergunta:
         if any(r.trecho.tipo is TipoDeTrecho.RECEITA for r in recuperados):
             disponiveis = self.extrair_ingredientes(pergunta)
             if disponiveis.ingredientes_pt or disponiveis.ingredientes_en:
+                recuperados = self.somar_receitas_por_ingrediente(
+                    recuperados, disponiveis
+                )
                 faltando = self.contar_faltantes(recuperados, disponiveis)
                 recuperados = self.ordenar(recuperados, faltando)
 

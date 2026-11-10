@@ -26,6 +26,12 @@ describe("separarCitacoes", () => {
 });
 
 describe("paragrafos", () => {
+  it("tira o bloco de ingredientes que faltam, mostrado em seção própria", () => {
+    expect(paragrafos("Faça a feijoada [1].\n\nIngredientes que faltam:\n- Feijoada [1]: bacon")).toEqual([
+      "Faça a feijoada [1].",
+    ]);
+  });
+
   it("separa por linha em branco e descarta vazios", () => {
     expect(paragrafos("Primeiro.\n\nSegundo\ncom quebra.\n\n\n")).toEqual([
       "Primeiro.",

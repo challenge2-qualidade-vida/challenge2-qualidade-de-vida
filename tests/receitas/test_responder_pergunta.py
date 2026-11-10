@@ -442,3 +442,113 @@ def test_prompts_versionados_da_resposta_existem():
 
     assert "trechos_usados" in carregar_prompt("miau-ricio", "resposta_com_fontes_v2")
     assert "{resposta}" in carregar_prompt("miau-ricio", "pedido_de_citacao_v1")
+
+
+# ---------------------------------------------------------------- busca por ingrediente
+
+
+class GeradorQueGuardaOTexto:
+    """O "vetor" é o próprio texto, para o repositório falso responder por pergunta."""
+
+    nome, dimensao = "texto", 1
+
+    def gerar_para_pergunta(self, pergunta):
+        return pergunta
+
+
+class RepositorioPorPergunta:
+    def __init__(self, geral, por_texto):
+        self.geral = geral
+        self.por_texto = por_texto
+        self.buscas = []
+
+    def buscar(self, vetor, limite, tipo=None):
+        self.buscas.append((vetor, tipo))
+        if vetor in self.por_texto:
+            assert tipo is TipoDeTrecho.RECEITA
+            return self.por_texto[vetor][:limite]
+        return self.geral[:limite]
+
+
+def criar_por_ingrediente(trecho, geral, por_texto, ingredientes):
+    repositorio = RepositorioPorPergunta(geral, por_texto)
+    caso = ResponderPergunta(
+        GeradorQueGuardaOTexto(),
+        repositorio,
+        LLMComExtracao("[1]", {"ingredientes_pt": ingredientes, "ingredientes_en": []}),
+        "sistema",
+        limiar=0.8,
+        prompt_de_extracao="extrair",
+    )
+    return caso, repositorio
+
+
+def test_com_varios_ingredientes_busca_uma_receita_para_cada(trecho):
+    guia = TrechoRecuperado(trecho("guia", tipo=TipoDeTrecho.CONHECIMENTO), 0.86)
+    tilapia = recuperado(trecho, "tilapia", 0.85)
+    arroz = recuperado(trecho, "arroz-forno", 0.88)
+    feijao = recuperado(trecho, "feijoada", 0.87)
+    alface = recuperado(trecho, "salada", 0.70)  # abaixo do limiar: fica de fora
+    caso, repositorio = criar_por_ingrediente(
+        trecho,
+        geral=[guia, tilapia],
+        por_texto={
+            "Receita com arroz": [arroz],
+            "Receita com feijão": [feijao],
+            "Receita com alface": [alface],
+        },
+        ingredientes=["arroz", "feijão", "alface"],
+    )
+    disponiveis = caso.extrair_ingredientes("almoço com arroz, feijão e alface")
+    juntos = caso.somar_receitas_por_ingrediente([guia, tilapia], disponiveis)
+    assert [r.trecho.id for r in juntos] == [
+        "arroz-forno",
+        "feijoada",
+        "guia",
+        "tilapia",
+    ]
+    assert [b[0] for b in repositorio.buscas] == [
+        "Receita com arroz",
+        "Receita com feijão",
+        "Receita com alface",
+    ]
+
+
+def test_com_um_ingrediente_so_vale_a_busca_geral(trecho):
+    geral = [recuperado(trecho, "a", 0.9)]
+    caso, repositorio = criar_por_ingrediente(
+        trecho, geral=geral, por_texto={}, ingredientes=["ovo"]
+    )
+    disponiveis = caso.extrair_ingredientes("o que faço com ovo?")
+    assert caso.somar_receitas_por_ingrediente(geral, disponiveis) == geral
+    assert repositorio.buscas == []
+
+
+def test_busca_por_ingrediente_nao_repete_e_respeita_o_limite(trecho):
+    mesma = recuperado(trecho, "bolo", 0.9)
+    geral = [mesma] + [recuperado(trecho, f"g{i}", 0.85 - i / 100) for i in range(5)]
+    caso, _ = criar_por_ingrediente(
+        trecho,
+        geral=geral,
+        por_texto={"Receita com ovo": [mesma], "Receita com leite": [mesma]},
+        ingredientes=["ovo", "leite"],
+    )
+    disponiveis = caso.extrair_ingredientes("bolo com ovo e leite")
+    juntos = caso.somar_receitas_por_ingrediente(geral[:5], disponiveis)
+    ids = [r.trecho.id for r in juntos]
+    assert len(ids) == len(set(ids)) == 5  # limite: max(5 trechos, 2 ingredientes + 1)
+    assert ids[0] == "bolo"
+
+
+def test_responder_usa_as_receitas_de_cada_ingrediente(trecho):
+    tilapia = recuperado(trecho, "tilapia", 0.85)
+    arroz = recuperado(trecho, "arroz-forno", 0.88)
+    caso, _ = criar_por_ingrediente(
+        trecho,
+        geral=[tilapia],
+        por_texto={"Receita com arroz": [arroz], "Receita com carne": []},
+        ingredientes=["arroz", "carne"],
+    )
+    resposta = caso.responder("almoço com arroz e carne")
+    assert resposta.encontrou
+    assert resposta.trechos[0].trecho.id == "arroz-forno"
