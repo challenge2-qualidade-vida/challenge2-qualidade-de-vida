@@ -1,0 +1,8 @@
+{
+  "colecao": "base_conhecimento_e5_amostra400",
+  "modelo": "intfloat/multilingual-e5-base",
+  "trechos": 742,
+  "segundos": 649.1,
+  "trechos_por_segundo": 1.14,
+  "maquina": "Linux x86_64, 8 CPUs lógicas"
+}

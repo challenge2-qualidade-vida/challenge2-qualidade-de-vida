@@ -1,0 +1,15 @@
+# Serviços de apoio do EconoMIA. Por enquanto só o Qdrant (RAG de receitas, #15).
+# A #36 completa com API, worker, Redis e PostgreSQL.
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.20.0
+    ports:
+      - "6333:6333" # API HTTP
+      - "6334:6334" # API gRPC
+    volumes:
+      - qdrant_dados:/qdrant/storage
+    mem_limit: 1g
+    restart: unless-stopped
+
+volumes:
+  qdrant_dados:

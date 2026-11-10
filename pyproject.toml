@@ -4,16 +4,37 @@ version = "0.1.0"
 description = "Backend da aplicação EconoMIA"
 readme = "README.md"
 requires-python = ">=3.11,<4.0"
-dependencies = ["fastapi (>=0.162.0,<0.163.0)", "uvicorn (>=0.54.0,<0.55.0)"]
+dependencies = [
+    "fastapi (>=0.162.0,<0.163.0)",
+    "uvicorn (>=0.54.0,<0.55.0)",
+    "torch (>=2.15.0,<3.0.0)",
+    "qdrant-client (>=1.20.0,<2.0.0)",
+    "sentence-transformers (>=6.2.0,<7.0.0)",
+    "ollama (>=0.6.3,<0.7.0)",
+    "pypdf (>=7.0.0,<8.0.0)",
+    "pydantic-settings (>=2.16.2,<3.0.0)",
+    "pyarrow (>=26.0.1,<27.0.0)",
+]
 
 [tool.poetry]
 packages = [
     { include = "economia", from = "src" }
 ]
 
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+# Dois ambientes: Mac (Apple Silicon, prioritário) e Linux sem GPU (outra máquina e VM).
+# No Mac, o torch do PyPI já traz o MPS (GPU do chip). No Linux, ele vem do índice só de CPU,
+# porque a versão do PyPI traz as bibliotecas da CUDA (vários GB).
+[[tool.poetry.source]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
+
+[tool.poetry.dependencies]
+torch = [
+    { markers = "sys_platform == 'linux'", source = "pytorch-cpu" },
+    { markers = "sys_platform == 'darwin'", source = "pypi" },
+]
+
 [dependency-groups]
 dev = [
     "pytest (>=9.2.0,<10.0.0)",
@@ -21,5 +42,20 @@ dev = [
     "pytest-cov (>=7.1.0,<8.0.0)",
     "ruff (>=0.17.3,<0.18.0)",
     "import-linter (>=2.15,<3.0)",
-    "pre-commit (>=4.7.0,<5.0.0)"
+    "pre-commit (>=4.7.0,<5.0.0)",
+    "ipykernel (>=7.4.0,<8.0.0)",
+    "nbclient (>=0.11.0,<0.12.0)"
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--import-mode=importlib"
+filterwarnings = [
+    # o Qdrant em memória, usado nos testes, ignora os índices de payload
+    "ignore:Payload indexes have no effect:UserWarning",
+]
+bdd_features_base_dir = "specs/"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

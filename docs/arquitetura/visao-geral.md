@@ -12,7 +12,7 @@ Do mesmo código saem dois processos:
 | Processo | O que faz |
 | --- | --- |
 | **API** (FastAPI) | Atende o frontend: conversa, cadastro, lista de compras, notas fiscais |
-| **Worker** (RQ) | Roda tarefas demoradas ou agendadas: busca de receitas sob demanda (RN26), extração bimestral dos preços de salvaguarda (RN19), leitura de notas fiscais e encartes |
+| **Worker** (RQ) | Roda tarefas demoradas ou agendadas: busca de receitas sob demanda (RN26, a definir), extração bimestral dos preços de salvaguarda (RN19), leitura de notas fiscais e encartes |
 
 Um contexto pode virar um serviço separado no futuro sem mudar o domínio, porque os contextos só se falam pelas interfaces descritas na seção 4.
 
@@ -34,7 +34,7 @@ flowchart LR
     Worker --> LLM
     Agentes -.->|registro das chamadas| Langfuse[Langfuse]
     Worker -.-> Langfuse
-    Worker --> Fontes[Fontes externas<br/>TudoGostoso, Ceasa-DF, Sefaz-DF]
+    Worker --> Fontes[Fontes externas<br/>Ceasa-DF, Sefaz-DF]
 ```
 
 | Componente | Escolha | Papel |

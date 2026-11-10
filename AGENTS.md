@@ -22,7 +22,8 @@ Se a tarefa for uma funcionalidade e não houver spec, escreva a spec e os cená
 - Orquestração dos agentes: LangGraph
 - Fila e worker: Redis + RQ
 - Banco relacional: PostgreSQL, com SQLAlchemy Core (sem ORM) e migrações em SQL com Flyway
-- Banco vetorial: Qdrant
+- Banco vetorial: Qdrant (`qdrant-client`)
+- RAG de receitas, versão 1: embeddings com sentence-transformers (PyTorch do índice só de CPU) ou pelo Ollama, LLM local pelo Ollama, `pypdf` para PDF e `pyarrow` para Parquet
 - LLMOps: Langfuse Cloud
 - Frontend: React + Vite com TypeScript, na pasta `frontend/`
 - Login: e-mail e senha próprios, com JWT
