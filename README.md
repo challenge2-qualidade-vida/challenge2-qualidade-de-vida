@@ -8,7 +8,7 @@ Residência em IA Brasília (TIC em Trilhas / Mentes em Modo IA em Ação) — T
 
 Projetar e desenvolver uma solução baseada em IA capaz de apoiar a tomada de decisão em um contexto relacionado à qualidade de vida.
 
-**Essential Question do grupo:** *a definir na semana 1*
+**Essential Question do grupo:** Como podemos utilizar inteligência artificial para otimizar o orçamento de compras e reduzir o desperdício de alimentos por meio da gestão automatizada de inventário doméstico e rastreamento de preços locais?
 
 ## Equipe
 
