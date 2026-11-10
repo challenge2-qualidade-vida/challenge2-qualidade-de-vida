@@ -1,6 +1,7 @@
 # Segredos
 .env
 .env.*
+!.env.example
 *.key
 
 # Python
@@ -22,3 +23,8 @@ vectorstore/
 Thumbs.db
 .vscode/
 .idea/
+
+# Site (Astro)
+node_modules/
+site/dist/
+site/.astro/

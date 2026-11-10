@@ -1,0 +1,72 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import { getCollection } from 'astro:content';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const docs = (await getCollection('docs')).sort((a, b) => a.id.localeCompare(b.id));
+const docsDaSemana = (n: number) => docs.filter((d) => d.id.startsWith(`semana-${n}/`));
+
+const roadmap = [
+	{ semana: 1, foco: 'Problema, stakeholders, riscos e métricas', entrega: 'Definições do projeto' },
+	{ semana: 2, foco: 'Base de conhecimento e recuperação', entrega: 'Primeiro mecanismo RAG' },
+	{ semana: 3, foco: 'Comparação LLM x RAG', entrega: 'Respostas baseadas em evidências' },
+	{ semana: 4, foco: 'Sistema multiagentes', entrega: 'Primeiro sistema multiagentes' },
+	{ semana: 5, foco: 'Multimodalidade', entrega: 'Agentes multimodais' },
+	{ semana: 6, foco: 'Integração completa', entrega: 'Aplicação funcional' },
+	{ semana: 7, foco: 'Testes e refinamento', entrega: 'Relatório final + apresentação' },
+];
+const primeiroDoc = docsDaSemana(1)[0] ?? docs[0];
+---
+
+<StarlightPage
+	frontmatter={{
+		title: 'EconoMIA',
+		description: 'Documentação do Challenge 2 — Qualidade de Vida',
+		template: 'splash',
+		hero: {
+			tagline:
+				'Big Idea: empoderar pessoas com IA para compreender melhor, decidir melhor e viver melhor. Challenge 2 da Residência em IA Brasília.',
+			actions: [
+				{ text: 'Ler a documentação', link: `${base}/${primeiroDoc.id}/`, icon: 'right-arrow' },
+				{
+					text: 'Repositório',
+					link: 'https://github.com/dida0982/challenge2-qualidade-de-vida',
+					icon: 'external',
+					variant: 'minimal',
+				},
+			],
+		},
+	}}
+>
+	<h2>Roadmap</h2>
+	<CardGrid>
+		{
+			roadmap.map(({ semana, foco, entrega }) => {
+				const entradas = docsDaSemana(semana);
+				return (
+					<Card title={`Semana ${semana}`} icon={entradas.length ? 'document' : 'seti:clock'}>
+						<p>{foco}</p>
+						<p><strong>Entregável:</strong> {entrega}</p>
+						{entradas.length ? (
+							<ul>
+								{entradas.map((d) => (
+									<li><a href={`${base}/${d.id}/`}>{d.data.title}</a></li>
+								))}
+							</ul>
+						) : (
+							<p><em>Em breve</em></p>
+						)}
+					</Card>
+				);
+			})
+		}
+	</CardGrid>
+
+	<h2>Registro do projeto</h2>
+	{
+		docs
+			.filter((d) => !d.id.includes('/'))
+			.map((d) => <LinkCard title={d.data.title} href={`${base}/${d.id}/`} />)
+	}
+</StarlightPage>

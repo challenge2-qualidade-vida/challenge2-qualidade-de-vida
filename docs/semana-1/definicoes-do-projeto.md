@@ -30,12 +30,33 @@ _Que decisão o usuário toma com ajuda da solução? O que a IA NÃO deve decid
 | Privacidade / LGPD | | |
 | | | |
 
-## 6. Métricas de sucesso
+## 6. Métricas de avaliação de sucesso
 
 | Métrica | Como medir | Meta |
-|---------|-----------|------|
-| | | |
+|---------|------------|------|
+| Acurácia da extração OCR de notas fiscais | Comparação das entidades extraídas (produto e preço) com uma base real documentada, avaliada preferencialmente por PR-AUC para lidar com o desbalanceamento das listas de itens. | > 90% de precisão na extração |
+| Fidelidade e relevância do RAG | Frameworks de avaliação (ex.: RAGAS ou LLM-as-a-judge) para garantir que a resposta não extrapole o contexto recuperado do banco vetorial. | > 85% de score em fidelidade de contexto |
+| LLM x RAG | Teste comparativo de respostas sobre preços e validades locais, com avaliação da incerteza do modelo por métricas de calibração. | RAG com > 95% de precisão factual, e o modelo puro com taxa de erro significativamente maior |
+| Multiagente | Percentual de fluxos concluídos sem falha de repasse de contexto entre agentes. | > 95% de sucesso na comunicação entre agentes |
+| Negócio | Acompanhamento do ciclo de vida dos produtos no app (itens consumidos x expirados) e questionários rápidos de feedback do usuário. | Redução de 20% no desperdício de alimentos no primeiro mês de uso ativo |
 
 ## 7. Fontes confiáveis previstas
 
--
+| Fonte | Tipo | Referência |
+|-------|------|------------|
+| Ministério da Agricultura e Pecuária (MAPA) | Página oficial | [Perdas e desperdício de alimentos](https://www.gov.br/agricultura/pt-br/assuntos/sustentabilidade/perdas-e-desperdicio-de-alimentos) |
+| Ministério da Agricultura e Pecuária (MAPA) | Relatório | [Relatório final sobre perdas e desperdício de alimentos](https://www.gov.br/agricultura/pt-br/assuntos/sustentabilidade/perdas-e-desperdicio-de-alimentos/publicacoes-em-destaque/relatorio-final-perdas-e-desperdicio) |
+| Embrapa | Página oficial | [Perdas e desperdício de alimentos: sobre o tema](https://www.embrapa.br/tema-perdas-e-desperdicio-de-alimentos/sobre-o-tema) |
+| OCDE | Documento de trabalho | [DAF/COMP/WD(2022)51](https://one.oecd.org/document/DAF/COMP/WD(2022)51/en/pdf) |
+| IBGE | Indicador de preços | [IPCA-15, setembro de 2026](https://biblioteca.ibge.gov.br/visualizacao/periodicos/2376/ipca_15_2026_set.pdf) |
+| Alan Beattie | Livro | BEATTIE, Alan. *False Economy: A Surprising Economic History of the World*. 2009. |
+
+## 8. Equipe e papéis
+
+| Integrante | GitHub | Papel |
+|------------|--------|-------|
+| Guilherme Barros | [@dida0982](https://github.com/dida0982) | AI Engineering e frontend |
+| Paulo Vitor Gomes | [@gpaulovit](https://github.com/gpaulovit) | AI Engineering e LLMOps |
+| Isabel Azar | [@iAiBel](https://github.com/iAiBel) | Engenharia de dados e backend |
+| Pedro Lucas Dourado | [@pedrolucasdourado](https://github.com/pedrolucasdourado) | Arquiteto de LLMOps |
+| Mariah Gladys | [@necrophagial](https://github.com/necrophagial) | Scrum master e documentação |
