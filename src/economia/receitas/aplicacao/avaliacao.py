@@ -31,16 +31,36 @@ class Esperado:
         )
 
 
+RESPONDER = "responder"
+NAO_ENCONTRAR = "nao_encontrar"
+AVISO_DE_PRECO = "aviso_de_preco"
+COMPORTAMENTOS = (RESPONDER, NAO_ENCONTRAR, AVISO_DE_PRECO)
+
+
 @dataclass(frozen=True)
 class PerguntaDeAvaliacao:
     id: str
     pergunta: str
     categoria: str
     esperados: tuple[Esperado, ...] = ()
+    comportamento: str = ""
+
+    def __post_init__(self) -> None:
+        if self.comportamento and self.comportamento not in COMPORTAMENTOS:
+            raise ValueError(f"Comportamento desconhecido: {self.comportamento}")
+        if self.comportamento == RESPONDER and not self.esperados:
+            raise ValueError(f"{self.id}: pergunta para responder precisa de gabarito")
 
     @property
     def tem_resposta(self) -> bool:
         return bool(self.esperados)
+
+    @property
+    def comportamento_esperado(self) -> str:
+        """O que o sistema deve fazer: responder (com gabarito), não encontrar (RN11) ou avisar do preço (RN04)."""
+        if self.comportamento:
+            return self.comportamento
+        return RESPONDER if self.esperados else NAO_ENCONTRAR
 
 
 def carregar_perguntas(caminho: Path) -> list[PerguntaDeAvaliacao]:
@@ -51,6 +71,7 @@ def carregar_perguntas(caminho: Path) -> list[PerguntaDeAvaliacao]:
             pergunta=item["pergunta"],
             categoria=item["categoria"],
             esperados=tuple(Esperado(**e) for e in item.get("esperados", [])),
+            comportamento=item.get("comportamento", ""),
         )
         for item in dados["perguntas"]
     ]
@@ -131,15 +152,42 @@ def resumir(
     )
 
 
+def por_categoria(resultados: Sequence[ResultadoDaPergunta]) -> dict[str, dict]:
+    """Recall@k, MRR e scores de cada categoria, para ver onde a busca acerta e onde erra."""
+    categorias: dict[str, list[ResultadoDaPergunta]] = {}
+    for resultado in resultados:
+        categorias.setdefault(resultado.categoria, []).append(resultado)
+    resumo = {}
+    for categoria, itens in sorted(categorias.items()):
+        com = [r for r in itens if r.tem_resposta]
+        resumo[categoria] = {
+            "perguntas": len(itens),
+            "recall": sum(r.posicao is not None for r in com) / len(com)
+            if com
+            else None,
+            "mrr": statistics.fmean([1 / r.posicao if r.posicao else 0.0 for r in com])
+            if com
+            else None,
+            "score_medio": round(statistics.fmean(r.melhor_score for r in itens), 4),
+            "maior_score": round(max(r.melhor_score for r in itens), 4),
+        }
+    return resumo
+
+
 def avaliar(
     perguntas: Sequence[PerguntaDeAvaliacao],
     gerador: GeradorDeEmbeddings,
     repositorio: RepositorioDeTrechos,
     k: int = 5,
 ) -> ResumoDaAvaliacao:
-    """Busca o top-k de cada pergunta, sem limiar, e mede o resultado contra o gabarito."""
+    """Busca o top-k de cada pergunta, sem limiar, e mede o resultado contra o gabarito.
+
+    Perguntas de preço ficam de fora: elas recebem o aviso da RN04 antes de chegar à busca.
+    """
     resultados = []
     for pergunta in perguntas:
+        if pergunta.comportamento_esperado == AVISO_DE_PRECO:
+            continue
         inicio = time.perf_counter()
         vetor = gerador.gerar_para_pergunta(pergunta.pergunta)
         recuperados = repositorio.buscar(vetor, k)

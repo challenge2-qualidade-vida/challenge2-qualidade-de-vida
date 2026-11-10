@@ -3,7 +3,9 @@
 Uso:
     poetry run python -m economia.receitas.cli indexar [--modelo e5|qwen3] [--recriar] [--amostra 400]
     poetry run python -m economia.receitas.cli perguntar "o que faço com arroz e ovo?"
-    poetry run python -m economia.receitas.cli comparar [--amostra 400]
+    poetry run python -m economia.receitas.cli comparar [--amostra 400] [--saida arquivo.json]
+    poetry run python -m economia.receitas.cli avaliar-respostas --saida arquivo.json
+    poetry run python -m economia.receitas.cli comparar-execucoes ANTES.json DEPOIS.json
 """
 
 import argparse
@@ -17,7 +19,7 @@ ARQUIVO_AFRODITE = PASTA_DE_DADOS / "receitas/afrodite.json"
 ARQUIVO_RECIPENLG = PASTA_DE_DADOS / "receitas/recipenlg_0000.parquet"
 PASTA_DE_ORIENTACAO = PASTA_DE_DADOS / "orientacao"
 PASTA_DE_AVALIACAO = Path("data/avaliacao")
-ARQUIVO_DE_PERGUNTAS = PASTA_DE_AVALIACAO / "perguntas_rag_v1.json"
+ARQUIVO_DE_PERGUNTAS = PASTA_DE_AVALIACAO / "perguntas_rag_v2.json"
 ARQUIVO_GUIA = PASTA_DE_ORIENTACAO / "guia_alimentar_populacao_brasileira_2ed.pdf"
 
 
@@ -212,7 +214,11 @@ def comando_comparar(args: argparse.Namespace) -> None:
     import json
     from dataclasses import asdict
 
-    from economia.receitas.aplicacao.avaliacao import avaliar, carregar_perguntas
+    from economia.receitas.aplicacao.avaliacao import (
+        avaliar,
+        carregar_perguntas,
+        por_categoria,
+    )
 
     perguntas = carregar_perguntas(args.perguntas)
     resumos = []
@@ -236,6 +242,7 @@ def comando_comparar(args: argparse.Namespace) -> None:
                 **asdict(resumo),
                 "separacao": round(resumo.separacao, 4),
                 "limiar_sugerido": resumo.limiar_sugerido,
+                "por_categoria": por_categoria(resumo.resultados),
             }
         )
 
@@ -260,11 +267,30 @@ def comando_comparar(args: argparse.Namespace) -> None:
             for p in erros:
                 print(f"  {p['id']} ({p['categoria']}): {' | '.join(p['titulos'][:3])}")
 
+    for r in resumos:
+        print(f"\n{r['colecao']}: por categoria")
+        print(
+            f"  {'categoria':<24} {'perguntas':>9} {'Recall@k':>8} {'MRR':>6} {'maior score':>11}"
+        )
+        for categoria, m in r["por_categoria"].items():
+            recall = "—" if m["recall"] is None else f"{m['recall']:.2f}"
+            mrr = "—" if m["mrr"] is None else f"{m['mrr']:.2f}"
+            print(
+                f"  {categoria:<24} {m['perguntas']:>9} {recall:>8} {mrr:>6} {m['maior_score']:>11.3f}"
+            )
+
     sufixo = f"_amostra{args.amostra}" if args.amostra else ""
-    saida = PASTA_DE_AVALIACAO / f"resultados_v1{sufixo}.json"
+    saida = args.saida or PASTA_DE_AVALIACAO / f"resultados_v1{sufixo}.json"
+    saida.parent.mkdir(parents=True, exist_ok=True)
     saida.write_text(
         json.dumps(
-            {"maquina": descrever_maquina(), "k": args.k, "modelos": resumos},
+            {
+                "maquina": descrever_maquina(),
+                "data": _agora(),
+                "perguntas": str(args.perguntas),
+                "k": args.k,
+                "modelos": resumos,
+            },
             ensure_ascii=False,
             indent=2,
         )
@@ -272,6 +298,113 @@ def comando_comparar(args: argparse.Namespace) -> None:
         encoding="utf-8",
     )
     print(f"\nResultado gravado em {saida}")
+
+
+def _agora() -> str:
+    from datetime import datetime
+
+    return datetime.now().isoformat(timespec="seconds")
+
+
+def comando_avaliar_respostas(args: argparse.Namespace) -> None:
+    """Roda o caso de uso completo em cada pergunta e grava o resultado (pode levar dezenas de minutos na CPU)."""
+    import json
+    from dataclasses import asdict
+
+    from economia.receitas.aplicacao.avaliacao import carregar_perguntas
+    from economia.receitas.aplicacao.avaliacao_respostas import avaliar_respostas
+
+    configuracao = configuracao_com_modelo(args.modelo)
+    perguntas = carregar_perguntas(args.perguntas)
+    if args.categorias:
+        perguntas = [p for p in perguntas if p.categoria in args.categorias]
+    if args.limite:
+        perguntas = perguntas[: args.limite]
+    caso = criar_responder(configuracao, args.amostra)
+    colecao = configuracao.colecao_da_amostra(args.amostra)
+
+    def progresso(n, total, r) -> None:
+        marca = "ok " if r.acertou else "ERR"
+        fonte = {True: "fonte ok", False: "fonte errada", None: ""}[r.fonte_esperada]
+        print(
+            f"[{n:>3}/{total}] {marca} {r.id:<5} esperado={r.esperado:<15} "
+            f"obtido={r.obtido:<15} {r.segundos:6.1f} s {fonte}",
+            flush=True,
+        )
+
+    resumo = avaliar_respostas(perguntas, caso.responder, ao_progredir=progresso)
+    dados = {
+        "maquina": descrever_maquina(),
+        "data": _agora(),
+        "perguntas_arquivo": str(args.perguntas),
+        "colecao": colecao,
+        "modelo_embeddings": configuracao.modelo_embeddings,
+        "modelo_llm": configuracao.ollama_modelo,
+        "limiar": configuracao.limiar_similaridade,
+        **asdict(resumo),
+    }
+
+    def taxa(valor) -> str:
+        return "—" if valor is None else f"{valor:.0%}"
+
+    print(
+        f"\n{resumo.perguntas} perguntas | {colecao} | LLM {configuracao.ollama_modelo}"
+    )
+    for rotulo, chave in (
+        ("Acurácia do comportamento", "acuracia"),
+        ("Taxa de resposta", "taxa_de_resposta"),
+        ("Recusa correta (RN11)", "recusa_correta"),
+        ("Aviso de preço (RN04)", "aviso_de_preco"),
+        ("Fonte esperada citada", "fonte_esperada"),
+    ):
+        print(f"  {rotulo:<28} {taxa(dados[chave]):>6}")
+    print(
+        f"  {'Latência média / máxima':<28} {resumo.latencia_media:5.1f} s / {resumo.latencia_maxima:.1f} s"
+    )
+    if resumo.falsas_recusas:
+        print(f"  Falsas recusas: {', '.join(resumo.falsas_recusas)}")
+    if resumo.respostas_indevidas:
+        print(f"  Respostas indevidas: {', '.join(resumo.respostas_indevidas)}")
+
+    args.saida.parent.mkdir(parents=True, exist_ok=True)
+    args.saida.write_text(
+        json.dumps(dados, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    print(f"\nResultado gravado em {args.saida}")
+
+
+def comando_comparar_execucoes(args: argparse.Namespace) -> None:
+    """Mostra a diferença de cada métrica entre duas execuções da avaliação."""
+    import json
+
+    from economia.receitas.aplicacao.comparacao_de_avaliacoes import (
+        comparar_categorias,
+        comparar_execucoes,
+        formatar_delta,
+        tipo_da_execucao,
+    )
+
+    antes = json.loads(args.antes.read_text(encoding="utf-8"))
+    depois = json.loads(args.depois.read_text(encoding="utf-8"))
+
+    def valor(v) -> str:
+        return "—" if v is None else f"{v:.3f}"
+
+    print(
+        f"Comparação ({tipo_da_execucao(antes)}): {args.antes.name} → {args.depois.name}\n"
+    )
+    print(f"{'métrica':<26} {'antes':>8} {'depois':>8} {'diferença':>9}")
+    for d in comparar_execucoes(antes, depois):
+        print(
+            f"{d.metrica:<26} {valor(d.antes):>8} {valor(d.depois):>8} {formatar_delta(d.delta):>9}"
+        )
+    print("\nPor categoria:")
+    for categoria, diferencas in comparar_categorias(antes, depois).items():
+        partes = [
+            f"{d.metrica} {valor(d.antes)} → {valor(d.depois)} ({formatar_delta(d.delta)})"
+            for d in diferencas
+        ]
+        print(f"  {categoria:<24} " + " | ".join(partes))
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -333,7 +466,39 @@ def main(argv: list[str] | None = None) -> None:
     )
     comparar_parser.add_argument("--k", type=int, default=5)
     comparar_parser.add_argument("--perguntas", type=Path, default=ARQUIVO_DE_PERGUNTAS)
+    comparar_parser.add_argument(
+        "--saida",
+        type=Path,
+        help="arquivo do resultado (padrão: data/avaliacao/resultados_v1.json)",
+    )
     comparar_parser.set_defaults(funcao=comando_comparar)
+
+    respostas_parser = comandos.add_parser(
+        "avaliar-respostas",
+        help="roda o caso de uso completo em cada pergunta e confere o comportamento",
+    )
+    respostas_parser.add_argument("--saida", type=Path, required=True)
+    respostas_parser.add_argument(
+        "--perguntas", type=Path, default=ARQUIVO_DE_PERGUNTAS
+    )
+    respostas_parser.add_argument(
+        "--modelo", choices=["e5", "qwen3"], help="padrão: MODELO_EMBEDDINGS"
+    )
+    respostas_parser.add_argument(
+        "--amostra", type=int, help="usa a coleção da amostra"
+    )
+    respostas_parser.add_argument(
+        "--categorias", nargs="+", help="avalia só estas categorias"
+    )
+    respostas_parser.add_argument("--limite", type=int, help="avalia só as N primeiras")
+    respostas_parser.set_defaults(funcao=comando_avaliar_respostas)
+
+    execucoes_parser = comandos.add_parser(
+        "comparar-execucoes", help="diferença entre duas execuções da avaliação"
+    )
+    execucoes_parser.add_argument("antes", type=Path)
+    execucoes_parser.add_argument("depois", type=Path)
+    execucoes_parser.set_defaults(funcao=comando_comparar_execucoes)
 
     args = parser.parse_args(argv)
     args.funcao(args)
