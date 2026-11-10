@@ -178,9 +178,6 @@ def criar_responder(
             tempo_limite=configuracao.ollama_tempo_limite,
             **(
                 {
-                    "prompt_de_resposta": configuracao.prompt_de_resposta,
-                    "resposta_estruturada": configuracao.resposta_estruturada,
-                    "segunda_tentativa_de_citacao": configuracao.segunda_tentativa_de_citacao,
                     "temperatura": TEMPERATURA_DA_AVALIACAO,
                     "semente": SEMENTE_DA_AVALIACAO,
                 }
