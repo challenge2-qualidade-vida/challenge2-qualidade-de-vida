@@ -20,6 +20,28 @@ URL_AFRODITE = "https://github.com/adrianosferreira/afrodite.json"
 URL_GUIA = "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf"
 LICENCA_RECIPENLG = "Uso não comercial em pesquisa e ensino (termos do RecipeNLG)"
 
+FONTE_DO_AFRODITE = Fonte(
+    titulo="afrodite.json",
+    instituicao="afrodite.json (dataset no GitHub)",
+    url=URL_AFRODITE,
+    licenca="Não declarada",
+)
+FONTE_DO_GUIA = Fonte(
+    titulo="Guia Alimentar para a População Brasileira, 2ª edição",
+    instituicao="Ministério da Saúde",
+    ano=2014,
+    url=URL_GUIA,
+    licenca="Reprodução parcial ou total permitida, desde que citada a fonte (a confirmar)",
+)
+# Cada receita do RecipeNLG cita o próprio link; no catálogo, vale a página do dataset.
+FONTE_DO_RECIPENLG = Fonte(
+    titulo="RecipeNLG",
+    instituicao="Poznań University of Technology",
+    ano=2020,
+    url="https://recipenlg.cs.put.poznan.pl/",
+    licenca=LICENCA_RECIPENLG,
+)
+
 # ---------------------------------------------------------------- receitas
 
 
@@ -56,12 +78,7 @@ def _receita_do_afrodite(item: dict) -> Receita:
         titulo=item["nome"].strip(),
         ingredientes=tuple(Ingrediente(i) for i in ingredientes),
         modo_de_preparo=tuple(preparo),
-        fonte=Fonte(
-            titulo="afrodite.json",
-            instituicao="afrodite.json (dataset no GitHub)",
-            url=URL_AFRODITE,
-            licenca="Não declarada",
-        ),
+        fonte=FONTE_DO_AFRODITE,
         idioma="pt",
     )
 
@@ -287,13 +304,7 @@ def carregar_guia_alimentar(caminho: Path) -> Documento:
         documento_id="guia-alimentar",
         titulo="Guia Alimentar para a População Brasileira",
         secoes=tuple(secoes_do_guia(paginas)),
-        fonte=Fonte(
-            titulo="Guia Alimentar para a População Brasileira, 2ª edição",
-            instituicao="Ministério da Saúde",
-            ano=2014,
-            url=URL_GUIA,
-            licenca="Reprodução parcial ou total permitida, desde que citada a fonte (a confirmar)",
-        ),
+        fonte=FONTE_DO_GUIA,
     )
 
 
@@ -532,3 +543,13 @@ def carregar_documento_de_orientacao(
         ),
         fonte=especificacao.fonte,
     )
+
+
+def catalogo_de_fontes() -> dict[str, Fonte]:
+    """Os documentos-fonte da base de conhecimento, pelo id, para conferir o catálogo (#16)."""
+    return {
+        "guia-alimentar": FONTE_DO_GUIA,
+        "afrodite": FONTE_DO_AFRODITE,
+        "recipenlg": FONTE_DO_RECIPENLG,
+        **{d.documento_id: d.fonte for d in DOCUMENTOS_DE_ORIENTACAO},
+    }
