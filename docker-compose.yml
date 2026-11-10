@@ -1,15 +1,46 @@
-# Serviços de apoio do EconoMIA. Por enquanto só o Qdrant (RAG de receitas, #15).
-# A #36 completa com API, worker, Redis e PostgreSQL.
 services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      QDRANT_URL: http://qdrant:6333
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: economia
+      POSTGRES_USER: economia
+      POSTGRES_PASSWORD: economia_local
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dados:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U economia -d economia"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
   qdrant:
     image: qdrant/qdrant:v1.20.0
     ports:
-      - "6333:6333" # API HTTP
-      - "6334:6334" # API gRPC
+      - "6333:6333"
+      - "6334:6334"
     volumes:
       - qdrant_dados:/qdrant/storage
     mem_limit: 1g
     restart: unless-stopped
 
 volumes:
+  postgres_dados:
   qdrant_dados:
