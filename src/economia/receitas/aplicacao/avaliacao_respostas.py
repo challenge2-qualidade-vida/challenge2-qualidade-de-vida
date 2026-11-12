@@ -221,6 +221,39 @@ def resumir_respostas(resultados: Sequence[ResultadoDaResposta]) -> ResumoDasRes
     )
 
 
+def avaliar_pergunta(
+    pergunta: PerguntaDeAvaliacao,
+    responder: Callable[[str], RespostaAvaliada],
+    relogio: Callable[[], float] = time.perf_counter,
+    gerador: GeradorDeEmbeddings | None = None,
+    k: int = 5,
+) -> ResultadoDaResposta:
+    """Responde uma pergunta com o caso de uso e compara com o esperado.
+
+    `gerador` calcula o cosseno com a referência; sem ele, o cosseno fica de fora.
+    """
+    inicio = relogio()
+    resposta = responder(pergunta.pergunta)
+    segundos = relogio() - inicio
+    texto = metricas_de_texto(pergunta, resposta, gerador)
+    return ResultadoDaResposta(
+        id=pergunta.id,
+        categoria=pergunta.categoria,
+        esperado=pergunta.comportamento_esperado,
+        obtido=comportamento_obtido(resposta),
+        fonte_esperada=citou_fonte_esperada(pergunta, resposta),
+        segundos=segundos,
+        documentos_citados=tuple(
+            dict.fromkeys(u.trecho.documento_id for u in resposta.trechos)
+        ),
+        texto=resposta.texto,
+        rouge_1=texto.rouge_1,
+        rouge_l=texto.rouge_l,
+        cosseno=texto.cosseno,
+        hit=hit_em_k(pergunta, resposta, k),
+    )
+
+
 def avaliar_respostas(
     perguntas: Sequence[PerguntaDeAvaliacao],
     responder: Callable[[str], RespostaAvaliada],
@@ -229,32 +262,10 @@ def avaliar_respostas(
     gerador: GeradorDeEmbeddings | None = None,
     k: int = 5,
 ) -> ResumoDasRespostas:
-    """Responde cada pergunta com o caso de uso e compara com o esperado.
-
-    `gerador` calcula o cosseno com a referência; sem ele, o cosseno fica de fora.
-    """
+    """Avalia cada pergunta, em ordem, e resume (ver `avaliar_pergunta`)."""
     resultados = []
     for n, pergunta in enumerate(perguntas, start=1):
-        inicio = relogio()
-        resposta = responder(pergunta.pergunta)
-        segundos = relogio() - inicio
-        texto = metricas_de_texto(pergunta, resposta, gerador)
-        resultado = ResultadoDaResposta(
-            id=pergunta.id,
-            categoria=pergunta.categoria,
-            esperado=pergunta.comportamento_esperado,
-            obtido=comportamento_obtido(resposta),
-            fonte_esperada=citou_fonte_esperada(pergunta, resposta),
-            segundos=segundos,
-            documentos_citados=tuple(
-                dict.fromkeys(u.trecho.documento_id for u in resposta.trechos)
-            ),
-            texto=resposta.texto,
-            rouge_1=texto.rouge_1,
-            rouge_l=texto.rouge_l,
-            cosseno=texto.cosseno,
-            hit=hit_em_k(pergunta, resposta, k),
-        )
+        resultado = avaliar_pergunta(pergunta, responder, relogio, gerador, k)
         resultados.append(resultado)
         if ao_progredir:
             ao_progredir(n, len(perguntas), resultado)

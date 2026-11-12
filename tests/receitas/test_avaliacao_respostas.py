@@ -11,6 +11,7 @@ from economia.receitas.aplicacao.avaliacao import (
 )
 from economia.receitas.aplicacao.avaliacao_respostas import (
     ResultadoDaResposta,
+    avaliar_pergunta,
     avaliar_respostas,
     citou_fonte_esperada,
     comportamento_obtido,
@@ -250,4 +251,18 @@ def test_resumo_sem_metricas_de_texto_da_none():
         None,
         None,
         None,
+    )
+
+
+def test_avaliar_pergunta_avalia_uma_so(trecho):
+    pergunta = PerguntaDeAvaliacao("r1", "bolo", "receita", (Esperado("bolo"),))
+    tempos = iter([1.0, 3.5])
+    r = avaliar_pergunta(
+        pergunta, lambda _: respondida(trecho("bolo")), relogio=lambda: next(tempos)
+    )
+    assert (r.id, r.obtido, r.fonte_esperada, r.segundos) == (
+        "r1",
+        RESPONDER,
+        True,
+        2.5,
     )

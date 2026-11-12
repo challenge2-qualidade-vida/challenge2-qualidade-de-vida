@@ -103,3 +103,18 @@ def test_colecao_da_amostra_tem_sufixo():
     configuracao = criar(modelo_embeddings="qwen3")
     assert configuracao.colecao_da_amostra(400) == "base_conhecimento_qwen3_amostra400"
     assert configuracao.colecao_da_amostra(None) == configuracao.colecao
+
+
+def test_langfuse_so_fica_configurado_com_as_duas_chaves(monkeypatch):
+    for nome in ("LANGFUSE_PUBLIC_KEY", "LANGFUSE_SECRET_KEY", "LANGFUSE_BASE_URL"):
+        monkeypatch.delenv(nome, raising=False)
+    assert criar().langfuse_configurado is False
+    assert criar(langfuse_public_key="pk").langfuse_configurado is False
+    configurada = criar(langfuse_public_key="pk", langfuse_secret_key="sk")
+    assert configurada.langfuse_configurado is True
+    assert configurada.langfuse_base_url == "https://us.cloud.langfuse.com"
+
+
+def test_saida_maxima_padrao(monkeypatch):
+    monkeypatch.delenv("OLLAMA_SAIDA_MAXIMA", raising=False)
+    assert criar().ollama_saida_maxima == 2048

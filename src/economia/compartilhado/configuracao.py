@@ -25,6 +25,8 @@ class Configuracao(BaseSettings):
     ollama_contexto: int = Field(default=8192, ge=2048)
     # segundos de espera por resposta do LLM; na CPU, cinco receitas no prompt passam de 10 min
     ollama_tempo_limite: float = Field(default=1800, gt=0)
+    # teto de tokens gerados por resposta, igual para todos os modelos na comparação
+    ollama_saida_maxima: int = Field(default=2048, gt=0)
     modelo_embeddings: Literal["e5", "qwen3"] = "e5"
     # auto: mps no Mac com Apple Silicon, cuda se houver GPU NVIDIA, senão cpu
     dispositivo_embeddings: Literal["auto", "cpu", "mps", "cuda"] = "auto"
@@ -45,6 +47,15 @@ class Configuracao(BaseSettings):
     prompt_de_resposta: str = "resposta_com_fontes_v1"
     resposta_estruturada: bool = False
     segunda_tentativa_de_citacao: bool = False
+    # Langfuse Cloud (registro das chamadas e dos experimentos). Sem as duas chaves, nada é
+    # enviado. Região US, como na visão geral da arquitetura.
+    langfuse_public_key: str | None = None
+    langfuse_secret_key: str | None = None
+    langfuse_base_url: str = "https://us.cloud.langfuse.com"
+
+    @property
+    def langfuse_configurado(self) -> bool:
+        return bool(self.langfuse_public_key and self.langfuse_secret_key)
 
     @field_validator("limiar_unico_antigo")
     @classmethod
