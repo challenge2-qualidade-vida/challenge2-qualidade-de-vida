@@ -235,7 +235,7 @@ Se essa resposta aparecer, a API está funcionando.
 
 ### 8. Executar os testes
 
-Para verificar se os testes automatizados do projeto estão passando, abra outro terminal, entre novamente na pasta do repositório e execute:
+Para verificar se os testes automatizados do projeto estão passando, abra uma segunda aba ou janela do terminal. Entre na pasta do repositório (se ainda não estiver nela) e execute:
 
 ```bash
 poetry run pytest
@@ -268,7 +268,7 @@ Quando terminar de utilizar o projeto:
 docker compose down
 ```
 
-Esse comando encerra os serviços iniciados pelo Docker Compose. Os dados armazenados nos volumes persistentes são preservados.
+Esse comando encerra os serviços iniciados pelo Docker Compose, como o Qdrant. A API, iniciada separadamente pelo Poetry, deve ser encerrada com `Ctrl + C` no terminal em que está sendo executada. Os dados armazenados nos volumes persistentes são preservados.
 
 ### Observação sobre a configuração atual
 
