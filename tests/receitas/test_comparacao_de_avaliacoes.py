@@ -63,6 +63,31 @@ def test_metrica_ausente_nao_tem_diferenca():
     }
     assert diferencas["acuracia"].delta == 0.25
     assert diferencas["fonte_esperada"].delta is None
+    # execuções antigas não têm as métricas de texto: aparecem sem diferença
+    assert diferencas["rouge_1"].delta is None
+
+
+def test_compara_as_metricas_de_texto_e_o_hit():
+    antes = {
+        **respostas(0.5),
+        "rouge_1": 0.2,
+        "rouge_l": 0.1,
+        "cosseno": 0.8,
+        "hit": 0.5,
+    }
+    depois = {
+        **respostas(0.5),
+        "rouge_1": 0.3,
+        "rouge_l": 0.2,
+        "cosseno": 0.85,
+        "hit": None,
+    }
+    diferencas = {d.metrica: d for d in comparar_execucoes(antes, depois)}
+    assert diferencas["rouge_1"].delta == 0.1
+    assert diferencas["rouge_l"].delta == 0.1
+    assert diferencas["cosseno"].delta == 0.05
+    # o modo puro não tem busca: o Hit@k aparece só de um lado
+    assert diferencas["hit"].delta is None
 
 
 def test_tipos_diferentes_nao_se_comparam():

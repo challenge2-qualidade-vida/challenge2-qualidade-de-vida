@@ -1,3 +1,5 @@
+from dataclasses import replace
+
 import pytest
 
 from economia.receitas.aplicacao.avaliacao import (
@@ -18,6 +20,7 @@ from economia.receitas.aplicacao.responder_pergunta import (
     AVISO_DE_PRECO as TEXTO_DO_AVISO,
 )
 from economia.receitas.aplicacao.responder_pergunta import NAO_ENCONTREI
+from economia.receitas.aplicacao.responder_sem_base import RespostaSemBase
 from economia.receitas.dominio.modelos import RespostaComFontes, TrechoRecuperado
 
 
@@ -125,3 +128,126 @@ def test_avaliar_respostas_roda_o_caso_de_uso_em_cada_pergunta(trecho):
     assert [r.segundos for r in resumo.resultados] == [3.0, 1.0, 0.5]
     assert resumo.resultados[0].documentos_citados == ("bolo",)
     assert vistos == [(1, 3, "r1"), (2, 3, "s1"), (3, 3, "$1")]
+
+
+REFERENCIA = "Guarde a alface seca num pote fechado."
+
+
+def com_referencia(id="c1", referencia=REFERENCIA, esperados=("alface",)):
+    return PerguntaDeAvaliacao(
+        id,
+        "como conservo alface?",
+        "conservacao",
+        tuple(Esperado(e) for e in esperados),
+        resposta_referencia=referencia,
+    )
+
+
+def avaliar_uma(pergunta, resposta, gerador=None):
+    return avaliar_respostas([pergunta], lambda _: resposta, gerador=gerador)
+
+
+def test_resposta_igual_a_referencia_tem_rouge_1(trecho):
+    resposta = respondida(trecho("alface"))
+    resposta = replace(resposta, texto=f"{REFERENCIA} [1]")
+    [r] = avaliar_uma(com_referencia(), resposta).resultados
+    assert r.rouge_1 == 1.0
+    assert r.rouge_l == 1.0
+    # sem gerador de embeddings, o cosseno não é calculado
+    assert r.cosseno is None
+
+
+def test_cosseno_usa_o_gerador_de_embeddings():
+    class Gerador:
+        nome = "falso"
+        dimensao = 2
+
+        def gerar_para_trechos(self, textos):
+            return [[1.0, 0.0], [0.6, 0.8]]
+
+    resposta = RespostaSemBase(texto="Guarde seca.", encontrou=True)
+    [r] = avaliar_uma(com_referencia(), resposta, Gerador()).resultados
+    assert r.cosseno == pytest.approx(0.6)
+
+
+def test_recusa_de_pergunta_com_referencia_zera_as_metricas_de_texto():
+    class Gerador:
+        nome = "falso"
+        dimensao = 2
+
+        def gerar_para_trechos(self, textos):
+            raise AssertionError("recusa não passa pelo embedding")
+
+    [r] = avaliar_uma(com_referencia(), NAO_ACHOU, Gerador()).resultados
+    assert (r.rouge_1, r.rouge_l, r.cosseno) == (0.0, 0.0, 0.0)
+
+
+def test_pergunta_sem_referencia_nao_tem_metricas_de_texto():
+    resposta = RespostaSemBase(texto="Qualquer coisa.", encontrou=True)
+    [r] = avaliar_uma(com_referencia(referencia=None), resposta).resultados
+    assert (r.rouge_1, r.rouge_l, r.cosseno) == (None, None, None)
+
+
+def test_hit_marca_o_gabarito_entre_os_recuperados(trecho):
+    recuperados = tuple(TrechoRecuperado(trecho(i), 0.9) for i in ("x", "alface"))
+    acertou = replace(respondida(trecho("x")), recuperados=recuperados)
+    errou = replace(
+        respondida(trecho("x")), recuperados=(TrechoRecuperado(trecho("x"), 0.9),)
+    )
+    assert avaliar_uma(com_referencia(), acertou).resultados[0].hit == 1
+    assert avaliar_uma(com_referencia(), errou).resultados[0].hit == 0
+
+
+def test_hit_so_olha_os_k_primeiros(trecho):
+    recuperados = tuple(
+        TrechoRecuperado(trecho(i), 0.9) for i in ("a", "b", "c", "d", "e", "alface")
+    )
+    resposta = replace(respondida(trecho("a")), recuperados=recuperados)
+    resumo = avaliar_respostas([com_referencia()], lambda _: resposta, k=5)
+    assert resumo.resultados[0].hit == 0
+
+
+def test_sem_recuperados_nao_ha_hit():
+    # modo puro: a resposta não passou pela busca
+    resposta = RespostaSemBase(texto="Guarde seca.", encontrou=True)
+    [r] = avaliar_uma(com_referencia(), resposta).resultados
+    assert r.hit is None
+
+
+def test_resumo_tira_a_media_das_metricas_de_texto_e_do_hit():
+    def com_metricas(id, rouge_1, rouge_l, cosseno, hit):
+        return ResultadoDaResposta(
+            id,
+            "x",
+            RESPONDER,
+            RESPONDER,
+            None,
+            1.0,
+            rouge_1=rouge_1,
+            rouge_l=rouge_l,
+            cosseno=cosseno,
+            hit=hit,
+        )
+
+    resumo = resumir_respostas(
+        [
+            com_metricas("a", 1.0, 0.5, 0.9, 1),
+            com_metricas("b", 0.0, 0.0, 0.0, 0),
+            com_metricas("c", None, None, None, None),
+        ]
+    )
+    assert resumo.rouge_1 == pytest.approx(0.5)
+    assert resumo.rouge_l == pytest.approx(0.25)
+    assert resumo.cosseno == pytest.approx(0.45)
+    assert resumo.hit == pytest.approx(0.5)
+    assert resumo.por_categoria["x"]["rouge_1"] == pytest.approx(0.5)
+
+
+def test_resumo_sem_metricas_de_texto_da_none():
+    resumo = resumir_respostas([resultado("a", RESPONDER, RESPONDER)])
+    assert (resumo.rouge_1, resumo.rouge_l, resumo.cosseno, resumo.hit) == (
+        None,
+        None,
+        None,
+        None,
+    )

@@ -21,11 +21,15 @@ METRICAS_DE_RESPOSTA = (
     "recusa_correta",
     "aviso_de_preco",
     "fonte_esperada",
+    "rouge_1",
+    "rouge_l",
+    "cosseno",
+    "hit",
     "latencia_media",
 )
 METRICAS_POR_CATEGORIA = {
     "recuperacao": ("recall", "mrr"),
-    "respostas": ("acuracia", "fonte_esperada"),
+    "respostas": ("acuracia", "fonte_esperada", "rouge_l"),
 }
 
 

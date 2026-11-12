@@ -87,6 +87,29 @@ def test_carregar_perguntas(tmp_path):
     [p1, p2] = carregar_perguntas(arquivo)
     assert p1.esperados == (Esperado("embrapa-geladeira"),)
     assert p1.tem_resposta and not p2.tem_resposta
+    assert p1.resposta_referencia is None
+
+
+def test_carregar_perguntas_com_resposta_de_referencia(tmp_path):
+    arquivo = tmp_path / "perguntas.json"
+    arquivo.write_text(
+        json.dumps(
+            {
+                "perguntas": [
+                    {
+                        "id": "p1",
+                        "pergunta": "Como guardar alface?",
+                        "categoria": "conservacao",
+                        "esperados": [{"documento_id": "embrapa-geladeira"}],
+                        "resposta_referencia": "Guarde a alface seca num pote fechado.",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    [p1] = carregar_perguntas(arquivo)
+    assert p1.resposta_referencia == "Guarde a alface seca num pote fechado."
 
 
 def test_avaliar_busca_sem_limiar_e_mede(trecho):

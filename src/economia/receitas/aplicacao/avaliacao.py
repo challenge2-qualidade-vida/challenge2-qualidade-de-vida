@@ -44,6 +44,9 @@ class PerguntaDeAvaliacao:
     categoria: str
     esperados: tuple[Esperado, ...] = ()
     comportamento: str = ""
+    # resposta esperada, escrita a partir dos trechos do gabarito e revisada por uma pessoa;
+    # base do ROUGE e do cosseno da avaliação das respostas
+    resposta_referencia: str | None = None
 
     def __post_init__(self) -> None:
         if self.comportamento and self.comportamento not in COMPORTAMENTOS:
@@ -72,6 +75,7 @@ def carregar_perguntas(caminho: Path) -> list[PerguntaDeAvaliacao]:
             categoria=item["categoria"],
             esperados=tuple(Esperado(**e) for e in item.get("esperados", [])),
             comportamento=item.get("comportamento", ""),
+            resposta_referencia=item.get("resposta_referencia"),
         )
         for item in dados["perguntas"]
     ]
