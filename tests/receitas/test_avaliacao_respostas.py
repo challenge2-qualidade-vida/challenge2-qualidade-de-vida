@@ -266,3 +266,10 @@ def test_avaliar_pergunta_avalia_uma_so(trecho):
         True,
         2.5,
     )
+
+
+def test_modo_puro_nao_tem_fonte_esperada():
+    # sem busca não há fonte: a métrica não se aplica, em vez de contar como erro
+    pergunta = PerguntaDeAvaliacao("c1", "?", "x", (Esperado("alface"),))
+    resposta = RespostaSemBase(texto="Guarde na geladeira.", encontrou=True)
+    assert citou_fonte_esperada(pergunta, resposta) is None

@@ -64,8 +64,12 @@ def comportamento_obtido(resposta: RespostaAvaliada) -> str:
 def citou_fonte_esperada(
     pergunta: PerguntaDeAvaliacao, resposta: RespostaAvaliada
 ) -> bool | None:
-    """Se a resposta usou algum trecho do gabarito. `None` quando não se aplica."""
-    if not pergunta.esperados or not resposta.encontrou:
+    """Se a resposta usou algum trecho do gabarito. `None` quando não se aplica.
+
+    Não se aplica sem gabarito, sem resposta ou sem trechos usados (LLM puro): uma resposta do
+    RAG que encontrou sempre traz os trechos citados (RN10).
+    """
+    if not pergunta.esperados or not resposta.encontrou or not resposta.trechos:
         return None
     return any(
         esperado.corresponde(usado.trecho)
