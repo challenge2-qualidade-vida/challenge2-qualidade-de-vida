@@ -4,7 +4,7 @@ Uso:
     poetry run python -m economia.receitas.cli indexar [--modelo e5|qwen3] [--recriar] [--amostra 400]
     poetry run python -m economia.receitas.cli perguntar "o que faço com arroz e ovo?"
     poetry run python -m economia.receitas.cli comparar [--amostra 400] [--saida arquivo.json]
-    poetry run python -m economia.receitas.cli avaliar-respostas --saida arquivo.json
+    poetry run python -m economia.receitas.cli avaliar-respostas --saida arquivo.json [--modo rag|puro] [--llm gemma3:12b]
     poetry run python -m economia.receitas.cli comparar-execucoes ANTES.json DEPOIS.json
 """
 
@@ -159,32 +159,47 @@ TEMPERATURA_DA_AVALIACAO = 0.0
 SEMENTE_DA_AVALIACAO = 42
 
 
+PROMPT_SEM_BASE = "resposta_sem_base_v1"
+MODOS = ("rag", "puro")
+
+
+def criar_llm(configuracao: Configuracao, deterministico: bool = False, ao_gerar=None):
+    """LLM do Ollama com a configuração. Na avaliação, temperatura 0 e semente fixa."""
+    from economia.compartilhado.infraestrutura.llm_ollama import ModeloOllama
+
+    return ModeloOllama(
+        url=configuracao.ollama_url,
+        modelo=configuracao.ollama_modelo,
+        contexto=configuracao.ollama_contexto,
+        tempo_limite=configuracao.ollama_tempo_limite,
+        saida_maxima=configuracao.ollama_saida_maxima,
+        ao_gerar=ao_gerar,
+        **(
+            {
+                "temperatura": TEMPERATURA_DA_AVALIACAO,
+                "semente": SEMENTE_DA_AVALIACAO,
+            }
+            if deterministico
+            else {}
+        ),
+    )
+
+
 def criar_responder(
     configuracao: Configuracao,
     amostra: int | None = None,
     deterministico: bool = False,
+    llm=None,
+    repositorio=None,
+    gerador=None,
 ):
-    from economia.compartilhado.infraestrutura.llm_ollama import ModeloOllama
     from economia.compartilhado.infraestrutura.prompts import carregar_prompt
     from economia.receitas.aplicacao.responder_pergunta import ResponderPergunta
 
     return ResponderPergunta(
-        criar_gerador(configuracao),
-        criar_repositorio(configuracao, amostra),
-        ModeloOllama(
-            url=configuracao.ollama_url,
-            modelo=configuracao.ollama_modelo,
-            contexto=configuracao.ollama_contexto,
-            tempo_limite=configuracao.ollama_tempo_limite,
-            **(
-                {
-                    "temperatura": TEMPERATURA_DA_AVALIACAO,
-                    "semente": SEMENTE_DA_AVALIACAO,
-                }
-                if deterministico
-                else {}
-            ),
-        ),
+        gerador or criar_gerador(configuracao),
+        repositorio or criar_repositorio(configuracao, amostra),
+        llm or criar_llm(configuracao, deterministico),
         prompt_do_sistema=carregar_prompt(
             "miau-ricio", configuracao.prompt_de_resposta
         ),
@@ -197,6 +212,80 @@ def criar_responder(
         if configuracao.segunda_tentativa_de_citacao
         else None,
     )
+
+
+def criar_caso_de_avaliacao(
+    configuracao: Configuracao,
+    modo: str,
+    llm,
+    amostra: int | None = None,
+    repositorio=None,
+    gerador=None,
+):
+    """Caso de uso avaliado: o RAG completo ou o LLM puro, com o mesmo LLM."""
+    if modo == "puro":
+        from economia.compartilhado.infraestrutura.prompts import carregar_prompt
+        from economia.receitas.aplicacao.responder_sem_base import ResponderSemBase
+
+        return ResponderSemBase(llm, carregar_prompt("miau-ricio", PROMPT_SEM_BASE))
+    return criar_responder(
+        configuracao, amostra, llm=llm, repositorio=repositorio, gerador=gerador
+    )
+
+
+def nomes_dos_prompts(configuracao: Configuracao) -> dict[str, str]:
+    """Texto de cada prompt → nome do arquivo, para o registro dizer qual prompt foi usado."""
+    from economia.compartilhado.infraestrutura.prompts import carregar_prompt
+
+    nomes = {
+        PROMPT_SEM_BASE,
+        configuracao.prompt_de_resposta,
+        "extrair_ingredientes_v1",
+        "pedido_de_citacao_v1",
+    }
+    return {carregar_prompt("miau-ricio", nome): nome for nome in nomes}
+
+
+def nome_do_run(configuracao: Configuracao, modo: str) -> str:
+    """Nome da execução: modo, LLM, prompt e, no RAG, o modelo de embeddings."""
+    if modo == "puro":
+        return f"puro-{configuracao.ollama_modelo}-{PROMPT_SEM_BASE}"
+    return (
+        f"rag-{configuracao.ollama_modelo}-{configuracao.prompt_de_resposta}"
+        f"-{configuracao.modelo_embeddings}"
+    )
+
+
+def nome_do_dataset(arquivo: Path, avaliadas: int, total: int) -> str:
+    """Um dataset por conjunto de perguntas; um piloto (subconjunto) tem o seu."""
+    nome = f"miau-ricio-{arquivo.stem}"
+    return nome if avaliadas == total else f"{nome}-{avaliadas}de{total}"
+
+
+def descrever_llm(configuracao: Configuracao) -> dict:
+    """Digest, quantização e tamanho do modelo no Ollama, para a execução ser reproduzível."""
+    import ollama
+
+    cliente = ollama.Client(host=configuracao.ollama_url)
+    try:
+        detalhes = cliente.show(configuracao.ollama_modelo)["details"]
+        digest = next(
+            (
+                m["digest"]
+                for m in cliente.list()["models"]
+                if m["model"] == configuracao.ollama_modelo
+            ),
+            None,
+        )
+    # Ollama fora do ar ou modelo não baixado: a execução falha depois, na 1ª pergunta
+    except (ConnectionError, ollama.ResponseError) as erro:
+        return {"erro": str(erro)}
+    return {
+        "digest": digest,
+        "quantizacao": detalhes["quantization_level"],
+        "parametros": detalhes["parameter_size"],
+        "familia": detalhes["family"],
+    }
 
 
 def comando_perguntar(args: argparse.Namespace) -> None:
@@ -330,12 +419,21 @@ def _agora() -> str:
 
 
 def comando_avaliar_respostas(args: argparse.Namespace) -> None:
-    """Roda o caso de uso completo em cada pergunta e grava o resultado (pode levar dezenas de minutos na CPU)."""
+    """Roda o caso de uso (RAG ou LLM puro) em cada pergunta e grava o resultado.
+
+    Com as chaves do Langfuse, a execução vira um run do dataset das perguntas, com a busca e
+    as chamadas ao LLM registradas e as métricas como pontuações. Sem as chaves, nada é enviado.
+    """
     import json
     from dataclasses import asdict
+    from functools import partial
 
     from economia.receitas.aplicacao.avaliacao import carregar_perguntas
-    from economia.receitas.aplicacao.avaliacao_respostas import avaliar_respostas
+    from economia.receitas.aplicacao.avaliacao_respostas import (
+        avaliar_pergunta,
+        avaliar_respostas,
+        resumir_respostas,
+    )
 
     configuracao = configuracao_com_modelo(args.modelo)
     ajustes = {
@@ -344,58 +442,135 @@ def comando_avaliar_respostas(args: argparse.Namespace) -> None:
             ("prompt_de_resposta", args.prompt),
             ("resposta_estruturada", args.estruturada),
             ("segunda_tentativa_de_citacao", args.segunda_tentativa),
+            ("ollama_modelo", args.llm),
         )
         if valor is not None
     }
     configuracao = configuracao.model_copy(update=ajustes)
-    perguntas = carregar_perguntas(args.perguntas)
+    todas = carregar_perguntas(args.perguntas)
+    perguntas = todas
     if args.categorias:
         perguntas = [p for p in perguntas if p.categoria in args.categorias]
     if args.limite:
         perguntas = perguntas[: args.limite]
-    caso = criar_responder(configuracao, args.amostra, deterministico=True)
-    colecao = configuracao.colecao_da_amostra(args.amostra)
 
-    def progresso(n, total, r) -> None:
-        marca = "ok " if r.acertou else "ERR"
-        fonte = {True: "fonte ok", False: "fonte errada", None: ""}[r.fonte_esperada]
-        print(
-            f"[{n:>3}/{total}] {marca} {r.id:<5} esperado={r.esperado:<15} "
-            f"obtido={r.obtido:<15} {r.segundos:6.1f} s {fonte}",
-            flush=True,
-        )
+    from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
+        RegistroDeGeracoes,
+        criar_cliente,
+    )
 
-    resumo = avaliar_respostas(perguntas, caso.responder, ao_progredir=progresso)
-    dados = {
+    langfuse = criar_cliente(configuracao)
+    registro = (
+        RegistroDeGeracoes(langfuse, nomes_dos_prompts(configuracao))
+        if langfuse
+        else None
+    )
+    llm = criar_llm(configuracao, deterministico=True, ao_gerar=registro)
+    # o e5 calcula o cosseno nos dois modos; no RAG, é o mesmo gerador da busca
+    gerador = criar_gerador(configuracao)
+    repositorio = None
+    if args.modo == "rag":
+        repositorio = criar_repositorio(configuracao, args.amostra)
+        if langfuse:
+            from economia.receitas.infraestrutura.experimento_langfuse import (
+                RepositorioObservado,
+            )
+
+            repositorio = RepositorioObservado(repositorio, langfuse)
+    caso = criar_caso_de_avaliacao(
+        configuracao, args.modo, llm, args.amostra, repositorio, gerador
+    )
+    colecao = (
+        configuracao.colecao_da_amostra(args.amostra) if args.modo == "rag" else None
+    )
+    run = nome_do_run(configuracao, args.modo)
+    execucao = {
+        "modo": args.modo,
+        "run": run,
         "maquina": descrever_maquina(),
         "data": _agora(),
         "perguntas_arquivo": str(args.perguntas),
         "colecao": colecao,
         "modelo_embeddings": configuracao.modelo_embeddings,
         "modelo_llm": configuracao.ollama_modelo,
-        "limiar": configuracao.limiar_similaridade,
-        "prompt_de_resposta": configuracao.prompt_de_resposta,
-        "resposta_estruturada": configuracao.resposta_estruturada,
-        "segunda_tentativa_de_citacao": configuracao.segunda_tentativa_de_citacao,
+        "llm": descrever_llm(configuracao),
+        "limiar": configuracao.limiar_similaridade if args.modo == "rag" else None,
+        "prompt_de_resposta": configuracao.prompt_de_resposta
+        if args.modo == "rag"
+        else PROMPT_SEM_BASE,
+        "resposta_estruturada": configuracao.resposta_estruturada
+        if args.modo == "rag"
+        else True,
+        "segunda_tentativa_de_citacao": configuracao.segunda_tentativa_de_citacao
+        if args.modo == "rag"
+        else False,
         "temperatura": TEMPERATURA_DA_AVALIACAO,
         "semente": SEMENTE_DA_AVALIACAO,
-        **asdict(resumo),
+        "contexto": configuracao.ollama_contexto,
+        "saida_maxima": configuracao.ollama_saida_maxima,
+        "raciocinio": False,
     }
+    print(f"Execução {run} | {len(perguntas)} perguntas", flush=True)
+
+    def progresso(n, total, r) -> None:
+        marca = "ok " if r.acertou else "ERR"
+        fonte = {True: "fonte ok", False: "fonte errada", None: ""}[r.fonte_esperada]
+        rouge = "" if r.rouge_l is None else f"ROUGE-L {r.rouge_l:.2f}"
+        print(
+            f"[{n:>3}/{total}] {marca} {r.id:<5} esperado={r.esperado:<15} "
+            f"obtido={r.obtido:<15} {r.segundos:6.1f} s {fonte} {rouge}",
+            flush=True,
+        )
+
+    avaliar = partial(avaliar_pergunta, responder=caso.responder, gerador=gerador)
+    url_do_run = None
+    if langfuse:
+        from economia.receitas.infraestrutura.experimento_langfuse import (
+            rodar_experimento,
+            sincronizar_dataset,
+        )
+
+        dataset = nome_do_dataset(args.perguntas, len(perguntas), len(todas))
+        sincronizar_dataset(langfuse, dataset, perguntas)
+        resultados, url_do_run = rodar_experimento(
+            langfuse,
+            dataset,
+            run,
+            perguntas,
+            avaliar,
+            metadata={k: v for k, v in execucao.items() if k != "llm"},
+            ao_progredir=progresso,
+        )
+        langfuse.flush()
+        resumo = resumir_respostas(resultados)
+    else:
+        resumo = avaliar_respostas(
+            perguntas, caso.responder, ao_progredir=progresso, gerador=gerador
+        )
+    dados = {**execucao, "langfuse_run": url_do_run, **asdict(resumo)}
 
     def taxa(valor) -> str:
         return "—" if valor is None else f"{valor:.0%}"
 
-    print(
-        f"\n{resumo.perguntas} perguntas | {colecao} | LLM {configuracao.ollama_modelo}"
-    )
+    def numero(valor) -> str:
+        return "—" if valor is None else f"{valor:.3f}"
+
+    print(f"\n{resumo.perguntas} perguntas | {run}")
     for rotulo, chave in (
         ("Acurácia do comportamento", "acuracia"),
         ("Taxa de resposta", "taxa_de_resposta"),
         ("Recusa correta (RN11)", "recusa_correta"),
         ("Aviso de preço (RN04)", "aviso_de_preco"),
         ("Fonte esperada citada", "fonte_esperada"),
+        ("Hit@5", "hit"),
     ):
         print(f"  {rotulo:<28} {taxa(dados[chave]):>6}")
+    for rotulo, chave in (
+        ("ROUGE-1 F1", "rouge_1"),
+        ("ROUGE-L F1", "rouge_l"),
+        ("Cosseno com a referência", "cosseno"),
+    ):
+        print(f"  {rotulo:<28} {numero(dados[chave]):>6}")
     print(
         f"  {'Latência média / máxima':<28} {resumo.latencia_media:5.1f} s / {resumo.latencia_maxima:.1f} s"
     )
@@ -409,6 +584,8 @@ def comando_avaliar_respostas(args: argparse.Namespace) -> None:
         json.dumps(dados, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     print(f"\nResultado gravado em {args.saida}")
+    if url_do_run:
+        print(f"Run no Langfuse: {url_do_run}")
 
 
 def comando_comparar_execucoes(args: argparse.Namespace) -> None:
@@ -445,7 +622,7 @@ def comando_comparar_execucoes(args: argparse.Namespace) -> None:
         print(f"  {categoria:<24} " + " | ".join(partes))
 
 
-def main(argv: list[str] | None = None) -> None:
+def criar_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="economia.receitas.cli", description=__doc__)
     comandos = parser.add_subparsers(dest="comando", required=True)
 
@@ -517,6 +694,15 @@ def main(argv: list[str] | None = None) -> None:
     )
     respostas_parser.add_argument("--saida", type=Path, required=True)
     respostas_parser.add_argument(
+        "--modo",
+        choices=MODOS,
+        default="rag",
+        help="rag (busca, limiar e fontes) ou puro (só o LLM, sem a base)",
+    )
+    respostas_parser.add_argument(
+        "--llm", help="modelo do Ollama (padrão: OLLAMA_MODELO, ex.: gemma3:12b)"
+    )
+    respostas_parser.add_argument(
         "--perguntas", type=Path, default=ARQUIVO_DE_PERGUNTAS
     )
     respostas_parser.add_argument(
@@ -554,7 +740,11 @@ def main(argv: list[str] | None = None) -> None:
     execucoes_parser.add_argument("depois", type=Path)
     execucoes_parser.set_defaults(funcao=comando_comparar_execucoes)
 
-    args = parser.parse_args(argv)
+    return parser
+
+
+def main(argv: list[str] | None = None) -> None:
+    args = criar_parser().parse_args(argv)
     args.funcao(args)
 
 
