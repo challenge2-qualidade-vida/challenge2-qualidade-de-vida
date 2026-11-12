@@ -116,27 +116,163 @@ O diretório `compartilhado` reúne elementos utilizados por diferentes contexto
 
 A camada `dominio` não deve importar componentes de infraestrutura, frameworks ou bibliotecas de LLM.
 
-## Gerenciamento de dependências
+## Como executar o projeto localmente
 
-O backend utiliza [Poetry](https://python-poetry.org/) para gerenciar dependências e ambientes virtuais.
+Este guia explica como preparar o ambiente e executar os serviços do EconoMIA no seu computador, mesmo que você ainda não tenha trabalhado com o projeto.
 
-Para instalar as dependências:
+### 1. Pré-requisitos
+
+Antes de começar, instale as seguintes ferramentas:
+
+- **Git:** permite baixar o código do GitHub. [Instruções de instalação](https://git-scm.com/downloads).
+- **Python:** versão 3.11 ou superior, inferior à 4.0. [Download do Python](https://www.python.org/downloads/).
+- **Poetry:** ferramenta utilizada para instalar e gerenciar as dependências Python. [Instalação do Poetry](https://python-poetry.org/docs/#installation).
+- **Docker Desktop:** permite executar serviços em contêineres, como o Qdrant. [Download do Docker Desktop](https://www.docker.com/products/docker-desktop/).
+
+Após instalar o Docker Desktop, abra o programa e aguarde até que o Docker esteja em execução.
+
+### 2. Baixar o projeto
+
+Abra o terminal do seu computador.
+
+Copie e execute o comando abaixo para baixar o repositório:
+
+```bash
+git clone https://github.com/challenge2-qualidade-de-vida/challenge2-qualidade-de-vida.git
+```
+
+Entre na pasta do projeto:
+
+```bash
+cd challenge2-qualidade-de-vida
+```
+
+### 3. Instalar as dependências
+
+Com o terminal aberto na pasta do projeto, execute:
 
 ```bash
 poetry install
 ```
 
-Para executar os testes:
+Esse comando instala as bibliotecas necessárias e prepara o ambiente virtual utilizado pelo projeto.
+
+Aguarde a conclusão da instalação antes de continuar.
+
+### 4. Configurar as variáveis de ambiente (opcional)
+
+O projeto disponibiliza o arquivo `.env.example`, que contém configurações de referência.
+
+Para criar seu próprio arquivo de configuração, execute:
+
+```bash
+cp .env.example .env
+```
+
+Essa etapa é opcional para iniciar a API e testar o endpoint de saúde. Outros módulos podem utilizar essas configurações.
+
+### 5. Iniciar o Qdrant
+
+O Qdrant é o banco de dados vetorial utilizado pelo projeto para armazenamento e recuperação de informações.
+
+Certifique-se de que o Docker Desktop esteja aberto e em execução.
+
+Na pasta do projeto, execute:
+
+```bash
+docker compose up -d
+```
+
+Esse comando inicia os serviços definidos no arquivo `docker-compose.yml`.
+
+Para verificar se o Qdrant está em execução:
+
+```bash
+docker compose ps
+```
+
+Agora teste a disponibilidade do serviço:
+
+```bash
+curl http://localhost:6333/healthz
+```
+
+A resposta esperada é:
+
+```text
+healthz check passed
+```
+
+### 6. Iniciar a API
+
+A API é executada localmente pelo Poetry.
+
+No terminal, ainda dentro da pasta do projeto, execute:
+
+```bash
+poetry run uvicorn economia.api.main:app --reload
+```
+
+Mantenha esse terminal aberto enquanto estiver utilizando a API.
+
+A opção `--reload` permite que o servidor reinicie automaticamente quando houver alterações no código.
+
+Se aparecer o erro `Address already in use`, significa que a porta 8000 já está sendo utilizada. Antes de tentar iniciar outra instância, abra o endereço http://localhost:8000/health no navegador. Se a resposta for `{"status":"ok"}`, a API já está funcionando. Caso contrário, verifique se existe outro servidor em execução e encerre-o pelo terminal em que foi iniciado, pressionando `Ctrl + C`.
+
+### 7. Verificar se a API está funcionando
+
+Com a API em execução, abra o navegador e acesse:
+
+http://localhost:8000/health
+
+A resposta esperada é:
+
+```json
+{"status":"ok"}
+```
+
+Se essa resposta aparecer, a API está funcionando.
+
+### 8. Executar os testes
+
+Para verificar se os testes automatizados do projeto estão passando, abra outro terminal, entre novamente na pasta do repositório e execute:
 
 ```bash
 poetry run pytest
 ```
 
-Para verificar a qualidade do código:
+O pytest apresentará o resultado dos testes executados.
+
+### 9. Verificar a qualidade do código
+
+Para executar a verificação estática de código com Ruff:
 
 ```bash
 poetry run ruff check .
 ```
+
+Quando todas as verificações forem aprovadas, o resultado esperado será:
+
+```text
+All checks passed!
+```
+
+### 10. Encerrar os serviços
+
+Quando terminar de utilizar o projeto:
+
+1. No terminal em que a API está executando, pressione `Ctrl + C`.
+2. Na pasta do projeto, execute:
+
+```bash
+docker compose down
+```
+
+Esse comando encerra os serviços iniciados pelo Docker Compose. Os dados armazenados nos volumes persistentes são preservados.
+
+### Observação sobre a configuração atual
+
+Atualmente, o Docker Compose disponibiliza o Qdrant. A API é iniciada separadamente pelo Poetry, conforme as instruções deste guia.
 
 ## Como trabalhar no repositório
 
