@@ -1,0 +1,814 @@
+{
+  "descricao": "Conjunto intensivo de avaliação do RAG de receitas (v2). Reúne as 26 perguntas da v1 e acrescenta perguntas sobre os temas dos documentos que entram na base ampliada (#16), perguntas com erros de digitação e linguagem informal, mais perguntas sem resposta e perguntas de preço. Cada pergunta tem um comportamento esperado: responder (com gabarito de documentos), nao_encontrar (RN11) ou aviso_de_preco (RN04). Os ids dos documentos novos foram definidos antes da indexação, para que a linha de base mostre o que a base atual não cobre. Metodologia em docs/semana-2/avaliacao-rag.md. v3: igual à v2, com a resposta de referência (resposta_referencia) nas perguntas que devem ser respondidas, escrita a partir dos trechos do gabarito; base do ROUGE e do cosseno (#69). Revisar antes de rodar a matriz.",
+  "versao": 2,
+  "data": "2026-11-10",
+  "perguntas": [
+    {
+      "id": "r01",
+      "pergunta": "Como faço bolo de cenoura no micro-ondas?",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745b08"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Bolo de cenoura de micro-ondas: bata no liquidificador 2 ovos, ½ xícara de óleo e 250 g de cenoura em rodelas. Numa tigela, misture 1 xícara de farinha de trigo, 1 xícara de açúcar, ½ colher (sopa) de fermento em pó e a mistura do liquidificador. Coloque numa forma untada para micro-ondas e asse por 8 minutos na potência máxima, abrindo de 2 em 2 minutos. Depois de frio, cubra com a calda de chocolate em pó, leite, manteiga, açúcar e amido de milho."
+    },
+    {
+      "id": "r02",
+      "pergunta": "Quero uma receita de pão de queijo",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745a97"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Pão de queijo: ferva 1 xícara de óleo, 1 de água, 1 de leite e 2 colheres (sopa) de sal e despeje sobre 1 kg de polvilho doce, misturando para escaldar. Acrescente 4 ovos, 300 g de queijo minas padrão e 100 g de parmesão ralados e misture até a massa ficar lisa. Faça bolinhas, coloque numa assadeira e asse em forno médio."
+    },
+    {
+      "id": "r03",
+      "pergunta": "Como fazer bolinho de bacalhau?",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745abb"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Bolinho de bacalhau: cozinhe 500 g de batata em cubos por 15 minutos e bata até virar purê, juntando 2 gemas. Refogue cebola e alho no azeite, junte o purê, tempere com sal e pimenta-do-reino e mexa até secar. Faça bolinhas com o recheio de bacalhau e envolva cada uma na massa de batata. Passe na farinha de rosca, nas claras batidas e de novo na farinha de rosca e frite em óleo quente até dourar."
+    },
+    {
+      "id": "r04",
+      "pergunta": "Tenho arroz que sobrou, tomate e queijo. Dá para fazer um arroz no forno?",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745b27"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Arroz de forno: refogue o arroz no óleo com tomate, alho e sal, junte água fervente e cozinhe até secar. Solte o arroz e misture manteiga, ovos mexidos, azeitonas, cebolinha, salsinha, queijo parmesão, cenoura cozida, batata palha e carne cozida desfiada. Coloque num refratário, polvilhe parmesão e leve ao forno médio a 180 °C por cerca de 20 minutos, até dourar."
+    },
+    {
+      "id": "r05",
+      "pergunta": "Como preparar uma feijoada com feijão preto, linguiça e carne seca?",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745aae"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Feijoada: deixe as carnes salgadas (linguiça calabresa, carne seca, lombo, paio, costela) de molho por algumas horas, trocando a água, para dessalgar. Cozinhe o feijão preto na pressão por cerca de 20 minutos, junte as carnes dessalgadas e cozinhe por mais 10 minutos. Refogue a couve com bacon e alho e faça a farofa com alho, farinha de mandioca e margarina. Sirva com arroz, farofa, couve e gomos de laranja."
+    },
+    {
+      "id": "r06",
+      "pergunta": "Tenho uma couve-flor em casa, o que posso fazer com ela?",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745a91"
+        },
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745acb"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Com couve-flor dá para fazer um creme: cozinhe 500 g de couve-flor com 10 dentes de alho em 2 xícaras de água fervente por cerca de dez minutos e bata no liquidificador com parmesão ralado, sal e pimenta. Também dá para fazer arroz de couve-flor (couve-flor processada até parecer grãos e refogada com alho e cebola), bolinho de arroz de couve-flor e pão de couve-flor."
+    },
+    {
+      "id": "r07",
+      "pergunta": "Receita de omelete assada no forno com muitos ovos",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745b2f"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Omelete de forno: bata 10 ovos com ½ xícara de leite, sal e pimenta-do-reino. Coloque os recheios de sua escolha (tomate, cheiro-verde, azeitona, presunto, queijo, milho, ervilha) no fundo de forminhas de cupcake, cubra com a mistura de ovos e asse em forno a 200 °C por cerca de 13 minutos (cremosa) ou 20 minutos (mais firme)."
+    },
+    {
+      "id": "r08",
+      "pergunta": "Como fazer pastel de carne?",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745b03"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Pastel de carne: misture 1 lata de creme de leite com soro, 2 ¼ xícaras de farinha de trigo e sal até formar uma massa e leve para gelar por 30 minutos. Abra a massa bem fina, corte discos, coloque o recheio de carne, feche em meia-lua apertando as bordas com um garfo e frite em óleo quente até dourar."
+    },
+    {
+      "id": "e01",
+      "pergunta": "Como fazer pão de banana?",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [
+        {
+          "documento_id": "recipenlg:38105"
+        },
+        {
+          "documento_id": "recipenlg:38479"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Pão de banana: bata manteiga (ou gordura) e açúcar, junte os ovos, as bananas maduras amassadas e o leite. Misture os ingredientes secos (farinha ou mistura para biscoito, aveia, nozes, canela) só até umedecer. Coloque numa forma de pão untada e asse a 350 °F (cerca de 175 °C) por 40 minutos a 1 hora."
+    },
+    {
+      "id": "e02",
+      "pergunta": "Receita de frango assado com limão",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [
+        {
+          "documento_id": "recipenlg:425"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Frango assado com limão: corte o frango em pedaços e coloque numa assadeira. Derreta 1 tablete de manteiga com o suco de 3 limões e regue o frango. Polvilhe orégano e asse a 400 °F (cerca de 200 °C) por 1 hora."
+    },
+    {
+      "id": "e03",
+      "pergunta": "Como fazer biscoitos de pasta de amendoim?",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [
+        {
+          "documento_id": "recipenlg:47489"
+        },
+        {
+          "documento_id": "recipenlg:57174"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Biscoitos de pasta de amendoim: aqueça o forno a 375 °F (cerca de 190 °C). Numa tigela, bata a pasta de amendoim com gordura vegetal, açúcar mascavo, leite e baunilha até misturar bem e junte o ovo. Os ingredientes secos são farinha, sal e bicarbonato."
+    },
+    {
+      "id": "e04",
+      "pergunta": "Tenho uma berinjela e leite. Dá para fazer uma sopa?",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [
+        {
+          "documento_id": "recipenlg:47670"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Sim, dá para fazer sopa de berinjela: cozinhe 1 berinjela descascada e picada em 1 xícara de água com sal por cerca de 10 minutos, até ficar macia. Junte 1 litro de leite, engrosse com 2 colheres (sopa) de farinha dissolvida e tempere com manteiga e pimenta."
+    },
+    {
+      "id": "e05",
+      "pergunta": "Como fazer um ensopado de carne de boi?",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [
+        {
+          "documento_id": "recipenlg:54714"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Ensopado de carne: doure 2 libras (cerca de 900 g) de carne em cubos no óleo de milho. Junte caldo de carne, sal, louro, tomilho e 4 xícaras de água, tampe e cozinhe em fogo baixo por 1 hora e meia. Acrescente cenouras e cebolas pequenas e cozinhe mais meia hora. Engrosse com amido de milho dissolvido em água e ferva por 1 minuto."
+    },
+    {
+      "id": "g01",
+      "pergunta": "O que são alimentos ultraprocessados e por que devo evitá-los?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Alimentos ultraprocessados"
+        },
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Evitar o consumo de alimentos ultraprocessados"
+        },
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Prefira sempre alimentos in natura ou minimamente processados e preparações culinárias a alimentos ultraprocessados"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Alimentos ultraprocessados, como biscoitos recheados, salgadinhos de pacote, refrigerantes e macarrão instantâneo, são nutricionalmente desbalanceados e tendem a ser consumidos em excesso, substituindo alimentos in natura ou minimamente processados. Têm muitas calorias por grama, o que aumenta o risco de obesidade, e sua produção e consumo afetam a cultura, a vida social e o meio ambiente. Por isso, devem ser evitados."
+    },
+    {
+      "id": "g02",
+      "pergunta": "Posso usar sal, óleo e açúcar na comida? Quanto?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Óleos, gorduras, sal e açúcar"
+        },
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Por que óleos, gorduras, sal e açúcar devem ser utilizados em pequenas quantidades em preparações culinárias?"
+        },
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Utilizar óleos, gorduras, sal e açúcar em pequenas quantidades ao temperar e cozinhar alimentos e criar preparações culinárias"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Sim, mas em pequenas quantidades. Usados com moderação em preparações feitas com alimentos in natura ou minimamente processados, óleos, gorduras, sal e açúcar deixam a comida mais saborosa sem desequilibrá-la. Em excesso, o sódio e as gorduras saturadas aumentam o risco de doenças do coração, e o açúcar aumenta o risco de cárie, obesidade e outras doenças crônicas."
+    },
+    {
+      "id": "g03",
+      "pergunta": "Faz mal comer sozinho, rápido ou na frente da televisão?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Comer com regularidade e com atenção"
+        },
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Comer com regularidade e atenção, em ambientes apropriados e, sempre que possível, com companhia"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "O Guia Alimentar recomenda comer em horários semelhantes, devagar e com atenção, sem se envolver em outra atividade, como ver televisão, em locais limpos, confortáveis e tranquilos e, sempre que possível, em companhia. Comer de forma regular, devagar e com atenção ajuda a controlar naturalmente o quanto se come, e a companhia amplia o prazer da alimentação."
+    },
+    {
+      "id": "g04",
+      "pergunta": "Não tenho tempo para cozinhar. Como organizar a semana para comer melhor?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Tempo"
+        },
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Planejar o uso do tempo para dar à alimentação o espaço que ela merece"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Planeje as compras, organize a despensa e defina com antecedência o cardápio da semana. Aumente o seu domínio de técnicas culinárias e divida com a família a responsabilidade pelas atividades domésticas ligadas à alimentação. Reavalie como você usa o seu tempo e quais atividades poderiam ceder espaço para a alimentação."
+    },
+    {
+      "id": "c01",
+      "pergunta": "Quais hortaliças não devem ser guardadas na geladeira?",
+      "categoria": "conservacao",
+      "esperados": [
+        {
+          "documento_id": "embrapa-geladeira"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Devem ficar fora da geladeira, em condição ambiente, as hortaliças que na geladeira podem ter a durabilidade reduzida por podridões e brotamento ou não amadurecem corretamente: abóbora seca, alho, batata, batata-doce, cebola, inhame, cará, taro, moranga, melancia, melão e tomate verde-maduro."
+    },
+    {
+      "id": "c02",
+      "pergunta": "Posso congelar hortaliças? Como faço?",
+      "categoria": "conservacao",
+      "esperados": [
+        {
+          "documento_id": "embrapa-congelador"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Sim, quase todas as hortaliças podem ser congeladas, exceto as folhosas consumidas cruas, como alface, rúcula e agrião. Antes de congelar, lave, branqueie (mergulhe em água fervente por um tempo curto e depois em água gelada pelo mesmo tempo), escorra, embale e identifique. Congeladas, duram de 8 a 12 meses no congelador doméstico."
+    },
+    {
+      "id": "c03",
+      "pergunta": "Como higienizar frutas e verduras antes de comer?",
+      "categoria": "conservacao",
+      "esperados": [
+        {
+          "documento_id": "ms-na-cozinha-flv",
+          "secao": "Capítulo 2. Pré-preparando as frutas, legumes e verduras"
+        },
+        {
+          "documento_id": "embrapa-recomendacoes-compras"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Deixe as frutas e verduras de molho por 10 minutos em solução de 1 colher (sopa) de água sanitária sem alvejante (hipoclorito de sódio) para 1 litro de água, enxágue em água corrente, as folhas uma a uma, escorra ou seque bem e guarde em embalagens limpas e fechadas na geladeira."
+    },
+    {
+      "id": "c04",
+      "pergunta": "Que cuidados tomar ao comprar frutas e hortaliças para durarem mais?",
+      "categoria": "conservacao",
+      "esperados": [
+        {
+          "documento_id": "embrapa-recomendacoes-compras"
+        },
+        {
+          "documento_id": "ms-na-cozinha-flv",
+          "secao": "Capítulo 1. As frutas, legumes e verduras"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Planeje as compras para evitar idas frequentes ao mercado e escolha produtos com bom aspecto: frutas firmes, pesadas, de casca lisa e sem defeitos, marcas ou pontos moles. Lembre que frutas e hortaliças são perecíveis e que cada uma tem uma forma própria de conservação."
+    },
+    {
+      "id": "s01",
+      "pergunta": "Quanto tempo dura o fermento biológico depois de aberto?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s02",
+      "pergunta": "Qual a dose diária recomendada de vitamina D para adultos?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s03",
+      "pergunta": "Como trocar o pneu do carro?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s04",
+      "pergunta": "Qual a melhor marca de panela de pressão?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "g05",
+      "pergunta": "Onde devo fazer as compras para comer melhor?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {
+          "documento_id": "guia-alimentar"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Prefira fazer compras em mercados, feiras livres, feiras de produtores e outros locais que vendem variedade de alimentos in natura ou minimamente processados. Prefira legumes, verduras e frutas da estação e cultivados localmente e, sempre que possível, alimentos orgânicos e de base agroecológica, de preferência direto dos produtores."
+    },
+    {
+      "id": "g06",
+      "pergunta": "Como aprender a cozinhar e dividir as tarefas da cozinha em casa?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {
+          "documento_id": "guia-alimentar"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Se você não sabe cozinhar, converse com quem sabe, peça receitas a familiares e amigos, leia livros, consulte a internet, faça cursos e comece a cozinhar. Se já sabe, desenvolva e partilhe essas habilidades, principalmente com crianças e jovens, sem distinção de gênero. Divida com os membros da família a responsabilidade pelas atividades domésticas do preparo das refeições."
+    },
+    {
+      "id": "c05",
+      "pergunta": "Por quanto tempo a alface dura na geladeira?",
+      "categoria": "conservacao",
+      "esperados": [
+        {
+          "documento_id": "embrapa-geladeira"
+        },
+        {
+          "documento_id": "ms-na-cozinha-flv"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "O pé de alface, envolvido em papel-toalha úmido e guardado num saco plástico na gaveta de legumes, dura cerca de 5 dias na geladeira. Folhas soltas devem ficar numa vasilha coberta com papel-toalha úmido e vedada com filme plástico; o pé dura mais que as folhas soltas."
+    },
+    {
+      "id": "c06",
+      "pergunta": "Como guardar salsinha e cebolinha para durarem mais?",
+      "categoria": "conservacao",
+      "esperados": [
+        {
+          "documento_id": "embrapa-geladeira"
+        },
+        {
+          "documento_id": "embrapa-congelador"
+        },
+        {
+          "documento_id": "ms-na-cozinha-flv"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Hortaliças de folha devem ficar sempre refrigeradas, em embalagem, porque a geladeira é um ambiente seco e a hortaliça sem embalagem murcha rápido. As ervas frescas também podem ser congeladas: tire as folhas dos talos, pique, coloque em formas de gelo cobertas com água gelada e, depois de congeladas, guarde os cubos em sacos no freezer. A cebolinha pode ser congelada já picada."
+    },
+    {
+      "id": "n01",
+      "pergunta": "Quantas calorias tem o arroz branco cozido?",
+      "categoria": "nutricao",
+      "esperados": [
+        {
+          "documento_id": "taco-2011"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Segundo a TACO, 100 g de arroz tipo 1 cozido têm 128 kcal."
+    },
+    {
+      "id": "n02",
+      "pergunta": "Quanta proteína tem um ovo de galinha cozido?",
+      "categoria": "nutricao",
+      "esperados": [
+        {
+          "documento_id": "taco-2011"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Segundo a TACO, 100 g de ovo de galinha inteiro cozido (10 minutos) têm 13,3 g de proteína."
+    },
+    {
+      "id": "n03",
+      "pergunta": "Quanto de fibra tem o feijão carioca cozido?",
+      "categoria": "nutricao",
+      "esperados": [
+        {
+          "documento_id": "taco-2011"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Segundo a TACO, 100 g de feijão carioca cozido têm 8,5 g de fibra alimentar."
+    },
+    {
+      "id": "n04",
+      "pergunta": "A banana prata tem muito carboidrato?",
+      "categoria": "nutricao",
+      "esperados": [
+        {
+          "documento_id": "taco-2011"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Segundo a TACO, 100 g de banana prata crua têm 26,0 g de carboidrato e 98 kcal."
+    },
+    {
+      "id": "n05",
+      "pergunta": "Qual a composição nutricional do espinafre?",
+      "categoria": "nutricao",
+      "esperados": [
+        {
+          "documento_id": "taco-2011"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Segundo a TACO, 100 g de espinafre Nova Zelândia cru têm 16 kcal, 2,0 g de proteína, 0,2 g de lipídeos, 2,6 g de carboidrato, 2,1 g de fibra, 98 mg de cálcio e 82 mg de magnésio."
+    },
+    {
+      "id": "i01",
+      "pergunta": "Com quantos meses o bebê pode começar a comer outros alimentos além do leite materno?",
+      "categoria": "alimentacao_infantil",
+      "esperados": [
+        {
+          "documento_id": "ms-guia-criancas-2019"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "A partir dos 6 meses. Até essa idade, o leite materno é suficiente; a partir dos 6 meses, a criança precisa de outros alimentos in natura ou minimamente processados, além do leite materno. Ao completar 1 ano, já deve fazer as principais refeições com a comida da família."
+    },
+    {
+      "id": "i02",
+      "pergunta": "Posso dar açúcar para uma criança menor de 2 anos?",
+      "categoria": "alimentacao_infantil",
+      "esperados": [
+        {
+          "documento_id": "ms-guia-criancas-2019"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Não. Até os 2 anos, não se deve oferecer açúcar de nenhum tipo, nem mel, nem preparações ou produtos que contenham açúcar, como biscoitos, bolos e iogurtes. O açúcar não é necessário e causa cáries e obesidade, além de dificultar a aceitação de alimentos saudáveis. Adoçantes também não devem ser usados."
+    },
+    {
+      "id": "i03",
+      "pergunta": "Devo bater a comida do bebê no liquidificador?",
+      "categoria": "alimentacao_infantil",
+      "esperados": [
+        {
+          "documento_id": "ms-guia-criancas-2019"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Não. No início, a comida deve ser amassada com garfo e depois oferecida em pedaços pequenos, raspados ou desfiados, para a criança aprender a mastigar. Não use liquidificador, mixer nem peneira: com a consistência líquida, a criança pode ter dificuldade em aceitar alimentos sólidos depois e apresentar engasgo e ânsia de vômito."
+    },
+    {
+      "id": "i04",
+      "pergunta": "Como guardar e descongelar o leite materno?",
+      "categoria": "alimentacao_infantil",
+      "esperados": [
+        {
+          "documento_id": "ms-guia-criancas-2019"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Identifique o frasco com a data e a hora da primeira retirada e use primeiro os mais antigos. No congelador, o leite dura até 15 dias. Descongele no próprio frasco em banho-maria com o fogo apagado, sem ferver e sem usar o micro-ondas. O leite descongelado pode ficar na geladeira (fora da porta) por até 12 horas e não deve ser congelado de novo."
+    },
+    {
+      "id": "i05",
+      "pergunta": "Por que evitar papinhas industrializadas para o bebê?",
+      "categoria": "alimentacao_infantil",
+      "esperados": [
+        {
+          "documento_id": "ms-guia-criancas-2019"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Porque as texturas das papinhas industrializadas não favorecem o desenvolvimento da mastigação, os alimentos vêm misturados no mesmo pote, o que dificulta a percepção dos sabores, a criança não se acostuma com o tempero da comida da família e da sua região, e as vitaminas e minerais dos alimentos in natura são mais bem aproveitados do que os adicionados às papinhas."
+    },
+    {
+      "id": "d01",
+      "pergunta": "Uma campanha de conscientização ajuda a reduzir o desperdício de comida?",
+      "categoria": "desperdicio",
+      "esperados": [
+        {
+          "documento_id": "cadsc-campanha-desperdicio-2022"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Sim. No estudo, uma campanha de conscientização de 5 dias numa unidade de alimentação, com sorteio de brindes para quem devolvia o prato limpo, cartazes e adesivos nas mesas, reduziu a média per capita de resto-ingestão de 60,0 g para 39,3 g e o custo médio em cerca de 34,6%."
+    },
+    {
+      "id": "d02",
+      "pergunta": "O que é resto-ingestão e como medir o desperdício de alimentos?",
+      "categoria": "desperdicio",
+      "esperados": [
+        {
+          "documento_id": "cadsc-campanha-desperdicio-2022"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Resto-ingestão é a comida servida que sobra no prato e é descartada. É medido pesando os restos e dividindo pelo número de refeições servidas, o que dá o índice per capita. A referência citada no estudo é de 2% a 5%, ou de 15 g a 45 g por pessoa, e o peso per capita reflete melhor o desperdício do que a porcentagem."
+    },
+    {
+      "id": "d03",
+      "pergunta": "Como aproveitar cascas e talos de legumes para não desperdiçar?",
+      "categoria": "desperdicio",
+      "esperados": [
+        {
+          "documento_id": "ms-na-cozinha-flv"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Aproveite os alimentos integralmente: talos de couve, rúcula e salsinha; folhas de beterraba, cenoura, couve-flor e brócolis; sementes de abóbora e melancia; e cascas em bom estado. Essas partes concentram vitaminas, minerais e fibras e podem ser usadas em bolos, pães, saladas e sucos, o que reduz gastos e lixo."
+    },
+    {
+      "id": "d04",
+      "pergunta": "Como reduzir as perdas de frutas, legumes e verduras da produção até o consumo?",
+      "categoria": "desperdicio",
+      "esperados": [
+        {
+          "documento_id": "opas-laboratorio-flv-2022"
+        },
+        {
+          "documento_id": "embrapa-recomendacoes-compras"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Planeje as compras, escolha bem os produtos e conserve cada fruta e hortaliça da forma adequada. Também ajudam iniciativas que aproximam agricultores e consumidores, como grupos de consumo com pagamento antecipado, que evitam o desperdício e permitem vender os produtos da estação."
+    },
+    {
+      "id": "h01",
+      "pergunta": "Em que temperatura a comida refrigerada deve ser mantida?",
+      "categoria": "seguranca_alimentar",
+      "esperados": [
+        {
+          "documento_id": "ifc-food-safety-handbook-2020"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "O manual da IFC usa o leite pasteurizado como exemplo: depois da pasteurização, ele é resfriado a 4 °C (±2 °C) e armazenado a no máximo 6 °C."
+    },
+    {
+      "id": "h02",
+      "pergunta": "A que temperatura o centro de um hambúrguer precisa chegar para ser seguro?",
+      "categoria": "seguranca_alimentar",
+      "esperados": [
+        {
+          "documento_id": "ifc-food-safety-handbook-2020"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "O centro do hambúrguer de carne bovina precisa chegar a no mínimo 75 °C, ou a uma combinação equivalente de tempo e temperatura, como 70 °C por dois minutos, para destruir os patógenos."
+    },
+    {
+      "id": "h03",
+      "pergunta": "Quais boas práticas de higiene um serviço de alimentação deve seguir?",
+      "categoria": "seguranca_alimentar",
+      "esperados": [
+        {
+          "documento_id": "bjft-higiene-servicos-2012"
+        },
+        {
+          "documento_id": "raca-praticas-higiene-2019"
+        },
+        {
+          "documento_id": "ifc-food-safety-handbook-2020"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Um serviço de alimentação deve evitar a contaminação cruzada desde o recebimento das matérias-primas até a distribuição, higienizar bem as superfícies de manipulação, controlar o binômio tempo-temperatura, descongelar os alimentos de forma adequada e manejar corretamente os resíduos, para não atrair pragas."
+    },
+    {
+      "id": "h04",
+      "pergunta": "O que é rastreabilidade dos alimentos e por que importa para o consumidor?",
+      "categoria": "seguranca_alimentar",
+      "esperados": [
+        {
+          "documento_id": "bjft-percepcao-riscos-2013"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Rastreabilidade é poder acompanhar a origem dos alimentos e dos ingredientes ao longo da cadeia. Ela permite recolher produtos com mais eficiência quando necessário e aumenta a confiança do consumidor na segurança dos alimentos, desde que ele esteja informado sobre como o sistema funciona; por outro lado, os consumidores percebem que ela aumenta os preços."
+    },
+    {
+      "id": "h05",
+      "pergunta": "Quais os riscos da Salmonella nos alimentos?",
+      "categoria": "seguranca_alimentar",
+      "esperados": [
+        {
+          "documento_id": "bjft-percepcao-riscos-2013"
+        },
+        {
+          "documento_id": "ifc-food-safety-handbook-2020"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "A Salmonella é uma bactéria que pode contaminar alimentos, como um frango cozido que entra em contato com carne crua (contaminação cruzada), e causar doenças. Os consumidores a apontam como o principal risco microbiológico dos alimentos. Cozinhar bem os alimentos e evitar a contaminação cruzada ajudam a controlá-la."
+    },
+    {
+      "id": "u01",
+      "pergunta": "Quais os riscos dos alimentos ultraprocessados para a cultura alimentar e a saúde?",
+      "categoria": "orientacao_nutricional",
+      "esperados": [
+        {
+          "documento_id": "raca-ultraprocessados-2022"
+        },
+        {
+          "documento_id": "guia-alimentar"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Os ultraprocessados são feitos para durar muito e ser consumidos em grande quantidade, com ingredientes baratos e aditivos; são pobres em nutrientes e ricos em sódio, gorduras e açúcares. Estão associados a obesidade, doenças cardiovasculares, diabetes, depressão e demência, ameaçam a cultura alimentar baseada em alimentos tradicionais e prejudicam o meio ambiente. Por isso, devem ser evitados."
+    },
+    {
+      "id": "u02",
+      "pergunta": "Como o profissional de saúde usa o Guia Alimentar no atendimento de adultos?",
+      "categoria": "orientacao_nutricional",
+      "esperados": [
+        {
+          "documento_id": "ms-protocolo-guia-adultos-2021"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "O profissional usa os protocolos do Guia Alimentar: aplica o formulário de marcadores de consumo alimentar do SISVAN, segue um fluxograma de conduta e faz as recomendações para cada ponto crítico identificado, combinando com a pessoa as prioridades em cada consulta, podendo começar pelas mais importantes e seguir com as demais nas consultas seguintes."
+    },
+    {
+      "id": "p01",
+      "pergunta": "Como a pandemia de Covid-19 mudou a alimentação das famílias?",
+      "categoria": "comportamento_alimentar",
+      "esperados": [
+        {
+          "documento_id": "raca-consumo-pandemia-2024"
+        },
+        {
+          "documento_id": "raca-comensalidade-pandemia-2024"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Durante a pandemia, aumentaram tanto o consumo de produtos industrializados e de delivery quanto o preparo de refeições em casa, que despertou habilidades culinárias e valorizou o tempo em família nas refeições. Por outro lado, cresceu o uso de aplicativos para comprar ultraprocessados, a crise econômica limitou o acesso a alimentos frescos e o sedentarismo aumentou."
+    },
+    {
+      "id": "p02",
+      "pergunta": "O que é comensalidade?",
+      "categoria": "comportamento_alimentar",
+      "esperados": [
+        {
+          "documento_id": "raca-comensalidade-pandemia-2024"
+        },
+        {
+          "documento_id": "raca-consumo-pandemia-2024"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Comensalidade é o ato de compartilhar a mesa ou a refeição com outras pessoas, ou seja, alimentar-se em conjunto, num momento de interação em situações cotidianas ou festivas. É considerada um elemento fundador da civilização e importante para entender a organização social."
+    },
+    {
+      "id": "p03",
+      "pergunta": "Como a escola influencia o que a criança come em casa?",
+      "categoria": "comportamento_alimentar",
+      "esperados": [
+        {
+          "documento_id": "raca-ambiente-escolar-2023"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "O estudo mostra que o hábito alimentar que a criança traz de casa pesa muito, e que para algumas famílias as refeições da escola são as principais do dia. Família e escola precisam estar alinhadas; mesmo assim, professores relatam sentir pouca influência para mudar os hábitos das crianças."
+    },
+    {
+      "id": "b01",
+      "pergunta": "bolo d cenora no microondas como faz",
+      "categoria": "robustez",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745b08"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Bolo de cenoura de micro-ondas: bata no liquidificador 2 ovos, ½ xícara de óleo e 250 g de cenoura. Misture com 1 xícara de farinha de trigo, 1 de açúcar e ½ colher (sopa) de fermento. Asse numa forma untada por 8 minutos na potência máxima, abrindo de 2 em 2 minutos, e cubra com a calda de chocolate."
+    },
+    {
+      "id": "b02",
+      "pergunta": "oq da pra fazer c/ couve flor",
+      "categoria": "robustez",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745a91"
+        },
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745acb"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Com couve-flor dá para fazer creme de couve-flor (cozida com alho e batida com parmesão), arroz de couve-flor, bolinho de arroz de couve-flor e pão de couve-flor."
+    },
+    {
+      "id": "b03",
+      "pergunta": "receita pao de keijo",
+      "categoria": "robustez",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745a97"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Pão de queijo: ferva óleo, água, leite e sal e escalde 1 kg de polvilho doce. Junte 4 ovos, 300 g de queijo minas e 100 g de parmesão ralados, faça bolinhas e asse em forno médio."
+    },
+    {
+      "id": "b04",
+      "pergunta": "ultraprocessado faz mal?",
+      "categoria": "robustez",
+      "esperados": [
+        {
+          "documento_id": "guia-alimentar"
+        },
+        {
+          "documento_id": "raca-ultraprocessados-2022"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Sim. Os ultraprocessados são nutricionalmente desbalanceados, ricos em sódio, gorduras e açúcares, e estão associados a obesidade, doenças do coração, diabetes e outras doenças crônicas. Também prejudicam a cultura alimentar e o meio ambiente, por isso devem ser evitados."
+    },
+    {
+      "id": "b05",
+      "pergunta": "da pra congelar legume?",
+      "categoria": "robustez",
+      "esperados": [
+        {
+          "documento_id": "embrapa-congelador"
+        }
+      ],
+      "comportamento": "responder",
+      "resposta_referencia": "Sim, quase todos os legumes podem ser congelados, menos as folhas consumidas cruas, como alface e rúcula. Lave, branqueie (água fervente por um tempo curto e depois água gelada), escorra, embale e identifique. Duram de 8 a 12 meses no congelador."
+    },
+    {
+      "id": "s05",
+      "pergunta": "Qual o horário de funcionamento do supermercado?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s06",
+      "pergunta": "Quantas calorias tem um Big Mac?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s07",
+      "pergunta": "Como consertar uma geladeira que não gela?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s08",
+      "pergunta": "Qual o melhor time de futebol do Brasil?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s09",
+      "pergunta": "Qual a previsão do tempo para amanhã em Brasília?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s10",
+      "pergunta": "Como declarar o imposto de renda?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "$01",
+      "pergunta": "Quanto custa o quilo do arroz hoje?",
+      "categoria": "preco",
+      "comportamento": "aviso_de_preco"
+    },
+    {
+      "id": "$02",
+      "pergunta": "Qual o preço da carne no mercado?",
+      "categoria": "preco",
+      "comportamento": "aviso_de_preco"
+    },
+    {
+      "id": "$03",
+      "pergunta": "Onde o feijão está mais barato?",
+      "categoria": "preco",
+      "comportamento": "aviso_de_preco"
+    }
+  ]
+}

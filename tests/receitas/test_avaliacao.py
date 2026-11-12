@@ -191,3 +191,21 @@ def test_conjunto_v2_e_valido():
         p.id for p in carregar_perguntas(Path("data/avaliacao/perguntas_rag_v1.json"))
     }
     assert v1 <= set(ids)
+
+
+def test_conjunto_v3_tem_referencia_em_toda_pergunta_para_responder():
+    from pathlib import Path
+
+    from economia.receitas.aplicacao.avaliacao import RESPONDER
+
+    v3 = carregar_perguntas(Path("data/avaliacao/perguntas_rag_v3.json"))
+    v2 = carregar_perguntas(Path("data/avaliacao/perguntas_rag_v2.json"))
+    # mesmas perguntas e gabaritos da v2: só ganha a resposta de referência
+    assert [(p.id, p.pergunta, p.esperados) for p in v3] == [
+        (p.id, p.pergunta, p.esperados) for p in v2
+    ]
+    for p in v3:
+        if p.comportamento_esperado == RESPONDER:
+            assert p.resposta_referencia, p.id
+        else:
+            assert p.resposta_referencia is None, p.id
