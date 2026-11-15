@@ -9,9 +9,14 @@ import time
 from functools import lru_cache
 from typing import Annotated, Literal, Protocol
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field, field_validator
 
+from economia.api.observabilidade import ObservadorDePerguntas
+from economia.conversa.dominio.identificadores import (
+    IdentificadorAnonimo,
+    IdentificadorDaConversa,
+)
 from economia.receitas.dominio.modelos import RespostaComFontes
 
 logger = logging.getLogger(__name__)
@@ -132,12 +137,31 @@ def para_a_api(
 
 
 @lru_cache
-def obter_caso_de_uso() -> CasoDeUsoDeResposta:
-    """Caso de uso com a configuração do .env, criado uma vez por processo (carrega o modelo e5)."""
+def obter_langfuse():
+    """Cliente do Langfuse, ou `None` sem as chaves. Um por processo."""
     from economia.compartilhado.configuracao import obter_configuracao
-    from economia.receitas.cli import criar_responder
+    from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
+        criar_cliente,
+    )
 
-    return criar_responder(obter_configuracao())
+    return criar_cliente(obter_configuracao())
+
+
+@lru_cache
+def obter_caso_de_uso() -> CasoDeUsoDeResposta:
+    """Caso de uso com a configuração do .env, criado uma vez por processo (carrega o modelo e5).
+
+    Com o Langfuse, os prompts vêm do prompt management (com o arquivo como alternativa), e a
+    busca e as chamadas ao LLM entram no registro de cada pergunta.
+    """
+    from economia.compartilhado.configuracao import obter_configuracao
+    from economia.receitas.cli import criar_responder_observado
+
+    return criar_responder_observado(obter_configuracao(), obter_langfuse())
+
+
+def obter_observador() -> ObservadorDePerguntas:
+    return ObservadorDePerguntas(obter_langfuse())
 
 
 app = FastAPI(
@@ -162,6 +186,18 @@ def saude() -> dict[str, str]:
 def perguntar(
     entrada: PerguntaDeConhecimento,
     caso: Annotated[CasoDeUsoDeResposta, Depends(obter_caso_de_uso)],
+    observador: Annotated[ObservadorDePerguntas, Depends(obter_observador)],
+    identificador_anonimo: Annotated[
+        str | None,
+        Header(
+            alias="X-Identificador-Anonimo",
+            description="UUID v4 gerado no navegador; outros valores são ignorados",
+        ),
+    ] = None,
+    conversa: Annotated[
+        str | None,
+        Header(alias="X-Conversa", description="UUID v4 da conversa"),
+    ] = None,
 ) -> RespostaDaPergunta:
     """Responde com os trechos da base de conhecimento e as fontes (RN10).
 
@@ -169,11 +205,18 @@ def perguntar(
     Pergunta sobre preço atual recebe o aviso da RN04.
     """
     inicio = time.perf_counter()
-    try:
-        resposta = caso.responder(entrada.pergunta)
-    except Exception as erro:  # Qdrant ou Ollama fora do ar, tempo esgotado
-        logger.exception("Falha ao responder a pergunta")
-        raise HTTPException(status_code=503, detail=INDISPONIVEL) from erro
-    return para_a_api(
-        resposta, time.perf_counter() - inicio, getattr(caso, "limiar", None)
-    )
+    with observador.registrar(
+        entrada.pergunta,
+        IdentificadorAnonimo.ler(identificador_anonimo),
+        IdentificadorDaConversa.ler(conversa),
+    ) as registro:
+        try:
+            resposta = caso.responder(entrada.pergunta)
+        except Exception as erro:  # Qdrant ou Ollama fora do ar, tempo esgotado
+            logger.exception("Falha ao responder a pergunta")
+            registro.falhar(erro, time.perf_counter() - inicio)
+            raise HTTPException(status_code=503, detail=INDISPONIVEL) from erro
+        segundos = time.perf_counter() - inicio
+        saida = para_a_api(resposta, segundos, getattr(caso, "limiar", None))
+        registro.concluir(entrada.pergunta, saida, segundos)
+    return saida

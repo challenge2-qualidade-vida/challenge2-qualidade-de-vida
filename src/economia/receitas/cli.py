@@ -192,9 +192,12 @@ def criar_responder(
     llm=None,
     repositorio=None,
     gerador=None,
+    carregar_prompt=None,
 ):
-    from economia.compartilhado.infraestrutura.prompts import carregar_prompt
     from economia.receitas.aplicacao.responder_pergunta import ResponderPergunta
+
+    if carregar_prompt is None:
+        from economia.compartilhado.infraestrutura.prompts import carregar_prompt
 
     return ResponderPergunta(
         gerador or criar_gerador(configuracao),
@@ -211,6 +214,32 @@ def criar_responder(
         pedido_de_citacao=carregar_prompt("miau-ricio", "pedido_de_citacao_v1")
         if configuracao.segunda_tentativa_de_citacao
         else None,
+    )
+
+
+def criar_responder_observado(configuracao: Configuracao, langfuse=None):
+    """Responder da API. Com o Langfuse, prompts do prompt management, busca e LLM registrados."""
+    if langfuse is None:
+        return criar_responder(configuracao)
+    from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
+        RegistroDeGeracoes,
+    )
+    from economia.compartilhado.infraestrutura.prompts_langfuse import (
+        PromptsDoLangfuse,
+    )
+    from economia.receitas.infraestrutura.experimento_langfuse import (
+        RepositorioObservado,
+    )
+
+    prompts = PromptsDoLangfuse(langfuse)
+    registro = RegistroDeGeracoes(
+        langfuse, nomes_dos_prompts(configuracao), prompts.prompts_lidos
+    )
+    return criar_responder(
+        configuracao,
+        llm=criar_llm(configuracao, ao_gerar=registro),
+        repositorio=RepositorioObservado(criar_repositorio(configuracao), langfuse),
+        carregar_prompt=prompts.carregar,
     )
 
 
