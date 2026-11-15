@@ -138,7 +138,7 @@ Abra o terminal do seu computador.
 Copie e execute o comando abaixo para baixar o repositório:
 
 ```bash
-git clone https://github.com/challenge2-qualidade-de-vida/challenge2-qualidade-de-vida.git
+git clone https://github.com/challenge2-qualidade-vida/challenge2-qualidade-de-vida.git
 ```
 
 Entre na pasta do projeto:
@@ -159,7 +159,7 @@ Esse comando instala as bibliotecas necessárias e prepara o ambiente virtual ut
 
 Aguarde a conclusão da instalação antes de continuar.
 
-### 4. Configurar as variáveis de ambiente (opcional)
+### 4. Configurar as variáveis de ambiente
 
 O projeto disponibiliza o arquivo `.env.example`, que contém configurações de referência.
 
@@ -169,7 +169,7 @@ Para criar seu próprio arquivo de configuração, execute:
 cp .env.example .env
 ```
 
-Essa etapa é opcional para iniciar a API e testar o endpoint de saúde. Outros módulos podem utilizar essas configurações.
+O Docker Compose lê o `.env` e precisa da variável `POSTGRES_PASSWORD`. Abra o arquivo e troque o valor de exemplo por uma senha só sua, que vale apenas para o banco local.
 
 ### 5. Iniciar o Qdrant
 
@@ -180,10 +180,10 @@ Certifique-se de que o Docker Desktop esteja aberto e em execução.
 Na pasta do projeto, execute:
 
 ```bash
-docker compose up -d
+docker compose up -d qdrant
 ```
 
-Esse comando inicia os serviços definidos no arquivo `docker-compose.yml`.
+Esse comando inicia apenas o Qdrant. O `docker-compose.yml` também define a API e o PostgreSQL; se você subir todos os serviços com `docker compose up -d`, a API do contêiner passa a ocupar a porta 8000 e não é preciso iniciá-la pelo Poetry no passo 6.
 
 Para verificar se o Qdrant está em execução:
 
@@ -268,11 +268,7 @@ Quando terminar de utilizar o projeto:
 docker compose down
 ```
 
-Esse comando encerra os serviços iniciados pelo Docker Compose, como o Qdrant. A API, iniciada separadamente pelo Poetry, deve ser encerrada com `Ctrl + C` no terminal em que está sendo executada. Os dados armazenados nos volumes persistentes são preservados.
-
-### Observação sobre a configuração atual
-
-Atualmente, o Docker Compose disponibiliza o Qdrant. A API é iniciada separadamente pelo Poetry, conforme as instruções deste guia.
+Esse comando encerra os serviços iniciados pelo Docker Compose. A API, iniciada separadamente pelo Poetry, deve ser encerrada com `Ctrl + C` no terminal em que está sendo executada. Os dados armazenados nos volumes persistentes são preservados.
 
 ## Como trabalhar no repositório
 
