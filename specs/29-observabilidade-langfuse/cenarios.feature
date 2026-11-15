@@ -32,10 +32,10 @@ Funcionalidade: Observabilidade das perguntas ao Miau-ricio no Langfuse
       | meu CPF é 123.456.789-09                          | meu CPF é [CPF]                             |
       | me liga no (61) 98765-4321                        | me liga no [TELEFONE]                       |
 
-  Cenário: Falha no mascaramento descarta o registro
+  Cenário: Falha no mascaramento não envia o conteúdo
     Dado uma função de mascaramento que falha
-    Quando a API recebe uma pergunta
-    Então nenhum registro é enviado
+    Quando a API recebe a pergunta "sou maria@exemplo.com"
+    Então a entrada registrada é "[MASCARAMENTO_FALHOU]"
     E a API responde normalmente
 
   Cenário: Scores do código entram no registro

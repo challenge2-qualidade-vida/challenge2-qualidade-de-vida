@@ -45,14 +45,14 @@ O cliente do Langfuse recebe uma função de mascaramento (`mask`), aplicada a t
 | Número de cartão (13 a 19 dígitos) | `[CARTAO]` |
 | Chave de acesso de NFC-e (44 dígitos) | `[CHAVE_NFCE]` |
 
-O mascaramento é uma função determinística, com testes. Se ela falhar, o registro é descartado e a pergunta segue normalmente.
+O mascaramento é uma função determinística, com testes. Se ela falhar, o conteúdo enviado é só o marcador `[MASCARAMENTO_FALHOU]`, e a pergunta segue normalmente.
 
 ### 4. Prompts no Langfuse (prompt management, #28)
 
 - Os arquivos em `prompts/<agente>/<nome>_v<versao>.md` continuam sendo a fonte da verdade, como pede o AGENTS.md.
 - O comando `sincronizar-prompts` publica cada arquivo no Langfuse como o prompt `<agente>/<nome>` (ex.: `miau-ricio/resposta_com_fontes`), com o texto do arquivo. A versão do arquivo vai no rótulo `v<versao>`. O prompt em uso pela configuração recebe também o rótulo `production`.
 - Rodar o comando de novo sem mudança nos arquivos não cria versão nova.
-- Em execução, o prompt é lido do Langfuse pelo rótulo `production`, com o arquivo local como alternativa (`fallback`) quando não há chaves ou o Langfuse não responde.
+- Em execução, o prompt é lido do Langfuse pelo rótulo da versão configurada (`v1`, `v2`), com o arquivo local como alternativa (`fallback`) quando não há chaves ou o Langfuse não responde. Assim a avaliação pode usar outra versão sem mexer no rótulo `production`, que marca o prompt em uso pela configuração padrão.
 - Cada *generation* fica vinculada ao prompt e à versão usados, e o Langfuse mostra as métricas por versão do prompt.
 
 ### 5. Scores
