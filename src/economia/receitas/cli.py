@@ -617,6 +617,78 @@ def comando_avaliar_respostas(args: argparse.Namespace) -> None:
         print(f"Run no Langfuse: {url_do_run}")
 
 
+def prompts_em_uso(configuracao: Configuracao) -> set[str]:
+    """Arquivos de prompt em uso pela configuração e pelos evaluators: recebem `production`."""
+    return {
+        f"miau-ricio/{nome}" for nome in nomes_dos_prompts(configuracao).values()
+    } | {
+        "juiz/fidelidade_v1",
+        "juiz/relevancia_v1",
+    }
+
+
+def comando_sincronizar_prompts(args: argparse.Namespace) -> None:
+    """Publica os arquivos de `prompts/` no prompt management do Langfuse (#28)."""
+    from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
+        criar_cliente,
+    )
+    from economia.compartilhado.infraestrutura.prompts_langfuse import (
+        sincronizar_prompts,
+    )
+
+    configuracao = obter_configuracao()
+    langfuse = criar_cliente(configuracao)
+    if langfuse is None:
+        raise SystemExit("Configure LANGFUSE_PUBLIC_KEY e LANGFUSE_SECRET_KEY no .env")
+    for p in sincronizar_prompts(langfuse, prompts_em_uso(configuracao)):
+        situacao = "versão nova" if p.criado else "sem mudança"
+        producao = " (production)" if p.em_producao else ""
+        print(
+            f"{p.arquivo:<40} → {p.nome} (rótulo {p.rotulo}, versão {p.versao}): "
+            f"{situacao}{producao}"
+        )
+
+
+def comando_criar_avaliadores(args: argparse.Namespace) -> None:
+    """Cria ou atualiza os evaluators gerenciados (Gemini como juiz) e a regra de avaliação."""
+    from langfuse.api.core.api_error import ApiError
+
+    from economia.compartilhado.infraestrutura.avaliadores_langfuse import (
+        ApiDoLangfuse,
+        SemConexaoDoGemini,
+        criar_avaliadores,
+    )
+    from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
+        criar_cliente,
+    )
+
+    configuracao = obter_configuracao()
+    langfuse = criar_cliente(configuracao)
+    if langfuse is None:
+        raise SystemExit("Configure LANGFUSE_PUBLIC_KEY e LANGFUSE_SECRET_KEY no .env")
+    try:
+        ids = criar_avaliadores(
+            ApiDoLangfuse(langfuse.api),
+            configuracao.langfuse_modelo_juiz,
+            configuracao.langfuse_amostra_juiz,
+            configuracao.langfuse_ambientes_juiz,
+        )
+    except SemConexaoDoGemini as erro:
+        raise SystemExit(str(erro)) from erro
+    except ApiError as erro:
+        mensagem = getattr(erro.body, "message", erro.body)
+        raise SystemExit(
+            f"O Langfuse recusou ({erro.status_code}): {mensagem}"
+        ) from erro
+    for nome, id in ids.items():
+        print(f"{nome:<40} {id}")
+    print(
+        f"Juiz: {configuracao.langfuse_modelo_juiz}, amostra de "
+        f"{configuracao.langfuse_amostra_juiz:.0%}, ambientes "
+        f"{', '.join(configuracao.langfuse_ambientes_juiz)}"
+    )
+
+
 def comando_comparar_execucoes(args: argparse.Namespace) -> None:
     """Mostra a diferença de cada métrica entre duas execuções da avaliação."""
     import json
@@ -768,6 +840,16 @@ def criar_parser() -> argparse.ArgumentParser:
     execucoes_parser.add_argument("antes", type=Path)
     execucoes_parser.add_argument("depois", type=Path)
     execucoes_parser.set_defaults(funcao=comando_comparar_execucoes)
+
+    comandos.add_parser(
+        "sincronizar-prompts",
+        help="publica os prompts de prompts/ no prompt management do Langfuse",
+    ).set_defaults(funcao=comando_sincronizar_prompts)
+
+    comandos.add_parser(
+        "criar-avaliadores",
+        help="cria ou atualiza os evaluators do Langfuse (Gemini como juiz)",
+    ).set_defaults(funcao=comando_criar_avaliadores)
 
     return parser
 
