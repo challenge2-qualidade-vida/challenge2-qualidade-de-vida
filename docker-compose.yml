@@ -19,7 +19,7 @@ services:
     environment:
       POSTGRES_DB: economia
       POSTGRES_USER: economia
-      POSTGRES_PASSWORD: economia_local
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env (veja o .env.example)}
     ports:
       - "5432:5432"
     volumes:
