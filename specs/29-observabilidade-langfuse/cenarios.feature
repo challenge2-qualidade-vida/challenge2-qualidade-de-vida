@@ -63,21 +63,28 @@ Funcionalidade: Observabilidade das perguntas ao Miau-ricio no Langfuse
     Quando a API recebe uma pergunta
     Então a resposta é a mesma de uma pergunta sem registro
 
-  Cenário: Sincronizar os prompts publica cada arquivo com a versão
-    Dado o arquivo de prompt "miau-ricio/resposta_com_fontes_v2.md"
-    Quando eu sincronizo os prompts
-    Então o Langfuse tem o prompt "miau-ricio/resposta_com_fontes" com o rótulo "v2"
-    E o prompt em uso pela configuração tem o rótulo "production"
+  Cenário: O prompt vem do Langfuse pelo rótulo production
+    Dado que o prompt "miau-ricio/resposta_com_fontes" tem a versão 3 com o rótulo "production"
+    Quando o Miau-ricio carrega o prompt "resposta_com_fontes"
+    Então o texto é o da versão 3
+    E a cópia local guarda a versão 3
 
-  Cenário: Sincronizar de novo sem mudança não cria versão
-    Dado que os prompts já foram sincronizados
-    Quando eu sincronizo os prompts de novo
-    Então nenhuma versão nova é criada no Langfuse
+  Cenário: A avaliação escolhe outro rótulo
+    Dado que o prompt "miau-ricio/resposta_com_fontes" tem a versão 2 com o rótulo "v2"
+    Quando o Miau-ricio carrega o prompt "resposta_com_fontes@v2"
+    Então o texto é o da versão 2
 
-  Cenário: Sem o Langfuse, o prompt vem do arquivo
+  Cenário: Sem o Langfuse, o prompt vem da cópia local
+    Dado que o prompt "resposta_com_fontes" já foi lido uma vez
+    E que o Langfuse não responde
+    Quando o Miau-ricio carrega o prompt "resposta_com_fontes"
+    Então o texto é o da cópia local
+
+  Cenário: Sem o Langfuse e sem cópia local, o Miau-ricio fica indisponível
     Dado que o Langfuse não responde
-    Quando o Miau-ricio carrega o prompt de resposta
-    Então o texto é o do arquivo local
+    E que não há cópia local do prompt
+    Quando a API recebe uma pergunta
+    Então a API responde 503
 
   Cenário: Chamada ao LLM fica ligada à versão do prompt
     Dado que o prompt de resposta foi lido do Langfuse

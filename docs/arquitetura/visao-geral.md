@@ -66,7 +66,7 @@ flowchart LR
     Caso -->|"6. fontes, ingredientes que faltam<br/>(código, RN01 e RN10)"| API
     Indexacao["Pipeline de ingestão<br/>cli indexar"] --> Qdrant
     Fontes[["20 documentos-fonte<br/>data/raw/"]] --> Indexacao
-    Prompts[["prompts/miau-ricio/<br/>versionados"]] --> Caso
+    Prompts[["prompt management<br/>do Langfuse"]] --> Caso
 ```
 
 | Peça | Onde está | Papel |
@@ -87,7 +87,7 @@ O LLM nunca é fonte: as fontes e os ingredientes que faltam são montados pelo 
 O LLM só interpreta texto e imagens e redige respostas. Cálculos, comparações, filtros e a decisão de qual receita serve são funções determinísticas (RN01).
 
 - O LLM fica atrás de um **adaptador** na camada de infraestrutura. Trocar de provedor ou de modelo não muda o domínio.
-- Os **prompts** ficam em arquivos versionados na pasta `prompts/`, fora do código Python.
+- Os **prompts** ficam no prompt management do Langfuse, fora do código Python e do repositório, lidos pelo rótulo `production` (decisão de 15/11/2026).
 - Toda chamada ao LLM é registrada no Langfuse Cloud, com o modelo, a versão do prompt, os tokens, o custo e a latência. Como o Langfuse Cloud guarda os dados fora do Brasil, os registros não levam dados pessoais nem sensíveis: nome, e-mail, restrições de saúde e dados das notas são retirados ou mascarados antes do envio (RN30).
 - O LangGraph fica em `conversa/infraestrutura`. Cada agente expõe seus casos de uso como ferramentas para o grafo, e o domínio dos agentes não importa o LangGraph.
 
@@ -114,7 +114,6 @@ src/economia/
   conversa/             orquestrador (grafo do LangGraph em infraestrutura/)
   api/                  rotas FastAPI
   worker/               tarefas do RQ e agendamentos
-prompts/<agente>/       prompts versionados
 migracoes/              migrações SQL do Flyway (V1__descricao.sql)
 frontend/               React + Vite com TypeScript
 tests/
@@ -131,7 +130,7 @@ Convenções para a equipe e para os agentes de IA:
 - **`AGENTS.md` em cada contexto:** termos, regras de negócio e limites de importação daquele contexto, lidos por quem for mexer nele.
 - **import-linter no CI:** barra o PR quando o `dominio` importa infraestrutura, framework ou LLM, ou quando um contexto importa o domínio de outro.
 - **Configuração** lida das variáveis de ambiente num único lugar, com pydantic-settings.
-- **Prompts** em `prompts/<agente>/`, um arquivo por prompt, com a versão no nome, para o Langfuse rastrear qual versão gerou cada resposta.
+- **Prompts** no prompt management do Langfuse, um prompt por nome (`<agente>/<nome>`), com o histórico de versões e o rótulo `production` no que está em uso. Cada geração fica ligada à versão que a produziu. Revisto em 15/11/2026: antes, os prompts ficavam em `prompts/<agente>/`.
 - **Cliente da API** no frontend gerado a partir do OpenAPI, em TypeScript.
 
 ## 6. Infraestrutura e operação

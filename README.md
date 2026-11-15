@@ -68,7 +68,7 @@ site/                    site de documentação (Astro + Starlight), publicado n
 tests/                   testes de unidade e passos BDD
 ```
 
-A arquitetura e as pastas previstas (`prompts/`, `migracoes/`, `frontend/`) estão na [visão geral da arquitetura](docs/arquitetura/visao-geral.md).
+A arquitetura e as pastas previstas (`migracoes/`, `frontend/`) estão na [visão geral da arquitetura](docs/arquitetura/visao-geral.md).
 
 ## Estrutura do backend
 

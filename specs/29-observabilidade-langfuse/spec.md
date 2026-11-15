@@ -49,11 +49,14 @@ O mascaramento é uma função determinística, com testes. Se ela falhar, o con
 
 ### 4. Prompts no Langfuse (prompt management, #28)
 
-- Os arquivos em `prompts/<agente>/<nome>_v<versao>.md` continuam sendo a fonte da verdade, como pede o AGENTS.md.
-- O comando `sincronizar-prompts` publica cada arquivo no Langfuse como o prompt `<agente>/<nome>` (ex.: `miau-ricio/resposta_com_fontes`), com o texto do arquivo. A versão do arquivo vai no rótulo `v<versao>`. O prompt em uso pela configuração recebe também o rótulo `production`.
-- Rodar o comando de novo sem mudança nos arquivos não cria versão nova.
-- Em execução, o prompt é lido do Langfuse pelo rótulo da versão configurada (`v1`, `v2`), com o arquivo local como alternativa (`fallback`) quando não há chaves ou o Langfuse não responde. Assim a avaliação pode usar outra versão sem mexer no rótulo `production`, que marca o prompt em uso pela configuração padrão.
+- Os prompts ficam **só** no prompt management do Langfuse, como `<agente>/<nome>` (ex.: `miau-ricio/resposta_com_fontes`, `juiz/fidelidade`). O repositório não tem mais a pasta `prompts/` (decisão de 15/11/2026).
+- Mudar um prompt é criar uma versão nova no Langfuse e mover para ela o rótulo `production`. O Langfuse guarda o histórico de versões.
+- O código lê cada prompt pela referência `<nome>` (rótulo `production`) ou `<nome>@<rótulo>` (ex.: `resposta_com_fontes@v2`, `resposta_com_fontes@latest`). A avaliação usa outro rótulo sem mexer no `production`.
+- A cada leitura bem-sucedida, o texto, a versão e a data ficam numa cópia local em `data/cache/prompts/` (fora do git).
+- Sem as chaves ou com o Langfuse fora do ar, o prompt vem da cópia local, com um aviso no log. Sem cópia local, o Miau-ricio fica indisponível: a API responde 503 e a linha de comando para com uma mensagem que explica o que configurar.
+- A API lê os prompts a cada pergunta (o SDK guarda em memória por 5 minutos): mover o rótulo `production` vale sem reiniciar a API.
 - Cada *generation* fica vinculada ao prompt e à versão usados, e o Langfuse mostra as métricas por versão do prompt.
+- **Testes de contrato** (`pytest -m langfuse`): buscam no Langfuse as versões `latest` e `production` de cada prompt e conferem as variáveis que o código preenche (ex.: `{resposta}` no pedido de citação, `trechos_usados` na resposta estruturada, `{{pergunta}}`, `{{resposta}}` e `{{trechos}}` no juiz). Sem as chaves, são pulados. Os outros testes usam prompts falsos e não acessam a rede.
 
 ### 5. Scores
 
@@ -115,7 +118,7 @@ Específicas desta funcionalidade:
 
 - **Entrada da API:** os cabeçalhos opcionais `X-Identificador-Anonimo` e `X-Conversa` (UUID v4).
 - **Configuração:** `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_BASE_URL` (já existem), `LANGFUSE_AMBIENTE` (`local`, `producao`, `avaliacao`) e `LANGFUSE_AMOSTRA_JUIZ` (0 a 1).
-- **Comandos:** `sincronizar-prompts` e `criar-avaliadores`.
+- **Comandos:** `criar-avaliadores`.
 - **Workflow:** `.github/workflows/alerta-langfuse.yml`, disparado pelo alerta, que abre uma issue com o nome, a severidade e o valor.
 - **Saída:** registros, scores, prompts e evaluators no projeto do Langfuse, mais o documento `docs/semana-3/observabilidade.md`.
 
@@ -135,7 +138,7 @@ Cenários em [cenarios.feature](cenarios.feature).
 - Gancho de chamadas ao LLM e cliente do Langfuse da #69.
 - Chaves do Langfuse no `.env` (já configuradas).
 - Uma *LLM Connection* cadastrada no projeto do Langfuse, para os evaluators.
-- Decisões a registrar em `docs/decisoes.md`: mascaramento no SDK, identificador anônimo do navegador, evaluators gerenciados, prompts sincronizados do repositório para o Langfuse, alertas escolhidos.
+- Decisões a registrar em `docs/decisoes.md`: mascaramento no SDK, identificador anônimo do navegador, evaluators gerenciados, prompts só no Langfuse, alertas escolhidos.
 
 ## Riscos e limitações
 
