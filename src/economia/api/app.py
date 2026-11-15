@@ -148,6 +148,7 @@ app = FastAPI(
 
 
 @app.get("/saude", tags=["saúde"])
+@app.get("/health", tags=["saúde"])
 def saude() -> dict[str, str]:
     return {"status": "ok"}
 
