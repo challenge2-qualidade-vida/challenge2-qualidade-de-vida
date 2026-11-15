@@ -51,12 +51,15 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--import-mode=importlib"
+addopts = "--import-mode=importlib -m 'not langfuse'"
 filterwarnings = [
     # o Qdrant em memória, usado nos testes, ignora os índices de payload
     "ignore:Payload indexes have no effect:UserWarning",
 ]
 bdd_features_base_dir = "specs/"
+markers = [
+    "langfuse: contrato dos prompts no Langfuse de verdade (pulado sem as chaves no .env)",
+]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
