@@ -1,0 +1,52 @@
+name: Alerta do Langfuse
+
+# Disparado pelos alertas do Langfuse (latência p95 e média de fidelidade, spec 29).
+# No Langfuse, a automação "GitHub Actions" usa a URL
+# https://api.github.com/repos/challenge2-qualidade-vida/challenge2-qualidade-de-vida/dispatches,
+# o event type "langfuse-alerta" e um token com permissão de Contents (leitura e escrita).
+# O workflow abre uma issue com o alerta. O conteúdo vem de fora: só passa por variáveis de
+# ambiente e pelo jq, nunca direto no script.
+
+on:
+  repository_dispatch:
+    types: [langfuse-alerta]
+  workflow_dispatch:
+    inputs:
+      alerta:
+        description: "Conteúdo do alerta (JSON), para testar o workflow à mão"
+        required: false
+        default: '{"severity":"ALERT","monitorName":"teste manual"}'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  abrir-issue:
+    name: Abrir issue com o alerta
+    runs-on: ubuntu-latest
+    steps:
+      - name: Abrir issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PAYLOAD: ${{ github.event_name == 'repository_dispatch' && toJSON(github.event.client_payload) || github.event.inputs.alerta }}
+        run: |
+          set -euo pipefail
+          if ! jq -e . >/dev/null 2>&1 <<<"$PAYLOAD"; then
+            PAYLOAD=$(jq -n --arg bruto "$PAYLOAD" '{bruto: $bruto}')
+          fi
+          campo() { jq -r "[$1] | map(select(. != null)) | first // \"$2\"" <<<"$PAYLOAD"; }
+          severidade=$(campo '.severity, .payload.severity' 'ALERTA')
+          nome=$(campo '.monitorName, .payload.monitorName, .name, .payload.name' 'monitor do Langfuse')
+          titulo="Alerta do Langfuse: ${severidade} em ${nome}"
+          {
+            echo "O Langfuse disparou um alerta do Miau-ricio."
+            echo
+            echo "Confira o painel e os registros no Langfuse e o passo a passo em [docs/semana-3/observabilidade.md](https://github.com/${GH_REPO}/blob/main/docs/semana-3/observabilidade.md)."
+            echo
+            echo '```json'
+            jq . <<<"$PAYLOAD"
+            echo '```'
+          } > corpo.md
+          gh issue create --title "${titulo:0:200}" --body-file corpo.md --label llmops
