@@ -23,6 +23,23 @@ describe("perguntar", () => {
     expect(JSON.parse(chamadas[0][1].body as string)).toEqual({ pergunta: "arroz?" });
   });
 
+  it("manda os identificadores da pessoa e da conversa nos cabeçalhos", async () => {
+    const chamadas: RequestInit[] = [];
+    const buscar = (async (_url: string, init: RequestInit) => {
+      chamadas.push(init);
+      return respostaHttp(200, {});
+    }) as typeof fetch;
+    const identificacao = () => ({ "X-Identificador-Anonimo": "a", "X-Conversa": "c" });
+
+    await perguntar("arroz?", buscar, identificacao);
+
+    expect(chamadas[0].headers).toMatchObject({
+      "Content-Type": "application/json",
+      "X-Identificador-Anonimo": "a",
+      "X-Conversa": "c",
+    });
+  });
+
   it("usa a mensagem da API quando ela está indisponível", async () => {
     const buscar = (async () => respostaHttp(503, { detail: "O Miau-ricio está indisponível agora." })) as typeof fetch;
     await expect(perguntar("arroz?", buscar)).rejects.toThrow("O Miau-ricio está indisponível agora.");

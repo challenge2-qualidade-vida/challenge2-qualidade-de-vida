@@ -1,5 +1,7 @@
 // Cliente da API do Miau-ricio (specs/24-endpoint-rag/spec.md).
 
+import { cabecalhosDeIdentificacao } from "./identificadores";
+
 export type Fonte = {
   numero: number;
   titulo: string;
@@ -41,16 +43,20 @@ export const MENSAGEM_FORA_DO_AR =
 
 export class ErroDaApi extends Error {}
 
-/** Envia a pergunta e devolve a resposta com as fontes. Erros viram uma mensagem para a pessoa. */
+/**
+ * Envia a pergunta e devolve a resposta com as fontes. Erros viram uma mensagem para a pessoa.
+ * Os cabeçalhos de identificação ligam a pergunta à pessoa e à conversa no Langfuse (spec 29).
+ */
 export async function perguntar(
   pergunta: string,
   buscar: typeof fetch = fetch,
+  identificacao: () => Record<string, string> = cabecalhosDeIdentificacao,
 ): Promise<Resposta> {
   let resposta: Response;
   try {
     resposta = await buscar("/api/v1/receitas/perguntas", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...identificacao() },
       body: JSON.stringify({ pergunta: pergunta.trim() }),
     });
   } catch {
