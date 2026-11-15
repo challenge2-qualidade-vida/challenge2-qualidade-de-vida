@@ -28,7 +28,7 @@ Erros (Qdrant ou Ollama fora do ar) ficam no registro com nível `ERROR` e a men
 
 ### 2. Sessões e pessoas
 
-- O frontend gera e guarda no navegador um **identificador anônimo** da pessoa, criado uma vez, e um **identificador da conversa**, criado a cada nova conversa.
+- O frontend gera e guarda no navegador um **identificador anônimo** da pessoa, criado uma vez, e um **identificador da conversa**, criado a cada nova conversa (por enquanto, a cada carregamento da página).
 - Os dois vão nos cabeçalhos `X-Identificador-Anonimo` e `X-Conversa` de cada pergunta.
 - A API repassa os dois ao Langfuse: o identificador anônimo como `user_id` e a conversa como `session_id`. Pedidos sem os cabeçalhos são registrados sem `user_id` e sem `session_id`.
 - Quando existir login (JWT), o `user_id` passa a ser o id da conta. Esta spec não trata do login.
@@ -74,7 +74,7 @@ Os scores da avaliação offline da #69 (ROUGE, cosseno, Hit@k, comportamento, f
 - Dois evaluators gerenciados do Langfuse Cloud, criados pela API do Langfuse com um script versionado no repositório:
   - **fidelidade:** a resposta só afirma o que está nos trechos recuperados;
   - **relevância:** a resposta atende à pergunta.
-- Os dois rodam sobre a *generation* da redação da resposta, nos ambientes `producao` e `avaliacao`, com uma amostra configurável do tráfego real.
+- Os dois rodam sobre a observação raiz de cada pergunta (`miau-ricio.pergunta`), que leva a pergunta, a resposta e os trechos usados, porque os evaluators não leem as observações filhas. Valem para os ambientes `producao` e `local` (para a equipe ver o juiz funcionando), sem as perguntas que deram erro, com uma amostra configurável do tráfego real. A avaliação offline da #69 segue com os seus scores determinísticos.
 - O modelo juiz é o Gemini, pela *LLM Connection* do projeto no Langfuse (provedor Google AI Studio), cadastrada por uma pessoa da equipe pela interface. A chave do Gemini não passa pelo repositório.
 - A amostra do tráfego real avaliada pelo juiz é de 20% (`LANGFUSE_AMOSTRA_JUIZ=0.2`), por conta do custo de cada avaliação. A avaliação offline é avaliada inteira.
 - O texto enviado ao juiz é o já mascarado (RN30).
