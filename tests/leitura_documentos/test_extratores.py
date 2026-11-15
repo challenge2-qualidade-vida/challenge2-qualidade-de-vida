@@ -1,4 +1,3 @@
-
 from pathlib import Path
 
 import pytest
@@ -77,10 +76,12 @@ def test_extrair_pdf_ignora_paginas_sem_texto(monkeypatch):
             pass
 
         def __iter__(self):
-            return iter([
-                Pagina("Conteúdo disponível."),
-                Pagina("   "),
-            ])
+            return iter(
+                [
+                    Pagina("Conteúdo disponível."),
+                    Pagina("   "),
+                ]
+            )
 
     monkeypatch.setattr(
         "economia.leitura_documentos.infraestrutura.ingestao.extratores.pymupdf.open",

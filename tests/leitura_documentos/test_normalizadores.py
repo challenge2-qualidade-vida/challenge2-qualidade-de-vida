@@ -1,4 +1,6 @@
-from economia.leitura_documentos.infraestrutura.ingestao.normalizadores import normalizar_texto
+from economia.leitura_documentos.infraestrutura.ingestao.normalizadores import (
+    normalizar_texto,
+)
 
 
 def test_normalizar_texto_preserva_paragrafos():

@@ -10,7 +10,6 @@ from typing import Any
 from .extratores import extrair_texto
 from .normalizadores import normalizar_texto
 
-
 LOGGER = logging.getLogger(__name__)
 EXTENSOES_SUPORTADAS = {".pdf", ".txt", ".md"}
 
@@ -46,56 +45,63 @@ def preparar_documentos(
         metadados = fontes.get(relativo)
 
         if not metadados:
-            relatorio["sem_metadados"].append({
-                "arquivo": relativo,
-                "motivo": "Ausente no fontes.json",
-            })
+            relatorio["sem_metadados"].append(
+                {
+                    "arquivo": relativo,
+                    "motivo": "Ausente no fontes.json",
+                }
+            )
             continue
 
         try:
             texto = normalizar_texto(extrair_texto(caminho))
 
             if not texto:
-                relatorio["sem_texto"].append({
-                    "arquivo": relativo,
-                    "motivo": "Sem texto extraível; pode exigir OCR",
-                })
+                relatorio["sem_texto"].append(
+                    {
+                        "arquivo": relativo,
+                        "motivo": "Sem texto extraível; pode exigir OCR",
+                    }
+                )
                 continue
 
             hash_texto = hashlib.sha256(texto.encode("utf-8")).hexdigest()
-            identificador = hashlib.sha256(
-                relativo.encode("utf-8")
-            ).hexdigest()[:16]
+            identificador = hashlib.sha256(relativo.encode("utf-8")).hexdigest()[:16]
 
-            registros.append({
-                "id": identificador,
-                "texto": texto,
-                "fonte": metadados["titulo"],
-                "instituicao": metadados["instituicao"],
-                "ano": metadados["ano"],
-                "tipo_conteudo": metadados["tipo_conteudo"],
-                "url": metadados["url"],
-                "arquivo": relativo,
-                "hash_sha256": hash_texto,
-            })
+            registros.append(
+                {
+                    "id": identificador,
+                    "texto": texto,
+                    "fonte": metadados["titulo"],
+                    "instituicao": metadados["instituicao"],
+                    "ano": metadados["ano"],
+                    "tipo_conteudo": metadados["tipo_conteudo"],
+                    "url": metadados["url"],
+                    "arquivo": relativo,
+                    "hash_sha256": hash_texto,
+                }
+            )
 
-            relatorio["processados"].append({
-                "arquivo": relativo,
-                "hash_sha256": hash_texto,
-            })
+            relatorio["processados"].append(
+                {
+                    "arquivo": relativo,
+                    "hash_sha256": hash_texto,
+                }
+            )
 
         except Exception as erro:
             LOGGER.exception("Falha ao processar %s", relativo)
-            relatorio["erros"].append({
-                "arquivo": relativo,
-                "motivo": str(erro),
-            })
+            relatorio["erros"].append(
+                {
+                    "arquivo": relativo,
+                    "motivo": str(erro),
+                }
+            )
 
     caminho_saida.parent.mkdir(parents=True, exist_ok=True)
     caminho_saida.write_text(
         "".join(
-            json.dumps(registro, ensure_ascii=False) + "\n"
-            for registro in registros
+            json.dumps(registro, ensure_ascii=False) + "\n" for registro in registros
         ),
         encoding="utf-8",
     )
@@ -106,10 +112,7 @@ def preparar_documentos(
         encoding="utf-8",
     )
 
-    return {
-        chave: len(valor)
-        for chave, valor in relatorio.items()
-    }
+    return {chave: len(valor) for chave, valor in relatorio.items()}
 
 
 def main() -> None:
