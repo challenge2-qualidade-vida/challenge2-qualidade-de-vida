@@ -38,7 +38,7 @@ No `.env` (modelo em `.env.example`):
 | `LANGFUSE_BASE_URL` | Região do Langfuse Cloud | `https://us.cloud.langfuse.com` |
 | `LANGFUSE_AMBIENTE` | Separa os registros no Langfuse | `local`, `producao` ou `avaliacao` |
 | `LANGFUSE_AMOSTRA_JUIZ` | Fração do tráfego real avaliada pelo juiz, por conta do custo | `0.2` |
-| `LANGFUSE_MODELO_JUIZ` | Modelo do Gemini do juiz; precisa existir na LLM Connection | `gemini-3.8-flash` |
+| `LANGFUSE_MODELO_JUIZ` | Modelo do Gemini do juiz; precisa existir na LLM Connection | `gemini-3.6-flash` |
 
 ## 3. Tracing, pessoas e sessões
 
@@ -97,7 +97,7 @@ A avaliação offline da #69 continua mandando os seus scores (ROUGE, cosseno, H
 
 ### LLM como juiz (Gemini)
 
-1. **LLM Connection.** Em **Settings > LLM Connections**, uma pessoa com papel Admin cadastra a chave do Gemini (adaptador Google AI Studio). A chave fica só no Langfuse. Hoje o projeto tem a conexão `gemini-student-free`, com o modelo `gemini-3.8-flash`.
+1. **LLM Connection.** Em **Settings > LLM Connections**, uma pessoa com papel Admin cadastra a chave do Gemini (adaptador Google AI Studio). A chave fica só no Langfuse. Hoje o projeto tem a conexão `gemini-student-free`, que oferece os modelos padrão do Google. O juiz usa o `gemini-3.6-flash`: em 15/11/2026, com essa chave, ele respondeu em cerca de 1 s, enquanto o `gemini-3.8-flash` levou quase 6 minutos e não passava na validação do Langfuse (limite de 95 s).
 2. **Evaluators e regra.**
 
    ```bash
@@ -106,6 +106,13 @@ A avaliação offline da #69 continua mandando os seus scores (ROUGE, cosseno, H
 
    Cria (ou atualiza, pelo nome) os evaluators `fidelidade` e `relevancia`, com os prompts `juiz/fidelidade` e `juiz/relevancia` (rótulo `production`), e a regra `miau-ricio: juiz no tráfego real`: observação `miau-ricio.pergunta`, ambientes `producao` e `local`, sem as que deram erro, amostra de 20%.
 3. **Validação do modelo.** Ao salvar um evaluator, o Langfuse chama o modelo para testar. Se o Gemini não responder (chave inválida, cota esgotada ou modelo inexistente), o comando mostra o erro e o evaluator fica pausado. Teste a conexão no **Playground** do Langfuse com o mesmo modelo e rode o comando de novo.
+
+   Para medir a latência de um modelo com a chave do Gemini, sem passar pelo Langfuse (a chave fica só no terminal):
+
+   ```bash
+   read -s -p "Chave do Gemini: " GEMINI_API_KEY && export GEMINI_API_KEY && echo
+   curl -s -o /dev/null -w 'status %{http_code} em %{time_total}s\n' -H "x-goog-api-key: $GEMINI_API_KEY" -H 'Content-Type: application/json' "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent" -d '{"contents":[{"parts":[{"text":"Responda só: ok"}]}]}'
+   ```
 
 Os evaluators leem a pergunta (`input.pergunta`), a resposta (`output.texto`) e os trechos usados (`output.trechos`) da própria observação raiz, porque não leem as observações filhas.
 
