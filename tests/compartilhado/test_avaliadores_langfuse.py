@@ -21,22 +21,39 @@ class Colecao:
 
     def __init__(self):
         self.itens: dict[str, SimpleNamespace] = {}
+        self.escritas = 0
 
     def list(self, limit, cursor=None):
         return SimpleNamespace(
             data=list(self.itens.values()), meta=SimpleNamespace(next_cursor=None)
         )
 
+    def _guardar_avaliador(self, id, dados):
+        """O SDK devolve o model_config_ como objeto e o status do evaluator."""
+        item = self._guardar(id, dados)
+        if isinstance(getattr(item, "model_config_", None), dict):
+            item.model_config_ = SimpleNamespace(**item.model_config_)
+        item.status = getattr(item, "status", "active")
+        return item
+
     def _guardar(self, id, dados):
         self.itens[id] = SimpleNamespace(**{**dados, "id": id})
         return self.itens[id]
 
     def create(self, request=None, request_options=None, **dados):
-        dados = vars(request) if request is not None else dados
+        self.escritas += 1
+        if request is not None:
+            return self._guardar_avaliador(
+                f"id-{len(self.itens) + 1}", request.model_dump()
+            )
         return self._guardar(f"id-{len(self.itens) + 1}", dados)
 
     def update(self, id, request=None, request_options=None, **dados):
-        dados = vars(request) if request is not None else dados
+        self.escritas += 1
+        if request is not None:
+            return self._guardar_avaliador(
+                id, {**vars(self.itens[id]), **request.model_dump(), "status": "active"}
+            )
         return self._guardar(id, {**vars(self.itens[id]), **dados})
 
 
@@ -125,3 +142,30 @@ def test_sem_gemini_nada_e_criado():
     with pytest.raises(SemConexaoDoGemini):
         criar_avaliadores(ApiDoLangfuse(api), "m", 0.2, ["local"], carregar)
     assert api.evaluators.itens == {}
+
+
+def test_evaluator_sem_mudanca_nao_e_atualizado():
+    """Atualizar faz o Langfuse validar o modelo de novo, o que pode levar 95 s."""
+    api = ApiFalsa()
+    criar_avaliadores(ApiDoLangfuse(api), "gemini-3.8-flash", 0.2, ["local"], carregar)
+    escritas = api.evaluators.escritas
+
+    criar_avaliadores(ApiDoLangfuse(api), "gemini-3.8-flash", 0.2, ["local"], carregar)
+
+    assert api.evaluators.escritas == escritas
+
+
+def test_evaluator_pausado_e_atualizado_mesmo_sem_mudanca():
+    api = ApiFalsa()
+    criar_avaliadores(ApiDoLangfuse(api), "gemini-3.8-flash", 0.2, ["local"], carregar)
+    relevancia = next(
+        a for a in api.evaluators.itens.values() if a.name == "relevancia"
+    )
+    relevancia.status = "paused"
+    escritas = api.evaluators.escritas
+
+    criar_avaliadores(ApiDoLangfuse(api), "gemini-3.8-flash", 0.2, ["local"], carregar)
+
+    assert api.evaluators.escritas == escritas + 1
+    assert relevancia.status == "paused"  # o objeto antigo; o novo está ativo
+    assert {a.status for a in api.evaluators.itens.values()} == {"active"}

@@ -144,6 +144,36 @@ def _todos(listar) -> list:
 _ESCRITA = {"timeout_in_seconds": 120}
 
 
+def _resumo(avaliador: Any) -> dict:
+    prompt = avaliador.prompt
+    if not isinstance(
+        prompt, str
+    ):  # lista de mensagens: o prompt do juiz é a do usuário
+        prompt = "\n".join(m.content for m in prompt)
+    modelo = avaliador.model_config_
+    return {
+        "id": avaliador.id,
+        "provedor": modelo.provider if modelo else None,
+        "modelo": modelo.model if modelo else None,
+        "prompt": prompt,
+        "status": getattr(avaliador.status, "value", avaliador.status),
+    }
+
+
+def precisa_atualizar(existente: dict, corpo: dict) -> bool:
+    """Atualizar faz o Langfuse validar o modelo de novo (até 95 s): só quando muda algo
+    ou quando o evaluator está pausado."""
+    return existente["status"] != "active" or (
+        existente["provedor"],
+        existente["modelo"],
+        existente["prompt"],
+    ) != (
+        corpo["model_config_"]["provider"],
+        corpo["model_config_"]["model"],
+        corpo["prompt"],
+    )
+
+
 class ApiDoLangfuse:
     """Evaluators, regras e LLM Connections pela API do SDK (`Langfuse().api`)."""
 
@@ -156,8 +186,9 @@ class ApiDoLangfuse:
             for c in self._api.llm_connections.list(limit=100).data
         ]
 
-    def avaliadores(self) -> dict[str, str]:
-        return {a.name: a.id for a in _todos(self._api.evaluators.list)}
+    def avaliadores(self) -> dict[str, dict]:
+        """Nome → id, modelo, prompt e status de cada evaluator do projeto."""
+        return {a.name: _resumo(a) for a in _todos(self._api.evaluators.list)}
 
     def regras(self) -> dict[str, str]:
         return {r.name: r.id for r in _todos(self._api.evaluation_rules.list)}
@@ -230,10 +261,11 @@ def criar_avaliadores(
         corpo = corpo_do_avaliador(
             avaliador, provedor, modelo, carregar_prompt("juiz", avaliador.prompt)
         )
-        if avaliador.nome in existentes:
-            ids[avaliador.nome] = api.atualizar_avaliador(
-                existentes[avaliador.nome], corpo
-            )
+        existente = existentes.get(avaliador.nome)
+        if existente and not precisa_atualizar(existente, corpo):
+            ids[avaliador.nome] = existente["id"]
+        elif existente:
+            ids[avaliador.nome] = api.atualizar_avaliador(existente["id"], corpo)
         else:
             ids[avaliador.nome] = api.criar_avaliador(corpo)
 
