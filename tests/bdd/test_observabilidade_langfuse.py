@@ -27,7 +27,6 @@ from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
 from economia.compartilhado.infraestrutura.prompts_langfuse import (
     PRODUCAO,
     PromptsDoLangfuse,
-    sincronizar_prompts,
 )
 from economia.receitas.aplicacao.indexar_base import indexar, montar_trechos
 from economia.receitas.aplicacao.responder_pergunta import ResponderPergunta
@@ -77,34 +76,25 @@ class PromptFalso:
 
 
 class LangfuseDePrompts:
-    """Prompt management em memória: versões numeradas, cada rótulo numa versão só."""
+    """Prompt management em memória: cada rótulo aponta para uma versão."""
 
     def __init__(self):
-        self.versoes: dict[str, list[PromptFalso]] = {}
-        self.criados = 0
+        self.prompts: list[PromptFalso] = []
         self.fora_do_ar = False
 
-    def create_prompt(self, *, name, prompt, labels, **_):
-        versoes = self.versoes.setdefault(name, [])
-        for antigo in versoes:
-            antigo.labels = [r for r in antigo.labels if r not in labels]
-        novo = PromptFalso(name, prompt, len(versoes) + 1, list(labels))
-        versoes.append(novo)
-        self.criados += 1
-        return novo
+    def adicionar(self, nome, texto, versao, rotulos):
+        for antigo in self.prompts:
+            if antigo.name == nome:
+                antigo.labels = [r for r in antigo.labels if r not in rotulos]
+        self.prompts.append(PromptFalso(nome, texto, versao, list(rotulos)))
 
-    def update_prompt(self, *, name, version, new_labels):
-        for p in self.versoes[name]:
-            if p.version == version:
-                p.labels = sorted(set(p.labels) | set(new_labels))
-
-    def get_prompt(self, name, *, label, fallback=None, **_):
+    def get_prompt(self, name, *, label, **_):
         if self.fora_do_ar:
-            return PromptFalso(name, fallback, 0, is_fallback=True)
-        for p in reversed(self.versoes.get(name, [])):
-            if label in p.labels:
+            raise ConnectionError("Langfuse fora do ar")
+        for p in self.prompts:
+            if p.name == name and label in p.labels:
                 return p
-        raise LookupError(label)
+        raise LookupError(f"{name}@{label}")
 
 
 # --- fixtures -------------------------------------------------------------------
@@ -135,14 +125,15 @@ def scores(langfuse, monkeypatch):
 
 
 @pytest.fixture
-def ambiente(contexto, langfuse, exportador, scores):
+def ambiente(contexto, langfuse, exportador, scores, tmp_path):
     exportador.clear()
     contexto.update(
         langfuse=langfuse,
         ollama=OllamaFalso(),
         prompts=None,
         cabecalhos={},
-        prompts_falsos=LangfuseDePrompts(),
+        langfuse_de_prompts=LangfuseDePrompts(),
+        cache=tmp_path / "copia-dos-prompts",
     )
     _base_com_folhas(contexto)
     return contexto
@@ -173,7 +164,7 @@ def _caso_de_uso(contexto):
     prompt = "Responda citando os trechos."
     lidos = {}
     if contexto["prompts"] is not None:
-        prompt = contexto["prompts"].carregar("miau-ricio", "resposta_com_fontes_v1")
+        prompt = contexto["prompts"].carregar("miau-ricio", "resposta_com_fontes")
         lidos = contexto["prompts"].prompts_lidos
     return ResponderPergunta(
         contexto["gerador"],
@@ -266,37 +257,48 @@ def langfuse_que_falha(ambiente):
     ambiente["observador"] = ObservadorDePerguntas(LangfuseQueFalha())
 
 
-@given(parsers.parse('o arquivo de prompt "{arquivo}"'))
-def arquivo_de_prompt(ambiente, arquivo, tmp_path):
-    agente, nome = arquivo.split("/")
-    (tmp_path / agente).mkdir(exist_ok=True)
-    (tmp_path / agente / nome).write_text("Prompt da versão 2")
-    ambiente["pasta"] = tmp_path
-    ambiente["em_uso"] = {arquivo.removesuffix(".md")}
+def _prompts(ambiente):
+    return PromptsDoLangfuse(ambiente["langfuse_de_prompts"], ambiente["cache"])
 
 
-@given("que os prompts já foram sincronizados")
-def prompts_sincronizados(ambiente, tmp_path):
-    arquivo_de_prompt(ambiente, "miau-ricio/resposta_com_fontes_v2.md", tmp_path)
-    sincronizar_prompts(
-        ambiente["prompts_falsos"], ambiente["em_uso"], ambiente["pasta"]
+@given(
+    parsers.parse(
+        'que o prompt "{nome}" tem a versão {versao:d} com o rótulo "{rotulo}"'
     )
-    ambiente["criados_antes"] = ambiente["prompts_falsos"].criados
+)
+def prompt_com_versao(ambiente, nome, versao, rotulo):
+    ambiente["langfuse_de_prompts"].adicionar(
+        nome, f"Prompt da versão {versao}", versao, [rotulo]
+    )
+
+
+@given(parsers.parse('que o prompt "{referencia}" já foi lido uma vez'))
+def prompt_ja_lido(ambiente, referencia):
+    ambiente["langfuse_de_prompts"].adicionar(
+        f"miau-ricio/{referencia}", "Prompt lido antes", 1, [PRODUCAO]
+    )
+    _prompts(ambiente).carregar("miau-ricio", referencia)
 
 
 @given("que o Langfuse não responde")
 def langfuse_nao_responde(ambiente):
-    ambiente["prompts_falsos"].fora_do_ar = True
+    ambiente["langfuse_de_prompts"].fora_do_ar = True
+
+
+@given("que não há cópia local do prompt")
+def sem_copia_local(ambiente):
+    ambiente["prompts"] = _prompts(ambiente)
 
 
 @given("que o prompt de resposta foi lido do Langfuse")
 def prompt_lido_do_langfuse(ambiente):
-    ambiente["prompts_falsos"].create_prompt(
-        name="miau-ricio/resposta_com_fontes",
-        prompt="Prompt do Langfuse: responda citando os trechos.",
-        labels=["v1", PRODUCAO],
+    ambiente["langfuse_de_prompts"].adicionar(
+        "miau-ricio/resposta_com_fontes",
+        "Prompt do Langfuse: responda citando os trechos.",
+        1,
+        ["v1", PRODUCAO],
     )
-    ambiente["prompts"] = PromptsDoLangfuse(ambiente["prompts_falsos"])
+    ambiente["prompts"] = _prompts(ambiente)
 
 
 # --- quando -----------------------------------------------------------------------
@@ -328,20 +330,9 @@ def api_recebe_identificador_invalido(ambiente, valor):
     )
 
 
-@when("eu sincronizo os prompts")
-@when("eu sincronizo os prompts de novo")
-def sincronizar(ambiente):
-    ambiente["sincronizados"] = sincronizar_prompts(
-        ambiente["prompts_falsos"], ambiente["em_uso"], ambiente["pasta"]
-    )
-
-
-@when("o Miau-ricio carrega o prompt de resposta")
-def carregar_prompt_de_resposta(ambiente):
-    prompts = PromptsDoLangfuse(ambiente["prompts_falsos"])
-    ambiente["prompt_carregado"] = prompts.carregar(
-        "miau-ricio", "resposta_com_fontes_v1"
-    )
+@when(parsers.parse('o Miau-ricio carrega o prompt "{referencia}"'))
+def carregar_prompt(ambiente, referencia):
+    ambiente["prompt_carregado"] = _prompts(ambiente).carregar("miau-ricio", referencia)
 
 
 # --- então ------------------------------------------------------------------------
@@ -440,31 +431,20 @@ def nada_enviado(exportador, scores):
     assert scores == []
 
 
-@then(parsers.parse('o Langfuse tem o prompt "{nome}" com o rótulo "{rotulo}"'))
-def tem_prompt(ambiente, nome, rotulo):
-    prompt = ambiente["prompts_falsos"].get_prompt(nome, label=rotulo)
-    assert prompt.prompt == "Prompt da versão 2"
+@then(parsers.parse("o texto é o da versão {versao:d}"))
+def texto_da_versao(ambiente, versao):
+    assert ambiente["prompt_carregado"] == f"Prompt da versão {versao}"
 
 
-@then(parsers.parse('o prompt em uso pela configuração tem o rótulo "{rotulo}"'))
-def em_uso_tem_rotulo(ambiente, rotulo):
-    [em_uso] = [s for s in ambiente["sincronizados"] if s.em_producao]
-    prompt = ambiente["prompts_falsos"].get_prompt(em_uso.nome, label=rotulo)
-    assert prompt.version == em_uso.versao
+@then(parsers.parse("a cópia local guarda a versão {versao:d}"))
+def copia_guarda_versao(ambiente, versao):
+    [arquivo] = ambiente["cache"].rglob("*.json")
+    assert json.loads(arquivo.read_text())["versao"] == versao
 
 
-@then("nenhuma versão nova é criada no Langfuse")
-def nenhuma_versao_nova(ambiente):
-    assert ambiente["prompts_falsos"].criados == ambiente["criados_antes"]
-
-
-@then("o texto é o do arquivo local")
-def texto_do_arquivo(ambiente):
-    from economia.compartilhado.infraestrutura.prompts import carregar_prompt
-
-    assert ambiente["prompt_carregado"] == carregar_prompt(
-        "miau-ricio", "resposta_com_fontes_v1"
-    )
+@then("o texto é o da cópia local")
+def texto_da_copia(ambiente):
+    assert ambiente["prompt_carregado"] == "Prompt lido antes"
 
 
 @then(

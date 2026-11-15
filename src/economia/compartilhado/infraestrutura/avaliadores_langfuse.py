@@ -3,7 +3,8 @@
 As chamadas usam o cliente da API que vem no SDK do Langfuse (`Langfuse().api`). Os corpos
 seguem os nomes dos modelos do SDK (snake_case); o SDK converte para o formato da API.
 
-Dois evaluators, fidelidade e relevância, com os prompts versionados em `prompts/juiz/`, e
+Dois evaluators, fidelidade e relevância, com os prompts `juiz/fidelidade` e `juiz/relevancia`
+do prompt management do Langfuse (rótulo `production`), e
 uma regra de avaliação que os aplica à observação raiz de cada pergunta (`miau-ricio.pergunta`),
 numa amostra do tráfego real (20%, por conta do custo).
 
@@ -13,11 +14,9 @@ uma pessoa da equipe na interface do Langfuse e nunca passa pelo repositório.
 O comando é idempotente: rodar de novo atualiza o que já existe, pelo nome.
 """
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Any
-
-from economia.compartilhado.infraestrutura.prompts import carregar_prompt
 
 # adaptadores do Langfuse que servem o Gemini
 ADAPTADORES_DO_GEMINI = ("google-ai-studio", "google-vertex-ai")
@@ -36,7 +35,7 @@ _ORIGENS = {
 class Avaliador:
     nome: str
     descricao: str
-    prompt: str  # arquivo em prompts/juiz/
+    prompt: str  # prompt `juiz/<prompt>` no Langfuse
     variaveis: tuple[str, ...]
 
 
@@ -44,13 +43,13 @@ AVALIADORES = (
     Avaliador(
         nome="fidelidade",
         descricao="A resposta só afirma o que está nos trechos recuperados (RN10, RN11)",
-        prompt="fidelidade_v1",
+        prompt="fidelidade",
         variaveis=("pergunta", "resposta", "trechos"),
     ),
     Avaliador(
         nome="relevancia",
         descricao="A resposta atende ao que a pessoa perguntou",
-        prompt="relevancia_v1",
+        prompt="relevancia",
         variaveis=("pergunta", "resposta"),
     ),
 )
@@ -72,12 +71,14 @@ def provedor_do_gemini(conexoes: Sequence[dict]) -> str:
     )
 
 
-def corpo_do_avaliador(avaliador: Avaliador, provedor: str, modelo: str) -> dict:
+def corpo_do_avaliador(
+    avaliador: Avaliador, provedor: str, modelo: str, prompt: str
+) -> dict:
     return {
         "name": avaliador.nome,
         "description": avaliador.descricao,
         "type": "llm_as_judge",
-        "prompt": carregar_prompt("juiz", avaliador.prompt),
+        "prompt": prompt,
         "model_config_": {"provider": provedor, "model": modelo},
         "variable_mapping": [
             {
@@ -212,14 +213,23 @@ class ApiDoLangfuse:
 
 
 def criar_avaliadores(
-    api: ApiDoLangfuse, modelo: str, amostra: float, ambientes: Sequence[str]
+    api: ApiDoLangfuse,
+    modelo: str,
+    amostra: float,
+    ambientes: Sequence[str],
+    carregar_prompt: Callable[[str, str], str],
 ) -> dict[str, str]:
-    """Cria ou atualiza os evaluators e a regra. Devolve nome → id, com a regra no fim."""
+    """Cria ou atualiza os evaluators e a regra. Devolve nome → id, com a regra no fim.
+
+    `carregar_prompt(agente, nome)` lê o prompt do juiz (`PromptsDoLangfuse.carregar`).
+    """
     provedor = provedor_do_gemini(api.conexoes())
     existentes = api.avaliadores()
     ids = {}
     for avaliador in AVALIADORES:
-        corpo = corpo_do_avaliador(avaliador, provedor, modelo)
+        corpo = corpo_do_avaliador(
+            avaliador, provedor, modelo, carregar_prompt("juiz", avaliador.prompt)
+        )
         if avaliador.nome in existentes:
             ids[avaliador.nome] = api.atualizar_avaliador(
                 existentes[avaliador.nome], corpo

@@ -437,13 +437,6 @@ def test_numeros_validos():
     assert numeros_validos([3, 1, 3, 0, 9, 2], 3) == [3, 1, 2]
 
 
-def test_prompts_versionados_da_resposta_existem():
-    from economia.compartilhado.infraestrutura.prompts import carregar_prompt
-
-    assert "trechos_usados" in carregar_prompt("miau-ricio", "resposta_com_fontes_v2")
-    assert "{resposta}" in carregar_prompt("miau-ricio", "pedido_de_citacao_v1")
-
-
 # ---------------------------------------------------------------- busca por ingrediente
 
 

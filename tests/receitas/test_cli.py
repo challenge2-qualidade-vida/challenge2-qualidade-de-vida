@@ -15,26 +15,33 @@ def sem_servicos(monkeypatch):
 
 
 @pytest.mark.parametrize("deterministico", [False, True])
-def test_criar_responder_com_as_opcoes_da_redacao(sem_servicos, deterministico):
+def test_criar_responder_com_as_opcoes_da_redacao(
+    sem_servicos, prompts_falsos, deterministico
+):
     configuracao = Configuracao(
         _env_file=None,
-        prompt_de_resposta="resposta_com_fontes_v2",
+        prompt_de_resposta="resposta_com_fontes@v2",
         resposta_estruturada=True,
         segunda_tentativa_de_citacao=True,
     )
-    caso = cli.criar_responder(configuracao, deterministico=deterministico)
+    caso = cli.criar_responder(
+        configuracao, deterministico=deterministico, prompts=prompts_falsos
+    )
     assert caso._estruturada is True
-    assert "trechos_usados" in caso._prompt
-    assert "{resposta}" in caso._pedido_de_citacao
+    assert caso._prompt == "<prompt miau-ricio/resposta_com_fontes@v2>"
+    assert caso._pedido_de_citacao == "<prompt miau-ricio/pedido_de_citacao>"
     opcoes = caso._llm._opcoes
     assert ("seed" in opcoes) is deterministico
 
 
-def test_criar_responder_padrao_e_a_versao_1(sem_servicos):
-    caso = cli.criar_responder(Configuracao(_env_file=None))
+def test_criar_responder_padrao_le_o_rotulo_production(sem_servicos, prompts_falsos):
+    caso = cli.criar_responder(Configuracao(_env_file=None), prompts=prompts_falsos)
     assert caso._estruturada is False
     assert caso._pedido_de_citacao is None
-    assert "NAO_ENCONTRADO" in caso._prompt
+    assert prompts_falsos.pedidos == [
+        "miau-ricio/resposta_com_fontes",
+        "miau-ricio/extrair_ingredientes",
+    ]
 
 
 def test_llm_da_avaliacao_e_deterministico_e_limitado(sem_servicos):
@@ -49,36 +56,47 @@ def test_llm_da_avaliacao_e_deterministico_e_limitado(sem_servicos):
     assert llm._pensar is False
 
 
-def test_criar_responder_aceita_o_llm_e_o_repositorio_prontos(sem_servicos):
+def test_criar_responder_aceita_o_llm_e_o_repositorio_prontos(
+    sem_servicos, prompts_falsos
+):
     llm, repositorio = object(), object()
     caso = cli.criar_responder(
-        Configuracao(_env_file=None), llm=llm, repositorio=repositorio
+        Configuracao(_env_file=None),
+        llm=llm,
+        repositorio=repositorio,
+        prompts=prompts_falsos,
     )
     assert caso._llm is llm
     assert caso._repositorio is repositorio
 
 
-def test_modo_puro_usa_o_prompt_sem_base(sem_servicos):
+def test_modo_puro_usa_o_prompt_sem_base(sem_servicos, prompts_falsos):
     caso = cli.criar_caso_de_avaliacao(
-        Configuracao(_env_file=None), "puro", llm=object()
+        Configuracao(_env_file=None), "puro", llm=object(), prompts=prompts_falsos
     )
-    assert "NAO_ENCONTRADO" not in caso._prompt
-    assert "trechos" not in caso._prompt.casefold()
+    assert caso._prompt == "<prompt miau-ricio/resposta_sem_base>"
+
+
+def test_sem_langfuse_e_sem_copia_o_cli_explica_o_que_configurar(sem_servicos):
+    from economia.compartilhado.infraestrutura.prompts_langfuse import (
+        PromptIndisponivel,
+    )
+
+    with pytest.raises(PromptIndisponivel, match="LANGFUSE_PUBLIC_KEY"):
+        cli.criar_responder(Configuracao(_env_file=None))
 
 
 def test_nome_do_run_e_do_dataset():
     configuracao = Configuracao(
         _env_file=None,
         ollama_modelo="gemma3:12b",
-        prompt_de_resposta="resposta_com_fontes_v2",
+        prompt_de_resposta="resposta_com_fontes@v2",
     )
     assert (
         cli.nome_do_run(configuracao, "rag")
-        == "rag-gemma3:12b-resposta_com_fontes_v2-e5"
+        == "rag-gemma3:12b-resposta_com_fontes@v2-e5"
     )
-    assert (
-        cli.nome_do_run(configuracao, "puro") == "puro-gemma3:12b-resposta_sem_base_v1"
-    )
+    assert cli.nome_do_run(configuracao, "puro") == "puro-gemma3:12b-resposta_sem_base"
     from pathlib import Path
 
     arquivo = Path("data/avaliacao/perguntas_rag_v3.json")

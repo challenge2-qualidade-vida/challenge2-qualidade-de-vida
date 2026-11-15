@@ -159,7 +159,7 @@ TEMPERATURA_DA_AVALIACAO = 0.0
 SEMENTE_DA_AVALIACAO = 42
 
 
-PROMPT_SEM_BASE = "resposta_sem_base_v1"
+PROMPT_SEM_BASE = "resposta_sem_base"
 MODOS = ("rag", "puro")
 
 
@@ -185,6 +185,18 @@ def criar_llm(configuracao: Configuracao, deterministico: bool = False, ao_gerar
     )
 
 
+def criar_prompts(configuracao: Configuracao, langfuse=None):
+    """Prompts do Langfuse (com a cópia local quando ele não responde)."""
+    from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
+        criar_cliente,
+    )
+    from economia.compartilhado.infraestrutura.prompts_langfuse import (
+        PromptsDoLangfuse,
+    )
+
+    return PromptsDoLangfuse(langfuse or criar_cliente(configuracao))
+
+
 def criar_responder(
     configuracao: Configuracao,
     amostra: int | None = None,
@@ -192,55 +204,61 @@ def criar_responder(
     llm=None,
     repositorio=None,
     gerador=None,
-    carregar_prompt=None,
+    prompts=None,
 ):
     from economia.receitas.aplicacao.responder_pergunta import ResponderPergunta
 
-    if carregar_prompt is None:
-        from economia.compartilhado.infraestrutura.prompts import carregar_prompt
-
+    prompts = prompts or criar_prompts(configuracao)
     return ResponderPergunta(
         gerador or criar_gerador(configuracao),
         repositorio or criar_repositorio(configuracao, amostra),
         llm or criar_llm(configuracao, deterministico),
-        prompt_do_sistema=carregar_prompt(
+        prompt_do_sistema=prompts.carregar(
             "miau-ricio", configuracao.prompt_de_resposta
         ),
         limiar=configuracao.limiar_similaridade,
-        prompt_de_extracao=carregar_prompt("miau-ricio", "extrair_ingredientes_v1"),
+        prompt_de_extracao=prompts.carregar("miau-ricio", "extrair_ingredientes"),
         ingredientes_basicos=configuracao.ingredientes_basicos,
         tolerancia=configuracao.tolerancia_empate,
         resposta_estruturada=configuracao.resposta_estruturada,
-        pedido_de_citacao=carregar_prompt("miau-ricio", "pedido_de_citacao_v1")
+        pedido_de_citacao=prompts.carregar("miau-ricio", "pedido_de_citacao")
         if configuracao.segunda_tentativa_de_citacao
         else None,
     )
 
 
-def criar_responder_observado(configuracao: Configuracao, langfuse=None):
-    """Responder da API. Com o Langfuse, prompts do prompt management, busca e LLM registrados."""
-    if langfuse is None:
-        return criar_responder(configuracao)
+def criar_fabrica_da_api(configuracao: Configuracao, langfuse=None):
+    """Fábrica do responder da API.
+
+    O modelo e5, o Qdrant e o LLM são criados uma vez; os prompts são lidos a cada pergunta
+    (o SDK guarda em memória por 5 minutos), para que mover o rótulo `production` no
+    Langfuse valha sem reiniciar a API. Com o Langfuse, a busca e o LLM são registrados.
+    """
     from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
         RegistroDeGeracoes,
-    )
-    from economia.compartilhado.infraestrutura.prompts_langfuse import (
-        PromptsDoLangfuse,
     )
     from economia.receitas.infraestrutura.experimento_langfuse import (
         RepositorioObservado,
     )
 
-    prompts = PromptsDoLangfuse(langfuse)
-    registro = RegistroDeGeracoes(
-        langfuse, nomes_dos_prompts(configuracao), prompts.prompts_lidos
-    )
-    return criar_responder(
-        configuracao,
-        llm=criar_llm(configuracao, ao_gerar=registro),
-        repositorio=RepositorioObservado(criar_repositorio(configuracao), langfuse),
-        carregar_prompt=prompts.carregar,
-    )
+    prompts = criar_prompts(configuracao, langfuse)
+    registro = RegistroDeGeracoes(langfuse, prompts.prompts_lidos) if langfuse else None
+    llm = criar_llm(configuracao, ao_gerar=registro)
+    repositorio = criar_repositorio(configuracao)
+    if langfuse:
+        repositorio = RepositorioObservado(repositorio, langfuse)
+    gerador = criar_gerador(configuracao)
+
+    def fabricar():
+        return criar_responder(
+            configuracao,
+            llm=llm,
+            repositorio=repositorio,
+            gerador=gerador,
+            prompts=prompts,
+        )
+
+    return fabricar
 
 
 def criar_caso_de_avaliacao(
@@ -250,29 +268,22 @@ def criar_caso_de_avaliacao(
     amostra: int | None = None,
     repositorio=None,
     gerador=None,
+    prompts=None,
 ):
     """Caso de uso avaliado: o RAG completo ou o LLM puro, com o mesmo LLM."""
+    prompts = prompts or criar_prompts(configuracao)
     if modo == "puro":
-        from economia.compartilhado.infraestrutura.prompts import carregar_prompt
         from economia.receitas.aplicacao.responder_sem_base import ResponderSemBase
 
-        return ResponderSemBase(llm, carregar_prompt("miau-ricio", PROMPT_SEM_BASE))
+        return ResponderSemBase(llm, prompts.carregar("miau-ricio", PROMPT_SEM_BASE))
     return criar_responder(
-        configuracao, amostra, llm=llm, repositorio=repositorio, gerador=gerador
+        configuracao,
+        amostra,
+        llm=llm,
+        repositorio=repositorio,
+        gerador=gerador,
+        prompts=prompts,
     )
-
-
-def nomes_dos_prompts(configuracao: Configuracao) -> dict[str, str]:
-    """Texto de cada prompt → nome do arquivo, para o registro dizer qual prompt foi usado."""
-    from economia.compartilhado.infraestrutura.prompts import carregar_prompt
-
-    nomes = {
-        PROMPT_SEM_BASE,
-        configuracao.prompt_de_resposta,
-        "extrair_ingredientes_v1",
-        "pedido_de_citacao_v1",
-    }
-    return {carregar_prompt("miau-ricio", nome): nome for nome in nomes}
 
 
 def nome_do_run(configuracao: Configuracao, modo: str) -> str:
@@ -489,11 +500,8 @@ def comando_avaliar_respostas(args: argparse.Namespace) -> None:
     )
 
     langfuse = criar_cliente(configuracao)
-    registro = (
-        RegistroDeGeracoes(langfuse, nomes_dos_prompts(configuracao))
-        if langfuse
-        else None
-    )
+    prompts = criar_prompts(configuracao, langfuse)
+    registro = RegistroDeGeracoes(langfuse, prompts.prompts_lidos) if langfuse else None
     llm = criar_llm(configuracao, deterministico=True, ao_gerar=registro)
     # o e5 calcula o cosseno nos dois modos; no RAG, é o mesmo gerador da busca
     gerador = criar_gerador(configuracao)
@@ -507,7 +515,7 @@ def comando_avaliar_respostas(args: argparse.Namespace) -> None:
 
             repositorio = RepositorioObservado(repositorio, langfuse)
     caso = criar_caso_de_avaliacao(
-        configuracao, args.modo, llm, args.amostra, repositorio, gerador
+        configuracao, args.modo, llm, args.amostra, repositorio, gerador, prompts
     )
     colecao = (
         configuracao.colecao_da_amostra(args.amostra) if args.modo == "rag" else None
@@ -538,6 +546,8 @@ def comando_avaliar_respostas(args: argparse.Namespace) -> None:
         "contexto": configuracao.ollama_contexto,
         "saida_maxima": configuracao.ollama_saida_maxima,
         "raciocinio": False,
+        # versão de cada prompt lida do Langfuse, para reproduzir a execução
+        "versoes_dos_prompts": dict(prompts.versoes),
     }
     print(f"Execução {run} | {len(perguntas)} perguntas", flush=True)
 
@@ -617,38 +627,6 @@ def comando_avaliar_respostas(args: argparse.Namespace) -> None:
         print(f"Run no Langfuse: {url_do_run}")
 
 
-def prompts_em_uso(configuracao: Configuracao) -> set[str]:
-    """Arquivos de prompt em uso pela configuração e pelos evaluators: recebem `production`."""
-    return {
-        f"miau-ricio/{nome}" for nome in nomes_dos_prompts(configuracao).values()
-    } | {
-        "juiz/fidelidade_v1",
-        "juiz/relevancia_v1",
-    }
-
-
-def comando_sincronizar_prompts(args: argparse.Namespace) -> None:
-    """Publica os arquivos de `prompts/` no prompt management do Langfuse (#28)."""
-    from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
-        criar_cliente,
-    )
-    from economia.compartilhado.infraestrutura.prompts_langfuse import (
-        sincronizar_prompts,
-    )
-
-    configuracao = obter_configuracao()
-    langfuse = criar_cliente(configuracao)
-    if langfuse is None:
-        raise SystemExit("Configure LANGFUSE_PUBLIC_KEY e LANGFUSE_SECRET_KEY no .env")
-    for p in sincronizar_prompts(langfuse, prompts_em_uso(configuracao)):
-        situacao = "versão nova" if p.criado else "sem mudança"
-        producao = " (production)" if p.em_producao else ""
-        print(
-            f"{p.arquivo:<40} → {p.nome} (rótulo {p.rotulo}, versão {p.versao}): "
-            f"{situacao}{producao}"
-        )
-
-
 def comando_criar_avaliadores(args: argparse.Namespace) -> None:
     """Cria ou atualiza os evaluators gerenciados (Gemini como juiz) e a regra de avaliação."""
     from langfuse.api.core.api_error import ApiError
@@ -672,6 +650,7 @@ def comando_criar_avaliadores(args: argparse.Namespace) -> None:
             configuracao.langfuse_modelo_juiz,
             configuracao.langfuse_amostra_juiz,
             configuracao.langfuse_ambientes_juiz,
+            criar_prompts(configuracao, langfuse).carregar,
         )
     except SemConexaoDoGemini as erro:
         raise SystemExit(str(erro)) from erro
@@ -818,7 +797,7 @@ def criar_parser() -> argparse.ArgumentParser:
     respostas_parser.add_argument("--limite", type=int, help="avalia só as N primeiras")
     respostas_parser.add_argument(
         "--prompt",
-        help="prompt da resposta (padrão: PROMPT_DE_RESPOSTA, ex.: resposta_com_fontes_v2)",
+        help="prompt da resposta no Langfuse (padrão: PROMPT_DE_RESPOSTA; ex.: resposta_com_fontes@v2)",
     )
     respostas_parser.add_argument(
         "--estruturada",
@@ -842,11 +821,6 @@ def criar_parser() -> argparse.ArgumentParser:
     execucoes_parser.set_defaults(funcao=comando_comparar_execucoes)
 
     comandos.add_parser(
-        "sincronizar-prompts",
-        help="publica os prompts de prompts/ no prompt management do Langfuse",
-    ).set_defaults(funcao=comando_sincronizar_prompts)
-
-    comandos.add_parser(
         "criar-avaliadores",
         help="cria ou atualiza os evaluators do Langfuse (Gemini como juiz)",
     ).set_defaults(funcao=comando_criar_avaliadores)
@@ -855,8 +829,15 @@ def criar_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> None:
+    from economia.compartilhado.infraestrutura.prompts_langfuse import (
+        PromptIndisponivel,
+    )
+
     args = criar_parser().parse_args(argv)
-    args.funcao(args)
+    try:
+        args.funcao(args)
+    except PromptIndisponivel as erro:
+        raise SystemExit(str(erro)) from erro
 
 
 if __name__ == "__main__":

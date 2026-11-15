@@ -42,9 +42,10 @@ class Configuracao(BaseSettings):
     tolerancia_empate: float = Field(default=0.01, ge=0.0, le=1.0)
     # sempre disponíveis, em português e em inglês (receitas do RecipeNLG); lista provisória
     ingredientes_basicos: list[str] = ["sal", "agua", "oleo", "salt", "water", "oil"]
-    # redação da resposta do Miau-ricio: prompt versionado, saída estruturada (JSON com os
-    # trechos usados) e segunda tentativa quando o LLM responde sem citar os trechos
-    prompt_de_resposta: str = "resposta_com_fontes_v1"
+    # redação da resposta do Miau-ricio: prompt do Langfuse, saída estruturada (JSON com os
+    # trechos usados) e segunda tentativa quando o LLM responde sem citar os trechos.
+    # "resposta_com_fontes" lê o rótulo production; "resposta_com_fontes@v2", outro rótulo
+    prompt_de_resposta: str = "resposta_com_fontes"
     resposta_estruturada: bool = False
     segunda_tentativa_de_citacao: bool = False
     # Langfuse Cloud (registro das chamadas e dos experimentos). Sem as duas chaves, nada é

@@ -9,10 +9,12 @@ import time
 from functools import lru_cache
 from typing import Annotated, Literal, Protocol
 
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
 
 from economia.api.observabilidade import ObservadorDePerguntas
+from economia.compartilhado.infraestrutura.prompts_langfuse import PromptIndisponivel
 from economia.conversa.dominio.identificadores import (
     IdentificadorAnonimo,
     IdentificadorDaConversa,
@@ -148,16 +150,20 @@ def obter_langfuse():
 
 
 @lru_cache
-def obter_caso_de_uso() -> CasoDeUsoDeResposta:
-    """Caso de uso com a configuração do .env, criado uma vez por processo (carrega o modelo e5).
-
-    Com o Langfuse, os prompts vêm do prompt management (com o arquivo como alternativa), e a
-    busca e as chamadas ao LLM entram no registro de cada pergunta.
-    """
+def _fabrica_do_caso_de_uso():
+    """Componentes pesados (modelo e5, Qdrant, LLM), criados uma vez por processo."""
     from economia.compartilhado.configuracao import obter_configuracao
-    from economia.receitas.cli import criar_responder_observado
+    from economia.receitas.cli import criar_fabrica_da_api
 
-    return criar_responder_observado(obter_configuracao(), obter_langfuse())
+    return criar_fabrica_da_api(obter_configuracao(), obter_langfuse())
+
+
+def obter_caso_de_uso() -> CasoDeUsoDeResposta:
+    """Caso de uso de cada pergunta, com os prompts do Langfuse (rótulo `production`).
+
+    Com o Langfuse, a busca e as chamadas ao LLM entram no registro de cada pergunta.
+    """
+    return _fabrica_do_caso_de_uso()()
 
 
 def obter_observador() -> ObservadorDePerguntas:
@@ -169,6 +175,13 @@ app = FastAPI(
     description="API do EconoMIA. Nesta versão, só a pergunta ao Miau-ricio (RAG de receitas e alimentação).",
     version="0.1.0",
 )
+
+
+@app.exception_handler(PromptIndisponivel)
+def prompt_indisponivel(_: Request, erro: PromptIndisponivel) -> JSONResponse:
+    """Sem o Langfuse e sem a cópia local do prompt, o Miau-ricio fica indisponível."""
+    logger.error("Prompt indisponível: %s", erro)
+    return JSONResponse(status_code=503, content={"detail": INDISPONIVEL})
 
 
 @app.get("/saude", tags=["saúde"])

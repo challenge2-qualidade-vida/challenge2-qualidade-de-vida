@@ -63,9 +63,12 @@ def test_sem_conexao_do_gemini_explica_o_que_fazer():
 
 def test_avaliador_mapeia_as_variaveis_da_observacao_raiz():
     fidelidade = next(a for a in AVALIADORES if a.nome == "fidelidade")
-    corpo = corpo_do_avaliador(fidelidade, "gemini", "gemini-2.5-flash")
+    corpo = corpo_do_avaliador(
+        fidelidade, "gemini", "gemini-2.5-flash", "Julgue {{pergunta}}"
+    )
 
     assert corpo["model_config_"] == {"provider": "gemini", "model": "gemini-2.5-flash"}
+    assert corpo["prompt"] == "Julgue {{pergunta}}"
     mapeamento = {
         m["variable"]: (m["source"], m["json_path"]) for m in corpo["variable_mapping"]
     }
@@ -77,11 +80,8 @@ def test_avaliador_mapeia_as_variaveis_da_observacao_raiz():
     assert corpo["output_definition"]["data_type"] == "NUMERIC"
 
 
-def test_cada_variavel_do_mapeamento_aparece_no_prompt():
-    for avaliador in AVALIADORES:
-        prompt = corpo_do_avaliador(avaliador, "gemini", "m")["prompt"]
-        for variavel in avaliador.variaveis:
-            assert "{{" + variavel + "}}" in prompt
+def carregar(agente, nome):
+    return f"<prompt {agente}/{nome}>"
 
 
 def test_regra_avalia_a_amostra_das_perguntas_sem_erro():
@@ -103,8 +103,12 @@ def test_regra_avalia_a_amostra_das_perguntas_sem_erro():
 def test_criar_de_novo_atualiza_em_vez_de_duplicar():
     api = ApiFalsa()
 
-    primeira = criar_avaliadores(ApiDoLangfuse(api), "gemini-2.5-flash", 0.2, ["local"])
-    segunda = criar_avaliadores(ApiDoLangfuse(api), "gemini-2.5-pro", 0.2, ["local"])
+    primeira = criar_avaliadores(
+        ApiDoLangfuse(api), "gemini-2.5-flash", 0.2, ["local"], carregar
+    )
+    segunda = criar_avaliadores(
+        ApiDoLangfuse(api), "gemini-2.5-pro", 0.2, ["local"], carregar
+    )
 
     assert primeira == segunda
     assert NOME_DA_REGRA in segunda
@@ -112,10 +116,12 @@ def test_criar_de_novo_atualiza_em_vez_de_duplicar():
     assert len(api.evaluation_rules.itens) == 1
     modelos = {a.model_config_.model for a in api.evaluators.itens.values()}
     assert modelos == {"gemini-2.5-pro"}
+    prompts = {a.prompt for a in api.evaluators.itens.values()}
+    assert prompts == {"<prompt juiz/fidelidade>", "<prompt juiz/relevancia>"}
 
 
 def test_sem_gemini_nada_e_criado():
     api = ApiFalsa(conexoes=())
     with pytest.raises(SemConexaoDoGemini):
-        criar_avaliadores(ApiDoLangfuse(api), "m", 0.2, ["local"])
+        criar_avaliadores(ApiDoLangfuse(api), "m", 0.2, ["local"], carregar)
     assert api.evaluators.itens == {}
