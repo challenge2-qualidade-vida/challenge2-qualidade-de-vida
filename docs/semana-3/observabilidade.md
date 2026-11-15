@@ -14,18 +14,18 @@ flowchart LR
     Registro -->|mascaramento RN30| Langfuse[("Langfuse Cloud")]
     Langfuse --> Juiz["evaluators: fidelidade e relevância<br/>Gemini, 20% do tráfego"]
     Langfuse --> Alertas["alertas<br/>→ GitHub Actions → issue"]
-    Prompts["prompts/*.md"] -->|sincronizar-prompts| Langfuse
+    Langfuse -->|prompts, rótulo production| API
 ```
 
 | O que | Onde está no código |
 | --- | --- |
 | Mascaramento de dados pessoais (RN30) | `src/economia/compartilhado/mascaramento.py` |
 | Cliente do Langfuse, gerações e vínculo com o prompt | `src/economia/compartilhado/infraestrutura/observabilidade_langfuse.py` |
-| Prompt management (sincronização e leitura) | `src/economia/compartilhado/infraestrutura/prompts_langfuse.py` |
+| Leitura dos prompts do Langfuse, com a cópia local | `src/economia/compartilhado/infraestrutura/prompts_langfuse.py` |
 | Evaluators e regra de avaliação | `src/economia/compartilhado/infraestrutura/avaliadores_langfuse.py` |
 | Registro de cada pergunta da API e scores | `src/economia/api/observabilidade.py` |
 | Identificador anônimo e da conversa | `src/economia/conversa/dominio/identificadores.py` e `frontend/src/identificadores.ts` |
-| Prompts do juiz | `prompts/juiz/` |
+| Contrato dos prompts | `tests/contrato/test_prompts_no_langfuse.py` |
 | Workflow dos alertas | `.github/workflows/alerta-langfuse.yml` |
 
 ## 2. Configuração
@@ -53,14 +53,33 @@ Antes de sair da máquina, toda entrada, saída e metadado passa por `mascarar`:
 
 ## 4. Prompts no Langfuse
 
-```bash
-poetry run python -m economia.receitas.cli sincronizar-prompts
-```
+Os prompts ficam **só** no prompt management do Langfuse (decisão de 15/11/2026): o repositório não tem mais a pasta `prompts/`.
 
-- Cada arquivo `prompts/<agente>/<nome>_v<N>.md` vira o prompt `<agente>/<nome>` com o rótulo `vN`. Os prompts em uso pela configuração e pelo juiz recebem também `production`.
-- Rodar de novo sem mudança não cria versão. Alterar um arquivo cria uma versão nova com o mesmo rótulo.
-- **O arquivo continua sendo a fonte da verdade.** Editar um prompt na interface do Langfuse não volta para o repositório: a próxima sincronização cria uma versão com o texto do arquivo. Mude o arquivo, abra o PR e sincronize depois do merge.
-- A API lê o prompt do Langfuse pelo rótulo da versão configurada e usa o arquivo quando o Langfuse não responde. Cada geração fica ligada ao prompt e à versão, e a aba **Prompts > Metrics** mostra latência, tokens e scores por versão.
+| Prompt | Usado por |
+| --- | --- |
+| `miau-ricio/resposta_com_fontes` | redação da resposta (v1 texto livre; v2 JSON com `trechos_usados`) |
+| `miau-ricio/extrair_ingredientes` | extração dos ingredientes da pergunta |
+| `miau-ricio/pedido_de_citacao` | segunda tentativa quando a resposta vem sem citação |
+| `miau-ricio/resposta_sem_base` | modo LLM puro da avaliação |
+| `juiz/fidelidade`, `juiz/relevancia` | evaluators gerenciados |
+
+### Como mudar um prompt
+
+1. Na interface do Langfuse, em **Prompts**, abra o prompt e crie uma versão nova. Ela recebe o rótulo `latest`.
+2. Rode os testes de contrato, que conferem `latest` e `production`:
+
+   ```bash
+   poetry run pytest -m langfuse
+   ```
+
+3. Se passarem, mova o rótulo `production` para a versão nova. A API passa a usá-la em até 5 minutos, sem reiniciar.
+4. Para voltar atrás, mova o `production` de volta para a versão anterior.
+
+### Como o código lê
+
+- A referência `<nome>` lê o rótulo `production`; `<nome>@<rótulo>` lê outro rótulo. Exemplos: `PROMPT_DE_RESPOSTA=resposta_com_fontes` (padrão) e `--prompt resposta_com_fontes@v2` na avaliação.
+- Cada leitura atualiza a cópia local em `data/cache/prompts/` (fora do git). Sem as chaves ou com o Langfuse fora do ar, o prompt vem dessa cópia, com um aviso no log. Sem cópia (uma máquina nova sem acesso ao Langfuse), a API responde 503 e a linha de comando explica o que configurar.
+- Cada geração fica ligada ao prompt e à versão, e a aba **Prompts > Metrics** mostra latência, tokens e scores por versão. O arquivo de resultado da avaliação guarda a versão de cada prompt usado (`versoes_dos_prompts`).
 
 ## 5. Scores e evaluators
 
@@ -85,7 +104,7 @@ A avaliação offline da #69 continua mandando os seus scores (ROUGE, cosseno, H
    poetry run python -m economia.receitas.cli criar-avaliadores
    ```
 
-   Cria (ou atualiza, pelo nome) os evaluators `fidelidade` e `relevancia`, com os prompts de `prompts/juiz/`, e a regra `miau-ricio: juiz no tráfego real`: observação `miau-ricio.pergunta`, ambientes `producao` e `local`, sem as que deram erro, amostra de 20%.
+   Cria (ou atualiza, pelo nome) os evaluators `fidelidade` e `relevancia`, com os prompts `juiz/fidelidade` e `juiz/relevancia` (rótulo `production`), e a regra `miau-ricio: juiz no tráfego real`: observação `miau-ricio.pergunta`, ambientes `producao` e `local`, sem as que deram erro, amostra de 20%.
 3. **Validação do modelo.** Ao salvar um evaluator, o Langfuse chama o modelo para testar. Se o Gemini não responder (chave inválida, cota esgotada ou modelo inexistente), o comando mostra o erro e o evaluator fica pausado. Teste a conexão no **Playground** do Langfuse com o mesmo modelo e rode o comando de novo.
 
 Os evaluators leem a pergunta (`input.pergunta`), a resposta (`output.texto`) e os trechos usados (`output.trechos`) da própria observação raiz, porque não leem as observações filhas.
@@ -130,7 +149,7 @@ Em **Dashboards > New dashboard** ("Miau-ricio"), com o filtro `environment = pr
 
 ## 8. Testes
 
-Os testes nunca falam com o Langfuse do `.env`: `tests/conftest.py` deixa as chaves vazias. Os cenários BDD (`tests/bdd/test_observabilidade_langfuse.py`) usam o SDK real com um exportador de spans em memória, que confere o mascaramento, a pessoa, a sessão e o vínculo com o prompt sem rede.
+Os testes comuns (`poetry run pytest`) nunca falam com o Langfuse do `.env`: `tests/conftest.py` deixa as chaves vazias e põe a cópia dos prompts numa pasta temporária, e os testes usam prompts falsos. Os testes de contrato (`poetry run pytest -m langfuse`) buscam os prompts de verdade, nas versões `latest` e `production`, e são pulados sem as chaves. Os cenários BDD (`tests/bdd/test_observabilidade_langfuse.py`) usam o SDK real com um exportador de spans em memória, que confere o mascaramento, a pessoa, a sessão e o vínculo com o prompt sem rede.
 
 ## 9. Limites conhecidos
 
