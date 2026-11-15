@@ -1,133 +1,130 @@
-"""Prompts no prompt management do Langfuse (#28).
+"""Prompts no prompt management do Langfuse (#28, spec 29).
 
-Os arquivos em `prompts/<agente>/<nome>_v<versao>.md` continuam sendo a fonte da verdade.
-`sincronizar_prompts` publica cada arquivo no Langfuse como o prompt `<agente>/<nome>`, com o
-rótulo `v<versao>`; o prompt em uso pela configuração recebe também o rótulo `production`.
+Os prompts ficam só no Langfuse, como `<agente>/<nome>` (ex.: `miau-ricio/resposta_com_fontes`).
+O código pede cada um por uma referência: `<nome>` lê o rótulo `production`; `<nome>@<rótulo>`
+lê outro rótulo (ex.: `resposta_com_fontes@v2`, `resposta_com_fontes@latest`).
 
-Em execução, `PromptsDoLangfuse.carregar` lê o prompt do Langfuse pelo rótulo da versão
-configurada e usa o arquivo local quando o Langfuse não responde. O prompt lido fica guardado
-para a geração do LLM ser vinculada a ele (`RegistroDeGeracoes`).
+A cada leitura, o texto e a versão ficam numa cópia local em `data/cache/prompts/` (fora do
+git). Sem as chaves ou com o Langfuse fora do ar, o prompt vem dessa cópia. Sem cópia, o
+prompt está indisponível (`PromptIndisponivel`).
+
+O prompt lido fica guardado para a geração do LLM ser vinculada a ele (`RegistroDeGeracoes`).
 """
 
+import json
 import logging
 import re
-from collections.abc import Iterable
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
-
-from economia.compartilhado.infraestrutura.prompts import (
-    PASTA_DOS_PROMPTS,
-    carregar_prompt,
-)
 
 logger = logging.getLogger(__name__)
 
 PRODUCAO = "production"
-_NOME_COM_VERSAO = re.compile(r"^(?P<base>.+)_(?P<versao>v\d+)$")
-# o prompt muda pouco: o SDK guarda em memória e confere de novo em segundo plano
+PASTA_DO_CACHE = Path(__file__).resolve().parents[4] / "data" / "cache" / "prompts"
+# o SDK guarda o prompt em memória e confere de novo em segundo plano depois desse tempo
 CACHE_EM_SEGUNDOS = 300
+# referência antiga, do tempo dos arquivos: resposta_com_fontes_v2 → rótulo v2
+_NOME_COM_VERSAO = re.compile(r"^(?P<base>.+)_(?P<versao>v\d+)$")
 
 
-def nome_no_langfuse(agente: str, nome: str) -> tuple[str, str]:
-    """Nome do prompt no Langfuse e rótulo da versão (resposta_com_fontes_v2 → v2)."""
-    encontrado = _NOME_COM_VERSAO.match(nome)
-    if not encontrado:
-        raise ValueError(f"Prompt sem versão no nome: {agente}/{nome}")
-    return f"{agente}/{encontrado['base']}", encontrado["versao"]
+class PromptIndisponivel(RuntimeError):
+    """O prompt não veio do Langfuse e não há cópia local."""
+
+
+def resolver(agente: str, referencia: str) -> tuple[str, str]:
+    """Nome do prompt no Langfuse e rótulo a ler."""
+    if "@" in referencia:
+        nome, rotulo = referencia.split("@", 1)
+    elif encontrado := _NOME_COM_VERSAO.match(referencia):
+        nome, rotulo = encontrado["base"], encontrado["versao"]
+    else:
+        nome, rotulo = referencia, PRODUCAO
+    return f"{agente}/{nome}", rotulo
 
 
 @dataclass(frozen=True)
-class PromptSincronizado:
-    arquivo: str
+class PromptLido:
     nome: str
     rotulo: str
     versao: int
-    criado: bool
-    em_producao: bool
-
-
-def _buscar(cliente: Any, nome: str, rotulo: str) -> Any | None:
-    try:
-        return cliente.get_prompt(
-            nome, label=rotulo, cache_ttl_seconds=0, max_retries=0
-        )
-    except Exception:  # o SDK levanta NotFoundError quando o rótulo não existe
-        logger.debug("Prompt %s sem o rótulo %s", nome, rotulo, exc_info=True)
-        return None
-
-
-def sincronizar_prompts(
-    cliente: Any,
-    em_producao: Iterable[str],
-    pasta: Path = PASTA_DOS_PROMPTS,
-) -> list[PromptSincronizado]:
-    """Publica os arquivos de prompt no Langfuse. Sem mudança no arquivo, nada é criado.
-
-    `em_producao` são os arquivos em uso pela configuração (ex.: "miau-ricio/resposta_com_fontes_v1").
-    """
-    em_producao = set(em_producao)
-    resultado = []
-    for caminho in sorted(pasta.glob("*/*.md")):
-        agente, arquivo = caminho.parent.name, caminho.stem
-        nome, rotulo = nome_no_langfuse(agente, arquivo)
-        texto = carregar_prompt(agente, arquivo, pasta)
-        producao = f"{agente}/{arquivo}" in em_producao
-        rotulos = [rotulo, PRODUCAO] if producao else [rotulo]
-
-        atual = _buscar(cliente, nome, rotulo)
-        criado = atual is None or atual.prompt != texto
-        if criado:
-            atual = cliente.create_prompt(
-                name=nome,
-                prompt=texto,
-                labels=rotulos,
-                type="text",
-                commit_message=f"Sincronizado de prompts/{agente}/{arquivo}.md",
-            )
-        elif producao and PRODUCAO not in (atual.labels or []):
-            cliente.update_prompt(name=nome, version=atual.version, new_labels=rotulos)
-        resultado.append(
-            PromptSincronizado(
-                arquivo=f"{agente}/{arquivo}",
-                nome=nome,
-                rotulo=rotulo,
-                versao=atual.version,
-                criado=criado,
-                em_producao=producao,
-            )
-        )
-    return resultado
+    texto: str
+    lido_em: str
 
 
 class PromptsDoLangfuse:
-    """Carrega os prompts do Langfuse, com o arquivo local como alternativa.
+    """Lê os prompts do Langfuse, com a cópia local quando ele não responde.
 
     `prompts_lidos` liga o texto de cada prompt ao prompt do Langfuse, para o
-    `RegistroDeGeracoes` vincular cada geração à versão usada.
+    `RegistroDeGeracoes` vincular cada geração à versão usada. `versoes` diz qual versão
+    de cada referência foi lida, para o registro de uma execução da avaliação.
     """
 
-    def __init__(self, cliente: Any, pasta: Path = PASTA_DOS_PROMPTS):
+    def __init__(self, cliente: Any | None, cache: Path | None = None):
         self._cliente = cliente
-        self._pasta = pasta
+        self._cache = cache or PASTA_DO_CACHE
         self.prompts_lidos: dict[str, Any] = {}
+        self.versoes: dict[str, int] = {}
 
-    def carregar(self, agente: str, nome: str) -> str:
-        local = carregar_prompt(agente, nome, self._pasta)
-        nome_remoto, rotulo = nome_no_langfuse(agente, nome)
+    def _arquivo(self, nome: str, rotulo: str) -> Path:
+        return self._cache / f"{nome}@{rotulo}.json"
+
+    def _do_langfuse(self, nome: str, rotulo: str) -> PromptLido | None:
+        if self._cliente is None:
+            return None
         try:
             prompt = self._cliente.get_prompt(
-                nome_remoto,
-                label=rotulo,
-                fallback=local,
-                cache_ttl_seconds=CACHE_EM_SEGUNDOS,
+                nome, label=rotulo, cache_ttl_seconds=CACHE_EM_SEGUNDOS
             )
         except Exception:
             logger.warning(
-                "Prompt %s lido do arquivo: Langfuse indisponível", nome, exc_info=True
+                "Prompt %s@%s não veio do Langfuse; usando a cópia local",
+                nome,
+                rotulo,
+                exc_info=True,
             )
-            return local
-        if getattr(prompt, "is_fallback", False):
-            return local
+            return None
         self.prompts_lidos[prompt.prompt] = prompt
-        return prompt.prompt
+        lido = PromptLido(
+            nome=nome,
+            rotulo=rotulo,
+            versao=prompt.version,
+            texto=prompt.prompt,
+            lido_em=datetime.now(UTC).isoformat(timespec="seconds"),
+        )
+        self._guardar(lido)
+        return lido
+
+    def _guardar(self, lido: PromptLido) -> None:
+        arquivo = self._arquivo(lido.nome, lido.rotulo)
+        try:
+            arquivo.parent.mkdir(parents=True, exist_ok=True)
+            arquivo.write_text(
+                json.dumps(asdict(lido), ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+        except OSError:
+            logger.warning(
+                "Não foi possível guardar a cópia de %s", lido.nome, exc_info=True
+            )
+
+    def _da_copia(self, nome: str, rotulo: str) -> PromptLido | None:
+        arquivo = self._arquivo(nome, rotulo)
+        if not arquivo.is_file():
+            return None
+        return PromptLido(**json.loads(arquivo.read_text(encoding="utf-8")))
+
+    def ler(self, agente: str, referencia: str) -> PromptLido:
+        nome, rotulo = resolver(agente, referencia)
+        lido = self._do_langfuse(nome, rotulo) or self._da_copia(nome, rotulo)
+        if lido is None:
+            raise PromptIndisponivel(
+                f"O prompt {nome}@{rotulo} não veio do Langfuse e não há cópia local. "
+                "Configure LANGFUSE_PUBLIC_KEY e LANGFUSE_SECRET_KEY no .env e confira "
+                "se o prompt e o rótulo existem no Langfuse."
+            )
+        self.versoes[f"{agente}/{referencia}"] = lido.versao
+        return lido
+
+    def carregar(self, agente: str, referencia: str) -> str:
+        return self.ler(agente, referencia).texto

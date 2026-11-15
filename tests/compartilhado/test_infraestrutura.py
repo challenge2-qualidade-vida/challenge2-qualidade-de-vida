@@ -1,18 +1,4 @@
-import pytest
-
 from economia.compartilhado.infraestrutura.llm_ollama import ModeloOllama
-from economia.compartilhado.infraestrutura.prompts import carregar_prompt
-
-
-def test_carrega_o_prompt_versionado_do_repositorio():
-    prompt = carregar_prompt("miau-ricio", "resposta_com_fontes_v1")
-    assert "NAO_ENCONTRADO" in prompt
-    assert prompt == prompt.strip()
-
-
-def test_prompt_inexistente_falha_com_o_caminho(tmp_path):
-    with pytest.raises(FileNotFoundError, match="nenhum_v1"):
-        carregar_prompt("miau-ricio", "nenhum_v1", pasta=tmp_path)
 
 
 class ClienteFalso:

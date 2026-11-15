@@ -1,12 +1,13 @@
+import json
 from dataclasses import dataclass, field
 
 import pytest
 
 from economia.compartilhado.infraestrutura.prompts_langfuse import (
     PRODUCAO,
+    PromptIndisponivel,
     PromptsDoLangfuse,
-    nome_no_langfuse,
-    sincronizar_prompts,
+    resolver,
 )
 
 
@@ -16,128 +17,91 @@ class PromptFalso:
     prompt: str
     version: int
     labels: list[str] = field(default_factory=list)
-    is_fallback: bool = False
 
 
 class LangfuseDePrompts:
-    """Guarda as versões criadas, como o prompt management do Langfuse."""
+    """Prompt management em memória: cada rótulo aponta para uma versão."""
 
-    def __init__(self):
-        self.versoes: dict[str, list[PromptFalso]] = {}
-        self.criados = 0
-        self.indisponivel = False
+    def __init__(self, *prompts: PromptFalso):
+        self.prompts = list(prompts)
+        self.fora_do_ar = False
 
-    def create_prompt(self, *, name, prompt, labels, **_):
-        versoes = self.versoes.setdefault(name, [])
-        for antigo in versoes:  # cada rótulo aponta para uma versão só
-            antigo.labels = [r for r in antigo.labels if r not in labels]
-        novo = PromptFalso(name, prompt, len(versoes) + 1, list(labels))
-        versoes.append(novo)
-        self.criados += 1
-        return novo
-
-    def update_prompt(self, *, name, version, new_labels):
-        for p in self.versoes[name]:
-            if p.version == version:
-                p.labels = sorted(set(p.labels) | set(new_labels))
-
-    def get_prompt(self, name, *, label, fallback=None, **_):
-        if self.indisponivel:
-            if fallback is not None:
-                return PromptFalso(name, fallback, 0, is_fallback=True)
+    def get_prompt(self, name, *, label, **_):
+        if self.fora_do_ar:
             raise ConnectionError("Langfuse fora do ar")
-        for p in reversed(self.versoes.get(name, [])):
-            if label in p.labels:
+        for p in self.prompts:
+            if p.name == name and label in p.labels:
                 return p
-        raise LookupError("rótulo não encontrado")
+        raise LookupError(f"{name}@{label}")
 
 
-@pytest.fixture
-def pasta(tmp_path):
-    (tmp_path / "miau-ricio").mkdir()
-    (tmp_path / "miau-ricio" / "resposta_com_fontes_v1.md").write_text("Prompt v1")
-    (tmp_path / "miau-ricio" / "resposta_com_fontes_v2.md").write_text("Prompt v2")
-    return tmp_path
+V1 = PromptFalso("miau-ricio/resposta_com_fontes", "Prompt v1", 1, ["v1", PRODUCAO])
+V2 = PromptFalso("miau-ricio/resposta_com_fontes", "Prompt v2", 2, ["v2", "latest"])
 
 
-def test_nome_no_langfuse_separa_a_versao():
-    assert nome_no_langfuse("miau-ricio", "resposta_com_fontes_v2") == (
-        "miau-ricio/resposta_com_fontes",
-        "v2",
+@pytest.mark.parametrize(
+    ("referencia", "esperado"),
+    [
+        ("resposta_com_fontes", ("miau-ricio/resposta_com_fontes", PRODUCAO)),
+        ("resposta_com_fontes@v2", ("miau-ricio/resposta_com_fontes", "v2")),
+        ("resposta_com_fontes@latest", ("miau-ricio/resposta_com_fontes", "latest")),
+        ("resposta_com_fontes_v2", ("miau-ricio/resposta_com_fontes", "v2")),
+    ],
+)
+def test_referencia_vira_nome_e_rotulo(referencia, esperado):
+    assert resolver("miau-ricio", referencia) == esperado
+
+
+def test_le_o_rotulo_production_e_guarda_o_prompt(tmp_path):
+    prompts = PromptsDoLangfuse(LangfuseDePrompts(V1, V2), tmp_path)
+
+    texto = prompts.carregar("miau-ricio", "resposta_com_fontes")
+
+    assert texto == "Prompt v1"
+    assert prompts.prompts_lidos[texto] is V1
+    assert prompts.versoes == {"miau-ricio/resposta_com_fontes": 1}
+
+
+def test_outro_rotulo_le_outra_versao(tmp_path):
+    prompts = PromptsDoLangfuse(LangfuseDePrompts(V1, V2), tmp_path)
+    assert prompts.carregar("miau-ricio", "resposta_com_fontes@v2") == "Prompt v2"
+
+
+def test_cada_leitura_atualiza_a_copia_local(tmp_path):
+    PromptsDoLangfuse(LangfuseDePrompts(V1), tmp_path).carregar(
+        "miau-ricio", "resposta_com_fontes"
     )
-    with pytest.raises(ValueError):
-        nome_no_langfuse("miau-ricio", "sem_versao")
 
-
-def test_sincronizar_publica_cada_arquivo_com_o_rotulo_da_versao(pasta):
-    langfuse = LangfuseDePrompts()
-    sincronizados = sincronizar_prompts(
-        langfuse, {"miau-ricio/resposta_com_fontes_v2"}, pasta
+    copia = json.loads(
+        (tmp_path / "miau-ricio" / "resposta_com_fontes@production.json").read_text()
     )
-
-    assert [(s.rotulo, s.em_producao) for s in sincronizados] == [
-        ("v1", False),
-        ("v2", True),
-    ]
-    v2 = langfuse.get_prompt("miau-ricio/resposta_com_fontes", label="v2")
-    assert v2.prompt == "Prompt v2"
-    assert PRODUCAO in v2.labels
+    assert (copia["texto"], copia["versao"]) == ("Prompt v1", 1)
 
 
-def test_sincronizar_de_novo_sem_mudanca_nao_cria_versao(pasta):
-    langfuse = LangfuseDePrompts()
-    sincronizar_prompts(langfuse, set(), pasta)
-    criados = langfuse.criados
+@pytest.mark.parametrize("cliente", ["fora_do_ar", "sem_chaves"])
+def test_sem_o_langfuse_o_prompt_vem_da_copia_local(tmp_path, cliente):
+    langfuse = LangfuseDePrompts(V1)
+    PromptsDoLangfuse(langfuse, tmp_path).carregar("miau-ricio", "resposta_com_fontes")
+    langfuse.fora_do_ar = True
 
-    segunda = sincronizar_prompts(langfuse, set(), pasta)
+    prompts = PromptsDoLangfuse(langfuse if cliente == "fora_do_ar" else None, tmp_path)
 
-    assert langfuse.criados == criados
-    assert not any(s.criado for s in segunda)
-
-
-def test_trocar_o_prompt_em_uso_move_o_rotulo_production(pasta):
-    langfuse = LangfuseDePrompts()
-    sincronizar_prompts(langfuse, set(), pasta)
-
-    sincronizar_prompts(langfuse, {"miau-ricio/resposta_com_fontes_v1"}, pasta)
-
-    v1 = langfuse.get_prompt("miau-ricio/resposta_com_fontes", label="v1")
-    assert PRODUCAO in v1.labels
+    assert prompts.carregar("miau-ricio", "resposta_com_fontes") == "Prompt v1"
+    assert prompts.prompts_lidos == {}  # da cópia, a geração fica sem vínculo
 
 
-def test_arquivo_alterado_cria_versao_nova(pasta):
-    langfuse = LangfuseDePrompts()
-    sincronizar_prompts(langfuse, set(), pasta)
-    (pasta / "miau-ricio" / "resposta_com_fontes_v1.md").write_text("Prompt v1 revisto")
+def test_sem_o_langfuse_e_sem_copia_o_prompt_esta_indisponivel(tmp_path):
+    langfuse = LangfuseDePrompts(V1)
+    langfuse.fora_do_ar = True
 
-    sincronizar_prompts(langfuse, set(), pasta)
-
-    v1 = langfuse.get_prompt("miau-ricio/resposta_com_fontes", label="v1")
-    assert (v1.prompt, v1.version) == ("Prompt v1 revisto", 3)
-
-
-def test_carregar_le_do_langfuse_e_guarda_o_prompt(pasta):
-    langfuse = LangfuseDePrompts()
-    langfuse.create_prompt(
-        name="miau-ricio/resposta_com_fontes",
-        prompt="Prompt do Langfuse",
-        labels=["v1"],
-    )
-    prompts = PromptsDoLangfuse(langfuse, pasta)
-
-    texto = prompts.carregar("miau-ricio", "resposta_com_fontes_v1")
-
-    assert texto == "Prompt do Langfuse"
-    assert prompts.prompts_lidos[texto].version == 1
+    with pytest.raises(PromptIndisponivel, match="LANGFUSE_PUBLIC_KEY"):
+        PromptsDoLangfuse(langfuse, tmp_path).carregar(
+            "miau-ricio", "resposta_com_fontes"
+        )
 
 
-@pytest.mark.parametrize("falha", ["fallback", "excecao"])
-def test_sem_o_langfuse_o_prompt_vem_do_arquivo(pasta, falha):
-    langfuse = LangfuseDePrompts()
-    langfuse.indisponivel = True
-    prompts = PromptsDoLangfuse(langfuse, pasta)
-    if falha == "excecao":
-        langfuse.get_prompt = lambda *a, **k: (_ for _ in ()).throw(TimeoutError())
-
-    assert prompts.carregar("miau-ricio", "resposta_com_fontes_v1") == "Prompt v1"
-    assert prompts.prompts_lidos == {}
+def test_rotulo_inexistente_sem_copia_esta_indisponivel(tmp_path):
+    with pytest.raises(PromptIndisponivel, match="resposta_com_fontes@v9"):
+        PromptsDoLangfuse(LangfuseDePrompts(V1), tmp_path).carregar(
+            "miau-ricio", "resposta_com_fontes@v9"
+        )

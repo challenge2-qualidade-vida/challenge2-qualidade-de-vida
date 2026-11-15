@@ -1,9 +1,10 @@
+from types import SimpleNamespace
+
 from economia.compartilhado.configuracao import Configuracao
 from economia.compartilhado.infraestrutura.llm_ollama import ChamadaAoLLM
 from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
     RegistroDeGeracoes,
     criar_cliente,
-    versao_do_prompt,
 )
 
 
@@ -45,22 +46,17 @@ def test_sem_chaves_nao_cria_cliente():
     assert criar_cliente(Configuracao(_env_file=None, langfuse_public_key="pk")) is None
 
 
-def test_versao_do_prompt_vem_do_nome():
-    assert versao_do_prompt("resposta_com_fontes_v2") == "v2"
-    assert versao_do_prompt("sem_versao") is None
-
-
 def test_cada_chamada_vira_uma_geracao_com_modelo_tokens_e_prompt():
     cliente = ClienteFalso()
-    registro = RegistroDeGeracoes(
-        cliente, {"prompt do sistema": "resposta_sem_base_v1"}
-    )
+    prompt = SimpleNamespace(name="miau-ricio/resposta_sem_base", version=3)
+    registro = RegistroDeGeracoes(cliente, {"prompt do sistema": prompt})
     registro(chamada())
     [geracao] = cliente.observacoes
     dados = geracao.dados
     assert dados["as_type"] == "generation"
-    assert dados["name"] == "resposta_sem_base_v1"
-    assert dados["version"] == "v1"
+    assert dados["name"] == "miau-ricio/resposta_sem_base"
+    assert dados["version"] == "3"
+    assert dados["prompt"] is prompt
     assert dados["model"] == "qwen3.5:9b"
     assert dados["input"] == [
         {"role": "system", "content": "prompt do sistema"},

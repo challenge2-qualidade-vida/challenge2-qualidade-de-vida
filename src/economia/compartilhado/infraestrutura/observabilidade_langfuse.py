@@ -11,15 +11,12 @@ RN30: o cliente mascara e-mail, CPF, telefone, cartão e chave de NFC-e em toda 
 e metadado antes do envio (`economia.compartilhado.mascaramento`).
 """
 
-import re
 from collections.abc import Mapping
 from typing import Any
 
 from economia.compartilhado.configuracao import Configuracao
 from economia.compartilhado.infraestrutura.llm_ollama import ChamadaAoLLM
 from economia.compartilhado.mascaramento import mascarar
-
-_VERSAO = re.compile(r"_(v\d+)$")
 
 
 def criar_cliente(configuracao: Configuracao, **opcoes: Any) -> Any | None:
@@ -42,39 +39,22 @@ def criar_cliente(configuracao: Configuracao, **opcoes: Any) -> Any | None:
     )
 
 
-def versao_do_prompt(nome: str) -> str | None:
-    """Versão no fim do nome do arquivo do prompt (ex.: resposta_com_fontes_v2 → v2)."""
-    encontrada = _VERSAO.search(nome)
-    return encontrada.group(1) if encontrada else None
-
-
 class RegistroDeGeracoes:
     """Gancho do `ModeloOllama`: cada chamada vira uma geração no Langfuse.
 
-    `nomes_dos_prompts` liga o texto de cada prompt do sistema ao nome do arquivo, para o
-    registro dizer qual prompt, e qual versão, gerou cada resposta. `prompts_do_langfuse`
-    liga o texto ao prompt lido do Langfuse: a geração fica vinculada ao prompt e à versão,
-    e o Langfuse mostra as métricas por versão.
+    `prompts_do_langfuse` liga o texto de cada prompt do sistema ao prompt lido do Langfuse
+    (`PromptsDoLangfuse.prompts_lidos`): a geração fica vinculada ao prompt e à versão, e o
+    Langfuse mostra as métricas por versão. Um prompt vindo da cópia local não tem vínculo.
     """
 
-    def __init__(
-        self,
-        cliente: Any,
-        nomes_dos_prompts: Mapping[str, str] = {},
-        prompts_do_langfuse: Mapping[str, Any] = {},
-    ):
+    def __init__(self, cliente: Any, prompts_do_langfuse: Mapping[str, Any] = {}):
         self._cliente = cliente
-        self._nomes = dict(nomes_dos_prompts)
         self._prompts = prompts_do_langfuse
 
     def __call__(self, chamada: ChamadaAoLLM) -> None:
         prompt = self._prompts.get(chamada.sistema)
-        nome = prompt.name if prompt is not None else self._nomes.get(chamada.sistema)
-        versao = (
-            str(prompt.version)
-            if prompt is not None
-            else (versao_do_prompt(nome) if nome else None)
-        )
+        nome = prompt.name if prompt is not None else None
+        versao = str(prompt.version) if prompt is not None else None
         tokens = (
             {"input": chamada.tokens_de_entrada, "output": chamada.tokens_de_saida}
             if chamada.tokens_de_entrada is not None
