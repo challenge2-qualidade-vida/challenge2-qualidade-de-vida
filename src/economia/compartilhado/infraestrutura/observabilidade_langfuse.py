@@ -7,8 +7,8 @@ modelo, prompt (nome e versão), entrada, saída, tokens e tempo.
 Num registro (trace), cada etapa é uma observação: a busca no Qdrant, cada chamada ao LLM.
 A geração entra como filha da observação aberta no momento (a pergunta em avaliação).
 
-RN30: só o conjunto de avaliação, com perguntas fictícias, é registrado. As perguntas reais
-das pessoas não passam por aqui.
+RN30: o cliente mascara e-mail, CPF, telefone, cartão e chave de NFC-e em toda entrada, saída
+e metadado antes do envio (`economia.compartilhado.mascaramento`).
 """
 
 import re
@@ -17,12 +17,17 @@ from typing import Any
 
 from economia.compartilhado.configuracao import Configuracao
 from economia.compartilhado.infraestrutura.llm_ollama import ChamadaAoLLM
+from economia.compartilhado.mascaramento import mascarar
 
 _VERSAO = re.compile(r"_(v\d+)$")
 
 
-def criar_cliente(configuracao: Configuracao) -> Any | None:
-    """Cliente do Langfuse, ou `None` sem as chaves (nada é enviado)."""
+def criar_cliente(configuracao: Configuracao, **opcoes: Any) -> Any | None:
+    """Cliente do Langfuse, ou `None` sem as chaves (nada é enviado).
+
+    Todo dado passa pelo mascaramento da RN30 antes de sair da máquina. `opcoes` vão direto
+    ao construtor do SDK (nos testes, um exportador de spans em memória).
+    """
     if not configuracao.langfuse_configurado:
         return None
     from langfuse import Langfuse
@@ -31,6 +36,9 @@ def criar_cliente(configuracao: Configuracao) -> Any | None:
         public_key=configuracao.langfuse_public_key,
         secret_key=configuracao.langfuse_secret_key,
         base_url=configuracao.langfuse_base_url,
+        environment=configuracao.langfuse_ambiente,
+        mask=mascarar,
+        **opcoes,
     )
 
 
@@ -44,15 +52,29 @@ class RegistroDeGeracoes:
     """Gancho do `ModeloOllama`: cada chamada vira uma geração no Langfuse.
 
     `nomes_dos_prompts` liga o texto de cada prompt do sistema ao nome do arquivo, para o
-    registro dizer qual prompt, e qual versão, gerou cada resposta.
+    registro dizer qual prompt, e qual versão, gerou cada resposta. `prompts_do_langfuse`
+    liga o texto ao prompt lido do Langfuse: a geração fica vinculada ao prompt e à versão,
+    e o Langfuse mostra as métricas por versão.
     """
 
-    def __init__(self, cliente: Any, nomes_dos_prompts: Mapping[str, str] = {}):
+    def __init__(
+        self,
+        cliente: Any,
+        nomes_dos_prompts: Mapping[str, str] = {},
+        prompts_do_langfuse: Mapping[str, Any] = {},
+    ):
         self._cliente = cliente
         self._nomes = dict(nomes_dos_prompts)
+        self._prompts = prompts_do_langfuse
 
     def __call__(self, chamada: ChamadaAoLLM) -> None:
-        nome = self._nomes.get(chamada.sistema)
+        prompt = self._prompts.get(chamada.sistema)
+        nome = prompt.name if prompt is not None else self._nomes.get(chamada.sistema)
+        versao = (
+            str(prompt.version)
+            if prompt is not None
+            else (versao_do_prompt(nome) if nome else None)
+        )
         tokens = (
             {"input": chamada.tokens_de_entrada, "output": chamada.tokens_de_saida}
             if chamada.tokens_de_entrada is not None
@@ -63,8 +85,9 @@ class RegistroDeGeracoes:
         geracao = self._cliente.start_observation(
             as_type="generation",
             name=nome or "llm",
-            version=versao_do_prompt(nome) if nome else None,
+            version=versao,
             model=chamada.modelo,
+            prompt=prompt,
             input=[
                 {"role": "system", "content": chamada.sistema},
                 {"role": "user", "content": chamada.mensagem},

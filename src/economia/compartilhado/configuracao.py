@@ -52,6 +52,10 @@ class Configuracao(BaseSettings):
     langfuse_public_key: str | None = None
     langfuse_secret_key: str | None = None
     langfuse_base_url: str = "https://us.cloud.langfuse.com"
+    # ambiente dos registros: separa no Langfuse o uso local, a produção e a avaliação offline
+    langfuse_ambiente: Literal["local", "producao", "avaliacao"] = "local"
+    # fração do tráfego real avaliada pelos evaluators gerenciados, por conta do custo
+    langfuse_amostra_juiz: float = Field(default=0.2, ge=0.0, le=1.0)
 
     @property
     def langfuse_configurado(self) -> bool:
