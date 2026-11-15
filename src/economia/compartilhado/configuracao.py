@@ -56,6 +56,10 @@ class Configuracao(BaseSettings):
     langfuse_ambiente: Literal["local", "producao", "avaliacao"] = "local"
     # fração do tráfego real avaliada pelos evaluators gerenciados, por conta do custo
     langfuse_amostra_juiz: float = Field(default=0.2, ge=0.0, le=1.0)
+    # modelo do Gemini usado como juiz pelos evaluators gerenciados (LLM Connection do projeto)
+    langfuse_modelo_juiz: str = "gemini-3.8-flash"
+    # ambientes cujas perguntas o juiz avalia
+    langfuse_ambientes_juiz: list[str] = ["producao", "local"]
 
     @property
     def langfuse_configurado(self) -> bool:
