@@ -116,3 +116,30 @@ Trechos por documento: [FONTES.md](../../data/base-conhecimento/FONTES.md#na-bas
 - **Dados do afrodite.json**: algumas receitas têm a lista de ingredientes colada numa linha só, o que atrapalha a contagem dos ingredientes que faltam.
 - **Atualização**: a indexação é manual. Não há agendamento nem detecção de documento novo.
 - A branch `chore/16-base-conhecimento` tem outro pipeline de extração (PyMuPDF, saída em JSONL), que ainda não está ligado a este. A equipe precisa decidir qual fica.
+
+## Preparação documental (contexto `leitura_documentos`, #16)
+
+Pipeline da preparação dos documentos do catálogo de `data/base-conhecimento/` (manifesto `fontes.json`), separado do comando `indexar`.
+
+### Fluxo
+```mermaid
+flowchart TD
+ A[Documentos licenciados] --> B[Manifesto fontes.json]
+ A --> C[Extratores PDF/TXT/Markdown]
+ B --> D[Validação de metadados]
+ C --> E[Normalização]
+ D --> F[JSONL com origem]
+ E --> F
+ F --> G[Hash e relatório]
+ G --> H[Chunking e embeddings]
+```
+
+### Execução
+```bash
+poetry install
+poetry run python -m economia.leitura_documentos.infraestrutura.ingestao.pipeline
+```
+
+Saídas: `data/processed/documentos.jsonl` e `data/processed/relatorio_ingestao.json`.
+
+PDFs digitalizados sem camada de texto são reportados; OCR não está incluído. DOCX e HTML também não são suportados nesta primeira versão.
