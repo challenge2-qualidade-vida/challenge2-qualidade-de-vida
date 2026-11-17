@@ -115,7 +115,7 @@
         }
       ],
       "comportamento": "responder",
-      "resposta_referencia": "Pão de banana: bata manteiga (ou gordura) e açúcar, junte os ovos, as bananas maduras amassadas e o leite. Misture os ingredientes secos (farinha ou mistura para biscoito, aveia, nozes, canela) só até umedecer. Coloque numa forma de pão untada e asse a 350 °F (cerca de 175 °C) por 40 minutos a 1 hora."
+      "resposta_referencia": "Pão de banana: bata manteiga (ou gordura) e açúcar, junte os ovos, as bananas maduras amassadas e o leite. Misture os ingredientes secos (farinha ou mistura para biscoito, aveia, nozes, canela) só até umedecer. Coloque numa forma de pão untada e asse a 175 °C por 40 minutos a 1 hora."
     },
     {
       "id": "e02",
@@ -127,7 +127,7 @@
         }
       ],
       "comportamento": "responder",
-      "resposta_referencia": "Frango assado com limão: corte o frango em pedaços e coloque numa assadeira. Derreta 1 tablete de manteiga com o suco de 3 limões e regue o frango. Polvilhe orégano e asse a 400 °F (cerca de 200 °C) por 1 hora."
+      "resposta_referencia": "Frango assado com limão: corte o frango em pedaços e coloque numa assadeira. Derreta 1 tablete de manteiga com o suco de 3 limões e regue o frango. Polvilhe orégano e asse a 200 °C por 1 hora."
     },
     {
       "id": "e03",
@@ -142,7 +142,7 @@
         }
       ],
       "comportamento": "responder",
-      "resposta_referencia": "Biscoitos de pasta de amendoim: aqueça o forno a 375 °F (cerca de 190 °C). Numa tigela, bata a pasta de amendoim com gordura vegetal, açúcar mascavo, leite e baunilha até misturar bem e junte o ovo. Os ingredientes secos são farinha, sal e bicarbonato."
+      "resposta_referencia": "Biscoitos de pasta de amendoim: aqueça o forno a cerca de 190 °C. Numa tigela, bata 256g de pasta de amendoim, 293g de açúcar mascavo, 226g de margarina e uma colher de sopa de essência de baunilha até misturar bem e junte dois ovo. Os ingredientes secos necessários são 304g de farinha, 1 colher de chá de sal, 1 colher de chá de bicarbonato e 1 colher de chá de fermento, incorpore-os na mistura com cuidado para não empelotar. Asse por 40 minutos ou até dourar."
     },
     {
       "id": "e04",
@@ -166,7 +166,7 @@
         }
       ],
       "comportamento": "responder",
-      "resposta_referencia": "Ensopado de carne: doure 2 libras (cerca de 900 g) de carne em cubos no óleo de milho. Junte caldo de carne, sal, louro, tomilho e 4 xícaras de água, tampe e cozinhe em fogo baixo por 1 hora e meia. Acrescente cenouras e cebolas pequenas e cozinhe mais meia hora. Engrosse com amido de milho dissolvido em água e ferva por 1 minuto."
+      "resposta_referencia": "Ensopado de carne: doure 900g de carne em cubos no óleo de milho. Junte caldo de carne, sal, louro, tomilho e 4 xícaras de água, tampe e cozinhe em fogo baixo por 1 hora e meia. Acrescente cenouras e cebolas pequenas e cozinhe mais meia hora. Engrosse com amido de milho dissolvido em água e ferva por 1 minuto."
     },
     {
       "id": "g01",
@@ -379,7 +379,7 @@
         }
       ],
       "comportamento": "responder",
-      "resposta_referencia": "Hortaliças de folha devem ficar sempre refrigeradas, em embalagem, porque a geladeira é um ambiente seco e a hortaliça sem embalagem murcha rápido. As ervas frescas também podem ser congeladas: tire as folhas dos talos, pique, coloque em formas de gelo cobertas com água gelada e, depois de congeladas, guarde os cubos em sacos no freezer. A cebolinha pode ser congelada já picada."
+      "resposta_referencia": "Hortaliças de folha, como a salsinha e a cebolinha, devem ficar sempre refrigeradas e em embalagem, porque a geladeira é um ambiente seco e a hortaliça sem embalagem murcha rápido. As ervas frescas também podem ser congeladas: tire as folhas dos talos, pique, coloque em formas de gelo cobertas com água gelada e, depois de congeladas, guarde os cubos em sacos no freezer. A cebolinha pode ser congelada já picada."
     },
     {
       "id": "n01",
@@ -562,7 +562,7 @@
         }
       ],
       "comportamento": "responder",
-      "resposta_referencia": "O manual da IFC usa o leite pasteurizado como exemplo: depois da pasteurização, ele é resfriado a 4 °C (±2 °C) e armazenado a no máximo 6 °C."
+      "resposta_referencia": "Considerando o congelamento de comida, o manual da IFC usa o leite pasteurizado como exemplo: depois da pasteurização, ele é resfriado a 4 °C (±2 °C) e armazenado a no máximo 6 °C."
     },
     {
       "id": "h02",
