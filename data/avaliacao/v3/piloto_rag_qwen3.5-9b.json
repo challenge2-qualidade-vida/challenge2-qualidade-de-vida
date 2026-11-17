@@ -1,0 +1,236 @@
+{
+  "modo": "rag",
+  "run": "rag-qwen3.5:9b-resposta_com_fontes_v2-e5",
+  "maquina": "Darwin arm64, 10 CPUs lógicas",
+  "data": "2026-11-17T10:01:55",
+  "perguntas_arquivo": "data/avaliacao/perguntas_rag_v3.json",
+  "colecao": "base_conhecimento_e5",
+  "modelo_embeddings": "e5",
+  "modelo_llm": "qwen3.5:9b",
+  "llm": {
+    "digest": "56671c2ab9385f9cfcb404638e32cd62d88e3501d44822208363c010179a3c90",
+    "quantizacao": "Q4_K_M",
+    "parametros": "9.0B",
+    "familia": "qwen35"
+  },
+  "limiar": 0.845,
+  "prompt_de_resposta": "resposta_com_fontes_v2",
+  "resposta_estruturada": true,
+  "segunda_tentativa_de_citacao": true,
+  "temperatura": 0.0,
+  "semente": 42,
+  "contexto": 8192,
+  "saida_maxima": 2048,
+  "raciocinio": false,
+  "langfuse_run": "https://us.cloud.langfuse.com/project/cmwi1cz2h00jhad0ezbr3zov1/experiments/results?baseline=a98d840adeb27cd3",
+  "perguntas": 10,
+  "acuracia": 0.9,
+  "taxa_de_resposta": 0.9,
+  "recusa_correta": null,
+  "aviso_de_preco": null,
+  "fonte_esperada": 0.7777777777777778,
+  "rouge_1": 0.39629593199859364,
+  "rouge_l": 0.2877273703342812,
+  "cosseno": 0.8452548703634835,
+  "hit": 0.8,
+  "falsas_recusas": [
+    "r06"
+  ],
+  "respostas_indevidas": [],
+  "latencia_media": 32.22323401229996,
+  "latencia_maxima": 44.932503166999595,
+  "por_categoria": {
+    "receita_entre_idiomas": {
+      "perguntas": 2,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.5,
+      "rouge_1": 0.3146213599663261,
+      "rouge_l": 0.22890598094363449,
+      "cosseno": 0.9221273915445537,
+      "hit": 0.5
+    },
+    "receita_pt": {
+      "perguntas": 8,
+      "acuracia": 0.875,
+      "taxa_de_resposta": 0.875,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.8571428571428571,
+      "rouge_1": 0.41671457500666054,
+      "rouge_l": 0.3024327176819428,
+      "cosseno": 0.8260367400682158,
+      "hit": 0.875
+    }
+  },
+  "resultados": [
+    {
+      "id": "r01",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 38.659201833000225,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b08"
+      ],
+      "texto": "Para fazer um Bolo de Cenoura no micro-ondas, bata no liquidificador: 2 ovos, ½ xícara (chá) de óleo, 250g de cenouras médias sem casca e cortadas em rodelas. Em seguida, coloque numa tigela a mistura do liquidificador com 1 xícara (chá) de farinha de trigo, 1 xícara (chá) de açúcar e ½ colher (sopa) de fermento em pó; misture bem [1]. Unte uma forma para micro-ondas com manteiga, despeje a massa e leve ao forno por 8 minutos na potência máxima. Abra o forno por alguns segundos de 2 em 2 minutos para que a massa não derrame. Deixe esfriar antes de desenformar e cobrir com a calda de chocolate [1].\n\nIngredientes que faltam:\n- Bolo de Cenoura de Micro-ondas [1]: Calda, - 6 colheres (sopa) de chocolate em pó- 400 ml de leite- 1 colher (sopa) de manteiga- 4 colheres (sopa) de açúcar- 2 colheres (sopa) de amido de milho",
+      "rouge_1": 0.675,
+      "rouge_l": 0.5833333333333334,
+      "cosseno": 0.9680317204766249,
+      "hit": 1
+    },
+    {
+      "id": "r02",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 33.63492091599983,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c7477e6"
+      ],
+      "texto": "Você pode fazer um Pão de queijo rápido usando 2 ovos inteiros, 1 copo (tipo americano) de leite (200 ml), 1 copo (tipo americano) de óleo de milho (200 ml), 1 xícara (chá) de queijo parmesão ralado, 1 colher (sobremesa-rasa) de sal e 3 xícaras (chá) de polvilho doce [1]. Bata tudo no liquidificador por 3 a 4 minutos. Unte forminhas com óleo, coloque a massa e polvilhe mais queijo parmesão. Asse em forno pré-aquecido a 200 ºC por aproximadamente 20 minutos.",
+      "rouge_1": 0.4383561643835617,
+      "rouge_l": 0.3013698630136986,
+      "cosseno": 0.9338669786544425,
+      "hit": 0
+    },
+    {
+      "id": "r03",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 44.932503166999595,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745e7a",
+        "afrodite:5744eff20ca7832b5c745abb"
+      ],
+      "texto": "Para fazer bolinho de bacalhau, você pode usar a receita do Bolinho de Bacalhau Mais Você [1] ou da Receita: Bolinho de bacalhau [2].\n\nNa primeira opção (Mais Você), os ingredientes são 1kg de batata cozida e amassada, ½kg de bacalhau cozido e desfiado, 3 gemas, cebola picadinha refogada em azeite, sal, pimenta-do-reino e salsinha. O modo é: refogar a cebola no azeite, misturar tudo numa tigela com o bacalhau e batata amassada, modelar os bolinhos (formato de croquete) e fritar [1].\n\nNa segunda opção, cozinhe 500g de batata em cubos por 15 minutos até virar purê. Misture as gemas à batata quente. Refogue cebola com alho no azeite, adicione o bacalhau (3 xícaras ou 400g) e tempere. Modele bolinhas do recheio de bacalhau dentro da massa de batata, passe na farinha de rosca, claras batidas e novamente na farinha de rosca. Frite até dourar [2].",
+      "rouge_1": 0.5638766519823788,
+      "rouge_l": 0.40528634361233484,
+      "cosseno": 0.958812311013173,
+      "hit": 1
+    },
+    {
+      "id": "r04",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 28.818243375000293,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b27"
+      ],
+      "texto": "Sim, dá para fazer um arroz no forno com os ingredientes que você tem. A receita de Arroz de forno usa tomate picado sem pele nem sementes [1]. Você também pode usar queijo parmesão ralado ou outro tipo de queijo se tiver em casa, pois a receita pede queijo parmesão na mistura e por cima para dourar no forno [1].\n\nIngredientes que faltam:\n- Arroz de forno [1]: 1 dente de alho amassado, 2 colheres (sopa) de manteiga, 4 ovos mexidos feitos no azeite, 6 azeitonas verdes sem caroço picadas, 6 azeitonas pretas sem caroço picadas, 3 colheres (sopa) de cebolinha verde picada, salsinha picadinha a gosto, 2 cenouras cortadas em cubos médios e cozidas al dente, 1 pacote de batata palha (140g), 500g de carne cozida e desfiada (acém ou pá)",
+      "rouge_1": 0.32460732984293195,
+      "rouge_l": 0.1780104712041885,
+      "cosseno": 0.927033401936252,
+      "hit": 1
+    },
+    {
+      "id": "r05",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 39.25862104099997,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745ea2",
+        "afrodite:5744eff20ca7832b5c745aae"
+      ],
+      "texto": "Para preparar a feijoada com os ingredientes que você pediu (feijão preto, linguiça e carne seca), siga estes passos baseados nas receitas: 1) Pese o feijão preto limpo. Se for usar muito feijão, deixe-o de molho em água fria por cerca de 12 horas antes de cozinhar [2]. 2) Prepare as carnes (linguiça e carne seca). Coloque-as com água na geladeira para dessalgar por pelo menos algumas horas ou até 48 horas, trocando a água periodicamente [1][2]. 3) Cozinhe o feijão em uma panela de pressão sem as carnes primeiro. Após pegar pressão, cozinhe por cerca de 20 minutos e depois adicione as carnes dessalgadas para terminar o cozimento por mais alguns minutos até que tudo esteja macio [2].\n\nIngredientes que faltam:\n- Ceviche de carne seca [1]: Suco de 2 limões, 1 cebola fatiada finamente em meia lua (200g), 2 tomates sem semente cortado em cubos pequenos (200g)\n- Feijoada a la Vidigal [2]: 500g de lombo, 2 paios em rodelas, 500g de costela, 1Kg de farinha de mandioca, 2 colheres (sopa) de margarina, 300g de bacon picado, 1 maço de couve cortada em tiras bem fininhas, 1 Kg de arroz branco, 1 laranja descascada e separada em gomos, 3 cabeças de alho descascadas e picadas, (divida esta quantidade em 3 partes para usar na feijoada, no arroz e na farofa)",
+      "rouge_1": 0.3959044368600682,
+      "rouge_l": 0.2525597269624573,
+      "cosseno": 0.9452779269959082,
+      "hit": 1
+    },
+    {
+      "id": "r06",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.028223082999829785,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": 0.0,
+      "rouge_l": 0.0,
+      "cosseno": 0.0,
+      "hit": 1
+    },
+    {
+      "id": "r07",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 29.17723766600011,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b2f"
+      ],
+      "texto": "Para fazer uma receita de omelete assada no forno com muitos ovos (10 unidades), bata bem os ovos com leite, sal e pimenta-do-reino numa tigela até ficar homogêneo [1]. Em seguida, coloque ingredientes escolhidos como tomate, queijo ou presunto na forma para cupcake. Regue a mistura de ovos sobre esses ingredientes e leve ao forno pré-aquecido a 200° C por cerca de 13 minutos se quiser cremosa ou 20 minutos se preferir mais dura [1].\n\nIngredientes que faltam:\n- Omelete de forno [1]: ½ xícara (chá) de leite, Recheio a gosto, tomate sem semente picadinho, cheiro verde picadinho, azeitona verde picadinha, peito de peru picadinho, blanquet picadinho, queijo minas padrão ralado, queijo parmesão ralado, presunto picadinho, presunto parma picadinho, salame picadinho, bacon picadinho e frito, linguiça calabresa ralada e frita, milho, ervilha",
+      "rouge_1": 0.538860103626943,
+      "rouge_l": 0.35233160621761656,
+      "cosseno": 0.9405101308022932,
+      "hit": 1
+    },
+    {
+      "id": "r08",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 43.4039803339997,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b03",
+        "afrodite:5744eff20ca7832b5c745b7e"
+      ],
+      "texto": "Para fazer o pastel de carne, você pode usar a receita do Pastel de Carne [1] ou preparar um recheio com Carne Moída de Férias [2].\n\nNa Receita 1 (Pastel de Carne), os ingredientes são: 1 lata de creme de leite com soro (300g), 2 ¼ xícaras (chá) de farinha de trigo (320g), sal a gosto e recheio a gosto. O modo de preparo é misturar o creme de leite, a farinha e o sal até formar uma massa homogênea; amassar bem em superfície enfarinhada; gelar por 30 minutos; abrir a massa fina com rolo, cortar discos de 7cm de diâmetro; colocar recheio sobre cada disco, dobrar ao meio em meia lua e fechar apertando as bordas com um garfo. Fritar os pastéis em óleo quente até dourar, escorrer no papel absorvente e servir.\n\nNa Receita 2 (Carne Moída de Férias), o recheio é feito misturando 2kg de carne moída, molho inglês, tempero completo com pimenta, tabletes de caldo de carne e azeite; cozinhar em panela de pressão por 30 minutos após pegar pressão. Depois, bater até desfazer os blocos de carne. Você pode adicionar outros ingredientes como cebola, tomate, alho, vinho tinto ou extrato de tomate conforme sua preferência para montar o recheio final antes de usar na massa do pastel.",
+      "rouge_1": 0.3971119133574007,
+      "rouge_l": 0.3465703971119134,
+      "cosseno": 0.9347614506670326,
+      "hit": 1
+    },
+    {
+      "id": "e01",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 38.74443462499994,
+      "documentos_citados": [
+        "recipenlg:579077",
+        "recipenlg:370774",
+        "recipenlg:155539",
+        "recipenlg:38479",
+        "recipenlg:145534"
+      ],
+      "texto": "Para fazer pão de banana (Banana Bread), você pode usar várias receitas diferentes dependendo dos ingredientes que tiver em casa.\n\nUma opção usa: margarina ou manteiga amolecida, ovos, casca de laranja ralada, bananas amassadas, farinha não peneirada, leite azedo, nozes picados e pedaços de chocolate meio amargo. O preparo envolve pré-aquecer o forno a 350°, untar e enfarinhar as formas, bater manteiga com açúcar (e ovos se houver), adicionar bananas e depois misturar os ingredientes secos alternando com o leite azedo [3].\n\nOutra versão mais simples usa: apenas açúcar, ovo, farinha, manteiga derretida, bicarbonato de sódio, sal, bananas amassadas e nozes opcionais. Misture a manteiga derretida com o açúcar, adicione o ovo batido bem, depois as bananas, em seguida a farinha misturada tudo junto e por fim as nozes se quiser [2].\n\nTambém existe uma receita para quem precisa de opções diabéticas que substitui parte do açúcar comum por frutose e usa óleo de milho ou margarina. Os ingredientes incluem: manteiga (ou margarina) em temperatura ambiente, farinha com menos 4 colheres de sopa, sal, bicarbonato de sódio, frutose, ovos batidos, leite azedo, extrato de baunilha e bananas maduras amassadas [5].\n\nSe preferir uma receita tradicional sem adaptações específicas para diabetes ou casca de laranja, há opções que usam fermento em pó junto com o bicarbonato, creme de leite azedo (sour cream) e suco de limão como ingredientes adicionais [1][4].",
+      "rouge_1": 0.22064056939501778,
+      "rouge_l": 0.13523131672597866,
+      "cosseno": 0.9185827644204365,
+      "hit": 1
+    },
+    {
+      "id": "e02",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 25.574974083000143,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745afb",
+        "afrodite:5744eff20ca7832b5c745ce6"
+      ],
+      "texto": "Você pode fazer um Frango Assado ao Leite usando 1 limão siciliano cortado em rodelas dentro do frango [1]. Outra opção é preparar um Frango Aperitivo Crocante com raspas de 3 limões siciliano e alho no processador antes de assar as tiras de peito de frango a 200°C por 20 minutos [2].",
+      "rouge_1": 0.40860215053763443,
+      "rouge_l": 0.3225806451612903,
+      "cosseno": 0.9256720186686709,
+      "hit": 0
+    }
+  ]
+}

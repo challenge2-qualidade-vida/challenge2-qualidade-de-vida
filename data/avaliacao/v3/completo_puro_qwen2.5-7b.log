@@ -1,0 +1,104 @@
+W1117 10:52:42.644000 17166 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Could not reach the Hub (Cannot reach https://huggingface.co/api/models/intfloat/multilingual-e5-base: offline mode is enabled. To disable it, please unset the `HF_HUB_OFFLINE` environment variable.). Using cached commit hash for 'intfloat/multilingual-e5-base'.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 9392.52it/s]
+Execução puro-qwen2.5:7b-resposta_sem_base_v1 | 67 perguntas
+Traceback (most recent call last):
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpx/_transports/default.py", line 250, in handle_request
+    resp = self._pool.handle_request(req)
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpcore/_sync/connection_pool.py", line 256, in handle_request
+    raise exc from None
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpcore/_sync/connection_pool.py", line 236, in handle_request
+    response = connection.handle_request(
+        pool_request.request
+    )
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpcore/_sync/connection.py", line 101, in handle_request
+    raise exc
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpcore/_sync/connection.py", line 78, in handle_request
+    stream = self._connect(request)
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpcore/_sync/connection.py", line 156, in _connect
+    stream = stream.start_tls(**kwargs)
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpcore/_backends/sync.py", line 154, in start_tls
+    with map_exceptions(exc_map):
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectTimeout: _ssl.c:1064: The handshake operation timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/aluno2/Residencia/challenge2-qualidade-de-vida/src/economia/receitas/cli.py", line 752, in <module>
+    main()
+    ~~~~^^
+  File "/Users/aluno2/Residencia/challenge2-qualidade-de-vida/src/economia/receitas/cli.py", line 748, in main
+    args.funcao(args)
+    ~~~~~~~~~~~^^^^^^
+  File "/Users/aluno2/Residencia/challenge2-qualidade-de-vida/src/economia/receitas/cli.py", line 534, in comando_avaliar_respostas
+    sincronizar_dataset(langfuse, dataset, perguntas)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aluno2/Residencia/challenge2-qualidade-de-vida/src/economia/receitas/infraestrutura/experimento_langfuse.py", line 70, in sincronizar_dataset
+    cliente.create_dataset(
+    ~~~~~~~~~~~~~~~~~~~~~~^
+        name=nome, description="Perguntas de avaliação do Miau-ricio (fictícias)"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/langfuse/_client/client.py", line 3601, in create_dataset
+    result = self.api.datasets.create(
+        name=name,
+    ...<3 lines>...
+        expected_output_schema=expected_output_schema,
+    )
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/langfuse/api/datasets/client.py", line 163, in create
+    _response = self._raw_client.create(
+        name=name,
+    ...<4 lines>...
+        request_options=request_options,
+    )
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/langfuse/api/datasets/raw_client.py", line 277, in create
+    _response = self._client_wrapper.httpx_client.request(
+        "api/public/v2/datasets",
+    ...<9 lines>...
+        omit=OMIT,
+    )
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/langfuse/api/core/http_client.py", line 308, in request
+    response = self.httpx_client.request(
+        method=method,
+    ...<19 lines>...
+        timeout=timeout,
+    )
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpx/_client.py", line 825, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpx/_client.py", line 914, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpx/_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpx/_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpx/_client.py", line 1014, in _send_single_request
+    response = transport.handle_request(request)
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpx/_transports/default.py", line 249, in handle_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/aluno2/Library/Caches/pypoetry/virtualenvs/economia-tpnNlnN1-py3.14/lib/python3.14/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectTimeout: _ssl.c:1064: The handshake operation timed out
