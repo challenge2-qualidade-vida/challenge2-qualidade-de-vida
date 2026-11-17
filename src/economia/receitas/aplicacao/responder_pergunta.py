@@ -176,6 +176,11 @@ class ResponderPergunta:
         self._basicos = tuple(ingredientes_basicos)
         self._tolerancia = tolerancia
 
+    @property
+    def limiar(self) -> float:
+        return self._limiar
+
+
     def recuperar(self, pergunta: str) -> list[TrechoRecuperado]:
         """Top-k trechos acima do limiar, do maior score para o menor."""
         vetor = self._gerador.gerar_para_pergunta(pergunta)
@@ -265,4 +270,5 @@ class ResponderPergunta:
                 for r in usados
                 if r.trecho.id in faltando
             ),
+            recuperados=tuple(recuperados),
         )

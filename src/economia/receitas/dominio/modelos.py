@@ -132,6 +132,7 @@ class RespostaComFontes:
     fontes: tuple[Fonte, ...] = field(default=())
     ingredientes_disponiveis: tuple[str, ...] = ()
     faltando: tuple[tuple[str, tuple[str, ...]], ...] = ()
+    recuperados: tuple[TrechoRecuperado, ...] = ()
 
     def faltando_na_receita(self, trecho_id: str) -> tuple[str, ...]:
         return dict(self.faltando).get(trecho_id, ())
