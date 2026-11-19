@@ -179,8 +179,8 @@ def gerar(pasta: Path) -> str:
         "## Limites",
         "",
         (
-            '- As respostas de referência de `perguntas_rag_v3.json` ainda têm o aviso "Revisar antes de rodar a matriz"; '
-            "ROUGE e cosseno dependem delas."
+            "- ROUGE e cosseno dependem das respostas de referência de `perguntas_rag_v3.json` "
+            "(revisadas pela equipe em 17/11/2026)."
         ),
         "- O ROUGE penaliza paráfrase e o cosseno do e5 varia pouco (quase sempre entre 0,7 e 1,0): servem para comparar execuções, não como nota absoluta.",
         "- Nenhuma métrica confere se os números da resposta estão certos.",
