@@ -47,7 +47,10 @@ class Configuracao(BaseSettings):
         """Coleção da base inteira ou de uma amostra fixa de receitas (ex.: _amostra400)."""
         sufixo = f"_amostra{amostra}" if amostra else ""
         return f"base_conhecimento_{self.modelo_embeddings}{sufixo}"
-
+    @property
+    def colecao_verificacao(self) -> str:
+        """Coleção exclusiva das evidências científicas da Research Agent."""
+        return f"evidencias_verificacao_{self.modelo_embeddings}"
 
 @lru_cache
 def obter_configuracao() -> Configuracao:
