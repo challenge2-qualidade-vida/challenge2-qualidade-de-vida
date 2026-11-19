@@ -1,0 +1,1268 @@
+{
+  "modo": "rag",
+  "run": "rag-qwen3.5:27b-resposta_com_fontes@v2-e5-linux-20261118",
+  "maquina": "Linux x86_64, 16 CPUs lógicas",
+  "data": "2026-11-18T23:20:10",
+  "perguntas_arquivo": "data/avaliacao/perguntas_rag_v3.json",
+  "colecao": "base_conhecimento_e5",
+  "modelo_embeddings": "e5",
+  "modelo_llm": "qwen3.5:27b",
+  "llm": {
+    "digest": "64ae5b1d651fb2709d5928ccb8dcfb4bb2cc9c2c8001ac34497e36a6cf905b59",
+    "quantizacao": "Q4_K_M",
+    "parametros": "26.9B",
+    "familia": "qwen35"
+  },
+  "limiar": 0.845,
+  "prompt_de_resposta": "resposta_com_fontes@v2",
+  "resposta_estruturada": true,
+  "segunda_tentativa_de_citacao": true,
+  "temperatura": 0.0,
+  "semente": 42,
+  "contexto": 8192,
+  "saida_maxima": 2048,
+  "raciocinio": false,
+  "versoes_dos_prompts": {
+    "miau-ricio/resposta_com_fontes@v2": 2,
+    "miau-ricio/extrair_ingredientes": 1,
+    "miau-ricio/pedido_de_citacao": 1
+  },
+  "langfuse_run": "https://us.cloud.langfuse.com/project/cmwi1cz2h00jhad0ezbr3zov1/experiments/results?baseline=463acd714a5636df",
+  "perguntas": 67,
+  "acuracia": 0.8656716417910447,
+  "taxa_de_resposta": 0.8333333333333334,
+  "recusa_correta": 1.0,
+  "aviso_de_preco": 1.0,
+  "fonte_esperada": 0.8888888888888888,
+  "rouge_1": 0.36510129281898107,
+  "rouge_l": 0.2742861021319362,
+  "cosseno": 0.7790234370292611,
+  "hit": 0.8333333333333334,
+  "falsas_recusas": [
+    "r06",
+    "e02",
+    "e05",
+    "n01",
+    "n03",
+    "n04",
+    "n05",
+    "h01",
+    "b03"
+  ],
+  "respostas_indevidas": [],
+  "latencia_media": 20.33359403600002,
+  "latencia_maxima": 63.94243948700023,
+  "por_categoria": {
+    "alimentacao_infantil": {
+      "perguntas": 5,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0,
+      "rouge_1": 0.6027894015985006,
+      "rouge_l": 0.4103467773182314,
+      "cosseno": 0.9557632080150675,
+      "hit": 1.0
+    },
+    "comportamento_alimentar": {
+      "perguntas": 3,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0,
+      "rouge_1": 0.4001123469273115,
+      "rouge_l": 0.2856042732685807,
+      "cosseno": 0.9398637414878898,
+      "hit": 1.0
+    },
+    "conservacao": {
+      "perguntas": 6,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0,
+      "rouge_1": 0.4438229341146247,
+      "rouge_l": 0.3345586866405152,
+      "cosseno": 0.9330015242529562,
+      "hit": 1.0
+    },
+    "desperdicio": {
+      "perguntas": 4,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0,
+      "rouge_1": 0.3770871370009301,
+      "rouge_l": 0.283037508468543,
+      "cosseno": 0.9256725578345497,
+      "hit": 1.0
+    },
+    "guia_alimentar": {
+      "perguntas": 6,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.8333333333333334,
+      "rouge_1": 0.43468349252834143,
+      "rouge_l": 0.316633709608394,
+      "cosseno": 0.9297508761726182,
+      "hit": 0.8333333333333334
+    },
+    "nutricao": {
+      "perguntas": 5,
+      "acuracia": 0.2,
+      "taxa_de_resposta": 0.2,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0,
+      "rouge_1": 0.15,
+      "rouge_l": 0.15,
+      "cosseno": 0.19418636018344054,
+      "hit": 1.0
+    },
+    "orientacao_nutricional": {
+      "perguntas": 2,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0,
+      "rouge_1": 0.37511649580615103,
+      "rouge_l": 0.2523765144454799,
+      "cosseno": 0.9046033453954898,
+      "hit": 1.0
+    },
+    "preco": {
+      "perguntas": 3,
+      "acuracia": 1.0,
+      "taxa_de_resposta": null,
+      "recusa_correta": null,
+      "aviso_de_preco": 1.0,
+      "fonte_esperada": null,
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    },
+    "receita_entre_idiomas": {
+      "perguntas": 5,
+      "acuracia": 0.6,
+      "taxa_de_resposta": 0.6,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.3333333333333333,
+      "rouge_1": 0.19074464693693216,
+      "rouge_l": 0.1284065671324584,
+      "cosseno": 0.5552063971352977,
+      "hit": 0.2
+    },
+    "receita_pt": {
+      "perguntas": 8,
+      "acuracia": 0.875,
+      "taxa_de_resposta": 0.875,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.8571428571428571,
+      "rouge_1": 0.4129325503023396,
+      "rouge_l": 0.339545824208731,
+      "cosseno": 0.8224881711245869,
+      "hit": 0.875
+    },
+    "robustez": {
+      "perguntas": 5,
+      "acuracia": 0.8,
+      "taxa_de_resposta": 0.8,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0,
+      "rouge_1": 0.2908679299790962,
+      "rouge_l": 0.2566515770510658,
+      "cosseno": 0.7463921958600052,
+      "hit": 0.8
+    },
+    "seguranca_alimentar": {
+      "perguntas": 5,
+      "acuracia": 0.8,
+      "taxa_de_resposta": 0.8,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.75,
+      "rouge_1": 0.3020084753955722,
+      "rouge_l": 0.19343761077632043,
+      "cosseno": 0.7443233750936118,
+      "hit": 0.6
+    },
+    "sem_resposta": {
+      "perguntas": 10,
+      "acuracia": 1.0,
+      "taxa_de_resposta": null,
+      "recusa_correta": 1.0,
+      "aviso_de_preco": null,
+      "fonte_esperada": null,
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    }
+  },
+  "resultados": [
+    {
+      "id": "r01",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 44.54464474500037,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b08"
+      ],
+      "texto": "Para fazer o Bolo de Cenoura de Micro-ondas, bata no liquidificador 2 ovos, ½ xícara (chá) de óleo e 250g de cenouras médias sem casca cortadas em rodelas até ficar homogêneo [1]. Em uma tigela, misture essa mistura com 1 xícara (chá) de farinha de trigo, 1 xícara (chá) de açúcar e ½ colher (sopa) de fermento em pó [1]. Coloque a massa em uma forma para micro-ondas untada com manteiga e leve ao micro-ondas por 8 minutos na potência máxima, abrindo o forno a cada 2 minutos para evitar que a massa derrame [1]. Deixe esfriar, desenforme e cubra com a calda de chocolate [1]. Para a calda, misture em uma tigela 6 colheres (sopa) de chocolate em pó, 400 ml de leite, 1 colher (sopa) de manteiga, 4 colheres (sopa) de açúcar e 2 colheres (sopa) de amido de milho [1]. Leve ao micro-ondas por 1 ½ minuto, misture bem e volte ao micro-ondas por mais 1 minuto [1]. Misture novamente até esfriar e cubra o bolo [1].\n\nIngredientes que faltam:\n- Bolo de Cenoura de Micro-ondas [1]: Calda, - 6 colheres (sopa) de chocolate em pó- 400 ml de leite- 1 colher (sopa) de manteiga- 4 colheres (sopa) de açúcar- 2 colheres (sopa) de amido de milho",
+      "rouge_1": 0.5436241610738255,
+      "rouge_l": 0.48322147651006714,
+      "cosseno": 0.9579399005711328,
+      "hit": 1
+    },
+    {
+      "id": "r02",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 45.11276981300034,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c7477e6"
+      ],
+      "texto": "Aqui está a receita de Pão de queijo rápido [1]. Para fazer, coloque no liquidificador: 2 ovos inteiros, 1 copo (tipo americano) de leite (200 ml), 1 copo (tipo americano) de óleo de milho (200 ml), 1 xícara (chá) de queijo parmesão ralado, 1 colher (sobremesa-rasa) de sal, 25ml de azeite e 3 xícaras (chá) de polvilho doce [1]. Bata por 3 a 4 minutos, parando para mexer com a colher [1]. Tire do liquidificador, junte o queijo parmesão e misture [1]. Unte forminhas próprias com óleo, coloque a massa e polvilhe queijo ralado [1]. Leve ao forno previamente aquecido a 200 ºC por aproximadamente 20 minutos [1]. Você pode rechear cortando os pães ao meio com uma mistura de 100g de queijo cremoso, 1 colher (sobremesa rasa) de orégano e 1 colher (sobremesa) de azeite, ou com ½ copo de requeijão cremoso, ½ copo de queijo cheddar cremoso e 1 xícara (chá) de azeitonas verdes picadas [1].",
+      "rouge_1": 0.3470319634703196,
+      "rouge_l": 0.21917808219178084,
+      "cosseno": 0.9163772881239278,
+      "hit": 0
+    },
+    {
+      "id": "r03",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 47.01047560100051,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745e7a",
+        "afrodite:5744eff20ca7832b5c745abb"
+      ],
+      "texto": "Existem duas formas de fazer bolinho de bacalhau nos trechos. A primeira receita sugere refogar 1 cebola picadinha em 1 colher (sopa) de azeite e misturar com 1kg de batata cozida e amassada, ½kg de bacalhau cozido e desfiado, 3 gemas, sal, pimenta-do-reino e salsinha picada [1]. Modele os bolinhos em formato de croquete (9cm de comprimento) e frite em óleo quente [1]. A segunda receita pede para cozinhar 500 g de batata descascada por 15 minutos e bater até formar um purê, adicionando 2 gemas [2]. Em seguida, refogue 2 colheres (sopa) de cebola picadinha com 1 colher (chá) de alho amassado em 4 colheres (sopa) de azeite, misture com a batata e tempere com sal e pimenta-do-reino até secar [2]. Faça bolinhas com 3 xícaras (chá) de recheio de bacalhau (400 g), envolva na massa de batata, passe na farinha de rosca, nas claras batidas e novamente na farinha de rosca [2]. Frite em óleo quente até dourar [2].\n\nIngredientes que faltam:\n- Bolinho de Bacalhau Mais Você [1]: nenhum\n- Bolinho de bacalhau [2]: nenhum",
+      "rouge_1": 0.5039370078740159,
+      "rouge_l": 0.45669291338582674,
+      "cosseno": 0.9630566783825886,
+      "hit": 1
+    },
+    {
+      "id": "r04",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 33.63948428200001,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b27"
+      ],
+      "texto": "Sim, dá para fazer um arroz no forno usando os ingredientes que você tem. A receita de Arroz de forno usa arroz, tomates picados sem pele e sem sementes, e queijo parmesão ralado [1]. O modo de preparo é: refogue o arroz com óleo, adicione os tomates, alho e sal, depois acrescente água fervente e cozinhe até secar a água. Em seguida, misture manteiga, ovos mexidos, azeitonas, cebolinha, salsinha, queijo parmesão, cenouras cozidas, batata palha e carne desfiada (se tiver). Transfira para um refratário, polvilhe mais queijo por cima e leve ao forno médio pré-aquecido a 180°C por cerca de 20 minutos ou até dourar [1].\n\nIngredientes que faltam:\n- Arroz de forno [1]: 1 dente de alho amassado, 2 colheres (sopa) de manteiga, 4 ovos mexidos feitos no azeite, 6 azeitonas verdes sem caroço picadas, 6 azeitonas pretas sem caroço picadas, 3 colheres (sopa) de cebolinha verde picada, salsinha picadinha a gosto, 2 cenouras cortadas em cubos médios e cozidas al dente, 1 pacote de batata palha (140g), 500g de carne cozida e desfiada (acém ou pá)",
+      "rouge_1": 0.4518828451882846,
+      "rouge_l": 0.39330543933054396,
+      "cosseno": 0.9445116765461247,
+      "hit": 1
+    },
+    {
+      "id": "r05",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 52.6231526749998,
+      "documentos_citados": [
+        "taco-2011",
+        "afrodite:5744eff20ca7832b5c745aae"
+      ],
+      "texto": "Para preparar a feijoada com feijão preto, linguiça e carne seca, siga os passos abaixo:\n\n**Feijão:**\nPese 3 kg de feijão preto limpo [1]. Coloque em 6 litros de água fria para deixar de molho por 12 horas [1]. Descarte a água e cozinhe o feijão em 9 litros de água fria, em fogo médio e panela destampada, por aproximadamente 2 horas ou até que o grão esteja macio sem romper a casca [1].\n\n**Carnes:**\nPese 450g de lingüiça portuguesa fatiada em rodelas e 100g de carne seca em pedaços de aproximadamente 10 cm [1]. Cubra as carnes com água e deixe de molho na geladeira para dessalgar por 12 horas, trocando a água a cada 3 horas [1].\n\n**Montagem:**\nOutra opção é usar 1Kg de feijão preto, 500g de linguiça calabresa e 500g de carne seca [2]. Deixe as carnes de molho para dessalgar por algumas horas, trocando a água [2]. Cozinhe o feijão em panela de pressão por cerca de 20 minutos após pegar pressão [2]. Abra a panela, coloque as carnes dessalgadas e deixe cozinhar por mais 10 minutos para apurar o sabor [2].\n\nIngredientes que faltam:\n- Feijoada a la Vidigal [2]: 500g de lombo, 2 paios em rodelas, 500g de costela, 1Kg de farinha de mandioca, 2 colheres (sopa) de margarina, 300g de bacon picado, 1 maço de couve cortada em tiras bem fininhas, 1 Kg de arroz branco, 1 laranja descascada e separada em gomos, 3 cabeças de alho descascadas e picadas, (divida esta quantidade em 3 partes para usar na feijoada, no arroz e na farofa)",
+      "rouge_1": 0.36253776435045315,
+      "rouge_l": 0.24773413897280966,
+      "cosseno": 0.9433781754679971,
+      "hit": 1
+    },
+    {
+      "id": "r06",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.045860231000006024,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": 0.0,
+      "rouge_l": 0.0,
+      "cosseno": 0.0,
+      "hit": 1
+    },
+    {
+      "id": "r07",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 28.992674093999995,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b2f"
+      ],
+      "texto": "Encontrei uma receita de Omelete de forno que usa 10 ovos [1]. Para fazer: bata bem numa tigela 10 ovos, ½ xícara (chá) de leite, sal e pimenta-do-reino a gosto até ficar homogêneo. Coloque os ingredientes de recheio de sua escolha no fundo de uma forma para cupcake, regue com a mistura de ovos e leve ao forno alto pré-aquecido a 200° C por +/- 13 minutos se gostar cremosa ou +/- 20 minutos se preferir mais durinha. Retire do forno, desenforme e sirva [1]. Não encontrei receitas específicas para omelete assada com 'muitos ovos' além dessa quantidade de 10 unidades.\n\nIngredientes que faltam:\n- Omelete de forno [1]: ½ xícara (chá) de leite, Recheio a gosto, tomate sem semente picadinho, cheiro verde picadinho, azeitona verde picadinha, peito de peru picadinho, blanquet picadinho, queijo minas padrão ralado, queijo parmesão ralado, presunto picadinho, presunto parma picadinho, salame picadinho, bacon picadinho e frito, linguiça calabresa ralada e frita, milho, ervilha",
+      "rouge_1": 0.4954128440366972,
+      "rouge_l": 0.39449541284403666,
+      "cosseno": 0.9103301599483721,
+      "hit": 1
+    },
+    {
+      "id": "r08",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 35.52545914700022,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b03"
+      ],
+      "texto": "Para fazer o pastel de carne, primeiro prepare a massa: em uma tigela, coloque 1 lata de creme de leite com soro (300g), 2 ¼ xícaras (chá) de farinha de trigo (320g) e sal a gosto. Misture bem até formar uma massa homogênea [1]. Em seguida, coloque a massa em uma superfície lisa e enfarinhada, amasse com as mãos, envolva em filme plástico e leve para gelar por 30 minutos [1]. Depois, transfira a massa gelada para uma superfície enfarinhada, abra bem fina com um rolo e corte discos de 7cm de diâmetro [1]. Coloque uma porção de recheio sobre cada disco, dobre ao meio em forma de meia lua e feche as bordas apertando com um garfo [1]. Por fim, frite os pastéis em óleo quente até dourar, retire e escorra em papel absorvente antes de servir [1].\n\nIngredientes que faltam:\n- Pastel de carne [1]: nenhum",
+      "rouge_1": 0.5990338164251208,
+      "rouge_l": 0.5217391304347827,
+      "cosseno": 0.9443114899565526,
+      "hit": 1
+    },
+    {
+      "id": "e01",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 50.99439997800073,
+      "documentos_citados": [
+        "recipenlg:370774",
+        "recipenlg:145534",
+        "recipenlg:155539",
+        "recipenlg:38479",
+        "recipenlg:579077"
+      ],
+      "texto": "Existem várias formas de fazer pão de banana (Banana Bread). Uma opção é misturar açúcar e manteiga derretida, adicionar um ovo e bater bem, depois colocar as bananas amassadas, farinha e nozes se desejar. Coloque em uma forma untada e asse por 1 hora a 350° [1]. Outra versão usa margarina amolecida, ovos batidos, leite coalhado, baunilha e bananas amassadas; coloque na forma e asse a 350° por cerca de 10 minutos ou até ficar quente [2]. Também pode-se usar manteiga, açúcar, ovos, raspas de laranja, bananas amassadas, farinha, leite coalhado, nozes e pedaços de chocolate. Bata os ingredientes úmidos até ficarem leves, adicione as bananas e asse a 350° em formas untadas [3]. Há ainda uma receita com leite azedo, fermento, gordura vegetal, açúcar, ovos, farinha, sal, canela, noz-moscada e bananas amassadas. Misture os ingredientes secos com os úmidos alternando com o leite, adicione as bananas e asse por 1 hora a 350° [4]. Por fim, existe uma versão com margarina, açúcar, baunilha, suco de limão, ovos, bananas amassadas, sal, farinha, fermento em pó, bicarbonato, creme azedo e nozes. Bata tudo, coloque em duas formas untadas e asse a 350° por 50 a 55 minutos [5].\n\nIngredientes que faltam:\n- Banana Bread [1]: sugar, egg, flour, butter, soda, nuts\n- Banana Bread(Diabetic) [2]: flour, baking soda, fructose, eggs, buttermilk, vanilla extract\n- Banana Bread [3]: 1/4 c. (1 stick) butter or margarine, softened, 2 large eggs, 1 tsp. grated orange peel, 2 c. unsifted flour, 1/2 c. buttermilk, 1 c. chopped walnuts, 1 c. semi-sweet chocolate piece\n- Banana Bread [4]: 1/2 c. sour milk, 1 tsp. baking soda, 1/2 c. shortening, 1 c. sugar, 2 eggs, 2 c. flour, 1 tsp. cinnamon, 1/4 tsp. nutmeg, Nuts (optional)\n- Banana Bread [5]: margarine, sugar, vanilla, lemon juice, eggs, flour, baking powder, baking soda, sour cream, nuts",
+      "rouge_1": 0.2159090909090909,
+      "rouge_l": 0.13636363636363638,
+      "cosseno": 0.9320779668643596,
+      "hit": 1
+    },
+    {
+      "id": "e02",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 10.999816434999957,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": 0.0,
+      "rouge_l": 0.0,
+      "cosseno": 0.0,
+      "hit": 0
+    },
+    {
+      "id": "e03",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 30.27686873499988,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745a83"
+      ],
+      "texto": "Você pode fazer 'Cookie de Amendoim' [1]. Para isso, misture em uma tigela 70g de cacau em pó, 350g de açúcar de confeiteiro e 300g de amendoim torrado e picado grosseiramente. Adicione 3 claras em temperatura ambiente e essência de baunilha a gosto, misturando bem até obter uma massa homogênea [1]. Com um boleador de sorvete, faça bolas da massa e coloque numa assadeira com papel manteiga levemente untada com margarina [1]. Leve ao forno pré-aquecido a 160ºC por mais ou menos 20 minutos. Retire do forno, deixe esfriar e sirva [1].\n\nIngredientes que faltam:\n- Cookie de Amendoim [1]: 70g de cacau em pó (1 xícara de chá), 350g de açúcar de confeiteiro (2 ½ xícaras de chá), 300g de amendoim torrado e picado grosseiramente (2 1/3 xícaras de chá), 3 claras em temperatura ambiente, Essência de baunilha a gosto",
+      "rouge_1": 0.4067796610169492,
+      "rouge_l": 0.2711864406779661,
+      "cosseno": 0.9265918138462802,
+      "hit": 0
+    },
+    {
+      "id": "e04",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 30.218699151000692,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c74666b"
+      ],
+      "texto": "Sim, é possível fazer uma sopa com berinjela. Existe a receita de Sopa de Baixas Calorias que usa 1 berinjela média junto com outros legumes como nabo, cebolinha verde, purê de tomates, aipo ou salsão, repolho, cebola, cenouras e vagem [1]. O modo de preparo é cortar os legumes em pedaços pequenos ou médios, cobrir com 4 litros de água, ferver rapidamente por 10 minutos e depois manter em ponto de fervura por aproximadamente 40 minutos [1]. Os trechos não mencionam uma receita de sopa que use apenas berinjela e leite juntos.\n\nIngredientes que faltam:\n- Sopa de Baixas Calorias [1]: nenhum",
+      "rouge_1": 0.33103448275862074,
+      "rouge_l": 0.23448275862068962,
+      "cosseno": 0.9173622049658487,
+      "hit": 0
+    },
+    {
+      "id": "e05",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 10.822282582000298,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": 0.0,
+      "rouge_l": 0.0,
+      "cosseno": 0.0,
+      "hit": 0
+    },
+    {
+      "id": "g01",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 39.50687381099942,
+      "documentos_citados": [
+        "ms-guia-criancas-2019",
+        "raca-ultraprocessados-2022",
+        "ms-protocolo-guia-adultos-2021"
+      ],
+      "texto": "Alimentos ultraprocessados são formulações industriais prontas para consumo feitas de substâncias extraídas ou derivadas de alimentos (como óleos, gorduras, açúcar, amido e proteínas), com pouca ou nenhuma quantidade de alimentos in natura [3]. Eles passam por técnicas sofisticadas de processamento e usam aditivos que alteram cor, sabor e textura, tornando-os extremamente saborosos e atraentes [3]. Esses produtos são desenhados para ter longa vida de prateleira e serem consumidos em grande quantidade, usando ingredientes com matriz destruída e aditivos [2]. Devem ser evitados porque contêm quantidades excessivas de calorias, sal, açúcar, gorduras e aditivos [1]. Sua composição é nutricionalmente desbalanceada: são pobres em nutrientes essenciais e ricos em sódio, gorduras saturadas, trans e açúcares [2]. O consumo em excesso pode levar a problemas como hipertensão, doenças do coração, diabetes, obesidade, cárie dentária e câncer [1]. Além disso, podem contribuir para o aumento do risco de deficiências nutricionais [4]. Eles são formulados para induzir o consumo frequente ou criar dependência, o que é crítico no início da vida pois pode reduzir o interesse por alimentos in natura [1].",
+      "rouge_1": 0.30434782608695654,
+      "rouge_l": 0.1565217391304348,
+      "cosseno": 0.9124357617158824,
+      "hit": 0
+    },
+    {
+      "id": "g02",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 22.80309254199983,
+      "documentos_citados": [
+        "guia-alimentar"
+      ],
+      "texto": "Sim, você pode usar sal, óleo e açúcar na comida, mas deve utilizá-los em pequenas quantidades ao temperar e cozinhar alimentos [1]. O uso desses produtos com moderação ajuda a tornar a alimentação mais saborosa sem deixá-la nutricionalmente desbalanceada [4]. Não há uma quantidade exata definida nos trechos, apenas a orientação de usar 'pequenas quantidades' e 'com moderação', pois o impacto na saúde depende essencialmente da quantidade utilizada [2]. O consumo excessivo pode aumentar o risco de doenças do coração, obesidade e cárie dental [3].",
+      "rouge_1": 0.4647887323943662,
+      "rouge_l": 0.29577464788732394,
+      "cosseno": 0.9373193315639292,
+      "hit": 1
+    },
+    {
+      "id": "g03",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 20.315155083999343,
+      "documentos_citados": [
+        "guia-alimentar",
+        "ms-protocolo-guia-adultos-2021"
+      ],
+      "texto": "Comer rápido, sozinho ou na frente da televisão pode levar a comer mais do que o necessário e reduzir o prazer da alimentação [1]. Refeições feitas em companhia evitam que se coma rapidamente [2] e ajudam a aumentar a concentração no ato de comer [4]. É recomendável evitar aparelhos de televisão ligados durante as refeições, pois locais tranquilos convidam a comer devagar e apreciar os alimentos [3]. Comer com atenção, sem se envolver em outra atividade, é uma orientação importante para aproveitar melhor a alimentação [4].",
+      "rouge_1": 0.4492753623188405,
+      "rouge_l": 0.21739130434782608,
+      "cosseno": 0.9170960990474445,
+      "hit": 1
+    },
+    {
+      "id": "g04",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 33.72222720300033,
+      "documentos_citados": [
+        "guia-alimentar",
+        "ms-guia-criancas-2019",
+        "ms-protocolo-guia-adultos-2021"
+      ],
+      "texto": "Para organizar a semana e comer melhor sem perder muito tempo, planeje as compras, organize a despensa e defina o cardápio da semana com antecedência [1][3]. Divida as tarefas de preparo das refeições com os membros da família [1][2][3]. Tenha na geladeira alimentos já preparados, como temperos naturais, alho picado, cebola descascada, abóbora cortada e folhas higienizadas, para não começar do zero [2]. Cozinhe uma quantidade maior do que a necessária para uma refeição e guarde adequadamente [2]. Mantenha preparações congeladas, como carne moída, feijão, lasanha, sopas ou porções individuais em marmitas [4]. Tenha sempre disponíveis alimentos de preparo rápido, como macarrão e ovos; um prato de macarrão com molho de tomate estocado no congelador leva apenas 5 minutos a mais que um macarrão instantâneo [4]. Planeje as compras separando alimentos comprados com menos frequência dos frescos e perecíveis para reduzir idas ao mercado [4].",
+      "rouge_1": 0.2765957446808511,
+      "rouge_l": 0.20212765957446807,
+      "cosseno": 0.9209981152857353,
+      "hit": 1
+    },
+    {
+      "id": "c01",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 22.700718906000475,
+      "documentos_citados": [
+        "embrapa-geladeira"
+      ],
+      "texto": "Algumas hortaliças não devem ser guardadas na geladeira porque podem ter a durabilidade reduzida por podridões e brotamento ou não amadurecer corretamente. São elas: abóbora seca, alho, batata, batata-doce, cebola, inhame, melancia, melão, moranga, taro, cará e tomate verde [1]. Além disso, produtos muito sensíveis como morango, quiabo e abobrinha devem ser lavados somente antes do consumo para evitar podridões, mas isso não significa que não devam ir à geladeira, apenas exigem cuidado extra [2].",
+      "rouge_1": 0.5811965811965812,
+      "rouge_l": 0.4786324786324787,
+      "cosseno": 0.9424352522795593,
+      "hit": 1
+    },
+    {
+      "id": "c02",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 44.391062366999904,
+      "documentos_citados": [
+        "embrapa-congelador"
+      ],
+      "texto": "Sim, quase todas as hortaliças podem ser congeladas, exceto as folhosas consumidas cruas, como alface, rúcula e agrião [1]. Hortaliças de folha cozidas, como espinafre e couve-de-bruxelas, podem ser congeladas sem problema [1]. Tomate e pimentão também podem ser congelados, mas devem ser usados em pratos cozidos após o descongelamento [1]. Para congelar, siga estes passos: remova partes danificadas, casca e sementes; lave as hortaliças consumidas com casca em água corrente e enxugue-as [3]. Faça o branqueamento se necessário, pois isso inibe mudanças de sabor e cor e destrói microrganismos [3]. Guarde em embalagens de plástico ou vidro próprias para congelamento, fazendo porções para consumo único [3]. Identifique a data de congelamento na embalagem [3]. As hortaliças podem ser mantidas congeladas por 8 meses a 12 meses [2]. Para descongelar, muitas não precisam de descongelamento prévio; o processo pode ocorrer durante o preparo do prato [2]. Se precisar descongelar antes, coloque em água fervente, espere ferver novamente, diminua o fogo e cozinhe até o ponto [2]. Para sucos e vitaminas, bata a hortaliça ainda congelada no liquidificador com suco, água ou leite [2].",
+      "rouge_1": 0.33333333333333326,
+      "rouge_l": 0.2807017543859649,
+      "cosseno": 0.9371781557777545,
+      "hit": 1
+    },
+    {
+      "id": "c03",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 35.80849944300007,
+      "documentos_citados": [
+        "ms-na-cozinha-flv",
+        "ms-guia-criancas-2019",
+        "embrapa-recomendacoes-compras"
+      ],
+      "texto": "Para higienizar frutas e verduras corretamente, siga estes passos: 1º Retire as partes estragadas e machucadas [1][3][4]. 2º Lave em água corrente tratada, folha por folha no caso de vegetais folhosos, para remover impurezas [1][2][4][5]. Se necessário, use uma escovinha separada apenas para isso [2][4]. 3º Coloque os alimentos em solução de hipoclorito de sódio (água sanitária própria para alimentos) na proporção de 1 colher de sopa do produto para 1 litro de água [1][5]. Deixe de molho por 10 a 15 minutos [1][2][5]. 4º Enxágue em água potável; se não tiver certeza da qualidade da água, não enxágue [1]. 5º Seque os alimentos naturalmente ou com utensílios específicos antes de guardar [1][3]. Lembre-se que água limpa e vinagre não são suficientes para eliminar micro-organismos e o detergente não deve ser usado para esta finalidade [2].",
+      "rouge_1": 0.41935483870967744,
+      "rouge_l": 0.23655913978494625,
+      "cosseno": 0.9061046245808007,
+      "hit": 1
+    },
+    {
+      "id": "c04",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 21.182834459999867,
+      "documentos_citados": [
+        "embrapa-geladeira",
+        "embrapa-recomendacoes-compras"
+      ],
+      "texto": "Para que frutas e hortaliças durem mais, escolha sempre alimentos em condições aceitáveis de consumo, pois o congelamento preserva o produto, mas não melhora a qualidade inicial [2]. Planeje as compras para adquirir produtos frescos com maior frequência [1][3]. Ao comprar, verifique se os produtos foram manuseados com cuidado, já que quanto melhor a qualidade do produto, maior será sua durabilidade [3]. Antes de ir ao mercado, faça uma vistoria em casa para evitar comprar o que já tem e planeje receitas com itens prestes a vencer [1].",
+      "rouge_1": 0.31007751937984496,
+      "rouge_l": 0.15503875968992248,
+      "cosseno": 0.9124174111936993,
+      "hit": 1
+    },
+    {
+      "id": "s01",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.021823185999892303,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    },
+    {
+      "id": "s02",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.024061073999291693,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    },
+    {
+      "id": "s03",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.02468576800038136,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    },
+    {
+      "id": "s04",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.022660818000076688,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    },
+    {
+      "id": "g05",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 21.186308703000577,
+      "documentos_citados": [
+        "guia-alimentar",
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "Para comer melhor, procure fazer compras em mercados, feiras livres, feiras de produtores e outros locais que vendem variedades de alimentos in natura ou minimamente processados [1]. Prefira legumes, verduras e frutas da estação e cultivados localmente [1]. Sempre que possível, adquira alimentos orgânicos e de base agroecológica, de preferência diretamente dos produtores [1]. Se não houver esses locais perto de casa, procure mercados ou feiras no caminho do trabalho ou da escola [2]. Hortas domésticas ou comunitárias próximas também facilitam o acesso a alimentos frescos [2].",
+      "rouge_1": 0.676923076923077,
+      "rouge_l": 0.676923076923077,
+      "cosseno": 0.9649546958226446,
+      "hit": 1
+    },
+    {
+      "id": "g06",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 29.144660305999423,
+      "documentos_citados": [
+        "ms-guia-criancas-2019",
+        "guia-alimentar"
+      ],
+      "texto": "Para aprender a cozinhar, procure desenvolver suas habilidades culinárias conversando com quem sabe cozinhar, pedindo receitas a familiares, amigos e colegas, lendo livros, consultando a internet ou fazendo cursos [2]. Se você já tem habilidades, partilhe-as principalmente com crianças e jovens [2]. Para dividir as tarefas em casa, é importante que todos os integrantes da família colaborem e tenham vontade de ter uma alimentação saudável [1]. Com o tempo, definam quem se responsabiliza por compras, organização, higienização, descascar, picar, temperar, lavar a louça e limpar a cozinha, variando as funções para descobrir o que cada um faz de melhor [1]. Divida com os membros da família a responsabilidade por todas as atividades domésticas relacionadas ao preparo de refeições [5]. Isso fortalece as relações familiares e transforma a alimentação em fonte de saúde e prazer [1][4].",
+      "rouge_1": 0.4361702127659574,
+      "rouge_l": 0.35106382978723405,
+      "cosseno": 0.9257012536000733,
+      "hit": 1
+    },
+    {
+      "id": "c05",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 15.817934390000119,
+      "documentos_citados": [
+        "ms-na-cozinha-flv"
+      ],
+      "texto": "O pé de alface dura 5 dias na geladeira se for envolto em papel-toalha úmido e mantido em um saco plástico na gaveta de legumes [1]. Folhas soltas devem ser guardadas em uma vasilha coberta com papel-toalha úmido e vedada com filme transparente, mas o pé dura mais que as folhas soltas [1].",
+      "rouge_1": 0.803921568627451,
+      "rouge_l": 0.7058823529411764,
+      "cosseno": 0.9928730533500376,
+      "hit": 1
+    },
+    {
+      "id": "c06",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 10.218847905000075,
+      "documentos_citados": [
+        "ms-na-cozinha-flv",
+        "guia-alimentar"
+      ],
+      "texto": "A cebolinha pode ser congelada já picada [1]. Além disso, a maioria das verduras e legumes deve ser mantida sob refrigeração para conservar melhor [2].",
+      "rouge_1": 0.2150537634408602,
+      "rouge_l": 0.15053763440860218,
+      "cosseno": 0.9070006483358858,
+      "hit": 1
+    },
+    {
+      "id": "n01",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 4.496218743999634,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": 0.0,
+      "rouge_l": 0.0,
+      "cosseno": 0.0,
+      "hit": 1
+    },
+    {
+      "id": "n02",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 10.356699433000358,
+      "documentos_citados": [
+        "taco-2011"
+      ],
+      "texto": "Um ovo de galinha inteiro cozido por 10 minutos tem 13,3g de proteína [1].",
+      "rouge_1": 0.75,
+      "rouge_l": 0.75,
+      "cosseno": 0.9709318009172027,
+      "hit": 1
+    },
+    {
+      "id": "n03",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 6.292834550000407,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": 0.0,
+      "rouge_l": 0.0,
+      "cosseno": 0.0,
+      "hit": 1
+    },
+    {
+      "id": "n04",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.030147073999614804,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": 0.0,
+      "rouge_l": 0.0,
+      "cosseno": 0.0,
+      "hit": 1
+    },
+    {
+      "id": "n05",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.02942121100022632,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": 0.0,
+      "rouge_l": 0.0,
+      "cosseno": 0.0,
+      "hit": 1
+    },
+    {
+      "id": "i01",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 17.688765703999707,
+      "documentos_citados": [
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "O consumo de outros alimentos além do leite materno passa a ser necessário a partir dos 6 meses [1]. A partir dessa idade, a criança precisa de mais nutrientes e outros alimentos devem ser oferecidos juntamente com o leite materno [3]. No entanto, para crianças que recebem outros leites em quantidades variáveis ou para crianças prematuras, o início da oferta deve ser orientado por um profissional de saúde [2][3].",
+      "rouge_1": 0.47368421052631576,
+      "rouge_l": 0.2982456140350877,
+      "cosseno": 0.944186292242683,
+      "hit": 1
+    },
+    {
+      "id": "i02",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 24.364118988999508,
+      "documentos_citados": [
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "Não, não deve oferecer açúcar para uma criança menor de 2 anos [1]. O consumo de açúcar não é necessário e pode causar danos à saúde como cáries, obesidade na infância e doenças crônicas no futuro, além de dificultar a aceitação de alimentos saudáveis [1][3]. Isso inclui qualquer tipo de açúcar (mascavo, demerara, cristal, refinado), mel, rapadura, melaço e adoçantes [1][2][3]. Também não devem ser oferecidas preparações ou produtos prontos que contenham esses ingredientes, como biscoitos, bolos, iogurtes, doces, geleias e sucos de caixinha [1][3].",
+      "rouge_1": 0.6515151515151516,
+      "rouge_l": 0.409090909090909,
+      "cosseno": 0.9629080375095987,
+      "hit": 1
+    },
+    {
+      "id": "i03",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 19.134147996000138,
+      "documentos_citados": [
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "Não, não deve usar liquidificador para preparar a comida da criança [1]. O uso de liquidificador, mixer ou peneira não é recomendado porque manter a consistência líquida pode dificultar a aceitação de alimentos mais sólidos no futuro e aumentar o risco de engasgo e ânsia de vômito [1]. No início, a comida deve ser amassada com garfo e, em seguida, evoluir para alimentos picados em pedaços pequenos, raspados ou desfiados [1].",
+      "rouge_1": 0.6333333333333334,
+      "rouge_l": 0.33333333333333337,
+      "cosseno": 0.9572148418121185,
+      "hit": 1
+    },
+    {
+      "id": "i04",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 39.05778530200041,
+      "documentos_citados": [
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "Para guardar o leite materno, use um frasco de vidro esterilizado, tampe bem e identifique com a data e hora da primeira retirada [1][3]. Guarde no congelador ou freezer por até 15 dias, ou na prateleira mais próxima ao congelador da geladeira (não na porta) por até 12 horas [3]. Se for para doação, armazene congelado por no máximo 10 dias [3]. Ao guardar vários leites no mesmo frasco, a validade é a data da primeira coleta e o frasco deve ser completado até no máximo 2 dedos abaixo da tampa para evitar quebras [3]. Organize os frascos com os mais antigos na frente para usá-los primeiro [1][3]. Para descongelar, faça isso no próprio frasco em banho-maria com o fogo apagado; não ferva e não use micro-ondas [1][2]. Após descongelar, agite suavemente para misturar [2]. O leite descongelado deve ficar na geladeira (não na porta) e pode ser aproveitado em até 12 horas, sendo aquecido novamente em banho-maria com o fogo apagado quando for oferecer [2]. Não congele o leite materno uma segunda vez [2].",
+      "rouge_1": 0.4915254237288135,
+      "rouge_l": 0.3305084745762712,
+      "cosseno": 0.9516315925424806,
+      "hit": 1
+    },
+    {
+      "id": "i05",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 20.281330708000496,
+      "documentos_citados": [
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "As papinhas industrializadas não devem fazer parte da alimentação das crianças por vários motivos: suas texturas não favorecem o desenvolvimento da mastigação [1]; são compostas por diferentes alimentos misturados no mesmo potinho, o que dificulta a percepção dos diferentes sabores [1]; não favorecem a criança a se acostumar com o tempero da comida da família e com os alimentos da sua região [1]; as vitaminas e minerais dos alimentos in natura são mais bem aproveitadas pelo organismo do que as vitaminas e minerais adicionados nessas papinhas [1].",
+      "rouge_1": 0.7638888888888888,
+      "rouge_l": 0.6805555555555556,
+      "cosseno": 0.9628752759684566,
+      "hit": 1
+    },
+    {
+      "id": "d01",
+      "categoria": "desperdicio",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 24.459178752000298,
+      "documentos_citados": [
+        "cadsc-campanha-desperdicio-2022"
+      ],
+      "texto": "Sim, campanhas de conscientização ajudam a reduzir o desperdício de comida. Um estudo mostrou que após uma campanha de intervenção por conscientização, houve redução da média per capita do resto-ingestão de 60,0 ± 14,9 para 39,3 ± 13,4 [1]. Outro caso relatou diminuição notável de resto alimentar per capita de 57,0 g para 25,0 g após seis meses de intervenção com campanhas de conscientização [3]. A falta de conscientização dos comensais contribui significativamente para o alto desperdício de alimentos, e a intervenção mostrou-se eficaz ao promover comportamento consciente contra o desperdício [2].",
+      "rouge_1": 0.39999999999999997,
+      "rouge_l": 0.2571428571428572,
+      "cosseno": 0.9271387020951307,
+      "hit": 1
+    },
+    {
+      "id": "d02",
+      "categoria": "desperdicio",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 27.64386843899956,
+      "documentos_citados": [
+        "cadsc-campanha-desperdicio-2022"
+      ],
+      "texto": "Resto-ingestão (RI) é o indicador usado para medir o desperdício de alimentos, representando os restos alimentares deixados nos pratos pelos comensais [1]. Para medi-lo, retira-se os restos dos pratos no guichê de devolução, separando cascas, ossos e descartáveis em lixeiras específicas para evitar erros na apuração [2]. Em seguida, o resíduo alimentar é pesado em uma balança digital tarada, descontando o peso do saco plástico utilizado [2]. O cálculo é feito dividindo o peso em gramas do resto alimentar total pelo número de refeições servidas [2]. Como referência, a quantidade ideal de RI fica na faixa entre 2% e 5%, ou um peso entre 15 g e 45 g por comensal [1].",
+      "rouge_1": 0.41379310344827586,
+      "rouge_l": 0.264367816091954,
+      "cosseno": 0.9430655709887633,
+      "hit": 1
+    },
+    {
+      "id": "d03",
+      "categoria": "desperdicio",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 25.099580116999277,
+      "documentos_citados": [
+        "ms-na-cozinha-flv"
+      ],
+      "texto": "Você pode aproveitar integralmente frutas, legumes e verduras usando todas as partes em bom estado, como talos de couve, rúcula e salsinha; folhas de beterraba, cenoura, couve-flor e brócolis; sementes de abóbora e melancia; e cascas [1]. Essas partes concentram vitaminas, minerais e fibras, essenciais para a saúde, além de reduzir gastos e lixo [1]. É possível preparar bolos, pães, saladas e sucos com essas partes [1]. Para usar ervas frescas, tire as folhas dos talos e congele-as em formas de gelo cobertas com água gelada, guardando depois em sacos plásticos no freezer [2].",
+      "rouge_1": 0.5874125874125874,
+      "rouge_l": 0.5034965034965035,
+      "cosseno": 0.9657576202456665,
+      "hit": 1
+    },
+    {
+      "id": "d04",
+      "categoria": "desperdicio",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 7.736527520999516,
+      "documentos_citados": [
+        "opas-laboratorio-flv-2022"
+      ],
+      "texto": "A ONU convocou ações para reduzir perdas e desperdícios de frutas, legumes e verduras [1].",
+      "rouge_1": 0.10714285714285714,
+      "rouge_l": 0.10714285714285714,
+      "cosseno": 0.8667283380086384,
+      "hit": 1
+    },
+    {
+      "id": "h01",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 5.910326628000803,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": 0.0,
+      "rouge_l": 0.0,
+      "cosseno": 0.0,
+      "hit": 0
+    },
+    {
+      "id": "h02",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 12.133268266999949,
+      "documentos_citados": [
+        "bjft-higiene-servicos-2012"
+      ],
+      "texto": "O tratamento térmico deve garantir que todas as partes do alimento atinjam a temperatura de, no mínimo, 70 °C [1].",
+      "rouge_1": 0.34615384615384615,
+      "rouge_l": 0.2692307692307693,
+      "cosseno": 0.9238991513913392,
+      "hit": 0
+    },
+    {
+      "id": "h03",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 39.97431000800043,
+      "documentos_citados": [
+        "ms-guia-criancas-2019",
+        "raca-praticas-higiene-2019",
+        "bjft-higiene-servicos-2012",
+        "guia-alimentar"
+      ],
+      "texto": "Um serviço de alimentação deve seguir normas sanitárias para garantir o 'alimento seguro', com rigoroso controle do 'binômio tempo-temperatura' e vigilância dos trabalhadores quanto ao seguimento de normas prescritas [2]. É essencial prevenir a contaminação cruzada desde a recepção das matérias-primas até a distribuição do produto final, incluindo cuidados durante o descongelamento e a higienização [3]. O manejo inadequado de resíduos deve ser evitado para não atrair vetores e pragas urbanas [3]. A cozinha deve ser mantida limpa, arejada e organizada, dedicando tempo para limpar geladeira, fogão, armários, prateleiras, chão e paredes [4]. Utensílios e superfícies que entram em contato com os alimentos devem ser lavados e enxaguados com água limpa; panos de prato e esponjas devem ser mantidos em local seco e trocados 1 vez por semana [1]. As mãos e antebraços devem ser lavados bem com água e sabão antes de iniciar o preparo dos alimentos [1]. Frutas, verduras e legumes devem ser higienizados em água corrente e colocados em solução de hipoclorito de sódio [4]. Os alimentos devem ser mantidos protegidos em embalagens ou recipientes [4].",
+      "rouge_1": 0.3133640552995392,
+      "rouge_l": 0.20276497695852533,
+      "cosseno": 0.917944065077296,
+      "hit": 1
+    },
+    {
+      "id": "h04",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 20.674147203000757,
+      "documentos_citados": [
+        "bjft-percepcao-riscos-2013"
+      ],
+      "texto": "A rastreabilidade é um sistema que permite conhecer o produto desde a origem, oferecendo um caminho para rastrear e controlar todas as etapas da cadeia alimentar [2]. Isso importa para o consumidor porque aumenta a confiança na segurança dos alimentos ao mostrar que existe controle sobre todo o processo [2]. Além disso, ela contribui para elevar a transparência da cadeia alimentar [1] e é especialmente relevante em momentos de crise, como quando há necessidade de recolher produtos do mercado [2]. No entanto, os consumidores percebem que a rastreabilidade pode encarecer os produtos [2].",
+      "rouge_1": 0.4755244755244755,
+      "rouge_l": 0.3076923076923077,
+      "cosseno": 0.9619906207212353,
+      "hit": 1
+    },
+    {
+      "id": "h05",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 15.781262079999578,
+      "documentos_citados": [
+        "bjft-percepcao-riscos-2013"
+      ],
+      "texto": "Os consumidores destacam a Salmonella como um risco microbiológico importante nos alimentos [1]. Ela é citada junto com outros riscos como intoxicação alimentar, botulismo, vírus e coliformes [2][3]. A preocupação com essa bactéria é comum em diferentes regiões, sendo especialmente mencionada por consumidores que buscam informações sobre segurança alimentar [2][3].",
+      "rouge_1": 0.37499999999999994,
+      "rouge_l": 0.18749999999999997,
+      "cosseno": 0.9177830382781887,
+      "hit": 1
+    },
+    {
+      "id": "u01",
+      "categoria": "orientacao_nutricional",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 24.11589344799995,
+      "documentos_citados": [
+        "raca-ultraprocessados-2022",
+        "guia-alimentar"
+      ],
+      "texto": "Os alimentos ultraprocessados trazem riscos à saúde, estando associados ao aumento do risco de obesidade, doenças cardiovasculares, diabetes, outras doenças crônicas não transmissíveis, depressão e demência [1]. Eles também causam impactos negativos na segurança alimentar e nutricional [2][4][5]. Em relação à cultura alimentar, esses alimentos têm substituído gradualmente as dietas tradicionais [2][4][5], interferindo na formação dos hábitos alimentares, inclusive em crianças menores de 2 anos [1]. Além disso, sua produção em grande escala pode levar à degradação e poluição do ambiente, redução da biodiversidade e comprometimento de reservas de água e energia [3].",
+      "rouge_1": 0.3448275862068966,
+      "rouge_l": 0.23448275862068962,
+      "cosseno": 0.930148999660318,
+      "hit": 1
+    },
+    {
+      "id": "u02",
+      "categoria": "orientacao_nutricional",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 22.90588261599987,
+      "documentos_citados": [
+        "ms-protocolo-guia-adultos-2021"
+      ],
+      "texto": "O profissional de saúde usa o Guia Alimentar como tecnologia para orientar a atuação na atenção nutricional no SUS [3]. Ele deve identificar os marcadores de alimentação saudável e não-saudável do usuário e seguir um fluxograma para fazer as orientações conforme os pontos críticos são identificados [2]. Para quem já tem uma alimentação adequada, o fluxograma sugere ainda a Valorização da Prática Alimentar [2]. O profissional pode optar por fazer recomendações prioritárias na primeira consulta e seguir com as demais nas próximas, decidindo quantas orientações fazer em cada encontro através de uma pactuação com o usuário [1][2].",
+      "rouge_1": 0.40540540540540543,
+      "rouge_l": 0.2702702702702703,
+      "cosseno": 0.8790576911306617,
+      "hit": 1
+    },
+    {
+      "id": "p01",
+      "categoria": "comportamento_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 35.50364453800012,
+      "documentos_citados": [
+        "raca-comensalidade-pandemia-2024",
+        "raca-consumo-pandemia-2024"
+      ],
+      "texto": "A pandemia trouxe mudanças mistas na alimentação das famílias. Houve um interesse renovado em preparar alimentos em casa, valorizando o tempo em família e fortalecendo o sistema imunológico [1]. No entanto, também aumentou o uso de aplicativos de entrega e compras online, principalmente para adquirir alimentos ultraprocessados, além de haver limitação no acesso a alimentos saudáveis e frescos devido à crise econômica [1]. O aumento do sedentarismo pelo trabalho remoto foi outra consequência negativa [1]. Estudos mostram que houve tanto o aumento do consumo de produtos industrializados quanto de refeições caseiras, o que despertou habilidades culinárias em alguns casos [2]. Por outro lado, fatores psicológicos e a redução do orçamento familiar levaram à diminuição do consumo de alimentos in natura e ao aumento de ultraprocessados, delivery e número de refeições [3]. A dificuldade de acesso a feiras livres e a maior durabilidade e preço baixo dos ultraprocessados também influenciaram essa mudança [3]. Muitas famílias tiveram que adaptar rotinas, questionando se teriam tempo para cozinhar ou se deveriam pedir delivery, além de preocupações com a higienização dos alimentos e compras online [4].",
+      "rouge_1": 0.41739130434782606,
+      "rouge_l": 0.22608695652173916,
+      "cosseno": 0.953364940952829,
+      "hit": 1
+    },
+    {
+      "id": "p02",
+      "categoria": "comportamento_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 20.920218637999824,
+      "documentos_citados": [
+        "raca-comensalidade-pandemia-2024"
+      ],
+      "texto": "A comensalidade é o ato de compartilhar a mesa ou a refeição com outro, ou seja, alimentar-se em conjunto, um momento de interação entre duas ou mais pessoas [1]. Etimologicamente, a palavra deriva do latim 'comensale' (com: junto, mensa: mesa), significando o ato de comer junto e partilhar do mesmo momento e local das refeições [2][3]. Ela relaciona-se não apenas à ingestão de alimentos, mas também aos modos de comer, envolvendo hábitos culturais, atos simbólicos, regras de organização social, além de compartilhamento de experiências e valores [3].",
+      "rouge_1": 0.44961240310077516,
+      "rouge_l": 0.41860465116279066,
+      "cosseno": 0.9550348811463489,
+      "hit": 1
+    },
+    {
+      "id": "p03",
+      "categoria": "comportamento_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 30.07071894299952,
+      "documentos_citados": [
+        "raca-ambiente-escolar-2023"
+      ],
+      "texto": "A escola influencia o que a criança come em casa porque o hábito alimentar trazido de casa é muito determinante no dia a dia escolar [1]. A família e a escola precisam estar alinhadas, caso contrário, a família tende a ter mais influência sobre os hábitos da criança [1]. Além disso, as escolas integram os diferentes hábitos alimentares das famílias, que são influenciados por valores socioculturais, posição econômica e política, refletindo nos lanches enviados [2]. A escolha dos alimentos é determinada pelas crianças, adolescentes e seus familiares, relacionando-se à realidade, princípios sobre alimentação e disponibilidade financeira das famílias [2]. Em alguns casos, a falta de organização ou a ausência de um adulto responsável em casa faz com que as refeições da escola se tornem as principais refeições daquela família [3]. A escola também pode ser um espaço onde os hábitos e atitudes estão sendo criados ou revistos, permitindo trabalhar os alimentos de muitas maneiras [4].",
+      "rouge_1": 0.3333333333333333,
+      "rouge_l": 0.21212121212121213,
+      "cosseno": 0.9111914023644914,
+      "hit": 1
+    },
+    {
+      "id": "b01",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 42.45953016200019,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b08"
+      ],
+      "texto": "Para fazer o Bolo de Cenoura de Micro-ondas, bata no liquidificador 2 ovos, ½ xícara (chá) de óleo e 250g de cenouras médias sem casca cortadas em rodelas até ficar homogêneo [1]. Em uma tigela, misture essa mistura com 1 xícara (chá) de farinha de trigo, 1 xícara (chá) de açúcar e ½ colher (sopa) de fermento em pó [1]. Coloque a massa em uma forma para micro-ondas bem untada com manteiga e leve ao micro-ondas por 8 minutos na potência máxima, abrindo o forno por alguns segundos de 2 em 2 minutos para que a massa não derrame [1]. Depois de frio, desenforme e cubra com a calda de chocolate [1]. Para a calda, misture 6 colheres (sopa) de chocolate em pó, 400 ml de leite, 1 colher (sopa) de manteiga, 4 colheres (sopa) de açúcar e 2 colheres (sopa) de amido de milho; leve ao micro-ondas por 1 ½ minuto, misture e volte por mais 1 minuto até esfriar [1].\n\nIngredientes que faltam:\n- Bolo de Cenoura de Micro-ondas [1]: Calda, - 6 colheres (sopa) de chocolate em pó- 400 ml de leite- 1 colher (sopa) de manteiga- 4 colheres (sopa) de açúcar- 2 colheres (sopa) de amido de milho",
+      "rouge_1": 0.45283018867924535,
+      "rouge_l": 0.4452830188679245,
+      "cosseno": 0.959040530443229,
+      "hit": 1
+    },
+    {
+      "id": "b02",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 63.94243948700023,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745a91",
+        "afrodite:5744eff20ca7832b5c7466d5",
+        "afrodite:5744eff20ca7832b5c745acb"
+      ],
+      "texto": "Você pode preparar Creme de couve flor [1], Sopa Creme de Couve-flor [2], Arroz de couve-flor, Bolinho de Arroz de couve-flor ou Pão de Couve Flor [3].\n\nPara o Creme de couve flor: cozinhe 500g de couve-flor em buquês com água fervente e alho por cerca de dez minutos. Bata no liquidificador com a água do cozimento, queijo parmesão, sal e pimenta-do-reino até ficar homogêneo [1].\n\nPara a Sopa Creme de Couve-flor: bata no liquidificador água, leite, farinha de trigo, 300g de couve-flor cozida no vapor e queijo cremoso. Leve ao fogo com sal até encorpar, desligue e adicione noz-moscada e queijo meia cura em cubos [2].\n\nPara o Arroz de couve-flor: processe 700 g de couve-flor até parecer grãos de arroz. Refogue alho e cebola com azeite, acrescente a couve-flor processada, água fervente e sal. Tampe e cozinhe por 10 minutos até a água secar [3].\n\nPara o Bolinho de Arroz de couve-flor: misture 350g de arroz de couve-flor com gema, parmesão, muçarela, farinha de trigo, salsinha, cebolinha e sal. Faça bolinhos, passe na clara e na farinha de rosca, depois frite [3].\n\nPara o Pão de Couve Flor: misture fermento, água, azeite, 350 g de arroz de couve-flor, sal e 800 g de farinha de trigo. Sove por 5 minutos, deixe descansar por 1 hora até dobrar de tamanho. Modele e asse em forno médio a 180ºC por aproximadamente 15 minutos [3].\n\nIngredientes que faltam:\n- Creme de couve flor [1]: nenhum\n- Sopa Creme de Couve-flor [2]: nenhum\n- Aprenda a fazer 3 receitas surpreendentes com couve-flor [3]: nenhum",
+      "rouge_1": 0.1993355481727575,
+      "rouge_l": 0.1727574750830565,
+      "cosseno": 0.888352755586752,
+      "hit": 1
+    },
+    {
+      "id": "b03",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 8.913178337000318,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": 0.0,
+      "rouge_l": 0.0,
+      "cosseno": 0.0,
+      "hit": 0
+    },
+    {
+      "id": "b04",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 21.250627669000096,
+      "documentos_citados": [
+        "raca-ultraprocessados-2022",
+        "guia-alimentar"
+      ],
+      "texto": "Sim, alimentos ultraprocessados não são saudáveis e devem ser evitados [2]. Eles possuem composição nutricionalmente desbalanceada, sendo pobres em nutrientes essenciais e frequentemente ricos em sódio, gorduras saturadas e trans e açúcares, que estão associados a doenças crônicas não-transmissíveis [1]. Além disso, sua produção e consumo afetam negativamente a cultura, a vida social e o meio ambiente [3][4]. Eles são feitos com ingredientes industriais, como aditivos para dar sabor, cor e textura, além de substâncias sintetizadas em laboratório [5].",
+      "rouge_1": 0.4521739130434782,
+      "rouge_l": 0.3652173913043479,
+      "cosseno": 0.9600387442623962,
+      "hit": 1
+    },
+    {
+      "id": "b05",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 24.060079007999775,
+      "documentos_citados": [
+        "embrapa-congelador"
+      ],
+      "texto": "Sim, quase todas as hortaliças podem ser congeladas [1]. No entanto, não se prestam para o congelamento as hortaliças folhosas consumidas cruas, como alface, rúcula e agrião [1]. Já hortaliças de folha consumidas cozidas, como espinafre e couve-de-bruxelas, podem ser congeladas sem problema [1]. Outras, a exemplo do tomate e do pimentão, podem ser congeladas desde que após o descongelamento elas sejam usadas em pratos cozidos [1]. Hortaliças podem ser mantidas congeladas por 8 meses a 12 meses, em congelador doméstico [2].",
+      "rouge_1": 0.35,
+      "rouge_l": 0.29999999999999993,
+      "cosseno": 0.9245289490076487,
+      "hit": 1
+    },
+    {
+      "id": "s05",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.02298150499973417,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    },
+    {
+      "id": "s06",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.030015935999472276,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    },
+    {
+      "id": "s07",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 9.19577893099995,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    },
+    {
+      "id": "s08",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.028225662999830092,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    },
+    {
+      "id": "s09",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.02348237899968808,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    },
+    {
+      "id": "s10",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.06609171099989908,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    },
+    {
+      "id": "$01",
+      "categoria": "preco",
+      "esperado": "aviso_de_preco",
+      "obtido": "aviso_de_preco",
+      "fonte_esperada": null,
+      "segundos": 8.349999916390516e-06,
+      "documentos_citados": [],
+      "texto": "Preços atuais não vêm da base de conhecimento de receitas e alimentação. Para saber quanto um produto custa hoje, consulte os preços cadastrados dos mercados.",
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    },
+    {
+      "id": "$02",
+      "categoria": "preco",
+      "esperado": "aviso_de_preco",
+      "obtido": "aviso_de_preco",
+      "fonte_esperada": null,
+      "segundos": 1.1470000572444405e-05,
+      "documentos_citados": [],
+      "texto": "Preços atuais não vêm da base de conhecimento de receitas e alimentação. Para saber quanto um produto custa hoje, consulte os preços cadastrados dos mercados.",
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    },
+    {
+      "id": "$03",
+      "categoria": "preco",
+      "esperado": "aviso_de_preco",
+      "obtido": "aviso_de_preco",
+      "fonte_esperada": null,
+      "segundos": 1.9459999748505652e-05,
+      "documentos_citados": [],
+      "texto": "Preços atuais não vêm da base de conhecimento de receitas e alimentação. Para saber quanto um produto custa hoje, consulte os preços cadastrados dos mercados.",
+      "rouge_1": null,
+      "rouge_l": null,
+      "cosseno": null,
+      "hit": null
+    }
+  ]
+}

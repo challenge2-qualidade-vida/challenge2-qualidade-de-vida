@@ -1,0 +1,87 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 11292.10it/s]
+Execução puro-qwen3.5:27b-resposta_sem_base-linux-20261118 | 67 perguntas
+[  1/67] ok  $03   esperado=aviso_de_preco  obtido=aviso_de_preco     0.0 s  
+[  2/67] ok  $02   esperado=aviso_de_preco  obtido=aviso_de_preco     0.0 s  
+[  3/67] ok  $01   esperado=aviso_de_preco  obtido=aviso_de_preco     0.0 s  
+[  4/67] ok  s10   esperado=nao_encontrar   obtido=nao_encontrar      2.6 s  
+[  5/67] ok  s09   esperado=nao_encontrar   obtido=nao_encontrar      2.5 s  
+[  6/67] ok  s08   esperado=nao_encontrar   obtido=nao_encontrar      2.5 s  
+[  7/67] ok  s07   esperado=nao_encontrar   obtido=nao_encontrar      2.5 s  
+[  8/67] ok  s06   esperado=nao_encontrar   obtido=nao_encontrar      2.5 s  
+[  9/67] ok  s05   esperado=nao_encontrar   obtido=nao_encontrar      2.5 s  
+[ 10/67] ok  b05   esperado=responder       obtido=responder         13.3 s  ROUGE-L 0.21
+[ 11/67] ok  b04   esperado=responder       obtido=responder         10.7 s  ROUGE-L 0.14
+[ 12/67] ok  b03   esperado=responder       obtido=responder         37.1 s  ROUGE-L 0.17
+[ 13/67] ok  b02   esperado=responder       obtido=responder         32.9 s  ROUGE-L 0.24
+[ 14/67] ok  b01   esperado=responder       obtido=responder         22.8 s  ROUGE-L 0.24
+[ 15/67] ok  p03   esperado=responder       obtido=responder         11.9 s  ROUGE-L 0.13
+[ 16/67] ok  p02   esperado=responder       obtido=responder          6.4 s  ROUGE-L 0.36
+[ 17/67] ok  p01   esperado=responder       obtido=responder         11.3 s  ROUGE-L 0.17
+[ 18/67] ok  u02   esperado=responder       obtido=responder         27.6 s  ROUGE-L 0.12
+[ 19/67] ok  u01   esperado=responder       obtido=responder         12.4 s  ROUGE-L 0.20
+[ 20/67] ok  h05   esperado=responder       obtido=responder         12.8 s  ROUGE-L 0.27
+[ 21/67] ok  h04   esperado=responder       obtido=responder         20.7 s  ROUGE-L 0.14
+[ 22/67] ok  h03   esperado=responder       obtido=responder         28.0 s  ROUGE-L 0.15
+[ 23/67] ok  h02   esperado=responder       obtido=responder          8.8 s  ROUGE-L 0.20
+[ 24/67] ok  h01   esperado=responder       obtido=responder          5.5 s  ROUGE-L 0.14
+[ 25/67] ok  d04   esperado=responder       obtido=responder         37.4 s  ROUGE-L 0.11
+[ 26/67] ok  d03   esperado=responder       obtido=responder         18.4 s  ROUGE-L 0.20
+[ 27/67] ok  d02   esperado=responder       obtido=responder         18.8 s  ROUGE-L 0.17
+[ 28/67] ok  d01   esperado=responder       obtido=responder          8.4 s  ROUGE-L 0.17
+[ 29/67] ok  i05   esperado=responder       obtido=responder         11.1 s  ROUGE-L 0.12
+[ 30/67] ok  i04   esperado=responder       obtido=responder         15.2 s  ROUGE-L 0.14
+[ 31/67] ok  i03   esperado=responder       obtido=responder         19.0 s  ROUGE-L 0.16
+[ 32/67] ok  i02   esperado=responder       obtido=responder          9.9 s  ROUGE-L 0.19
+[ 33/67] ok  i01   esperado=responder       obtido=responder          6.4 s  ROUGE-L 0.26
+[ 34/67] ok  n05   esperado=responder       obtido=responder          9.6 s  ROUGE-L 0.09
+[ 35/67] ok  n04   esperado=responder       obtido=responder          8.5 s  ROUGE-L 0.13
+[ 36/67] ERR n03   esperado=responder       obtido=nao_encontrar      7.1 s  ROUGE-L 0.00
+[ 37/67] ERR n02   esperado=responder       obtido=nao_encontrar      6.4 s  ROUGE-L 0.00
+[ 38/67] ERR n01   esperado=responder       obtido=nao_encontrar      9.9 s  ROUGE-L 0.00
+[ 39/67] ok  c06   esperado=responder       obtido=responder         14.1 s  ROUGE-L 0.23
+[ 40/67] ok  c05   esperado=responder       obtido=responder         12.2 s  ROUGE-L 0.21
+[ 41/67] ok  g06   esperado=responder       obtido=responder         15.9 s  ROUGE-L 0.15
+[ 42/67] ok  g05   esperado=responder       obtido=responder         11.8 s  ROUGE-L 0.30
+[ 43/67] ok  s04   esperado=nao_encontrar   obtido=nao_encontrar      2.4 s  
+[ 44/67] ok  s03   esperado=nao_encontrar   obtido=nao_encontrar      3.0 s  
+[ 45/67] ok  s02   esperado=nao_encontrar   obtido=nao_encontrar      2.4 s  
+[ 46/67] ERR s01   esperado=nao_encontrar   obtido=responder          9.8 s  
+[ 47/67] ok  c04   esperado=responder       obtido=responder         14.3 s  ROUGE-L 0.13
+[ 48/67] ok  c03   esperado=responder       obtido=responder         12.7 s  ROUGE-L 0.21
+[ 49/67] ok  c02   esperado=responder       obtido=responder         15.0 s  ROUGE-L 0.19
+[ 50/67] ok  c01   esperado=responder       obtido=responder         25.7 s  ROUGE-L 0.13
+[ 51/67] ok  g04   esperado=responder       obtido=responder         36.5 s  ROUGE-L 0.09
+[ 52/67] ok  g03   esperado=responder       obtido=responder         12.1 s  ROUGE-L 0.16
+[ 53/67] ok  g02   esperado=responder       obtido=responder         15.4 s  ROUGE-L 0.15
+[ 54/67] ok  g01   esperado=responder       obtido=responder         13.5 s  ROUGE-L 0.18
+[ 55/67] ok  e05   esperado=responder       obtido=responder         16.0 s  ROUGE-L 0.24
+[ 56/67] ok  e04   esperado=responder       obtido=responder         27.2 s  ROUGE-L 0.19
+[ 57/67] ok  e03   esperado=responder       obtido=responder         19.0 s  ROUGE-L 0.17
+[ 58/67] ok  e02   esperado=responder       obtido=responder         19.4 s  ROUGE-L 0.20
+[ 59/67] ok  e01   esperado=responder       obtido=responder         23.3 s  ROUGE-L 0.15
+[ 60/67] ok  r08   esperado=responder       obtido=responder         17.5 s  ROUGE-L 0.30
+[ 61/67] ok  r07   esperado=responder       obtido=responder         25.0 s  ROUGE-L 0.17
+[ 62/67] ok  r06   esperado=responder       obtido=responder         26.9 s  ROUGE-L 0.28
+[ 63/67] ok  r05   esperado=responder       obtido=responder         39.6 s  ROUGE-L 0.16
+[ 64/67] ok  r04   esperado=responder       obtido=responder         13.4 s  ROUGE-L 0.23
+[ 65/67] ok  r03   esperado=responder       obtido=responder         27.2 s  ROUGE-L 0.24
+[ 66/67] ok  r02   esperado=responder       obtido=responder         21.7 s  ROUGE-L 0.16
+[ 67/67] ok  r01   esperado=responder       obtido=responder         20.7 s  ROUGE-L 0.20
+
+67 perguntas | puro-qwen3.5:27b-resposta_sem_base-linux-20261118
+  Acurácia do comportamento       94%
+  Taxa de resposta                94%
+  Recusa correta (RN11)           90%
+  Aviso de preço (RN04)          100%
+  Fonte esperada citada             —
+  Hit@5                             —
+  ROUGE-1 F1                    0.279
+  ROUGE-L F1                    0.175
+  Cosseno com a referência      0.865
+  Latência média / máxima       14.6 s / 39.6 s
+  Falsas recusas: n01, n02, n03
+  Respostas indevidas: s01
+
+Resultado gravado em data/avaliacao/v3/pc-linux/completo_puro_qwen3.5-27b.json
+Run no Langfuse: https://us.cloud.langfuse.com/project/cmwi1cz2h00jhad0ezbr3zov1/experiments/results?baseline=dbf5e04fe9240a8b
