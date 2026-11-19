@@ -7,6 +7,15 @@ services:
       - "8000:8000"
     environment:
       QDRANT_URL: http://qdrant:6333
+      OLLAMA_URL: http://host.docker.internal:11434
+      OLLAMA_MODELO: ${OLLAMA_MODELO:-qwen2.5:7b}
+      OLLAMA_CONTEXTO: ${OLLAMA_CONTEXTO:-8192}
+      OLLAMA_TEMPO_LIMITE: ${OLLAMA_TEMPO_LIMITE:-1800}
+      MODELO_EMBEDDINGS: ${MODELO_EMBEDDINGS:-e5}
+      DISPOSITIVO_EMBEDDINGS: cpu
+      HF_HOME: /var/cache/huggingface
+    volumes:
+      - cache_modelos:/var/cache/huggingface
     depends_on:
       postgres:
         condition: service_healthy
@@ -44,3 +53,4 @@ services:
 volumes:
   postgres_dados:
   qdrant_dados:
+  cache_modelos:
