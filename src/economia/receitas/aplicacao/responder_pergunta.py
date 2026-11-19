@@ -222,6 +222,11 @@ class ResponderPergunta:
         vetor = self._gerador.gerar_para_pergunta(pergunta)
         return self._repositorio.buscar(vetor, self._quantidade)
 
+    @property
+    def limiar(self) -> float:
+        return self._limiar
+
+
     def recuperar(self, pergunta: str) -> list[TrechoRecuperado]:
         """Top-k trechos acima do limiar, do maior score para o menor."""
         return self._acima_do_limiar(self.buscar(pergunta))
