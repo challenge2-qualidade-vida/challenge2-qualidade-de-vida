@@ -89,6 +89,13 @@ flowchart LR
 | Recomendação | Sugestão final ao usuário, com critérios e limitações | Verificação | `Recomendacao` |
 | Critério | Regra usada para chegar a uma recomendação | Verificação | `Criterio` |
 | Limitação | O que o sistema não sabe ou não pode garantir numa resposta | Verificação | `Limitacao` |
+| Alegação | **Proposto (19/11/2026, #72).** Afirmação sobre alimentação enviada para verificação (ex.: "ovo aumenta o colesterol") | Verificação | `Alegacao` |
+| Evidência recuperada | **Proposto (#75).** Trecho de um documento de evidência devolvido pela busca semântica, com a fonte e o score de similaridade. O score não é probabilidade de veracidade | Verificação | `EvidenciaRecuperada` |
+| Classificação da alegação | **Proposto (19/11/2026, #72).** Quanto a base já cobre a alegação: **reciclada** (a base já tem checagem ou evidência que cobre a alegação inteira), **parcial** (a base cobre só uma parte) ou **nova** (a base não cobre) | Verificação | `ClassificacaoDaAlegacao` |
+| Análise da alegação | **Proposto (19/11/2026, #72).** Classificação, justificativa ancorada nas evidências citadas e confiança, produzidas pelo Analysis Agent | Verificação | `AnaliseDaAlegacao` |
+| Resultado da validação | **Proposto (19/11/2026, #72).** Aprovação ou reprovação da análise, com os motivos e, quando reprovada, o agente que refaz o trabalho (Research ou Analysis) | Verificação | `ResultadoDaValidacao` |
+| Veredito | **Proposto (19/11/2026, #72).** Resposta final da verificação, adaptada ao perfil de leitura, com a classificação, a explicação e as fontes | Verificação | `Veredito` |
+| Perfil de leitura | **Proposto (19/11/2026, #72).** Forma de apresentar o veredito: `consumidor_geral` (explicação completa) ou `consumidor_rapido` (resposta curta) | Verificação | `PerfilDeLeitura` |
 | Pedido | Mensagem do usuário em linguagem natural | Conversa | `Pedido` |
 | Intenção | O que o usuário quer fazer, identificado a partir do pedido | Conversa | `Intencao` |
 | Conversa | Sequência de pedidos e respostas entre a pessoa e o orquestrador. A memória da conversa vale por 24 horas | Conversa | `Conversa` |
