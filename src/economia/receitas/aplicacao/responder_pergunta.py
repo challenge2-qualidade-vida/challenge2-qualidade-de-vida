@@ -36,6 +36,16 @@ NAO_ENCONTREI = (
 MARCA_DE_NAO_ENCONTRADO = "NAO_ENCONTRADO"
 
 _CITACAO = re.compile(r"\[(\d+)\]")
+_CITACAO_AGRUPADA = re.compile(r"\[(\d+(?:\s*[,;]\s*\d+)+)\]")
+
+
+def desagrupar_citacoes(texto: str) -> str:
+    """Troca citações agrupadas, como "[1, 3]", por citações separadas: "[1][3]"."""
+    return _CITACAO_AGRUPADA.sub(
+        lambda m: "".join(f"[{n}]" for n in re.findall(r"\d+", m.group(1))), texto
+    )
+
+
 # Só o preço *atual* fica fora da base (RN04). Perguntas de consumo, como "como avaliar uma
 # promoção" ou "o que é preço por unidade", são respondidas pela base.
 _PERGUNTA_DE_PRECO = (
@@ -72,13 +82,18 @@ def montar_mensagem(pergunta: str, trechos: Sequence[TrechoRecuperado]) -> str:
     return f"Pergunta: {pergunta}\n\nTrechos:\n\n" + "\n\n".join(blocos)
 
 
-def citacoes_validas(texto: str, quantidade: int) -> list[int]:
-    """Números citados pelo LLM que existem, na ordem da primeira citação."""
+def numeros_validos(numeros: Iterable[int], quantidade: int) -> list[int]:
+    """Números de trechos que existem, sem repetição, na ordem em que apareceram."""
     vistos: list[int] = []
-    for numero in (int(n) for n in _CITACAO.findall(texto)):
+    for numero in numeros:
         if 1 <= numero <= quantidade and numero not in vistos:
             vistos.append(numero)
     return vistos
+
+
+def citacoes_validas(texto: str, quantidade: int) -> list[int]:
+    """Números citados pelo LLM que existem, na ordem da primeira citação."""
+    return numeros_validos((int(n) for n in _CITACAO.findall(texto)), quantidade)
 
 
 def renumerar(texto: str, citados: Sequence[int]) -> str:
@@ -153,6 +168,22 @@ def bloco_de_ingredientes_que_faltam(
     return "Ingredientes que faltam:\n" + "\n".join(linhas) if linhas else ""
 
 
+MAXIMO_DE_INGREDIENTES_BUSCADOS = 6
+RECEITAS_POR_INGREDIENTE = 1
+
+
+class RespostaDoLLM(BaseModel):
+    """Saída estruturada do LLM ao redigir a resposta (prompt resposta_com_fontes_v2).
+
+    Com o esquema JSON, a lista dos trechos usados não depende de o modelo lembrar de escrever
+    os colchetes no texto. As fontes continuam montadas pelo código a partir desses números (RN10).
+    """
+
+    encontrou: bool
+    resposta: str = ""
+    trechos_usados: list[int] = []
+
+
 class ResponderPergunta:
     def __init__(
         self,
@@ -165,6 +196,8 @@ class ResponderPergunta:
         prompt_de_extracao: str | None = None,
         ingredientes_basicos: Sequence[str] = (),
         tolerancia: float = 0.0,
+        resposta_estruturada: bool = False,
+        pedido_de_citacao: str | None = None,
     ):
         self._gerador = gerador
         self._repositorio = repositorio
@@ -175,16 +208,27 @@ class ResponderPergunta:
         self._prompt_de_extracao = prompt_de_extracao
         self._basicos = tuple(ingredientes_basicos)
         self._tolerancia = tolerancia
+        self._estruturada = resposta_estruturada
+        # com o pedido, uma resposta sem citação ganha uma segunda tentativa antes de virar
+        # "não encontrei"; sem ele, vale a regra da versão 1 (descarta na primeira)
+        self._pedido_de_citacao = pedido_de_citacao
 
     @property
     def limiar(self) -> float:
         return self._limiar
 
+    def buscar(self, pergunta: str) -> list[TrechoRecuperado]:
+        """Top-k trechos mais próximos da pergunta, sem aplicar o limiar."""
+        vetor = self._gerador.gerar_para_pergunta(pergunta)
+        return self._repositorio.buscar(vetor, self._quantidade)
 
     def recuperar(self, pergunta: str) -> list[TrechoRecuperado]:
         """Top-k trechos acima do limiar, do maior score para o menor."""
-        vetor = self._gerador.gerar_para_pergunta(pergunta)
-        recuperados = self._repositorio.buscar(vetor, self._quantidade)
+        return self._acima_do_limiar(self.buscar(pergunta))
+
+    def _acima_do_limiar(
+        self, recuperados: Sequence[TrechoRecuperado]
+    ) -> list[TrechoRecuperado]:
         return [r for r in recuperados if r.score >= self._limiar]
 
     def extrair_ingredientes(self, pergunta: str) -> IngredientesDaPergunta:
@@ -200,6 +244,46 @@ class ResponderPergunta:
             return IngredientesDaPergunta.model_validate(dados)
         except (ValidationError, ValueError):
             return IngredientesDaPergunta()
+
+    def somar_receitas_por_ingrediente(
+        self,
+        recuperados: list[TrechoRecuperado],
+        disponiveis: IngredientesDaPergunta,
+    ) -> list[TrechoRecuperado]:
+        """Com 2 ou mais ingredientes, busca receitas para cada um e soma às da busca geral.
+
+        Uma pergunta como "quero um almoço com arroz, feijão, carne e alface" vira um vetor só,
+        que costuma trazer textos gerais sobre refeições. Buscar "Receita com <ingrediente>"
+        só entre as receitas garante pelo menos uma opção para cada ingrediente, se houver
+        uma acima do limiar. A lista final vem sem repetição e com no máximo um trecho a mais
+        que o número de ingredientes, para caber no contexto do LLM.
+        """
+        ingredientes = disponiveis.ingredientes_pt
+        if len(ingredientes) < 2:
+            return recuperados
+        por_ingrediente: list[TrechoRecuperado] = []
+        for ingrediente in ingredientes[:MAXIMO_DE_INGREDIENTES_BUSCADOS]:
+            vetor = self._gerador.gerar_para_pergunta(f"Receita com {ingrediente}")
+            achados = self._repositorio.buscar(
+                vetor, RECEITAS_POR_INGREDIENTE, tipo=TipoDeTrecho.RECEITA
+            )
+            por_ingrediente += [r for r in achados if r.score >= self._limiar]
+        limite = max(self._quantidade, len(ingredientes) + 1)
+        # o score que vale é o da pergunta inteira; o da busca por ingrediente só entra para a
+        # receita que a busca geral não trouxe (senão o desempate da RN13 sai distorcido)
+        da_pergunta = {r.trecho.id: r for r in recuperados}
+        garantidos: dict[str, TrechoRecuperado] = {}
+        for achado in por_ingrediente:
+            garantidos.setdefault(
+                achado.trecho.id, da_pergunta.get(achado.trecho.id, achado)
+            )
+        escolhidos = list(garantidos.values())[:limite]
+        for recuperado in sorted(recuperados, key=lambda r: r.score, reverse=True):
+            if len(escolhidos) >= limite:
+                break
+            if recuperado.trecho.id not in garantidos:
+                escolhidos.append(recuperado)
+        return sorted(escolhidos, key=lambda r: r.score, reverse=True)
 
     def contar_faltantes(
         self,
@@ -238,23 +322,30 @@ class ResponderPergunta:
         if e_pergunta_de_preco(pergunta):
             return RespostaComFontes(texto=AVISO_DE_PRECO, encontrou=False)
 
-        recuperados = self.recuperar(pergunta)
+        mais_proximos = self.buscar(pergunta)
+        recuperados = self._acima_do_limiar(mais_proximos)
         if not recuperados:
-            return RespostaComFontes(texto=NAO_ENCONTREI, encontrou=False)
+            return RespostaComFontes(
+                texto=NAO_ENCONTREI, encontrou=False, recuperados=tuple(mais_proximos)
+            )
 
         disponiveis = IngredientesDaPergunta()
         faltando: dict[str, tuple[str, ...]] = {}
         if any(r.trecho.tipo is TipoDeTrecho.RECEITA for r in recuperados):
             disponiveis = self.extrair_ingredientes(pergunta)
             if disponiveis.ingredientes_pt or disponiveis.ingredientes_en:
+                recuperados = self.somar_receitas_por_ingrediente(
+                    recuperados, disponiveis
+                )
                 faltando = self.contar_faltantes(recuperados, disponiveis)
                 recuperados = self.ordenar(recuperados, faltando)
 
-        texto = self._llm.gerar(self._prompt, montar_mensagem(pergunta, recuperados))
-        citados = citacoes_validas(texto, len(recuperados))
-        if MARCA_DE_NAO_ENCONTRADO in texto or not citados:
+        texto, citados = self.redigir(pergunta, recuperados)
+        if not citados:
             # sem citação não há como dizer de onde veio a resposta (RN10): vale a RN11
-            return RespostaComFontes(texto=NAO_ENCONTREI, encontrou=False)
+            return RespostaComFontes(
+                texto=NAO_ENCONTREI, encontrou=False, recuperados=tuple(recuperados)
+            )
 
         usados = tuple(recuperados[n - 1] for n in sorted(citados))
         texto = renumerar(texto, citados)
@@ -272,3 +363,45 @@ class ResponderPergunta:
             ),
             recuperados=tuple(recuperados),
         )
+
+    def redigir(
+        self, pergunta: str, recuperados: Sequence[TrechoRecuperado]
+    ) -> tuple[str, list[int]]:
+        """Texto do LLM e os números dos trechos citados. Sem citação válida, a lista vem vazia."""
+        mensagem = montar_mensagem(pergunta, recuperados)
+        texto, citados, recusou = self._uma_tentativa(mensagem, len(recuperados))
+        if citados or recusou or not self._pedido_de_citacao or not texto.strip():
+            return texto, citados
+        pedido = self._pedido_de_citacao.replace("{resposta}", texto)
+        texto, citados, _ = self._uma_tentativa(
+            f"{mensagem}\n\n{pedido}", len(recuperados)
+        )
+        return texto, citados
+
+    def _uma_tentativa(
+        self, mensagem: str, quantidade: int
+    ) -> tuple[str, list[int], bool]:
+        """Uma chamada ao LLM: texto, trechos citados e se ele disse que não encontrou."""
+        if not self._estruturada:
+            texto = desagrupar_citacoes(self._llm.gerar(self._prompt, mensagem))
+            if MARCA_DE_NAO_ENCONTRADO in texto:
+                return texto, [], True
+            return texto, citacoes_validas(texto, quantidade), False
+        try:
+            saida = RespostaDoLLM.model_validate(
+                self._llm.gerar_json(
+                    self._prompt, mensagem, RespostaDoLLM.model_json_schema()
+                )
+            )
+        except (ValidationError, ValueError):
+            return "", [], False
+        if not saida.encontrou:
+            return saida.resposta, [], True
+        if not saida.resposta.strip():
+            return "", [], False
+        saida.resposta = desagrupar_citacoes(saida.resposta)
+        citados = numeros_validos(
+            [*citacoes_validas(saida.resposta, quantidade), *saida.trechos_usados],
+            quantidade,
+        )
+        return saida.resposta, citados, False

@@ -1,0 +1,8 @@
+{
+  "colecao": "base_conhecimento_qwen3",
+  "modelo": "qwen3-embedding:4b",
+  "trechos": 6151,
+  "segundos": 6971.3,
+  "trechos_por_segundo": 0.88,
+  "maquina": "Darwin arm64, 10 CPUs lógicas"
+}

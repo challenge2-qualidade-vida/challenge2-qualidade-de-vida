@@ -1,6 +1,6 @@
 # Visão geral da arquitetura do EconoMIA
 
-> **Status:** proposta inicial, decidida pela equipe em 03/11/2026 (épico #30). As justificativas de cada escolha ficam em [decisoes.md](../decisoes.md).
+> **Status:** proposta inicial, decidida pela equipe em 03/11/2026 (épico #30), com o que já roda na semana 2 descrito na seção 2.1. As justificativas de cada escolha ficam em [decisoes.md](../decisoes.md).
 > Os contextos, termos e regras de negócio estão no [modelo de domínio](modelo-de-dominio.md).
 
 ## 1. Estilo: monolito modular
@@ -45,17 +45,49 @@ flowchart LR
 | Fila e worker | Redis + RQ | Tarefas assíncronas e agendamento da extração bimestral |
 | Banco relacional | PostgreSQL, acessado com SQLAlchemy Core (sem ORM) e migrações em SQL com Flyway | Contas, perfil, listas, notas, preços, catálogo de alimentos, receitas estruturadas |
 | Banco vetorial | Qdrant | Embeddings das receitas e da base de conhecimento do RAG, com payload para filtrar na busca por tipo, alimentos, ingredientes restritos e tema. O payload é sincronizado com o catálogo de alimentos do PostgreSQL |
-| LLM | API de provedor, atrás de um adaptador | Interpretação, redação das respostas e leitura de imagens. O provedor e o modelo são decididos na #13 |
+| LLM | API de provedor, atrás de um adaptador | Interpretação, redação das respostas e leitura de imagens. O provedor e o modelo são decididos na #13. Na versão 1 do RAG, o adaptador usa o `qwen2.5:7b` local, pelo Ollama |
 | LLMOps | Langfuse Cloud (plano gratuito, região US), fora da VM | Registro de prompts, respostas, custo, latência e avaliações. Acesso das 2 pessoas de DevOps. Os registros não levam dados pessoais nem sensíveis (RN30) |
 | Login | E-mail e senha no próprio backend | Senha com hash e token JWT |
 | Implantação | Uma VM no Azure (2 vCPUs, 16 GiB) com Docker Compose | Sobe API, worker, Redis, PostgreSQL, Qdrant e o frontend. O Langfuse fica fora da VM |
+
+### 2.1 O que já roda: RAG do Miau-ricio (semana 2)
+
+Da arquitetura acima, a semana 2 entregou o caminho da pergunta ao Miau-ricio: a tela de perguntas, a rota da API, o caso de uso `ResponderPergunta`, o Qdrant e o LLM local. Ainda não há orquestrador, fila, PostgreSQL nem Langfuse; a API chama o caso de uso do contexto `receitas` diretamente.
+
+```mermaid
+flowchart LR
+    Pessoa((Pessoa)) --> Tela["Tela de perguntas<br/>React + Vite<br/>frontend/"]
+    Tela -->|"POST /api/v1/receitas/perguntas"| API["API<br/>FastAPI<br/>economia.api.app"]
+    CLI["Linha de comando<br/>e notebook"] --> Caso
+    API --> Caso["ResponderPergunta<br/>receitas/aplicacao<br/>(1. RN04: pergunta de preço?)"]
+    Caso -->|"2. vetor da pergunta"| E5["multilingual-e5-base<br/>sentence-transformers"]
+    Caso -->|"3. top-5 + busca por ingrediente"| Qdrant[("Qdrant<br/>base_conhecimento_e5<br/>6.151 trechos")]
+    Caso -->|"4. ingredientes da pergunta (JSON)<br/>5. resposta com trechos_usados (JSON)"| Ollama["Ollama<br/>qwen2.5:7b"]
+    Caso -->|"6. fontes, ingredientes que faltam<br/>(código, RN01 e RN10)"| API
+    Indexacao["Pipeline de ingestão<br/>cli indexar"] --> Qdrant
+    Fontes[["20 documentos-fonte<br/>data/raw/"]] --> Indexacao
+    Prompts[["prompt management<br/>do Langfuse"]] --> Caso
+```
+
+| Peça | Onde está | Papel |
+| --- | --- | --- |
+| Tela de perguntas | `frontend/` (React, Vite, TypeScript) | Envia a pergunta e mostra a resposta, as fontes citadas, os ingredientes que faltam e os trechos recuperados com o score |
+| API | `src/economia/api/app.py` (FastAPI) | `POST /api/v1/receitas/perguntas` e `GET /saude`; documentação em `/docs` |
+| Caso de uso | `src/economia/receitas/aplicacao/responder_pergunta.py` | RN04, busca, limiar (RN11), busca por ingrediente, desempate (RN13), LLM e montagem das fontes (RN10) |
+| Embeddings | `receitas/infraestrutura/embeddings_e5.py` | `intfloat/multilingual-e5-base`, 768 dimensões, na CPU ou na GPU |
+| Banco vetorial | Qdrant 1.20 (`docker-compose.yml`) | Uma coleção por modelo de embeddings, distância cosseno, payload com a fonte |
+| LLM | Ollama com `qwen2.5:7b` (`compartilhado/infraestrutura/llm_ollama.py`) | Extrai os ingredientes da pergunta e redige a resposta, nos dois casos com saída JSON |
+| Ingestão | `cli indexar` | Carrega, faz a curadoria, divide em trechos, gera os embeddings e grava. Ver [pipeline de ingestão](../semana-2/pipeline-ingestao.md) |
+| Avaliação | `cli comparar`, `avaliar-respostas`, `comparar-execucoes` | Mede a busca e as respostas com 67 perguntas. Ver [avaliação do RAG](../semana-2/avaliacao-rag.md) |
+
+O LLM nunca é fonte: as fontes e os ingredientes que faltam são montados pelo código a partir dos trechos citados.
 
 ## 3. Onde o LLM entra
 
 O LLM só interpreta texto e imagens e redige respostas. Cálculos, comparações, filtros e a decisão de qual receita serve são funções determinísticas (RN01).
 
 - O LLM fica atrás de um **adaptador** na camada de infraestrutura. Trocar de provedor ou de modelo não muda o domínio.
-- Os **prompts** ficam em arquivos versionados na pasta `prompts/`, fora do código Python.
+- Os **prompts** ficam no prompt management do Langfuse, fora do código Python e do repositório, lidos pelo rótulo `production` (decisão de 15/11/2026).
 - Toda chamada ao LLM é registrada no Langfuse Cloud, com o modelo, a versão do prompt, os tokens, o custo e a latência. Como o Langfuse Cloud guarda os dados fora do Brasil, os registros não levam dados pessoais nem sensíveis: nome, e-mail, restrições de saúde e dados das notas são retirados ou mascarados antes do envio (RN30).
 - O LangGraph fica em `conversa/infraestrutura`. Cada agente expõe seus casos de uso como ferramentas para o grafo, e o domínio dos agentes não importa o LangGraph.
 
@@ -82,7 +114,6 @@ src/economia/
   conversa/             orquestrador (grafo do LangGraph em infraestrutura/)
   api/                  rotas FastAPI
   worker/               tarefas do RQ e agendamentos
-prompts/<agente>/       prompts versionados
 migracoes/              migrações SQL do Flyway (V1__descricao.sql)
 frontend/               React + Vite com TypeScript
 tests/
@@ -99,7 +130,7 @@ Convenções para a equipe e para os agentes de IA:
 - **`AGENTS.md` em cada contexto:** termos, regras de negócio e limites de importação daquele contexto, lidos por quem for mexer nele.
 - **import-linter no CI:** barra o PR quando o `dominio` importa infraestrutura, framework ou LLM, ou quando um contexto importa o domínio de outro.
 - **Configuração** lida das variáveis de ambiente num único lugar, com pydantic-settings.
-- **Prompts** em `prompts/<agente>/`, um arquivo por prompt, com a versão no nome, para o Langfuse rastrear qual versão gerou cada resposta.
+- **Prompts** no prompt management do Langfuse, um prompt por nome (`<agente>/<nome>`), com o histórico de versões e o rótulo `production` no que está em uso. Cada geração fica ligada à versão que a produziu. Revisto em 15/11/2026: antes, os prompts ficavam em `prompts/<agente>/`.
 - **Cliente da API** no frontend gerado a partir do OpenAPI, em TypeScript.
 
 ## 6. Infraestrutura e operação
@@ -164,7 +195,7 @@ flowchart LR
 
 ## 7. A definir
 
-- **Provedor e modelo do LLM, e modelo de embeddings** (#13).
+- **Provedor e modelo do LLM para a produção** (#13). Para os embeddings, a versão 1 do RAG usa o `intfloat/multilingual-e5-base` (ver [decisoes.md](../decisoes.md)).
 - **Custo da VM:** conferir na calculadora do Azure quanto a VM de 2 vCPUs e 16 GiB consome dos US$ 100 de crédito e por quantos meses o crédito dura.
 - **Onde roda o Uptime Kuma** fora da VM: qual serviço ou máquina.
 - **Organização do código** a confirmar na #36 e **formato detalhado das rotas** na #31.

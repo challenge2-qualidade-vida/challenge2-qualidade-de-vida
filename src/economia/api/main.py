@@ -1,15 +1,5 @@
-"""Aplicação principal da API EconoMIA."""
+"""Ponto de entrada da API EconoMIA (Dockerfile e README). A aplicação fica em `app.py`."""
 
-from fastapi import FastAPI
+from economia.api.app import app
 
-app = FastAPI(
-    title="EconoMIA API",
-    description="API do projeto EconoMIA.",
-    version="0.1.0",
-)
-
-
-@app.get("/health", tags=["Health"])
-def healthcheck() -> dict[str, str]:
-    """Verifica se a aplicação está funcionando."""
-    return {"status": "ok"}
+__all__ = ["app"]

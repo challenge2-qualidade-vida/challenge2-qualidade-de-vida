@@ -1,4 +1,4 @@
-# Spec: endpoint do RAG
+# Spec: endpoint do RAG e tela de perguntas
 
 | Campo | Valor |
 | --- | --- |
@@ -9,12 +9,21 @@
 
 ## Problema
 
-O RAG do Miau-ricio só responde pela linha de comando (`perguntar "..."`) e pelo notebook. A API permite que outros sistemas enviem perguntas sem precisar executar Python diretamente, recebendo a resposta baseada nos trechos recuperados e as respectivas fontes.
+Hoje o RAG do Miau-ricio só responde pela linha de comando (`perguntar "..."`) e pelo notebook. Quem não roda Python não consegue fazer uma pergunta, ver a resposta e conferir as fontes. A demonstração da semana 2 pede exatamente isso: a consulta enviada, a resposta baseada nos trechos e as fontes usadas.
 
 ## Comportamento esperado
 
 1. **Endpoint.** A API recebe uma pergunta e devolve a resposta do RAG com as fontes. É o mesmo caso de uso `ResponderPergunta` da linha de comando, com as mesmas regras.
-2. **Rota de saúde.** `GET /saude` responde se a API está no ar.
+2. **Tela simples.** Uma página em `frontend/` com:
+   - um campo para a pergunta e o botão "Perguntar";
+   - exemplos de perguntas para clicar;
+   - o aviso de que a resposta pode levar alguns segundos;
+   - a resposta, com as citações `[n]` ligadas à lista de fontes;
+   - a lista de fontes (título, instituição, ano, link e licença);
+   - os trechos recuperados, com o score de cada um numa barra, o limiar e a marcação dos que foram citados;
+   - os ingredientes que faltam, quando a resposta sugere receitas;
+   - uma mensagem clara quando a base não tem a informação (RN11), quando a pergunta é de preço (RN04) e quando a API está fora do ar.
+3. **Rota de saúde.** `GET /saude` responde se a API está no ar.
 
 ## Termos do domínio
 
@@ -85,6 +94,9 @@ Resposta 200:
 ## Fora do escopo
 
 - Login, histórico de perguntas e conversa com o orquestrador (`/api/v1/conversas`).
+- Docker da API e do front (critério da #24 que fica para a #38).
+- Respostas em streaming (SSE). A tela espera a resposta inteira.
+- O front completo do produto. Esta tela é a demonstração do RAG.
 
 ## Critérios de aceitação
 
@@ -98,4 +110,5 @@ Ver [cenarios.feature](cenarios.feature).
 
 ## Riscos e limitações
 
+- Na CPU, uma resposta pode levar minutos. Por isso a tela avisa que pode demorar.
 - O Ollama atende uma pergunta por vez (`OLLAMA_NUM_PARALLEL=1`). Pedidos ao mesmo tempo esperam na fila.

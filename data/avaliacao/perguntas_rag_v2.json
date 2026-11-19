@@ -1,0 +1,760 @@
+{
+  "descricao": "Conjunto intensivo de avaliação do RAG de receitas (v2). Reúne as 26 perguntas da v1 e acrescenta perguntas sobre os temas dos documentos que entram na base ampliada (#16), perguntas com erros de digitação e linguagem informal, mais perguntas sem resposta e perguntas de preço. Cada pergunta tem um comportamento esperado: responder (com gabarito de documentos), nao_encontrar (RN11) ou aviso_de_preco (RN04). Os ids dos documentos novos foram definidos antes da indexação, para que a linha de base mostre o que a base atual não cobre. Metodologia em docs/semana-2/avaliacao-rag.md.",
+  "versao": 2,
+  "data": "2026-11-10",
+  "perguntas": [
+    {
+      "id": "r01",
+      "pergunta": "Como faço bolo de cenoura no micro-ondas?",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745b08"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "r02",
+      "pergunta": "Quero uma receita de pão de queijo",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745a97"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "r03",
+      "pergunta": "Como fazer bolinho de bacalhau?",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745abb"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "r04",
+      "pergunta": "Tenho arroz que sobrou, tomate e queijo. Dá para fazer um arroz no forno?",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745b27"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "r05",
+      "pergunta": "Como preparar uma feijoada com feijão preto, linguiça e carne seca?",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745aae"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "r06",
+      "pergunta": "Tenho uma couve-flor em casa, o que posso fazer com ela?",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745a91"
+        },
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745acb"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "r07",
+      "pergunta": "Receita de omelete assada no forno com muitos ovos",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745b2f"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "r08",
+      "pergunta": "Como fazer pastel de carne?",
+      "categoria": "receita_pt",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745b03"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "e01",
+      "pergunta": "Como fazer pão de banana?",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [
+        {
+          "documento_id": "recipenlg:38105"
+        },
+        {
+          "documento_id": "recipenlg:38479"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "e02",
+      "pergunta": "Receita de frango assado com limão",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [
+        {
+          "documento_id": "recipenlg:425"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "e03",
+      "pergunta": "Como fazer biscoitos de pasta de amendoim?",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [
+        {
+          "documento_id": "recipenlg:47489"
+        },
+        {
+          "documento_id": "recipenlg:57174"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "e04",
+      "pergunta": "Tenho uma berinjela e leite. Dá para fazer uma sopa?",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [
+        {
+          "documento_id": "recipenlg:47670"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "e05",
+      "pergunta": "Como fazer um ensopado de carne de boi?",
+      "categoria": "receita_entre_idiomas",
+      "esperados": [
+        {
+          "documento_id": "recipenlg:54714"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "g01",
+      "pergunta": "O que são alimentos ultraprocessados e por que devo evitá-los?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Alimentos ultraprocessados"
+        },
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Evitar o consumo de alimentos ultraprocessados"
+        },
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Prefira sempre alimentos in natura ou minimamente processados e preparações culinárias a alimentos ultraprocessados"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "g02",
+      "pergunta": "Posso usar sal, óleo e açúcar na comida? Quanto?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Óleos, gorduras, sal e açúcar"
+        },
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Por que óleos, gorduras, sal e açúcar devem ser utilizados em pequenas quantidades em preparações culinárias?"
+        },
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Utilizar óleos, gorduras, sal e açúcar em pequenas quantidades ao temperar e cozinhar alimentos e criar preparações culinárias"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "g03",
+      "pergunta": "Faz mal comer sozinho, rápido ou na frente da televisão?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Comer com regularidade e com atenção"
+        },
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Comer com regularidade e atenção, em ambientes apropriados e, sempre que possível, com companhia"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "g04",
+      "pergunta": "Não tenho tempo para cozinhar. Como organizar a semana para comer melhor?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Tempo"
+        },
+        {
+          "documento_id": "guia-alimentar",
+          "secao": "Planejar o uso do tempo para dar à alimentação o espaço que ela merece"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "c01",
+      "pergunta": "Quais hortaliças não devem ser guardadas na geladeira?",
+      "categoria": "conservacao",
+      "esperados": [
+        {
+          "documento_id": "embrapa-geladeira"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "c02",
+      "pergunta": "Posso congelar hortaliças? Como faço?",
+      "categoria": "conservacao",
+      "esperados": [
+        {
+          "documento_id": "embrapa-congelador"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "c03",
+      "pergunta": "Como higienizar frutas e verduras antes de comer?",
+      "categoria": "conservacao",
+      "esperados": [
+        {
+          "documento_id": "ms-na-cozinha-flv",
+          "secao": "Capítulo 2. Pré-preparando as frutas, legumes e verduras"
+        },
+        {
+          "documento_id": "embrapa-recomendacoes-compras"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "c04",
+      "pergunta": "Que cuidados tomar ao comprar frutas e hortaliças para durarem mais?",
+      "categoria": "conservacao",
+      "esperados": [
+        {
+          "documento_id": "embrapa-recomendacoes-compras"
+        },
+        {
+          "documento_id": "ms-na-cozinha-flv",
+          "secao": "Capítulo 1. As frutas, legumes e verduras"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "s01",
+      "pergunta": "Quanto tempo dura o fermento biológico depois de aberto?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s02",
+      "pergunta": "Qual a dose diária recomendada de vitamina D para adultos?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s03",
+      "pergunta": "Como trocar o pneu do carro?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s04",
+      "pergunta": "Qual a melhor marca de panela de pressão?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "g05",
+      "pergunta": "Onde devo fazer as compras para comer melhor?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {
+          "documento_id": "guia-alimentar"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "g06",
+      "pergunta": "Como aprender a cozinhar e dividir as tarefas da cozinha em casa?",
+      "categoria": "guia_alimentar",
+      "esperados": [
+        {
+          "documento_id": "guia-alimentar"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "c05",
+      "pergunta": "Por quanto tempo a alface dura na geladeira?",
+      "categoria": "conservacao",
+      "esperados": [
+        {
+          "documento_id": "embrapa-geladeira"
+        },
+        {
+          "documento_id": "ms-na-cozinha-flv"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "c06",
+      "pergunta": "Como guardar salsinha e cebolinha para durarem mais?",
+      "categoria": "conservacao",
+      "esperados": [
+        {
+          "documento_id": "embrapa-geladeira"
+        },
+        {
+          "documento_id": "embrapa-congelador"
+        },
+        {
+          "documento_id": "ms-na-cozinha-flv"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "n01",
+      "pergunta": "Quantas calorias tem o arroz branco cozido?",
+      "categoria": "nutricao",
+      "esperados": [
+        {
+          "documento_id": "taco-2011"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "n02",
+      "pergunta": "Quanta proteína tem um ovo de galinha cozido?",
+      "categoria": "nutricao",
+      "esperados": [
+        {
+          "documento_id": "taco-2011"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "n03",
+      "pergunta": "Quanto de fibra tem o feijão carioca cozido?",
+      "categoria": "nutricao",
+      "esperados": [
+        {
+          "documento_id": "taco-2011"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "n04",
+      "pergunta": "A banana prata tem muito carboidrato?",
+      "categoria": "nutricao",
+      "esperados": [
+        {
+          "documento_id": "taco-2011"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "n05",
+      "pergunta": "Qual a composição nutricional do espinafre?",
+      "categoria": "nutricao",
+      "esperados": [
+        {
+          "documento_id": "taco-2011"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "i01",
+      "pergunta": "Com quantos meses o bebê pode começar a comer outros alimentos além do leite materno?",
+      "categoria": "alimentacao_infantil",
+      "esperados": [
+        {
+          "documento_id": "ms-guia-criancas-2019"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "i02",
+      "pergunta": "Posso dar açúcar para uma criança menor de 2 anos?",
+      "categoria": "alimentacao_infantil",
+      "esperados": [
+        {
+          "documento_id": "ms-guia-criancas-2019"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "i03",
+      "pergunta": "Devo bater a comida do bebê no liquidificador?",
+      "categoria": "alimentacao_infantil",
+      "esperados": [
+        {
+          "documento_id": "ms-guia-criancas-2019"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "i04",
+      "pergunta": "Como guardar e descongelar o leite materno?",
+      "categoria": "alimentacao_infantil",
+      "esperados": [
+        {
+          "documento_id": "ms-guia-criancas-2019"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "i05",
+      "pergunta": "Por que evitar papinhas industrializadas para o bebê?",
+      "categoria": "alimentacao_infantil",
+      "esperados": [
+        {
+          "documento_id": "ms-guia-criancas-2019"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "d01",
+      "pergunta": "Uma campanha de conscientização ajuda a reduzir o desperdício de comida?",
+      "categoria": "desperdicio",
+      "esperados": [
+        {
+          "documento_id": "cadsc-campanha-desperdicio-2022"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "d02",
+      "pergunta": "O que é resto-ingestão e como medir o desperdício de alimentos?",
+      "categoria": "desperdicio",
+      "esperados": [
+        {
+          "documento_id": "cadsc-campanha-desperdicio-2022"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "d03",
+      "pergunta": "Como aproveitar cascas e talos de legumes para não desperdiçar?",
+      "categoria": "desperdicio",
+      "esperados": [
+        {
+          "documento_id": "ms-na-cozinha-flv"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "d04",
+      "pergunta": "Como reduzir as perdas de frutas, legumes e verduras da produção até o consumo?",
+      "categoria": "desperdicio",
+      "esperados": [
+        {
+          "documento_id": "opas-laboratorio-flv-2022"
+        },
+        {
+          "documento_id": "embrapa-recomendacoes-compras"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "h01",
+      "pergunta": "Em que temperatura a comida refrigerada deve ser mantida?",
+      "categoria": "seguranca_alimentar",
+      "esperados": [
+        {
+          "documento_id": "ifc-food-safety-handbook-2020"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "h02",
+      "pergunta": "A que temperatura o centro de um hambúrguer precisa chegar para ser seguro?",
+      "categoria": "seguranca_alimentar",
+      "esperados": [
+        {
+          "documento_id": "ifc-food-safety-handbook-2020"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "h03",
+      "pergunta": "Quais boas práticas de higiene um serviço de alimentação deve seguir?",
+      "categoria": "seguranca_alimentar",
+      "esperados": [
+        {
+          "documento_id": "bjft-higiene-servicos-2012"
+        },
+        {
+          "documento_id": "raca-praticas-higiene-2019"
+        },
+        {
+          "documento_id": "ifc-food-safety-handbook-2020"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "h04",
+      "pergunta": "O que é rastreabilidade dos alimentos e por que importa para o consumidor?",
+      "categoria": "seguranca_alimentar",
+      "esperados": [
+        {
+          "documento_id": "bjft-percepcao-riscos-2013"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "h05",
+      "pergunta": "Quais os riscos da Salmonella nos alimentos?",
+      "categoria": "seguranca_alimentar",
+      "esperados": [
+        {
+          "documento_id": "bjft-percepcao-riscos-2013"
+        },
+        {
+          "documento_id": "ifc-food-safety-handbook-2020"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "u01",
+      "pergunta": "Quais os riscos dos alimentos ultraprocessados para a cultura alimentar e a saúde?",
+      "categoria": "orientacao_nutricional",
+      "esperados": [
+        {
+          "documento_id": "raca-ultraprocessados-2022"
+        },
+        {
+          "documento_id": "guia-alimentar"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "u02",
+      "pergunta": "Como o profissional de saúde usa o Guia Alimentar no atendimento de adultos?",
+      "categoria": "orientacao_nutricional",
+      "esperados": [
+        {
+          "documento_id": "ms-protocolo-guia-adultos-2021"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "p01",
+      "pergunta": "Como a pandemia de Covid-19 mudou a alimentação das famílias?",
+      "categoria": "comportamento_alimentar",
+      "esperados": [
+        {
+          "documento_id": "raca-consumo-pandemia-2024"
+        },
+        {
+          "documento_id": "raca-comensalidade-pandemia-2024"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "p02",
+      "pergunta": "O que é comensalidade?",
+      "categoria": "comportamento_alimentar",
+      "esperados": [
+        {
+          "documento_id": "raca-comensalidade-pandemia-2024"
+        },
+        {
+          "documento_id": "raca-consumo-pandemia-2024"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "p03",
+      "pergunta": "Como a escola influencia o que a criança come em casa?",
+      "categoria": "comportamento_alimentar",
+      "esperados": [
+        {
+          "documento_id": "raca-ambiente-escolar-2023"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "b01",
+      "pergunta": "bolo d cenora no microondas como faz",
+      "categoria": "robustez",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745b08"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "b02",
+      "pergunta": "oq da pra fazer c/ couve flor",
+      "categoria": "robustez",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745a91"
+        },
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745acb"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "b03",
+      "pergunta": "receita pao de keijo",
+      "categoria": "robustez",
+      "esperados": [
+        {
+          "documento_id": "afrodite:5744eff20ca7832b5c745a97"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "b04",
+      "pergunta": "ultraprocessado faz mal?",
+      "categoria": "robustez",
+      "esperados": [
+        {
+          "documento_id": "guia-alimentar"
+        },
+        {
+          "documento_id": "raca-ultraprocessados-2022"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "b05",
+      "pergunta": "da pra congelar legume?",
+      "categoria": "robustez",
+      "esperados": [
+        {
+          "documento_id": "embrapa-congelador"
+        }
+      ],
+      "comportamento": "responder"
+    },
+    {
+      "id": "s05",
+      "pergunta": "Qual o horário de funcionamento do supermercado?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s06",
+      "pergunta": "Quantas calorias tem um Big Mac?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s07",
+      "pergunta": "Como consertar uma geladeira que não gela?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s08",
+      "pergunta": "Qual o melhor time de futebol do Brasil?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s09",
+      "pergunta": "Qual a previsão do tempo para amanhã em Brasília?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "s10",
+      "pergunta": "Como declarar o imposto de renda?",
+      "categoria": "sem_resposta",
+      "comportamento": "nao_encontrar"
+    },
+    {
+      "id": "$01",
+      "pergunta": "Quanto custa o quilo do arroz hoje?",
+      "categoria": "preco",
+      "comportamento": "aviso_de_preco"
+    },
+    {
+      "id": "$02",
+      "pergunta": "Qual o preço da carne no mercado?",
+      "categoria": "preco",
+      "comportamento": "aviso_de_preco"
+    },
+    {
+      "id": "$03",
+      "pergunta": "Onde o feijão está mais barato?",
+      "categoria": "preco",
+      "comportamento": "aviso_de_preco"
+    }
+  ]
+}

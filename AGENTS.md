@@ -51,7 +51,7 @@ No Claude Code, esse fluxo está na skill [registrar-decisao](.claude/skills/reg
 - **Cálculos:** somas, comparações e cálculos de preço são funções determinísticas com testes. O LLM nunca calcula valores (RN01).
 - **Preços:** todo preço tem data, fonte e origem (RN02, RN03). O LLM e o RAG não são fonte de preço atual (RN04).
 - **Fontes:** respostas baseadas na base de conhecimento citam a fonte. Sem informação, dizer que não encontrou (RN10, RN11).
-- **Prompts:** ficam em arquivos versionados, fora do código Python.
+- **Prompts:** ficam só no prompt management do Langfuse, fora do código Python e do repositório. O código lê o prompt pelo nome e pelo rótulo (`production` por padrão). Mudar um prompt é criar uma versão nova no Langfuse e mover o rótulo `production`; os testes de contrato (`pytest -m langfuse`) conferem as versões `latest` e `production`.
 - **Testes:** todo código novo vem com testes de unidade. Funcionalidades vêm com os passos BDD dos cenários da spec em `tests/bdd/`.
 - **Segredos e dados pessoais:** nunca escrever chaves de API, senhas ou dados pessoais em código, testes, prompts ou exemplos. Usar variáveis de ambiente e dados fictícios.
 

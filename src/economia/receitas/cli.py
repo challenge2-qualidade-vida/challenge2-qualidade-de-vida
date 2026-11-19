@@ -3,7 +3,9 @@
 Uso:
     poetry run python -m economia.receitas.cli indexar [--modelo e5|qwen3] [--recriar] [--amostra 400]
     poetry run python -m economia.receitas.cli perguntar "o que faço com arroz e ovo?"
-    poetry run python -m economia.receitas.cli comparar [--amostra 400]
+    poetry run python -m economia.receitas.cli comparar [--amostra 400] [--saida arquivo.json]
+    poetry run python -m economia.receitas.cli avaliar-respostas --saida arquivo.json [--modo rag|puro] [--llm gemma3:12b]
+    poetry run python -m economia.receitas.cli comparar-execucoes ANTES.json DEPOIS.json
 """
 
 import argparse
@@ -17,7 +19,7 @@ ARQUIVO_AFRODITE = PASTA_DE_DADOS / "receitas/afrodite.json"
 ARQUIVO_RECIPENLG = PASTA_DE_DADOS / "receitas/recipenlg_0000.parquet"
 PASTA_DE_ORIENTACAO = PASTA_DE_DADOS / "orientacao"
 PASTA_DE_AVALIACAO = Path("data/avaliacao")
-ARQUIVO_DE_PERGUNTAS = PASTA_DE_AVALIACAO / "perguntas_rag_v1.json"
+ARQUIVO_DE_PERGUNTAS = PASTA_DE_AVALIACAO / "perguntas_rag_v2.json"
 ARQUIVO_GUIA = PASTA_DE_ORIENTACAO / "guia_alimentar_populacao_brasileira_2ed.pdf"
 
 
@@ -152,26 +154,186 @@ def comando_indexar(args: argparse.Namespace) -> None:
         )
 
 
-def criar_responder(configuracao: Configuracao, amostra: int | None = None):
+# A avaliação das respostas usa o LLM sem aleatoriedade, para que duas execuções sejam comparáveis.
+TEMPERATURA_DA_AVALIACAO = 0.0
+SEMENTE_DA_AVALIACAO = 42
+
+
+PROMPT_SEM_BASE = "resposta_sem_base"
+MODOS = ("rag", "puro")
+
+
+def criar_llm(configuracao: Configuracao, deterministico: bool = False, ao_gerar=None):
+    """LLM do Ollama com a configuração. Na avaliação, temperatura 0 e semente fixa."""
     from economia.compartilhado.infraestrutura.llm_ollama import ModeloOllama
-    from economia.compartilhado.infraestrutura.prompts import carregar_prompt
+
+    return ModeloOllama(
+        url=configuracao.ollama_url,
+        modelo=configuracao.ollama_modelo,
+        contexto=configuracao.ollama_contexto,
+        tempo_limite=configuracao.ollama_tempo_limite,
+        saida_maxima=configuracao.ollama_saida_maxima,
+        ao_gerar=ao_gerar,
+        **(
+            {
+                "temperatura": TEMPERATURA_DA_AVALIACAO,
+                "semente": SEMENTE_DA_AVALIACAO,
+            }
+            if deterministico
+            else {}
+        ),
+    )
+
+
+def criar_prompts(configuracao: Configuracao, langfuse=None):
+    """Prompts do Langfuse (com a cópia local quando ele não responde)."""
+    from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
+        criar_cliente,
+    )
+    from economia.compartilhado.infraestrutura.prompts_langfuse import (
+        PromptsDoLangfuse,
+    )
+
+    return PromptsDoLangfuse(langfuse or criar_cliente(configuracao))
+
+
+def criar_responder(
+    configuracao: Configuracao,
+    amostra: int | None = None,
+    deterministico: bool = False,
+    llm=None,
+    repositorio=None,
+    gerador=None,
+    prompts=None,
+):
     from economia.receitas.aplicacao.responder_pergunta import ResponderPergunta
 
+    prompts = prompts or criar_prompts(configuracao)
     return ResponderPergunta(
-        criar_gerador(configuracao),
-        criar_repositorio(configuracao, amostra),
-        ModeloOllama(
-            url=configuracao.ollama_url,
-            modelo=configuracao.ollama_modelo,
-            contexto=configuracao.ollama_contexto,
-            tempo_limite=configuracao.ollama_tempo_limite,
+        gerador or criar_gerador(configuracao),
+        repositorio or criar_repositorio(configuracao, amostra),
+        llm or criar_llm(configuracao, deterministico),
+        prompt_do_sistema=prompts.carregar(
+            "miau-ricio", configuracao.prompt_de_resposta
         ),
-        prompt_do_sistema=carregar_prompt("miau-ricio", "resposta_com_fontes_v1"),
         limiar=configuracao.limiar_similaridade,
-        prompt_de_extracao=carregar_prompt("miau-ricio", "extrair_ingredientes_v1"),
+        prompt_de_extracao=prompts.carregar("miau-ricio", "extrair_ingredientes"),
         ingredientes_basicos=configuracao.ingredientes_basicos,
         tolerancia=configuracao.tolerancia_empate,
+        resposta_estruturada=configuracao.resposta_estruturada,
+        pedido_de_citacao=prompts.carregar("miau-ricio", "pedido_de_citacao")
+        if configuracao.segunda_tentativa_de_citacao
+        else None,
     )
+
+
+def criar_fabrica_da_api(configuracao: Configuracao, langfuse=None):
+    """Fábrica do responder da API.
+
+    O modelo e5, o Qdrant e o LLM são criados uma vez; os prompts são lidos a cada pergunta
+    (o SDK guarda em memória por 5 minutos), para que mover o rótulo `production` no
+    Langfuse valha sem reiniciar a API. Com o Langfuse, a busca e o LLM são registrados.
+    """
+    from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
+        RegistroDeGeracoes,
+    )
+    from economia.receitas.infraestrutura.experimento_langfuse import (
+        RepositorioObservado,
+    )
+
+    prompts = criar_prompts(configuracao, langfuse)
+    registro = RegistroDeGeracoes(langfuse, prompts.prompts_lidos) if langfuse else None
+    llm = criar_llm(configuracao, ao_gerar=registro)
+    repositorio = criar_repositorio(configuracao)
+    if langfuse:
+        repositorio = RepositorioObservado(repositorio, langfuse)
+    gerador = criar_gerador(configuracao)
+
+    def fabricar():
+        return criar_responder(
+            configuracao,
+            llm=llm,
+            repositorio=repositorio,
+            gerador=gerador,
+            prompts=prompts,
+        )
+
+    return fabricar
+
+
+def criar_caso_de_avaliacao(
+    configuracao: Configuracao,
+    modo: str,
+    llm,
+    amostra: int | None = None,
+    repositorio=None,
+    gerador=None,
+    prompts=None,
+):
+    """Caso de uso avaliado: o RAG completo ou o LLM puro, com o mesmo LLM."""
+    prompts = prompts or criar_prompts(configuracao)
+    if modo == "puro":
+        from economia.receitas.aplicacao.responder_sem_base import ResponderSemBase
+
+        return ResponderSemBase(llm, prompts.carregar("miau-ricio", PROMPT_SEM_BASE))
+    return criar_responder(
+        configuracao,
+        amostra,
+        llm=llm,
+        repositorio=repositorio,
+        gerador=gerador,
+        prompts=prompts,
+    )
+
+
+def nome_do_run(
+    configuracao: Configuracao, modo: str, sufixo: str | None = None
+) -> str:
+    """Nome da execução: modo, LLM, prompt e, no RAG, o modelo de embeddings.
+
+    O Langfuse junta no mesmo run as execuções com o mesmo nome no mesmo dataset. O sufixo
+    (ex.: a máquina e a data) separa uma nova rodada das anteriores.
+    """
+    if modo == "puro":
+        nome = f"puro-{configuracao.ollama_modelo}-{PROMPT_SEM_BASE}"
+    else:
+        nome = (
+            f"rag-{configuracao.ollama_modelo}-{configuracao.prompt_de_resposta}"
+            f"-{configuracao.modelo_embeddings}"
+        )
+    return f"{nome}-{sufixo}" if sufixo else nome
+
+
+def nome_do_dataset(arquivo: Path, avaliadas: int, total: int) -> str:
+    """Um dataset por conjunto de perguntas; um piloto (subconjunto) tem o seu."""
+    nome = f"miau-ricio-{arquivo.stem}"
+    return nome if avaliadas == total else f"{nome}-{avaliadas}de{total}"
+
+
+def descrever_llm(configuracao: Configuracao) -> dict:
+    """Digest, quantização e tamanho do modelo no Ollama, para a execução ser reproduzível."""
+    import ollama
+
+    cliente = ollama.Client(host=configuracao.ollama_url)
+    try:
+        detalhes = cliente.show(configuracao.ollama_modelo)["details"]
+        digest = next(
+            (
+                m["digest"]
+                for m in cliente.list()["models"]
+                if m["model"] == configuracao.ollama_modelo
+            ),
+            None,
+        )
+    # Ollama fora do ar ou modelo não baixado: a execução falha depois, na 1ª pergunta
+    except (ConnectionError, ollama.ResponseError) as erro:
+        return {"erro": str(erro)}
+    return {
+        "digest": digest,
+        "quantizacao": detalhes["quantization_level"],
+        "parametros": detalhes["parameter_size"],
+        "familia": detalhes["family"],
+    }
 
 
 def comando_perguntar(args: argparse.Namespace) -> None:
@@ -212,7 +374,11 @@ def comando_comparar(args: argparse.Namespace) -> None:
     import json
     from dataclasses import asdict
 
-    from economia.receitas.aplicacao.avaliacao import avaliar, carregar_perguntas
+    from economia.receitas.aplicacao.avaliacao import (
+        avaliar,
+        carregar_perguntas,
+        por_categoria,
+    )
 
     perguntas = carregar_perguntas(args.perguntas)
     resumos = []
@@ -236,6 +402,7 @@ def comando_comparar(args: argparse.Namespace) -> None:
                 **asdict(resumo),
                 "separacao": round(resumo.separacao, 4),
                 "limiar_sugerido": resumo.limiar_sugerido,
+                "por_categoria": por_categoria(resumo.resultados),
             }
         )
 
@@ -260,11 +427,30 @@ def comando_comparar(args: argparse.Namespace) -> None:
             for p in erros:
                 print(f"  {p['id']} ({p['categoria']}): {' | '.join(p['titulos'][:3])}")
 
+    for r in resumos:
+        print(f"\n{r['colecao']}: por categoria")
+        print(
+            f"  {'categoria':<24} {'perguntas':>9} {'Recall@k':>8} {'MRR':>6} {'maior score':>11}"
+        )
+        for categoria, m in r["por_categoria"].items():
+            recall = "—" if m["recall"] is None else f"{m['recall']:.2f}"
+            mrr = "—" if m["mrr"] is None else f"{m['mrr']:.2f}"
+            print(
+                f"  {categoria:<24} {m['perguntas']:>9} {recall:>8} {mrr:>6} {m['maior_score']:>11.3f}"
+            )
+
     sufixo = f"_amostra{args.amostra}" if args.amostra else ""
-    saida = PASTA_DE_AVALIACAO / f"resultados_v1{sufixo}.json"
+    saida = args.saida or PASTA_DE_AVALIACAO / f"resultados_v1{sufixo}.json"
+    saida.parent.mkdir(parents=True, exist_ok=True)
     saida.write_text(
         json.dumps(
-            {"maquina": descrever_maquina(), "k": args.k, "modelos": resumos},
+            {
+                "maquina": descrever_maquina(),
+                "data": _agora(),
+                "perguntas": str(args.perguntas),
+                "k": args.k,
+                "modelos": resumos,
+            },
             ensure_ascii=False,
             indent=2,
         )
@@ -274,7 +460,257 @@ def comando_comparar(args: argparse.Namespace) -> None:
     print(f"\nResultado gravado em {saida}")
 
 
-def main(argv: list[str] | None = None) -> None:
+def _agora() -> str:
+    from datetime import datetime
+
+    return datetime.now().isoformat(timespec="seconds")
+
+
+def comando_avaliar_respostas(args: argparse.Namespace) -> None:
+    """Roda o caso de uso (RAG ou LLM puro) em cada pergunta e grava o resultado.
+
+    Com as chaves do Langfuse, a execução vira um run do dataset das perguntas, com a busca e
+    as chamadas ao LLM registradas e as métricas como pontuações. Sem as chaves, nada é enviado.
+    """
+    import json
+    from dataclasses import asdict
+    from functools import partial
+
+    from economia.receitas.aplicacao.avaliacao import carregar_perguntas
+    from economia.receitas.aplicacao.avaliacao_respostas import (
+        avaliar_pergunta,
+        avaliar_respostas,
+        resumir_respostas,
+    )
+
+    configuracao = configuracao_com_modelo(args.modelo)
+    ajustes = {
+        chave: valor
+        for chave, valor in (
+            ("prompt_de_resposta", args.prompt),
+            ("resposta_estruturada", args.estruturada),
+            ("segunda_tentativa_de_citacao", args.segunda_tentativa),
+            ("ollama_modelo", args.llm),
+        )
+        if valor is not None
+    }
+    configuracao = configuracao.model_copy(update=ajustes)
+    todas = carregar_perguntas(args.perguntas)
+    perguntas = todas
+    if args.categorias:
+        perguntas = [p for p in perguntas if p.categoria in args.categorias]
+    if args.limite:
+        perguntas = perguntas[: args.limite]
+
+    from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
+        RegistroDeGeracoes,
+        criar_cliente,
+    )
+
+    langfuse = criar_cliente(configuracao)
+    prompts = criar_prompts(configuracao, langfuse)
+    registro = RegistroDeGeracoes(langfuse, prompts.prompts_lidos) if langfuse else None
+    llm = criar_llm(configuracao, deterministico=True, ao_gerar=registro)
+    # o e5 calcula o cosseno nos dois modos; no RAG, é o mesmo gerador da busca
+    gerador = criar_gerador(configuracao)
+    repositorio = None
+    if args.modo == "rag":
+        repositorio = criar_repositorio(configuracao, args.amostra)
+        if langfuse:
+            from economia.receitas.infraestrutura.experimento_langfuse import (
+                RepositorioObservado,
+            )
+
+            repositorio = RepositorioObservado(repositorio, langfuse)
+    caso = criar_caso_de_avaliacao(
+        configuracao, args.modo, llm, args.amostra, repositorio, gerador, prompts
+    )
+    colecao = (
+        configuracao.colecao_da_amostra(args.amostra) if args.modo == "rag" else None
+    )
+    run = nome_do_run(configuracao, args.modo, args.sufixo_run)
+    execucao = {
+        "modo": args.modo,
+        "run": run,
+        "maquina": descrever_maquina(),
+        "data": _agora(),
+        "perguntas_arquivo": str(args.perguntas),
+        "colecao": colecao,
+        "modelo_embeddings": configuracao.modelo_embeddings,
+        "modelo_llm": configuracao.ollama_modelo,
+        "llm": descrever_llm(configuracao),
+        "limiar": configuracao.limiar_similaridade if args.modo == "rag" else None,
+        "prompt_de_resposta": configuracao.prompt_de_resposta
+        if args.modo == "rag"
+        else PROMPT_SEM_BASE,
+        "resposta_estruturada": configuracao.resposta_estruturada
+        if args.modo == "rag"
+        else True,
+        "segunda_tentativa_de_citacao": configuracao.segunda_tentativa_de_citacao
+        if args.modo == "rag"
+        else False,
+        "temperatura": TEMPERATURA_DA_AVALIACAO,
+        "semente": SEMENTE_DA_AVALIACAO,
+        "contexto": configuracao.ollama_contexto,
+        "saida_maxima": configuracao.ollama_saida_maxima,
+        "raciocinio": False,
+        # versão de cada prompt lida do Langfuse, para reproduzir a execução
+        "versoes_dos_prompts": dict(prompts.versoes),
+    }
+    print(f"Execução {run} | {len(perguntas)} perguntas", flush=True)
+
+    def progresso(n, total, r) -> None:
+        marca = "ok " if r.acertou else "ERR"
+        fonte = {True: "fonte ok", False: "fonte errada", None: ""}[r.fonte_esperada]
+        rouge = "" if r.rouge_l is None else f"ROUGE-L {r.rouge_l:.2f}"
+        print(
+            f"[{n:>3}/{total}] {marca} {r.id:<5} esperado={r.esperado:<15} "
+            f"obtido={r.obtido:<15} {r.segundos:6.1f} s {fonte} {rouge}",
+            flush=True,
+        )
+
+    avaliar = partial(avaliar_pergunta, responder=caso.responder, gerador=gerador)
+    url_do_run = None
+    if langfuse:
+        from economia.receitas.infraestrutura.experimento_langfuse import (
+            rodar_experimento,
+            sincronizar_dataset,
+        )
+
+        dataset = nome_do_dataset(args.perguntas, len(perguntas), len(todas))
+        sincronizar_dataset(langfuse, dataset, perguntas)
+        resultados, url_do_run = rodar_experimento(
+            langfuse,
+            dataset,
+            run,
+            perguntas,
+            avaliar,
+            metadata={k: v for k, v in execucao.items() if k != "llm"},
+            ao_progredir=progresso,
+        )
+        langfuse.flush()
+        resumo = resumir_respostas(resultados)
+    else:
+        resumo = avaliar_respostas(
+            perguntas, caso.responder, ao_progredir=progresso, gerador=gerador
+        )
+    dados = {**execucao, "langfuse_run": url_do_run, **asdict(resumo)}
+
+    def taxa(valor) -> str:
+        return "—" if valor is None else f"{valor:.0%}"
+
+    def numero(valor) -> str:
+        return "—" if valor is None else f"{valor:.3f}"
+
+    print(f"\n{resumo.perguntas} perguntas | {run}")
+    for rotulo, chave in (
+        ("Acurácia do comportamento", "acuracia"),
+        ("Taxa de resposta", "taxa_de_resposta"),
+        ("Recusa correta (RN11)", "recusa_correta"),
+        ("Aviso de preço (RN04)", "aviso_de_preco"),
+        ("Fonte esperada citada", "fonte_esperada"),
+        ("Hit@5", "hit"),
+    ):
+        print(f"  {rotulo:<28} {taxa(dados[chave]):>6}")
+    for rotulo, chave in (
+        ("ROUGE-1 F1", "rouge_1"),
+        ("ROUGE-L F1", "rouge_l"),
+        ("Cosseno com a referência", "cosseno"),
+    ):
+        print(f"  {rotulo:<28} {numero(dados[chave]):>6}")
+    print(
+        f"  {'Latência média / máxima':<28} {resumo.latencia_media:5.1f} s / {resumo.latencia_maxima:.1f} s"
+    )
+    if resumo.falsas_recusas:
+        print(f"  Falsas recusas: {', '.join(resumo.falsas_recusas)}")
+    if resumo.respostas_indevidas:
+        print(f"  Respostas indevidas: {', '.join(resumo.respostas_indevidas)}")
+
+    args.saida.parent.mkdir(parents=True, exist_ok=True)
+    args.saida.write_text(
+        json.dumps(dados, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    print(f"\nResultado gravado em {args.saida}")
+    if url_do_run:
+        print(f"Run no Langfuse: {url_do_run}")
+
+
+def comando_criar_avaliadores(args: argparse.Namespace) -> None:
+    """Cria ou atualiza os evaluators gerenciados (Gemini como juiz) e a regra de avaliação."""
+    from langfuse.api.core.api_error import ApiError
+
+    from economia.compartilhado.infraestrutura.avaliadores_langfuse import (
+        ApiDoLangfuse,
+        SemConexaoDoGemini,
+        criar_avaliadores,
+    )
+    from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
+        criar_cliente,
+    )
+
+    configuracao = obter_configuracao()
+    langfuse = criar_cliente(configuracao)
+    if langfuse is None:
+        raise SystemExit("Configure LANGFUSE_PUBLIC_KEY e LANGFUSE_SECRET_KEY no .env")
+    try:
+        ids = criar_avaliadores(
+            ApiDoLangfuse(langfuse.api),
+            configuracao.langfuse_modelo_juiz,
+            configuracao.langfuse_amostra_juiz,
+            configuracao.langfuse_ambientes_juiz,
+            criar_prompts(configuracao, langfuse).carregar,
+        )
+    except SemConexaoDoGemini as erro:
+        raise SystemExit(str(erro)) from erro
+    except ApiError as erro:
+        mensagem = getattr(erro.body, "message", erro.body)
+        raise SystemExit(
+            f"O Langfuse recusou ({erro.status_code}): {mensagem}"
+        ) from erro
+    for nome, id in ids.items():
+        print(f"{nome:<40} {id}")
+    print(
+        f"Juiz: {configuracao.langfuse_modelo_juiz}, amostra de "
+        f"{configuracao.langfuse_amostra_juiz:.0%}, ambientes "
+        f"{', '.join(configuracao.langfuse_ambientes_juiz)}"
+    )
+
+
+def comando_comparar_execucoes(args: argparse.Namespace) -> None:
+    """Mostra a diferença de cada métrica entre duas execuções da avaliação."""
+    import json
+
+    from economia.receitas.aplicacao.comparacao_de_avaliacoes import (
+        comparar_categorias,
+        comparar_execucoes,
+        formatar_delta,
+        tipo_da_execucao,
+    )
+
+    antes = json.loads(args.antes.read_text(encoding="utf-8"))
+    depois = json.loads(args.depois.read_text(encoding="utf-8"))
+
+    def valor(v) -> str:
+        return "—" if v is None else f"{v:.3f}"
+
+    print(
+        f"Comparação ({tipo_da_execucao(antes)}): {args.antes.name} → {args.depois.name}\n"
+    )
+    print(f"{'métrica':<26} {'antes':>8} {'depois':>8} {'diferença':>9}")
+    for d in comparar_execucoes(antes, depois):
+        print(
+            f"{d.metrica:<26} {valor(d.antes):>8} {valor(d.depois):>8} {formatar_delta(d.delta):>9}"
+        )
+    print("\nPor categoria:")
+    for categoria, diferencas in comparar_categorias(antes, depois).items():
+        partes = [
+            f"{d.metrica} {valor(d.antes)} → {valor(d.depois)} ({formatar_delta(d.delta)})"
+            for d in diferencas
+        ]
+        print(f"  {categoria:<24} " + " | ".join(partes))
+
+
+def criar_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="economia.receitas.cli", description=__doc__)
     comandos = parser.add_subparsers(dest="comando", required=True)
 
@@ -333,10 +769,87 @@ def main(argv: list[str] | None = None) -> None:
     )
     comparar_parser.add_argument("--k", type=int, default=5)
     comparar_parser.add_argument("--perguntas", type=Path, default=ARQUIVO_DE_PERGUNTAS)
+    comparar_parser.add_argument(
+        "--saida",
+        type=Path,
+        help="arquivo do resultado (padrão: data/avaliacao/resultados_v1.json)",
+    )
     comparar_parser.set_defaults(funcao=comando_comparar)
 
-    args = parser.parse_args(argv)
-    args.funcao(args)
+    respostas_parser = comandos.add_parser(
+        "avaliar-respostas",
+        help="roda o caso de uso completo em cada pergunta e confere o comportamento",
+    )
+    respostas_parser.add_argument("--saida", type=Path, required=True)
+    respostas_parser.add_argument(
+        "--modo",
+        choices=MODOS,
+        default="rag",
+        help="rag (busca, limiar e fontes) ou puro (só o LLM, sem a base)",
+    )
+    respostas_parser.add_argument(
+        "--llm", help="modelo do Ollama (padrão: OLLAMA_MODELO, ex.: gemma3:12b)"
+    )
+    respostas_parser.add_argument(
+        "--perguntas", type=Path, default=ARQUIVO_DE_PERGUNTAS
+    )
+    respostas_parser.add_argument(
+        "--modelo", choices=["e5", "qwen3"], help="padrão: MODELO_EMBEDDINGS"
+    )
+    respostas_parser.add_argument(
+        "--amostra", type=int, help="usa a coleção da amostra"
+    )
+    respostas_parser.add_argument(
+        "--categorias", nargs="+", help="avalia só estas categorias"
+    )
+    respostas_parser.add_argument("--limite", type=int, help="avalia só as N primeiras")
+    respostas_parser.add_argument(
+        "--sufixo-run",
+        help="acrescenta ao nome do run no Langfuse (ex.: linux-20261118), para não juntar com runs anteriores",
+    )
+    respostas_parser.add_argument(
+        "--prompt",
+        help="prompt da resposta no Langfuse (padrão: PROMPT_DE_RESPOSTA; ex.: resposta_com_fontes@v2)",
+    )
+    respostas_parser.add_argument(
+        "--estruturada",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help="pede ao LLM um JSON com a resposta e os trechos usados",
+    )
+    respostas_parser.add_argument(
+        "--segunda-tentativa",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help="pede ao LLM que reescreva citando quando a resposta vier sem citação",
+    )
+    respostas_parser.set_defaults(funcao=comando_avaliar_respostas)
+
+    execucoes_parser = comandos.add_parser(
+        "comparar-execucoes", help="diferença entre duas execuções da avaliação"
+    )
+    execucoes_parser.add_argument("antes", type=Path)
+    execucoes_parser.add_argument("depois", type=Path)
+    execucoes_parser.set_defaults(funcao=comando_comparar_execucoes)
+
+    comandos.add_parser(
+        "criar-avaliadores",
+        help="cria ou atualiza os evaluators do Langfuse (Gemini como juiz)",
+    ).set_defaults(funcao=comando_criar_avaliadores)
+
+    return parser
+
+
+def main(argv: list[str] | None = None) -> None:
+    from economia.compartilhado.infraestrutura.prompts_langfuse import (
+        PromptIndisponivel,
+    )
+
+    args = criar_parser().parse_args(argv)
+    try:
+        args.funcao(args)
+    except PromptIndisponivel as erro:
+        raise SystemExit(str(erro)) from erro
 
 
 if __name__ == "__main__":
