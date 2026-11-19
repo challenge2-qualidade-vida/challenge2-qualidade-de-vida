@@ -97,6 +97,10 @@ def test_nome_do_run_e_do_dataset():
         == "rag-gemma3:12b-resposta_com_fontes@v2-e5"
     )
     assert cli.nome_do_run(configuracao, "puro") == "puro-gemma3:12b-resposta_sem_base"
+    assert (
+        cli.nome_do_run(configuracao, "puro", "linux-20261118")
+        == "puro-gemma3:12b-resposta_sem_base-linux-20261118"
+    )
     from pathlib import Path
 
     arquivo = Path("data/avaliacao/perguntas_rag_v3.json")
@@ -121,3 +125,8 @@ def test_avaliar_respostas_aceita_modo_e_llm():
     padrao = cli.criar_parser().parse_args(["avaliar-respostas", "--saida", "x.json"])
     assert padrao.modo == "rag"
     assert padrao.llm is None
+    assert padrao.sufixo_run is None
+    com_sufixo = cli.criar_parser().parse_args(
+        ["avaliar-respostas", "--saida", "x.json", "--sufixo-run", "linux-20261118"]
+    )
+    assert com_sufixo.sufixo_run == "linux-20261118"

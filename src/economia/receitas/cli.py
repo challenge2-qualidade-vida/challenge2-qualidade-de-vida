@@ -286,14 +286,22 @@ def criar_caso_de_avaliacao(
     )
 
 
-def nome_do_run(configuracao: Configuracao, modo: str) -> str:
-    """Nome da execução: modo, LLM, prompt e, no RAG, o modelo de embeddings."""
+def nome_do_run(
+    configuracao: Configuracao, modo: str, sufixo: str | None = None
+) -> str:
+    """Nome da execução: modo, LLM, prompt e, no RAG, o modelo de embeddings.
+
+    O Langfuse junta no mesmo run as execuções com o mesmo nome no mesmo dataset. O sufixo
+    (ex.: a máquina e a data) separa uma nova rodada das anteriores.
+    """
     if modo == "puro":
-        return f"puro-{configuracao.ollama_modelo}-{PROMPT_SEM_BASE}"
-    return (
-        f"rag-{configuracao.ollama_modelo}-{configuracao.prompt_de_resposta}"
-        f"-{configuracao.modelo_embeddings}"
-    )
+        nome = f"puro-{configuracao.ollama_modelo}-{PROMPT_SEM_BASE}"
+    else:
+        nome = (
+            f"rag-{configuracao.ollama_modelo}-{configuracao.prompt_de_resposta}"
+            f"-{configuracao.modelo_embeddings}"
+        )
+    return f"{nome}-{sufixo}" if sufixo else nome
 
 
 def nome_do_dataset(arquivo: Path, avaliadas: int, total: int) -> str:
@@ -520,7 +528,7 @@ def comando_avaliar_respostas(args: argparse.Namespace) -> None:
     colecao = (
         configuracao.colecao_da_amostra(args.amostra) if args.modo == "rag" else None
     )
-    run = nome_do_run(configuracao, args.modo)
+    run = nome_do_run(configuracao, args.modo, args.sufixo_run)
     execucao = {
         "modo": args.modo,
         "run": run,
@@ -795,6 +803,10 @@ def criar_parser() -> argparse.ArgumentParser:
         "--categorias", nargs="+", help="avalia só estas categorias"
     )
     respostas_parser.add_argument("--limite", type=int, help="avalia só as N primeiras")
+    respostas_parser.add_argument(
+        "--sufixo-run",
+        help="acrescenta ao nome do run no Langfuse (ex.: linux-20261118), para não juntar com runs anteriores",
+    )
     respostas_parser.add_argument(
         "--prompt",
         help="prompt da resposta no Langfuse (padrão: PROMPT_DE_RESPOSTA; ex.: resposta_com_fontes@v2)",
