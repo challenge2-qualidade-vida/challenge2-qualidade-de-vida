@@ -304,7 +304,7 @@ Os mesmos 15 casos rodaram com o `gemma3:12b`, o outro candidato da semana 3, co
 | Média de retornos | 0,67 | 0,67 |
 | Latência média | 23,4 s | 85,1 s |
 
-Os modelos divergiram só em 3 casos:
+Os modelos divergiram em 4 casos:
 
 | Caso | Esperada | `qwen2.5:7b` | `gemma3:12b` |
 | --- | --- | --- | --- |
