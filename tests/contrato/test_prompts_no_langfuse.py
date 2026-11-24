@@ -34,6 +34,8 @@ CONTRATOS = {
     "verificacao/analise": ("classificacao", "justificativa", "citacoes"),
     # o Validation lê os dois campos do JSON (SaidaDaContradicao, spec 79)
     "verificacao/validacao": ("contradiz", "explicacao"),
+    # o Communication lê o campo do JSON (SaidaDaComunicacao, spec 72)
+    "verificacao/comunicacao": ("mensagem",),
     **{
         f"juiz/{a.prompt}": tuple("{{" + v + "}}" for v in a.variaveis)
         for a in AVALIADORES

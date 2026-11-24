@@ -70,9 +70,9 @@ Saída (`Veredito`), como na seção 5.4 da arquitetura:
 
 Saída pedida ao LLM (esquema JSON): `{"mensagem": "..."}`.
 
-**Prompt:** `verificacao/comunicacao` no prompt management do Langfuse, lido pelo rótulo `production`, com a cópia local usada pelos prompts da #79. A mensagem ao LLM leva a alegação, o perfil, a classificação, a justificativa e as evidências citadas, numeradas.
+**Prompt:** `verificacao/comunicacao` no prompt management do Langfuse (versão 1 criada em 24/11/2026, rótulos `production` e `latest`), lido pelo rótulo `production`, com a cópia local usada pelos prompts da #79. A mensagem ao LLM leva o perfil, a alegação, a classificação, a justificativa e as evidências citadas, numeradas. O contrato do prompt (campo `mensagem`) entra em `tests/contrato/test_prompts_no_langfuse.py`.
 
-**Arquivos novos** (nenhum arquivo da #75, da #79 ou da #82 é alterado):
+**Arquivos novos** (nenhum arquivo da #75, da #79 ou da #82 é alterado; o único arquivo existente que muda é o contrato dos prompts, com uma linha):
 
 - `src/economia/verificacao/dominio/veredito.py`: `PerfilDeLeitura`, `Veredito`, montagem das fontes e escolha da fonte principal.
 - `src/economia/verificacao/aplicacao/comunicar_veredito.py`: o caso de uso `ComunicarVeredito`.
