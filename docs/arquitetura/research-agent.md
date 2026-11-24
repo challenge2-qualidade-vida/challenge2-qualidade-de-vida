@@ -79,6 +79,7 @@ Cada item de `evidencias` contém:
 
 - Pontuação de similaridade retornada pela recuperação semântica.
 - É utilizada para ordenar e comparar a relevância dos resultados.
+- Evidências com score abaixo do limiar de similaridade do modelo configurado (`limiar_similaridade`, 0,845 para o E5) são descartadas pelo caso de uso `PesquisarEvidencias`.
 - Não representa probabilidade de veracidade.
 
 ## 6. Tecnologias e recuperação semântica

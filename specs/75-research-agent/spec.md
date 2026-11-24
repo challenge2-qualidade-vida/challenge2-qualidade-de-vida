@@ -32,6 +32,7 @@ A recuperação deve permitir que os agentes responsáveis pelas etapas posterio
 - A API aceita limite entre 1 e 20, com padrão 5.
 - Os resultados devem preservar a identificação do documento e a proveniência da fonte.
 - O score representa similaridade semântica, não probabilidade de veracidade.
+- Só voltam evidências com score igual ou acima do limiar de similaridade do modelo de embeddings configurado (`limiar_similaridade`, o mesmo da RN11: 0,845 para o E5). Se nenhuma passar, a lista vem vazia e `total_evidencias` é zero. O limite é aplicado antes do limiar, então a API pode devolver menos evidências que o pedido.
 - A recuperação não classifica a alegação como verdadeira ou falsa.
 
 ## Entradas e saídas

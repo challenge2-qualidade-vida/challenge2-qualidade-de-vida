@@ -92,7 +92,7 @@ flowchart LR
 | Fonte de evidência | **Proposto (24/11/2026, #75).** Origem bibliográfica de um documento científico: título, instituição, ano e link | Pesquisa de evidências | `FonteEvidencia` |
 | Documento de evidência | **Proposto (24/11/2026, #75).** PDF científico ou de orientação incorporado à base de evidências, com `FonteEvidencia`, caminho do arquivo e hash SHA-256 do texto | Pesquisa de evidências | `DocumentoEvidencia` |
 | Trecho de evidência | **Proposto (24/11/2026, #75).** Parte recuperável de um documento de evidência, com as páginas inicial e final e a seção | Pesquisa de evidências | `TrechoEvidencia` |
-| Evidência recuperada | **Proposto (24/11/2026, #75).** Trecho de evidência devolvido pela busca, com o documento de origem e a similaridade de cosseno com a pergunta (score entre -1 e 1). O score não é probabilidade de veracidade | Pesquisa de evidências | `EvidenciaRecuperada` |
+| Evidência recuperada | **Proposto (24/11/2026, #75).** Trecho de evidência devolvido pela busca, com o documento de origem e a similaridade de cosseno com a pergunta (score entre -1 e 1). Só é devolvida com score igual ou acima do limiar de similaridade do modelo (o mesmo da RN11). O score não é probabilidade de veracidade | Pesquisa de evidências | `EvidenciaRecuperada` |
 | Recomendação | Sugestão final ao usuário, com critérios e limitações | Verificação | `Recomendacao` |
 | Critério | Regra usada para chegar a uma recomendação | Verificação | `Criterio` |
 | Limitação | O que o sistema não sabe ou não pode garantir numa resposta | Verificação | `Limitacao` |
