@@ -69,16 +69,25 @@ def criar_llm(configuracao: Configuracao, ao_gerar=None):
     )
 
 
-def criar_agentes(configuracao: Configuracao, llm, prompts):
-    """Analysis e Validation com os prompts do Langfuse (rótulo `production`)."""
+def criar_agentes(
+    configuracao: Configuracao,
+    llm,
+    prompts,
+    prompt_de_analise: str = PROMPT_DE_ANALISE,
+    prompt_de_validacao: str = PROMPT_DE_VALIDACAO,
+):
+    """Analysis e Validation com os prompts do Langfuse.
+
+    `analise` lê o rótulo `production`; `analise@v2`, outro rótulo.
+    """
     from economia.verificacao.aplicacao.analisar_alegacao import AnalisarAlegacao
     from economia.verificacao.aplicacao.validar_analise import ValidarAnalise
 
     return (
-        AnalisarAlegacao(llm, prompts.carregar(AGENTE, PROMPT_DE_ANALISE)),
+        AnalisarAlegacao(llm, prompts.carregar(AGENTE, prompt_de_analise)),
         ValidarAnalise(
             llm,
-            prompts.carregar(AGENTE, PROMPT_DE_VALIDACAO),
+            prompts.carregar(AGENTE, prompt_de_validacao),
             configuracao.limiar_confianca_verificacao,
         ),
     )
@@ -109,7 +118,9 @@ def comando_avaliar(args: argparse.Namespace) -> None:
     prompts = PromptsDoLangfuse(langfuse)
     registro = RegistroDeGeracoes(langfuse, prompts.prompts_lidos) if langfuse else None
     llm = criar_llm(configuracao, ao_gerar=registro)
-    analisar, validar = criar_agentes(configuracao, llm, prompts)
+    analisar, validar = criar_agentes(
+        configuracao, llm, prompts, args.prompt_analise, args.prompt_validacao
+    )
     observador = None
     if langfuse:
         from economia.verificacao.infraestrutura.observabilidade_langfuse import (
@@ -139,6 +150,7 @@ def comando_avaliar(args: argparse.Namespace) -> None:
         validar,
         limite=args.limite,
         maximo_de_retornos=args.retornos,
+        limite_maximo=args.limite_maximo,
         observador=observador,
         ao_progredir=progresso,
     )
@@ -155,6 +167,9 @@ def comando_avaliar(args: argparse.Namespace) -> None:
         "limiar_confianca": configuracao.limiar_confianca_verificacao,
         "limite_inicial": args.limite,
         "maximo_de_retornos": args.retornos,
+        "limite_maximo": args.limite_maximo,
+        "prompt_de_analise": args.prompt_analise,
+        "prompt_de_validacao": args.prompt_validacao,
         "temperatura": TEMPERATURA_DA_AVALIACAO,
         "semente": SEMENTE_DA_AVALIACAO,
         "versoes_dos_prompts": dict(prompts.versoes),
@@ -184,6 +199,22 @@ def criar_parser() -> argparse.ArgumentParser:
     )
     avaliar.add_argument(
         "--retornos", type=int, default=2, help="Limite de retornos por caso (padrão 2)"
+    )
+    avaliar.add_argument(
+        "--limite-maximo",
+        type=int,
+        default=20,
+        help="Teto da busca nos retornos ao Research, que dobram o limite (padrão 20)",
+    )
+    avaliar.add_argument(
+        "--prompt-analise",
+        default=PROMPT_DE_ANALISE,
+        help="Prompt do Analysis no Langfuse: analise (production) ou analise@<rótulo>",
+    )
+    avaliar.add_argument(
+        "--prompt-validacao",
+        default=PROMPT_DE_VALIDACAO,
+        help="Prompt do Validation no Langfuse: validacao (production) ou validacao@<rótulo>",
     )
     avaliar.add_argument(
         "--limite-de-casos", type=int, help="Roda só os primeiros N casos (piloto)"

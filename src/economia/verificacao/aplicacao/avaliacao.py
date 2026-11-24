@@ -123,6 +123,7 @@ def avaliar_caso(
     validar: ValidarAnalise,
     limite: int = LIMITE_INICIAL,
     maximo_de_retornos: int = MAXIMO_DE_RETORNOS,
+    limite_maximo: int = LIMITE_MAXIMO,
     observador: ObservadorDeEtapas | None = None,
     relogio: Callable[[], float] = time.perf_counter,
 ) -> ResultadoDoCaso:
@@ -175,7 +176,7 @@ def avaliar_caso(
             if resultado.retornar_para is DestinoDoRetorno.RESEARCH:
                 # evidências novas, análise do zero: os motivos falam do score, que o
                 # Analysis não corrige, e com eles o LLM comenta a reprovação em vez de analisar
-                limite = min(limite * 2, LIMITE_MAXIMO)
+                limite = min(limite * 2, limite_maximo)
                 evidencias = buscar(limite)
                 motivos = ()
             else:
@@ -242,6 +243,7 @@ def avaliar(
     validar: ValidarAnalise,
     limite: int = LIMITE_INICIAL,
     maximo_de_retornos: int = MAXIMO_DE_RETORNOS,
+    limite_maximo: int = LIMITE_MAXIMO,
     observador: ObservadorDeEtapas | None = None,
     ao_progredir: Callable[[int, int, ResultadoDoCaso], None] | None = None,
     relogio: Callable[[], float] = time.perf_counter,
@@ -255,6 +257,7 @@ def avaliar(
             validar,
             limite,
             maximo_de_retornos,
+            limite_maximo,
             observador,
             relogio,
         )
