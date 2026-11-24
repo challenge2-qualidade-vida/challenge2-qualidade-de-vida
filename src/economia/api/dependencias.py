@@ -36,4 +36,5 @@ def obter_pesquisar_evidencias() -> PesquisarEvidencias:
 
     return PesquisarEvidencias(
         pesquisador=pesquisador,
+        limiar_similaridade=configuracao.limiar_similaridade,
     )
