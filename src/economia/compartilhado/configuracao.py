@@ -40,6 +40,9 @@ class Configuracao(BaseSettings):
         default=None, validation_alias="limiar_similaridade", exclude=True
     )
     tolerancia_empate: float = Field(default=0.01, ge=0.0, le=1.0)
+    # Verificação (spec 79): confiança mínima da análise. A confiança é o maior score entre as
+    # evidências citadas; começa igual ao limiar do e5 no RAG, a calibrar com a avaliação.
+    limiar_confianca_verificacao: float = Field(default=0.845, ge=0.0, le=1.0)
     # sempre disponíveis, em português e em inglês (receitas do RecipeNLG); lista provisória
     ingredientes_basicos: list[str] = ["sal", "agua", "oleo", "salt", "water", "oil"]
     # redação da resposta do Miau-ricio: prompt do Langfuse, saída estruturada (JSON com os
@@ -97,6 +100,11 @@ class Configuracao(BaseSettings):
         """Coleção da base inteira ou de uma amostra fixa de receitas (ex.: _amostra400)."""
         sufixo = f"_amostra{amostra}" if amostra else ""
         return f"base_conhecimento_{self.modelo_embeddings}{sufixo}"
+
+    @property
+    def colecao_verificacao(self) -> str:
+        """Coleção exclusiva das evidências científicas da Research Agent."""
+        return f"evidencias_verificacao_{self.modelo_embeddings}"
 
 
 @lru_cache

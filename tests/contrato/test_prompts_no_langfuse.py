@@ -30,6 +30,10 @@ CONTRATOS = {
     "miau-ricio/resposta_sem_base": ("encontrou", "resposta"),
     # o texto livre não tem variáveis; o código só precisa de um prompt não vazio
     "miau-ricio/resposta_com_fontes": (),
+    # o Analysis lê os três campos do JSON (SaidaDaAnalise, spec 79)
+    "verificacao/analise": ("classificacao", "justificativa", "citacoes"),
+    # o Validation lê os dois campos do JSON (SaidaDaContradicao, spec 79)
+    "verificacao/validacao": ("contradiz", "explicacao"),
     **{
         f"juiz/{a.prompt}": tuple("{{" + v + "}}" for v in a.variaveis)
         for a in AVALIADORES
