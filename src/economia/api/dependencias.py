@@ -1,4 +1,3 @@
-
 """Dependências da API EconoMIA."""
 
 from functools import lru_cache

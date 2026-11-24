@@ -1,4 +1,3 @@
-
 """Modelos HTTP da API EconoMIA."""
 
 from pydantic import BaseModel, Field, HttpUrl
