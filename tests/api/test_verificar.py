@@ -192,3 +192,25 @@ def test_verificar_retorna_lista_vazia_sem_evidencias(cliente):
     assert response.json()["pergunta"] == "tema sem evidências"
     assert response.json()["total_evidencias"] == 0
     assert response.json()["evidencias"] == []
+
+
+def test_rota_esta_na_app_do_dockerfile():
+    from economia.api.app import app as app_servida
+
+    assert ROTA in app_servida.openapi()["paths"]
+
+
+def test_verificar_responde_500_em_problem_details_numa_falha_interna(cliente):
+    class CasoDeUsoQuebrado:
+        def executar(self, pergunta, limite=5):
+            raise ValueError("score fora do intervalo")
+
+    registrar_caso_de_uso(CasoDeUsoQuebrado())
+
+    response = cliente.post(ROTA, json={"pergunta": "segurança alimentar"})
+
+    verificar_problem_details(
+        response,
+        500,
+        "Ocorreu uma falha inesperada ao processar a solicitação.",
+    )
