@@ -38,7 +38,7 @@ Regras desta funcionalidade:
 1. **Fontes:** uma por documento citado, sem repetir, na ordem das citações da análise.
 2. **Fonte principal:** a fonte da evidência citada com o maior score. Em empate, a primeira citada. No perfil rápido, ela é a única fonte do veredito.
 3. **Classificação `nova` sem citação:** o veredito não tem fontes, e a mensagem diz que a base não tem evidência sobre a alegação (RN11).
-4. **Validação reprovada ou sem análise:** `aprovado_pela_validacao` é `false` e a mensagem é um texto fixo do código, sem chamar o LLM, dizendo que a verificação não foi conclusiva. Com análise, a classificação é a da análise. Sem análise, o veredito não tem classificação nem fontes.
+4. **Validação reprovada ou sem análise:** `aprovado_pela_validacao` é `false` e a mensagem é um texto fixo do código, sem chamar o LLM, dizendo que a verificação não foi conclusiva. O veredito não tem fontes, porque elas não foram confirmadas pela validação. Com análise, a classificação é a da análise, para o registro. Sem análise, o veredito não tem classificação.
 5. **Saída inválida do LLM** (não é JSON, está fora do esquema ou a mensagem é vazia): a mensagem passa a ser a justificativa da análise, sem os marcadores `[n]`. O veredito não falha por causa do texto.
 6. **Tamanho no perfil rápido:** se a mensagem do LLM passar de 2 frases, o código fica com as 2 primeiras.
 7. **Sem "verdadeiro" nem "falso":** a classificação mede o quanto a base cobre a alegação, não se ela é verdadeira. O prompt pede isso.
