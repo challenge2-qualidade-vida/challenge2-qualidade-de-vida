@@ -238,7 +238,7 @@ sequenceDiagram
 
 ## 9. Avaliação (10 a 20 casos)
 
-O fluxo Research → Analysis → Validation rodou em 15 alegações fictícias: 5 recicladas, 5 parciais e 5 novas, com a classificação esperada proposta para revisão da equipe ([casos_v1.json](../../data/avaliacao/verificacao/casos_v1.json)). Usou o comando da [spec 79](../../specs/79-analysis-validation/spec.md):
+O fluxo Research → Analysis → Validation rodou em 15 alegações fictícias: 5 recicladas, 5 parciais e 5 novas, com a classificação esperada revisada pela equipe em 24/11/2026 ([casos_v1.json](../../data/avaliacao/verificacao/casos_v1.json)). Usou o comando da [spec 79](../../specs/79-analysis-validation/spec.md):
 
 ```bash
 poetry run python -m economia.verificacao.cli avaliar \
@@ -292,6 +292,40 @@ Por classificação, os acertos foram:
 - **Novas:** 3 de 5.
 - **Parciais:** 2 de 5.
 
+### Comparação com o `gemma3:12b`
+
+Os mesmos 15 casos rodaram com o `gemma3:12b`, o outro candidato da semana 3, com a mesma base, o mesmo limiar e os mesmos prompts. Resultado em [resultados_v1_gemma3-12b.json](../../data/avaliacao/verificacao/resultados_v1_gemma3-12b.json).
+
+| Métrica | `qwen2.5:7b` | `gemma3:12b` |
+| --- | --- | --- |
+| Acurácia da classificação | 67% | 67% |
+| Aprovação direta | 60% | 67% |
+| Aprovação ao fim dos retornos | 80% | 67% |
+| Média de retornos | 0,67 | 0,67 |
+| Latência média | 23,4 s | 85,1 s |
+
+Os modelos divergiram só em 3 casos:
+
+| Caso | Esperada | `qwen2.5:7b` | `gemma3:12b` |
+| --- | --- | --- | --- |
+| v06 (câncer em semanas) | parcial | nova, aprovada após 2 retornos | reciclada, reprovada após 2 retornos |
+| v07 (pandemia) | parcial | parcial, aprovada após 1 retorno | parcial, aprovada direto |
+| v09 (aplicativos e preço) | parcial | nova, aprovada direto | reciclada, reprovada após 2 retornos |
+| v14 (manga com leite) | nova | parcial, aprovada após 1 retorno | parcial, aprovada direto |
+
+Sobre os dois modelos:
+
+- **Acertos:** os dois acertaram e erraram os mesmos 10 e 5 casos.
+- **Onde erram:** nos dois, os erros estão nas parciais e nas novas.
+- **Retornos ao Research:** a degradação com 20 trechos (achado 2) aparece igual no `gemma3:12b`. Na v05, na v06, na v08 e na v15, a justificativa final descreve o texto ("O texto fornecido é uma compilação de trechos...").
+- **Primeira análise:** o `gemma3:12b` cita as fontes melhor, e por isso a v07 e a v14 passaram sem retorno.
+- **Parciais:** o `gemma3:12b` tende a chamar de `reciclada` uma parcial cuja primeira parte a base cobre (v06, v08 e v09).
+- **Custo:** o `gemma3:12b` levou 3,6 vezes o tempo do `qwen2.5:7b` para o mesmo resultado.
+
+O ganho não está no tamanho do modelo. Está no prompt (exemplos de `parcial`) e no retorno ao Research (menos trechos).
+
+**Reprodutibilidade:** uma segunda execução do `qwen2.5:7b` deu as mesmas classificações, justificativas e retornos nos 15 casos. Só a latência mudou, de 23,4 s para 15,4 s, com o modelo já carregado.
+
 ### Achados
 
 1. **O limiar está colado nos scores.** Nesta base, o e5 dá entre 0,83 e 0,86 para quase toda alegação, coberta ou não:
@@ -304,12 +338,11 @@ Por classificação, os acertos foram:
 4. **As parciais são o ponto fraco.** Na v09, o modelo viu que a base fala de plataformas de doação, mas classificou como `nova` porque a parte do preço não aparece. A fronteira entre `parcial` e `nova` precisa de exemplos no prompt.
 5. **Bug encontrado e corrigido pela avaliação.** Na primeira execução, o retorno ao Research repassava ao Analysis os motivos sobre o score, e o LLM passou a comentar a reprovação em vez de analisar. Num caso, escreveu "confiança ajustada para 0,846", um valor que o LLM não deveria produzir (RN01). A correção está no commit `1349bbb`. Na primeira execução, a acurácia já era de 67% e a aprovação ao fim dos retornos era de 73%.
 
-**Próximos passos:**
+**Próximos passos** (valem para os dois modelos):
 
 - Limitar a busca do retorno ao Research a 10 trechos, ou repetir a alegação no fim da mensagem, e medir de novo.
 - Pôr no prompt `verificacao/analise` (v2) um exemplo de cada classificação e a instrução de manter a classificação quando o retorno pede só a fonte.
 - Revisar com a equipe a classificação esperada dos 15 casos e calibrar o limiar com mais casos.
-- Rodar também com o `gemma3:12b`, o outro candidato da semana 3.
 
 ## 10. Roteiro da demo
 
