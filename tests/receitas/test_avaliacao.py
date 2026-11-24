@@ -87,6 +87,29 @@ def test_carregar_perguntas(tmp_path):
     [p1, p2] = carregar_perguntas(arquivo)
     assert p1.esperados == (Esperado("embrapa-geladeira"),)
     assert p1.tem_resposta and not p2.tem_resposta
+    assert p1.resposta_referencia is None
+
+
+def test_carregar_perguntas_com_resposta_de_referencia(tmp_path):
+    arquivo = tmp_path / "perguntas.json"
+    arquivo.write_text(
+        json.dumps(
+            {
+                "perguntas": [
+                    {
+                        "id": "p1",
+                        "pergunta": "Como guardar alface?",
+                        "categoria": "conservacao",
+                        "esperados": [{"documento_id": "embrapa-geladeira"}],
+                        "resposta_referencia": "Guarde a alface seca num pote fechado.",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    [p1] = carregar_perguntas(arquivo)
+    assert p1.resposta_referencia == "Guarde a alface seca num pote fechado."
 
 
 def test_avaliar_busca_sem_limiar_e_mede(trecho):
@@ -112,3 +135,77 @@ def test_avaliar_busca_sem_limiar_e_mede(trecho):
     assert resumo.mrr == 0.5
     assert resumo.resultados[0].titulos == ("Título a", "Título b")
     assert resumo.maior_score_sem_resposta == 0.6
+
+
+def test_avaliacao_por_categoria():
+    from economia.receitas.aplicacao.avaliacao import por_categoria
+
+    resultados = [
+        ResultadoDaPergunta("1", "receita", True, 1, 0.90, 0.1),
+        ResultadoDaPergunta("2", "receita", True, None, 0.85, 0.1),
+        ResultadoDaPergunta("3", "nutricao", True, 2, 0.88, 0.1),
+        ResultadoDaPergunta("4", "sem_resposta", False, None, 0.83, 0.1),
+    ]
+    categorias = por_categoria(resultados)
+    assert list(categorias) == ["nutricao", "receita", "sem_resposta"]
+    assert categorias["receita"]["recall"] == 0.5
+    assert categorias["receita"]["mrr"] == 0.5
+    assert categorias["nutricao"]["mrr"] == 0.5
+    assert categorias["sem_resposta"]["recall"] is None
+    assert categorias["sem_resposta"]["maior_score"] == 0.83
+
+
+def test_avaliacao_ignora_perguntas_de_preco(trecho):
+    from economia.receitas.aplicacao.avaliacao import AVISO_DE_PRECO
+
+    class Gerador:
+        nome = "falso"
+
+        def gerar_para_pergunta(self, pergunta):
+            return [1.0]
+
+    class Repositorio:
+        def buscar(self, vetor, k):
+            return [TrechoRecuperado(trecho("a"), 0.9)]
+
+    perguntas = [
+        PerguntaDeAvaliacao("r", "?", "receita", (Esperado("a"),)),
+        PerguntaDeAvaliacao("$", "?", "preco", comportamento=AVISO_DE_PRECO),
+    ]
+    resumo = avaliar(perguntas, Gerador(), Repositorio())
+    assert [r.id for r in resumo.resultados] == ["r"]
+
+
+def test_conjunto_v2_e_valido():
+    from pathlib import Path
+
+    from economia.receitas.aplicacao.avaliacao import COMPORTAMENTOS
+
+    perguntas = carregar_perguntas(Path("data/avaliacao/perguntas_rag_v2.json"))
+    ids = [p.id for p in perguntas]
+    assert len(ids) == len(set(ids))
+    assert len(perguntas) >= 60
+    assert {p.comportamento_esperado for p in perguntas} == set(COMPORTAMENTOS)
+    # as 26 perguntas da v1 continuam, para comparar com os resultados antigos
+    v1 = {
+        p.id for p in carregar_perguntas(Path("data/avaliacao/perguntas_rag_v1.json"))
+    }
+    assert v1 <= set(ids)
+
+
+def test_conjunto_v3_tem_referencia_em_toda_pergunta_para_responder():
+    from pathlib import Path
+
+    from economia.receitas.aplicacao.avaliacao import RESPONDER
+
+    v3 = carregar_perguntas(Path("data/avaliacao/perguntas_rag_v3.json"))
+    v2 = carregar_perguntas(Path("data/avaliacao/perguntas_rag_v2.json"))
+    # mesmas perguntas e gabaritos da v2: só ganha a resposta de referência
+    assert [(p.id, p.pergunta, p.esperados) for p in v3] == [
+        (p.id, p.pergunta, p.esperados) for p in v2
+    ]
+    for p in v3:
+        if p.comportamento_esperado == RESPONDER:
+            assert p.resposta_referencia, p.id
+        else:
+            assert p.resposta_referencia is None, p.id

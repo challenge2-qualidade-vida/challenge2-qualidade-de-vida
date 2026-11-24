@@ -1,0 +1,890 @@
+{
+  "maquina": "Darwin arm64, 10 CPUs lógicas",
+  "data": "2026-11-10T16:54:23",
+  "perguntas_arquivo": "data/avaliacao/perguntas_rag_v2.json",
+  "colecao": "base_conhecimento_e5",
+  "modelo_embeddings": "e5",
+  "modelo_llm": "qwen2.5:7b",
+  "limiar": 0.845,
+  "prompt_de_resposta": "resposta_com_fontes_v1",
+  "resposta_estruturada": false,
+  "segunda_tentativa_de_citacao": false,
+  "temperatura": 0.0,
+  "semente": 42,
+  "perguntas": 67,
+  "acuracia": 0.5373134328358209,
+  "taxa_de_resposta": 0.42592592592592593,
+  "recusa_correta": 1.0,
+  "aviso_de_preco": 1.0,
+  "fonte_esperada": 0.8695652173913043,
+  "falsas_recusas": [
+    "r02",
+    "r03",
+    "r05",
+    "r06",
+    "r08",
+    "e01",
+    "e02",
+    "e03",
+    "e04",
+    "e05",
+    "g03",
+    "c01",
+    "c02",
+    "c03",
+    "c04",
+    "c06",
+    "n01",
+    "n02",
+    "n03",
+    "n04",
+    "n05",
+    "i02",
+    "i03",
+    "d04",
+    "h02",
+    "h04",
+    "h05",
+    "b01",
+    "b02",
+    "b03",
+    "b05"
+  ],
+  "respostas_indevidas": [],
+  "latencia_media": 18.668339177805937,
+  "latencia_maxima": 67.63306962500064,
+  "por_categoria": {
+    "alimentacao_infantil": {
+      "perguntas": 5,
+      "acuracia": 0.6,
+      "taxa_de_resposta": 0.6,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0
+    },
+    "comportamento_alimentar": {
+      "perguntas": 3,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0
+    },
+    "conservacao": {
+      "perguntas": 6,
+      "acuracia": 0.16666666666666666,
+      "taxa_de_resposta": 0.16666666666666666,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0
+    },
+    "desperdicio": {
+      "perguntas": 4,
+      "acuracia": 0.75,
+      "taxa_de_resposta": 0.75,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0
+    },
+    "guia_alimentar": {
+      "perguntas": 6,
+      "acuracia": 0.8333333333333334,
+      "taxa_de_resposta": 0.8333333333333334,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.8
+    },
+    "nutricao": {
+      "perguntas": 5,
+      "acuracia": 0.0,
+      "taxa_de_resposta": 0.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": null
+    },
+    "orientacao_nutricional": {
+      "perguntas": 2,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0
+    },
+    "preco": {
+      "perguntas": 3,
+      "acuracia": 1.0,
+      "taxa_de_resposta": null,
+      "recusa_correta": null,
+      "aviso_de_preco": 1.0,
+      "fonte_esperada": null
+    },
+    "receita_entre_idiomas": {
+      "perguntas": 5,
+      "acuracia": 0.0,
+      "taxa_de_resposta": 0.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": null
+    },
+    "receita_pt": {
+      "perguntas": 8,
+      "acuracia": 0.375,
+      "taxa_de_resposta": 0.375,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0
+    },
+    "robustez": {
+      "perguntas": 5,
+      "acuracia": 0.2,
+      "taxa_de_resposta": 0.2,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 1.0
+    },
+    "seguranca_alimentar": {
+      "perguntas": 5,
+      "acuracia": 0.4,
+      "taxa_de_resposta": 0.4,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.0
+    },
+    "sem_resposta": {
+      "perguntas": 10,
+      "acuracia": 1.0,
+      "taxa_de_resposta": null,
+      "recusa_correta": 1.0,
+      "aviso_de_preco": null,
+      "fonte_esperada": null
+    }
+  },
+  "resultados": [
+    {
+      "id": "r01",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 35.9664794170003,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b08"
+      ],
+      "texto": "Bolo de Cenoura de Micro-ondas [1]\n\nIngredientes:\n- 2 ovos\n- ½ xícara (chá) de óleo\n- 250g de cenouras médias sem casca e cortadas em rodelas\n- 1 xícara (chá) de farinha de trigo\n- 1 xícara (chá) de açúcar\n- ½ colher (sopa) de fermento em pó\n\nModo de preparo:\nEm um liquidificador, bata os ovos e o óleo com as cenouras cortadas. Depois, adicione a farinha de trigo, o açúcar e o fermento em pó, batendo até formar uma mistura homogênea.\nColoque a massa em uma forma para micro-ondas bem untada com manteiga e leve ao micro-ondas por 8 minutos na potência máxima. Abra o forno por alguns segundos de 2 em 2 minutos para evitar que a massa derrame.\nRetire do micro-ondas, deixe esfriar e desenforme o bolo. Sirva com calda de chocolate feita à parte.\n\nEsta receita é rápida e prática, ideal para aqueles dias em que não se tem muito tempo mas quer se deliciar com um bom bolo de cenoura.\n\nIngredientes que faltam:\n- Bolo de Cenoura de Micro-ondas [1]: Calda, - 6 colheres (sopa) de chocolate em pó- 400 ml de leite- 1 colher (sopa) de manteiga- 4 colheres (sopa) de açúcar- 2 colheres (sopa) de amido de milho"
+    },
+    {
+      "id": "r02",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 15.901559666001049,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "r03",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 32.37513762500021,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "r04",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 56.07270129200151,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b27"
+      ],
+      "texto": "Arroz de Forno\n\nModo de preparo:\nNuma panela em fogo médio com 3 colheres (sopa) de óleo refogue 2 xícaras (chá) de arroz cru, mexendo bem. Em seguida afaste o arroz do centro da panela, adicione 1 colher (sopa) de óleo, 2 tomates sem pele e sem sementes picados, 1 dente de alho amassado, sal a gosto, esmague bem os temperos e misture ao arroz até que estejam bem desmanchados. Acrescente 4 xícaras (chá) de água fervente e misture. Assim que levantar fervura, abaixe o fogo, tampe a panela e deixe cozinhar até secar a água e o arroz ficar cozido. Retire do fogo.\nCom um garfo, solte o arroz, coloque 2 colheres (sopa) de manteiga, misture bem. Adicione 4 ovos mexidos feitos no azeite, 6 azeitonas verdes sem caroço picadas, 6 azeitonas pretas sem caroço picadas, 3 colheres (sopa) de cebolinha verde picada, salsinha picadinha a gosto, ¾ xícara (chá) de queijo parmesão ralado, 2 cenouras cortadas em cubos médios e cozidas al dente, 1 pacote de batata palha, 500g de carne cozida e desfiada (acém ou pá), misture bem.\nTransfira o arroz para um refratário, polvilhe 2 colheres (sopa) de queijo parmesão ralado e leve ao forno médio pré-aquecido a 180°C por +/- 20 minutos ou até dourar. Retire do forno e sirva em seguida. [1]\n\nIngredientes que faltam:\n- Arroz de forno [1]: 1 dente de alho amassado, 2 colheres (sopa) de manteiga, 4 ovos mexidos feitos no azeite, 6 azeitonas verdes sem caroço picadas, 6 azeitonas pretas sem caroço picadas, 3 colheres (sopa) de cebolinha verde picada, salsinha picadinha a gosto, 2 cenouras cortadas em cubos médios e cozidas al dente, 1 pacote de batata palha (140g), 500g de carne cozida e desfiada (acém ou pá)"
+    },
+    {
+      "id": "r05",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 67.63306962500064,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "r06",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.2583567919991765,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "r07",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 38.753088790999755,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b2f"
+      ],
+      "texto": "Receita: Omelete de Forno\n\nIngredientes:\n- 10 ovos\n- ½ xícara (chá) de leite\n- sal e pimenta-do-reino a gosto\n- Recheio a gosto\n- tomate sem semente picadinho\n- cheiro verde picadinho\n- azeitona verde picadinha\n- peito de peru picadinho\n- blanquet picadinho\n- queijo minas padrão ralado\n- queijo parmesão ralado\n- presunto picadinho\n- presunto parma picadinho\n- salame picadinho\n- bacon picadinho e frito\n- linguiça calabresa ralada e frita\n- milho\n- ervilha\n\nModo de preparo:\nColoque numa tigela 10 ovos, ½ xícara (chá) de leite, sal e pimenta-do-reino a gosto e bata bem até ficar homogêneo.\nNuma forma para cupcake, coloque os ingredientes de sua escolha no fundo da forma, regue a mistura de ovos (feita acima) e leve ao forno alto pré-aquecido a 200° C por +/- 13 minutos se gostar da omelete cremosa ou +/- 20 minutos se preferir a omelete mais durinha. Retire do forno, desenforme e sirva em seguida.\n\n[1]\n\nIngredientes que faltam:\n- Omelete de forno [1]: ½ xícara (chá) de leite, Recheio a gosto, tomate sem semente picadinho, cheiro verde picadinho, azeitona verde picadinha, peito de peru picadinho, blanquet picadinho, queijo minas padrão ralado, queijo parmesão ralado, presunto picadinho, presunto parma picadinho, salame picadinho, bacon picadinho e frito, linguiça calabresa ralada e frita, milho, ervilha"
+    },
+    {
+      "id": "r08",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 54.66955441600112,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "e01",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 13.786275750000641,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "e02",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 17.735531667000032,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "e03",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 14.550917667000249,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "e04",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 29.645275709000998,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "e05",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 39.608397333999164,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "g01",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 20.837771333001,
+      "documentos_citados": [
+        "ms-guia-criancas-2019",
+        "raca-ultraprocessados-2022"
+      ],
+      "texto": "Alimentos ultraprocessados são aqueles industrialmente formulados com longa vida de prateleira e grande quantidade de consumo, frequentemente ricos em calorias, sal, açúcar e gorduras, mas pobres em nutrientes essenciais [2]. Devem ser evitados pois podem levar a problemas como hipertensão, doenças do coração, diabetes, obesidade, cárie dentária e câncer [1].\n\nEstes alimentos são frequentemente usados como ingredientes principais em produtos que parecem cereais ou comidas prontas para consumo, mas não devem ser oferecidos a crianças por causa de seus outros ingredientes [3]."
+    },
+    {
+      "id": "g02",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 21.66714695799965,
+      "documentos_citados": [
+        "guia-alimentar"
+      ],
+      "texto": "Sim, você pode usar sal, óleo e açúcar na comida, mas em pequenas quantidades. De acordo com o Guia Alimentar para a População Brasileira [1], esses produtos devem ser utilizados com moderação ao temperar e cozinhar alimentos e criar preparações culinárias.\n\nPor exemplo:\n- Óleo: Para refogar legumes, verduras e carnes.\n- Sal: Como tempero em diversas preparações.\n- Açúcar: Em doces caseiros à base de frutas, leite e ovos ou para fazer bolos e tortas.\n\nEsses produtos contribuem para diversificar e tornar a alimentação mais saborosa sem que ela fique nutricionalmente desbalanceada [2]."
+    },
+    {
+      "id": "g03",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 30.891630166999676,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "g04",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 17.67143145799855,
+      "documentos_citados": [
+        "guia-alimentar",
+        "ms-guia-criancas-2019",
+        "ms-protocolo-guia-adultos-2021"
+      ],
+      "texto": "Planeje as compras de alimentos, organize a despensa doméstica e defina com antecedência o cardápio da semana [1]. Cozinhe uma quantidade maior do que a necessária para uma refeição e guarde adequadamente a preparação [2]. Compartilhe as tarefas da cozinha com os outros membros da família [3][5]. Mantenha alimentos prontos para serem utilizados rapidamente, como macarrão e ovos [4]."
+    },
+    {
+      "id": "c01",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 14.747503250000591,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "c02",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 25.785936040998422,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "c03",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 22.85709074999977,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "c04",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 14.452913332999742,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s01",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.08834558300077333,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s02",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.026587083000777056,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s03",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.028612750000320375,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s04",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.021538541999689187,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "g05",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 20.67669533299886,
+      "documentos_citados": [
+        "guia-alimentar"
+      ],
+      "texto": "[1] Para comer melhor, faça suas compras em locais que ofereçam variedades de alimentos in natura ou minimamente processados, como mercados, feiras livres e feiras de produtores. Esses locais geralmente têm uma maior disponibilidade de legumes, verduras e frutas da estação e cultivadas localmente."
+    },
+    {
+      "id": "g06",
+      "categoria": "guia_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 25.72670237500097,
+      "documentos_citados": [
+        "guia-alimentar",
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "Para aprender a cozinhar, é importante desenvolver e compartilhar habilidades culinárias com a família [1]. Se você não tem experiência, converse com pessoas que sabem cozinhar, leia receitas ou faça cursos.\n\nDivida as tarefas da cozinha entre todos os membros da família. Crianças podem ajudar em atividades seguras conforme vão crescendo [2].\n\nPlaneje as compras e o cardápio para a semana, organizando a despensa doméstica [3]. Isso ajuda a manter a rotina de cozinhar e a garantir que todos participem das tarefas.\n\nCozinhe em quantidades maiores e guarde os alimentos adequadamente. Isso economiza tempo e reduz desperdício [2].\n\nPromova momentos de convivência durante as refeições, tornando o ato de cozinhar uma atividade prazerosa para toda a família [3]."
+    },
+    {
+      "id": "c05",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 20.973330916998748,
+      "documentos_citados": [
+        "ms-na-cozinha-flv",
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "[1] [2]\n\nA alface pode ser mantida em um saco plástico na gaveta de legumes da geladeira por 5 dias. No entanto, de acordo com o Guia Alimentar para Crianças Brasileiras Menores de 2 Anos, a alface deve ser consumida antes de outras verduras como couve e agrião, indicando que ela pode durar até uma semana na geladeira se bem armazenada."
+    },
+    {
+      "id": "c06",
+      "categoria": "conservacao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 10.981701665999935,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "n01",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 6.753917750000255,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "n02",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 19.024204625000493,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "n03",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 15.648113166000257,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "n04",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.07219637500020326,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "n05",
+      "categoria": "nutricao",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.02454595799827075,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "i01",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 16.094923917000415,
+      "documentos_citados": [
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "6 MESES [1]"
+    },
+    {
+      "id": "i02",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 14.454551584,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "i03",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 15.565442750001239,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "i04",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 25.435050374999264,
+      "documentos_citados": [
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "Para guardar o leite materno:\n\n- Coloque-o no congelador ou freezer (até 15 dias) ou na prateleira mais próxima ao congelador da geladeira (até 12 horas). Não guarde na porta da geladeira [2].\n\n- Tampar bem o frasco e anotar a data da retirada com caneta em uma etiqueta ou esparadrapo, colando no frasco.\n\n- Coloque os frascos em ordem, com os mais antigos na frente. Estes devem ser os primeiros a serem utilizados [2].\n\nPara descongelar:\n\n- Descongele o leite materno no próprio frasco em banho-maria, com o fogo apagado [1]."
+    },
+    {
+      "id": "i05",
+      "categoria": "alimentacao_infantil",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 20.816874000000098,
+      "documentos_citados": [
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "[1] As papinhas industrializadas não favorecem o desenvolvimento da mastigação, dificultam a percepção dos diferentes sabores e não ajudam a criança a se acostumar com o tempero da comida da família e com os alimentos da sua região. Além disso, as vitaminas e minerais dos alimentos in natura são mais bem aproveitados pelo organismo do que aqueles adicionados nas papinhas industrializadas."
+    },
+    {
+      "id": "d01",
+      "categoria": "desperdicio",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 30.686356915999568,
+      "documentos_citados": [
+        "cadsc-campanha-desperdicio-2022"
+      ],
+      "texto": "Sim, uma campanha de conscientização ajuda a reduzir o desperdício de comida. De acordo com os trechos [1], [2] e [3], uma campanha chamada \"Prato Limpo\" foi realizada em uma unidade de alimentação e nutrição (UAN) hospitalar, que servia 6 mil almoços diários. Durante a campanha, houve uma redução significativa do desperdício per capita de 57,0 g para 25,0 g. Além disso, foi observada uma diminuição no custo financeiro médio em torno de 34,6%. Esses resultados indicam que ações de conscientização são eficazes na redução do desperdício alimentar nas UANs."
+    },
+    {
+      "id": "d02",
+      "categoria": "desperdicio",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 24.897749042000214,
+      "documentos_citados": [
+        "cadsc-campanha-desperdicio-2022"
+      ],
+      "texto": "Resto-ingestão é a quantidade de alimentos que são deixados no prato e não consumidos pelos comensais. Para medir o desperdício, você pode coletar os restos alimentares após as refeições, pesá-los em uma balança digital e dividir esse peso pelo número total de refeições servidas. Um índice per capita de resto-ingestão entre 2% a 5% é considerado ideal [1]."
+    },
+    {
+      "id": "d03",
+      "categoria": "desperdicio",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 25.051990957999806,
+      "documentos_citados": [
+        "ms-na-cozinha-flv",
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "[1] [2]\n\nPara aproveitar cascas e talos de legumes, você pode:\n\n- Usar a casca de couve, rúcula e salsinha em sucos ou sopas.\n- Incluir as folhas de beterraba, cenoura, couve-flor e brócolis em saladas ou sopas.\n- Cozinhar os talos de legumes em pratos como bolinho de espinafre.\n\nEstes ingredientes são ricos em vitaminas, minerais e fibras, contribuindo para uma alimentação mais saudável. Além disso, aproveitar integralmente os alimentos ajuda a reduzir o desperdício e a produção de lixo."
+    },
+    {
+      "id": "d04",
+      "categoria": "desperdicio",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 8.681200625000201,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "h01",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 18.642161167001177,
+      "documentos_citados": [
+        "guia-alimentar",
+        "ms-guia-criancas-2019"
+      ],
+      "texto": "[1] [2]\n\nA comida refrigerada deve ser mantida na geladeira a uma temperatura de até 4°C para evitar o crescimento rápido de bactérias e manter a qualidade dos alimentos. Para as preparações culinárias guardadas para a próxima refeição, é recomendado armazenar sob refrigeração."
+    },
+    {
+      "id": "h02",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 12.046350750000784,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "h03",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 29.498177458999635,
+      "documentos_citados": [
+        "ms-guia-criancas-2019",
+        "guia-alimentar"
+      ],
+      "texto": "[1] [2]\n\nPara garantir uma boa prática de higiene em serviços de alimentação:\n\n- Lave bem as mãos e antebraços com água e sabão antes do preparo dos alimentos.\n- Limpe todos os utensílios e superfícies que entrarão em contato com os alimentos, como fogão, bancadas, mesa, pia, talheres, pratos, potes e travessas, com água limpa após o uso. Troque panos de prato e esponjas de louça 1 vez por semana.\n- Mantenha a cozinha limpa, arejada e organizada para preservar a qualidade dos alimentos.\n\nEstas medidas ajudam a garantir que os alimentos sejam preparados de forma segura e higiênica."
+    },
+    {
+      "id": "h04",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 25.481194666999727,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "h05",
+      "categoria": "seguranca_alimentar",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 15.478651082999932,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "u01",
+      "categoria": "orientacao_nutricional",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 23.042694375000792,
+      "documentos_citados": [
+        "raca-ultraprocessados-2022"
+      ],
+      "texto": "Os alimentos ultraprocessados apresentam riscos significativos para a saúde e a cultura alimentar. Eles estão associados à obesidade, doenças cardiovasculares, diabetes e outras condições crônicas não-transmissíveis [1]. Além disso, o consumo excessivo desses alimentos pode interferir na formação de hábitos alimentares saudáveis em crianças e adultos, ameaçando a cultura alimentar tradicional [1].\n\nA superação desses desafios depende da prioridade dada à promoção de dietas saudáveis nas políticas públicas, que fortaleçam e preservem a cultura alimentar local, promovendo saúde, sustentabilidade, resiliência e inclusão através dos sistemas alimentares [2]."
+    },
+    {
+      "id": "u02",
+      "categoria": "orientacao_nutricional",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 36.388989375000165,
+      "documentos_citados": [
+        "ms-protocolo-guia-adultos-2021"
+      ],
+      "texto": "[1] O profissional de saúde deve seguir o fluxograma do Guia Alimentar para População Adulta, identificando os marcadores de alimentação saudável e não-saudável do usuário em cada encontro. As orientações alimentares devem ser feitas conforme os pontos críticos são identificados. Para pessoas com alimentação adequada, pode-se sugerir a valorização da prática alimentar. A decisão sobre quantas orientações fazer por consulta é pactuada entre o profissional e o usuário em cada encontro."
+    },
+    {
+      "id": "p01",
+      "categoria": "comportamento_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 50.75203470799897,
+      "documentos_citados": [
+        "raca-comensalidade-pandemia-2024",
+        "raca-consumo-pandemia-2024"
+      ],
+      "texto": "A pandemia de Covid-19 trouxe mudanças significativas na alimentação das famílias, principalmente em relação ao consumo de alimentos ultraprocessados. De acordo com os trechos [1], [2] e [3], houve um aumento no uso de aplicativos de entrega e compras online para aquisição desses alimentos, enquanto a classe média mostrou interesse renovado pelo preparo dos alimentos em casa.\n\nAlém disso, as dificuldades financeiras causadas pela crise econômica fizeram com que muitos optassem por comprar alimentos mais baratos e menos saudáveis. No entanto, houve também um despertar para a culinária caseira, o que pode levar ao consumo de alimentos mais saudáveis.\n\nUma receita simples que você pode tentar é a **Salada de Frutas**:\n\n- Corte as frutas frescas (maçãs, bananas, uvas) em pedaços.\n- Misture com uma colher de sopa de iogurte natural e um pouco de mel.\n- Sirva imediatamente.\n\nEste prato é fácil de preparar e pode ser uma ótima opção para refeições rápidas durante a pandemia."
+    },
+    {
+      "id": "p02",
+      "categoria": "comportamento_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 17.4655244580008,
+      "documentos_citados": [
+        "raca-comensalidade-pandemia-2024"
+      ],
+      "texto": "A comensalidade é o ato de compartilhar a mesa ou a refeição com outro, ou seja, é o alimentar-se em conjunto, um momento de interação entre duas ou mais pessoas em uma situação cotidiana ou festiva [1]. Etimologicamente, deriva do latim \"comensale\", significando o ato de comer junto [2]."
+    },
+    {
+      "id": "p03",
+      "categoria": "comportamento_alimentar",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 16.027016332998755,
+      "documentos_citados": [
+        "raca-ambiente-escolar-2023"
+      ],
+      "texto": "[1] [2]\n\nA escola pode influenciar o que a criança come em casa, mas essa influência é limitada. As escolas servem refeições, mas muitas famílias dependem delas como as principais refeições do dia, especialmente quando há dificuldades financeiras ou falta de tempo para preparar alimentos adequados em casa.\n\nAs crianças trazem lanches variados de casa, refletindo os valores e a realidade das suas famílias. A escola pode oferecer oportunidades para experimentar novos alimentos e conceitos alimentares, mas não tem grande influência sobre as escolhas diárias feitas por elas em casa.\n\nA escola é um espaço importante para discutir e refletir sobre a alimentação, mas a prática de trazer lanches ou refeições da escola para casa continua sendo uma decisão majoritariamente familiar."
+    },
+    {
+      "id": "b01",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 32.096695250000266,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "b02",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 25.189611582998623,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "b03",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 16.84559183300007,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "b04",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 22.90538283299975,
+      "documentos_citados": [
+        "raca-ultraprocessados-2022",
+        "guia-alimentar"
+      ],
+      "texto": "Sim, os alimentos ultraprocessados podem fazer mal à saúde. De acordo com o Guia Alimentar para a População Brasileira [1], eles são desenhados industrialmente para ter longa vida na prateleira e serem consumidos em grande quantidade. Isso ocorre devido à destruição da matriz original de muitos alimentos in natura, substituída por ingredientes com uma matriz acelular, como amidos, gorduras e concentrados de proteínas, além de aditivos alimentares que dão sabor, cheiro, consistência e cor. Essa composição nutricionalmente desbalanceada pode levar a um consumo excessivo desses alimentos, substituindo os mais saudáveis, o que está associado a doenças crônicas não-transmissíveis.\n\nAlém disso, esses alimentos devem ser evitados devido ao impacto negativo em cultura, vida social e meio ambiente [2][3][4]. Sua produção é imensa e causa degradação ambiental, reduzindo a biodiversidade e comprometendo recursos naturais. A formulação e apresentação desses alimentos tendem a ser idênticos em todo o mundo, promovidos por campanhas publicitárias agressivas que podem levar ao desejo de consumir mais, afetando culturas alimentares genuínas [4]."
+    },
+    {
+      "id": "b05",
+      "categoria": "robustez",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 18.763253084000098,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s05",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.21670145799907914,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s06",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.022453208999650087,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s07",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 2.2012500830005592,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s08",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.07136233299934247,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s09",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.021316832999218605,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "s10",
+      "categoria": "sem_resposta",
+      "esperado": "nao_encontrar",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.02388187499855121,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta."
+    },
+    {
+      "id": "$01",
+      "categoria": "preco",
+      "esperado": "aviso_de_preco",
+      "obtido": "aviso_de_preco",
+      "fonte_esperada": null,
+      "segundos": 1.1457999789854512e-05,
+      "documentos_citados": [],
+      "texto": "Preços atuais não vêm da base de conhecimento de receitas e alimentação. Para saber quanto um produto custa hoje, consulte os preços cadastrados dos mercados."
+    },
+    {
+      "id": "$02",
+      "categoria": "preco",
+      "esperado": "aviso_de_preco",
+      "obtido": "aviso_de_preco",
+      "fonte_esperada": null,
+      "segundos": 1.1541998901520856e-05,
+      "documentos_citados": [],
+      "texto": "Preços atuais não vêm da base de conhecimento de receitas e alimentação. Para saber quanto um produto custa hoje, consulte os preços cadastrados dos mercados."
+    },
+    {
+      "id": "$03",
+      "categoria": "preco",
+      "esperado": "aviso_de_preco",
+      "obtido": "aviso_de_preco",
+      "fonte_esperada": null,
+      "segundos": 5.83300061407499e-06,
+      "documentos_citados": [],
+      "texto": "Preços atuais não vêm da base de conhecimento de receitas e alimentação. Para saber quanto um produto custa hoje, consulte os preços cadastrados dos mercados."
+    }
+  ]
+}
