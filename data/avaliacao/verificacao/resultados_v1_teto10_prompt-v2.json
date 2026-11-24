@@ -1,0 +1,361 @@
+{
+  "data": "2026-11-24T20:48:39+00:00",
+  "maquina": "Darwin arm64, 10 CPUs lógicas",
+  "casos_arquivo": "data/avaliacao/verificacao/casos_v1.json",
+  "modelo_llm": "qwen2.5:7b",
+  "modelo_embeddings": "e5",
+  "colecao": "evidencias_verificacao_e5",
+  "limiar_confianca": 0.845,
+  "limite_inicial": 5,
+  "maximo_de_retornos": 2,
+  "limite_maximo": 10,
+  "prompt_de_analise": "analise@v2",
+  "prompt_de_validacao": "validacao",
+  "temperatura": 0.0,
+  "semente": 42,
+  "versoes_dos_prompts": {
+    "verificacao/analise@v2": 2,
+    "verificacao/validacao": 1
+  },
+  "casos": 15,
+  "acuracia": 0.867,
+  "aprovacao_direta": 0.733,
+  "aprovacao_final": 0.8,
+  "media_de_retornos": 0.467,
+  "latencia_media": 23.68,
+  "resultados": [
+    {
+      "id": "v01",
+      "alegacao": "Alimentos ultraprocessados devem ser evitados.",
+      "esperada": "reciclada",
+      "obtida": "reciclada",
+      "acertou": true,
+      "aprovado": true,
+      "aprovado_direto": true,
+      "retornos": 0,
+      "destinos": [],
+      "motivos": [],
+      "justificativa": "As evidências [1], [2] e [3] cobrem a recomendação de evitar o consumo de alimentos ultraprocessados, justificando com diversos motivos como riscos à saúde, desequilíbrio nutricional e marketing enganoso.",
+      "citacoes": [
+        "039ec2b32552aff5_t0035",
+        "0732e12ff7aef926_t0169",
+        "039ec2b32552aff5_t0036"
+      ],
+      "confianca": 0.85748416,
+      "maior_score": 0.85748416,
+      "segundos": 21.112
+    },
+    {
+      "id": "v02",
+      "alegacao": "Até os seis meses, o bebê deve receber só leite materno.",
+      "esperada": "reciclada",
+      "obtida": "reciclada",
+      "acertou": true,
+      "aprovado": true,
+      "aprovado_direto": true,
+      "retornos": 0,
+      "destinos": [],
+      "motivos": [],
+      "justificativa": "A evidência [1] e [2] cobrem que até os 6 meses, o leite materno deve ser o único alimento para a criança.",
+      "citacoes": [
+        "8771211346f741e7_t0253",
+        "8771211346f741e7_t0106"
+      ],
+      "confianca": 0.85399103,
+      "maior_score": 0.85399103,
+      "segundos": 5.194
+    },
+    {
+      "id": "v03",
+      "alegacao": "Crianças menores de dois anos não devem comer açúcar.",
+      "esperada": "reciclada",
+      "obtida": "reciclada",
+      "acertou": true,
+      "aprovado": true,
+      "aprovado_direto": true,
+      "retornos": 0,
+      "destinos": [],
+      "motivos": [],
+      "justificativa": "As evidências [1], [2] e [5] cobrem todas as afirmações da alegação, recomendando que crianças menores de dois anos não devam comer açúcar.",
+      "citacoes": [
+        "0732e12ff7aef926_t0148",
+        "8771211346f741e7_t0120",
+        "8771211346f741e7_t0255"
+      ],
+      "confianca": 0.85449374,
+      "maior_score": 0.85449374,
+      "segundos": 6.183
+    },
+    {
+      "id": "v04",
+      "alegacao": "Óleos, gorduras, sal e açúcar devem ser usados em pequenas quantidades no preparo dos alimentos.",
+      "esperada": "reciclada",
+      "obtida": "reciclada",
+      "acertou": true,
+      "aprovado": true,
+      "aprovado_direto": true,
+      "retornos": 0,
+      "destinos": [],
+      "motivos": [],
+      "justificativa": "As evidências [1], [2] e [5] cobrem todas as afirmações da alegação, indicando que óleos, gorduras, sal e açúcar devem ser usados em pequenas quantidades no preparo dos alimentos.",
+      "citacoes": [
+        "02ac3ddb0a5951b7_t0034",
+        "02ac3ddb0a5951b7_t0033",
+        "02ac3ddb0a5951b7_t0054"
+      ],
+      "confianca": 0.8529305,
+      "maior_score": 0.8529305,
+      "segundos": 22.455
+    },
+    {
+      "id": "v05",
+      "alegacao": "Comer com regularidade, devagar e em companhia faz parte de uma alimentação adequada.",
+      "esperada": "reciclada",
+      "obtida": "reciclada",
+      "acertou": true,
+      "aprovado": false,
+      "aprovado_direto": false,
+      "retornos": 2,
+      "destinos": [
+        "research",
+        "research"
+      ],
+      "motivos": [
+        [
+          "A confiança 0.842 está abaixo do limiar mínimo de 0.845: a evidência é insuficiente."
+        ],
+        [
+          "A confiança 0.842 está abaixo do limiar mínimo de 0.845: a evidência é insuficiente."
+        ],
+        [
+          "A confiança 0.842 está abaixo do limiar mínimo de 0.845: a evidência é insuficiente."
+        ]
+      ],
+      "justificativa": "As evidências [1], [2], [3], [4] e [6] cobrem todas as afirmações da alegação, mencionando comer com regularidade (afirmação 1), devagar (afirmação 2) e em companhia (afirmação 3).",
+      "citacoes": [
+        "02ac3ddb0a5951b7_t0102",
+        "02ac3ddb0a5951b7_t0098",
+        "02ac3ddb0a5951b7_t0105",
+        "039ec2b32552aff5_t0044",
+        "02ac3ddb0a5951b7_t0103"
+      ],
+      "confianca": 0.8421987,
+      "maior_score": 0.8421987,
+      "segundos": 43.153
+    },
+    {
+      "id": "v06",
+      "alegacao": "Ultraprocessados devem ser evitados porque causam câncer em poucas semanas de consumo.",
+      "esperada": "parcial",
+      "obtida": "parcial",
+      "acertou": true,
+      "aprovado": false,
+      "aprovado_direto": false,
+      "retornos": 2,
+      "destinos": [
+        "research",
+        "research"
+      ],
+      "motivos": [
+        [
+          "A confiança 0.837 está abaixo do limiar mínimo de 0.845: a evidência é insuficiente."
+        ],
+        [
+          "A confiança 0.837 está abaixo do limiar mínimo de 0.845: a evidência é insuficiente."
+        ],
+        [
+          "A confiança 0.837 está abaixo do limiar mínimo de 0.845: a evidência é insuficiente."
+        ]
+      ],
+      "justificativa": "A evidência [1] cobre a recomendação de evitar o consumo de alimentos ultraprocessados, mas não menciona câncer nem prazos específicos para o desenvolvimento da doença.",
+      "citacoes": [
+        "039ec2b32552aff5_t0035"
+      ],
+      "confianca": 0.83659315,
+      "maior_score": 0.83659315,
+      "segundos": 43.546
+    },
+    {
+      "id": "v07",
+      "alegacao": "A pandemia de COVID-19 aumentou a insegurança alimentar no Brasil porque as pessoas passaram a comer mais em casa.",
+      "esperada": "parcial",
+      "obtida": "parcial",
+      "acertou": true,
+      "aprovado": true,
+      "aprovado_direto": true,
+      "retornos": 0,
+      "destinos": [],
+      "motivos": [],
+      "justificativa": "A evidência [3] cobre a insegurança alimentar aumentada pela pandemia, mas não aborda o consumo em casa como causa.",
+      "citacoes": [
+        "ff768a41953b0598_t0001"
+      ],
+      "confianca": 0.84836,
+      "maior_score": 0.85166746,
+      "segundos": 13.36
+    },
+    {
+      "id": "v08",
+      "alegacao": "O feijão tem fibra alimentar e por isso cura o diabetes.",
+      "esperada": "parcial",
+      "obtida": "parcial",
+      "acertou": true,
+      "aprovado": false,
+      "aprovado_direto": false,
+      "retornos": 2,
+      "destinos": [
+        "research",
+        "research"
+      ],
+      "motivos": [
+        [
+          "A confiança 0.840 está abaixo do limiar mínimo de 0.845: a evidência é insuficiente."
+        ],
+        [
+          "A confiança 0.840 está abaixo do limiar mínimo de 0.845: a evidência é insuficiente."
+        ],
+        [
+          "A confiança 0.840 está abaixo do limiar mínimo de 0.845: a evidência é insuficiente."
+        ]
+      ],
+      "justificativa": "A evidência [1] menciona que o feijão é rico em fibras e justifica a recomendação de seu consumo, mas não afirma que ele cura o diabetes.",
+      "citacoes": [
+        "039ec2b32552aff5_t0030"
+      ],
+      "confianca": 0.840196,
+      "maior_score": 0.840196,
+      "segundos": 38.791
+    },
+    {
+      "id": "v09",
+      "alegacao": "Aplicativos de doação reduzem o desperdício de alimentos e baixam o preço da comida no supermercado.",
+      "esperada": "parcial",
+      "obtida": "nova",
+      "acertou": false,
+      "aprovado": true,
+      "aprovado_direto": true,
+      "retornos": 0,
+      "destinos": [],
+      "motivos": [],
+      "justificativa": "Nenhuma das evidências menciona aplicativos de doação nem o impacto desses aplicativos no preço da comida no supermercado. As evidências discutem plataformas digitais para redução de desperdício e campanhas de conscientização, mas não abordam diretamente os aplicativos em questão ou seus efeitos econômicos.",
+      "citacoes": [],
+      "confianca": 0.0,
+      "maior_score": 0.8400514,
+      "segundos": 11.851
+    },
+    {
+      "id": "v10",
+      "alegacao": "Comer em companhia faz parte de uma alimentação adequada e faz emagrecer mais rápido.",
+      "esperada": "parcial",
+      "obtida": "parcial",
+      "acertou": true,
+      "aprovado": true,
+      "aprovado_direto": true,
+      "retornos": 0,
+      "destinos": [],
+      "motivos": [],
+      "justificativa": "A evidência [1] e [2] cobrem a importância de comer em companhia, mas nenhuma evidência fala sobre o emagrecimento mais rápido.",
+      "citacoes": [
+        "02ac3ddb0a5951b7_t0102",
+        "02ac3ddb0a5951b7_t0103"
+      ],
+      "confianca": 0.8466544,
+      "maior_score": 0.8466544,
+      "segundos": 34.251
+    },
+    {
+      "id": "v11",
+      "alegacao": "O jejum intermitente acelera o metabolismo.",
+      "esperada": "nova",
+      "obtida": "nova",
+      "acertou": true,
+      "aprovado": true,
+      "aprovado_direto": true,
+      "retornos": 0,
+      "destinos": [],
+      "motivos": [],
+      "justificativa": "Nenhuma das evidências menciona o jejum intermitente ou seu impacto no metabolismo. As evidências tratam de alimentação infantil, obesidade e programas de promoção da saúde.",
+      "citacoes": [],
+      "confianca": 0.0,
+      "maior_score": 0.8373045,
+      "segundos": 8.458
+    },
+    {
+      "id": "v12",
+      "alegacao": "Suplementos de colágeno rejuvenescem a pele.",
+      "esperada": "nova",
+      "obtida": "nova",
+      "acertou": true,
+      "aprovado": true,
+      "aprovado_direto": true,
+      "retornos": 0,
+      "destinos": [],
+      "motivos": [],
+      "justificativa": "Nenhuma das evidências menciona suplementos de colágeno ou seus efeitos na pele.",
+      "citacoes": [],
+      "confianca": 0.0,
+      "maior_score": 0.83527297,
+      "segundos": 27.903
+    },
+    {
+      "id": "v13",
+      "alegacao": "Beber água com limão em jejum desintoxica o fígado.",
+      "esperada": "nova",
+      "obtida": "nova",
+      "acertou": true,
+      "aprovado": true,
+      "aprovado_direto": true,
+      "retornos": 0,
+      "destinos": [],
+      "motivos": [],
+      "justificativa": "Nenhuma das evidências trata da combinação de água com limão em jejum ou do seu efeito na desintoxicação do fígado.",
+      "citacoes": [],
+      "confianca": 0.0,
+      "maior_score": 0.83738613,
+      "segundos": 6.566
+    },
+    {
+      "id": "v14",
+      "alegacao": "Comer manga com leite faz mal à saúde.",
+      "esperada": "nova",
+      "obtida": "parcial",
+      "acertou": false,
+      "aprovado": true,
+      "aprovado_direto": false,
+      "retornos": 1,
+      "destinos": [
+        "analysis"
+      ],
+      "motivos": [
+        [
+          "A análise diz que a alegação é nova, mas não cita nenhuma das 2 evidências com score de 0.845 ou mais: precisa mostrar essas evidências e explicar por que não cobrem a alegação."
+        ]
+      ],
+      "justificativa": "A evidência [1] trata do consumo de leite, mas não menciona o consumo de manga. A evidência [2] fala sobre frutas em geral e manga especificamente, mas não discute a combinação com leite.",
+      "citacoes": [
+        "0732e12ff7aef926_t0261",
+        "8771211346f741e7_t0198"
+      ],
+      "confianca": 0.8474871,
+      "maior_score": 0.8474871,
+      "segundos": 40.78
+    },
+    {
+      "id": "v15",
+      "alegacao": "Cortar o glúten emagrece quem não tem doença celíaca.",
+      "esperada": "nova",
+      "obtida": "nova",
+      "acertou": true,
+      "aprovado": true,
+      "aprovado_direto": true,
+      "retornos": 0,
+      "destinos": [],
+      "motivos": [],
+      "justificativa": "Nenhuma das evidências aborda diretamente a relação entre cortar o glúten e emagrecimento, especialmente para pessoas sem doença celíaca. As evidências se concentram na segurança do consumo de glúten e na alimentação infantil.",
+      "citacoes": [],
+      "confianca": 0.0,
+      "maior_score": 0.83212507,
+      "segundos": 31.6
+    }
+  ]
+}
