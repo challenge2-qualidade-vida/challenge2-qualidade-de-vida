@@ -85,7 +85,9 @@ class PreparadorDocumentos:
             pagina for pagina in paginas_normalizadas if pagina["texto"]
         ]
 
-        # Preserva a reconstrução original para manter a compatibilidade do hash.
+        # O hash usa as páginas extraídas, antes da normalização por página, para
+        # bater com o que o pipeline de `leitura_documentos` grava para o mesmo PDF:
+        # normalizar_texto(extrair_pdf(caminho)).
         texto_integral = "\n\n".join(
             f"[Página {pagina['pagina']}]\n{pagina['texto']}"
             for pagina in paginas_extraidas

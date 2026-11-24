@@ -23,14 +23,11 @@ class PesquisadorQdrant:
         pergunta: str,
         limite: int,
     ) -> list[EvidenciaRecuperada]:
-        """Gera o vetor da pergunta e recupera as evidências mais semelhantes."""
-        if not pergunta or not pergunta.strip():
-            raise ValueError("A pergunta não pode ser vazia.")
+        """Gera o vetor da pergunta e recupera as evidências mais semelhantes.
 
-        if limite < 1:
-            raise ValueError("O limite de evidências deve ser positivo.")
-
-        vetor = self._gerador.gerar_para_pergunta(pergunta.strip())
+        A pergunta e o limite chegam validados pelo caso de uso `PesquisarEvidencias`.
+        """
+        vetor = self._gerador.gerar_para_pergunta(pergunta)
 
         return self._repositorio.buscar(
             vetor=vetor,

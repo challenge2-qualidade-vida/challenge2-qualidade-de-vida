@@ -50,6 +50,11 @@ def para_payload(
     }
 
 
+def limitar_score(score: float) -> float:
+    """Traz o cosseno para [-1, 1]: o Qdrant pode devolver 1.0000001 por arredondamento."""
+    return max(-1.0, min(1.0, score))
+
+
 def de_payload(
     payload: dict[str, Any],
 ) -> tuple[
@@ -210,7 +215,7 @@ class RepositorioQdrant:
                 EvidenciaRecuperada(
                     trecho=trecho,
                     documento=documento,
-                    score=ponto.score,
+                    score=limitar_score(ponto.score),
                 )
             )
 
