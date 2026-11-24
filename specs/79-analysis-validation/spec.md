@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | Issue | #79 |
-| Status | Em revisão |
+| Status | Implementada |
 | Contexto delimitado | Verificação |
 | Agente | Analysis Agent e Validation Agent (papel da Mia) |
 
