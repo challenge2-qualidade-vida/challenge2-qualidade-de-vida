@@ -1,11 +1,10 @@
+"""Adaptador de pesquisa semântica usando embeddings e Qdrant."""
 
-"""Implementação da pesquisa semântica de evidências usando E5 e Qdrant."""
-
-from economia.compartilhado.infraestrutura.embeddings_e5 import GeradorE5
-from economia.verificacao.dominio.modelos import EvidenciaRecuperada
-from economia.verificacao.infraestrutura.repositorio_qdrant import (
-    RepositorioQdrant,
+from economia.pesquisa_evidencias.aplicacao.portas import (
+    GeradorDeEmbeddings,
+    RepositorioDeEvidencias,
 )
+from economia.pesquisa_evidencias.dominio.modelos import EvidenciaRecuperada
 
 
 class PesquisadorQdrant:
@@ -13,8 +12,8 @@ class PesquisadorQdrant:
 
     def __init__(
         self,
-        gerador: GeradorE5,
-        repositorio: RepositorioQdrant,
+        gerador: GeradorDeEmbeddings,
+        repositorio: RepositorioDeEvidencias,
     ) -> None:
         self._gerador = gerador
         self._repositorio = repositorio

@@ -1,10 +1,9 @@
-
 import pytest
 
-from economia.verificacao.aplicacao.fragmentacao import (
+from economia.pesquisa_evidencias.aplicacao.fragmentacao import (
     fragmentar_documento,
 )
-from economia.verificacao.dominio.modelos import TrechoEvidencia
+from economia.pesquisa_evidencias.dominio.modelos import TrechoEvidencia
 
 
 def contar_palavras(texto: str) -> int:
@@ -119,15 +118,10 @@ def test_divide_paragrafo_maior_que_limite():
     assert trechos[0].texto == "um dois três"
     assert trechos[1].texto == "quatro cinco"
 
-    assert all(
-        contar_palavras(trecho.texto) <= 3
-        for trecho in trechos
-    )
+    assert all(contar_palavras(trecho.texto) <= 3 for trecho in trechos)
 
     assert all(
-        trecho.pagina_inicial == 1
-        and trecho.pagina_final == 1
-        for trecho in trechos
+        trecho.pagina_inicial == 1 and trecho.pagina_final == 1 for trecho in trechos
     )
 
 
@@ -178,9 +172,7 @@ def test_preserva_integralmente_conteudo_de_paragrafo_dividido():
         overlap_tokens=0,
     )
 
-    texto_reconstruido = " ".join(
-        trecho.texto for trecho in trechos
-    )
+    texto_reconstruido = " ".join(trecho.texto for trecho in trechos)
 
     assert texto_reconstruido == texto_original
 
@@ -265,10 +257,7 @@ def test_overlap_padrao_se_adapta_a_limite_menor():
     paginas = [
         {
             "pagina": 1,
-            "texto": (
-                "um dois três quatro cinco seis\n\n"
-                "sete oito nove dez onze doze"
-            ),
+            "texto": ("um dois três quatro cinco seis\n\nsete oito nove dez onze doze"),
         }
     ]
 
@@ -289,7 +278,4 @@ def test_overlap_padrao_se_adapta_a_limite_menor():
     # é reduzido até que a combinação respeite os 10 tokens.
     assert palavras_segundo[:4] == palavras_primeiro[-4:]
 
-    assert all(
-        contar_palavras(trecho.texto) <= 10
-        for trecho in trechos
-    )
+    assert all(contar_palavras(trecho.texto) <= 10 for trecho in trechos)

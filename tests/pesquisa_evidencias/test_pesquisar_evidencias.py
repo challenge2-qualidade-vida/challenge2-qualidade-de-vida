@@ -1,12 +1,11 @@
-
 """Testes do caso de uso de pesquisa de evidências."""
 
 import pytest
 
-from economia.verificacao.aplicacao.pesquisar_evidencias import (
+from economia.pesquisa_evidencias.aplicacao.pesquisar_evidencias import (
     PesquisarEvidencias,
 )
-from economia.verificacao.dominio.modelos import (
+from economia.pesquisa_evidencias.dominio.modelos import (
     DocumentoEvidencia,
     EvidenciaRecuperada,
     FonteEvidencia,
@@ -26,7 +25,6 @@ class PesquisadorFalso:
         self.pergunta_recebida = pergunta
         self.limite_recebido = limite
         return self.resultados
-
 
 
 @pytest.fixture

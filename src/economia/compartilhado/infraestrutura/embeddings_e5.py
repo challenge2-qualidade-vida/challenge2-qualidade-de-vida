@@ -1,4 +1,3 @@
-
 """Embeddings compartilhados com o intfloat/multilingual-e5-base."""
 
 from collections.abc import Sequence
@@ -60,15 +59,11 @@ class GeradorE5:
 
     def gerar_para_trechos(self, textos: Sequence[str]) -> list[list[float]]:
         """Gera embeddings para documentos e trechos."""
-        return self._gerar(
-            [f"{PREFIXO_DO_TRECHO}{texto}" for texto in textos]
-        )
+        return self._gerar([f"{PREFIXO_DO_TRECHO}{texto}" for texto in textos])
 
     def gerar_para_pergunta(self, pergunta: str) -> list[float]:
         """Gera o embedding de uma pergunta."""
-        return self._gerar(
-            [f"{PREFIXO_DA_PERGUNTA}{pergunta}"]
-        )[0]
+        return self._gerar([f"{PREFIXO_DA_PERGUNTA}{pergunta}"])[0]
 
 
 def contador_de_tokens_e5():

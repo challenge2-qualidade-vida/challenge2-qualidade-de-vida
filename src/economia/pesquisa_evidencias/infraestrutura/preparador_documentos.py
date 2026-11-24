@@ -1,4 +1,3 @@
-
 """Preparação de documentos científicos para a Research Agent."""
 
 import hashlib
@@ -6,17 +5,12 @@ from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Any
 
-from economia.leitura_documentos.infraestrutura.ingestao.extratores import (
-    extrair_paginas_pdf,
-)
-from economia.leitura_documentos.infraestrutura.ingestao.normalizadores import (
-    normalizar_texto,
-)
-from economia.verificacao.aplicacao.fragmentacao import (
+from economia.leitura_documentos.aplicacao.portas import LeitorDocumental
+from economia.pesquisa_evidencias.aplicacao.fragmentacao import (
     LIMITE_TOKENS_TRECHO,
     fragmentar_documento,
 )
-from economia.verificacao.dominio.modelos import (
+from economia.pesquisa_evidencias.dominio.modelos import (
     DocumentoEvidencia,
     FonteEvidencia,
     TrechoEvidencia,
@@ -28,10 +22,12 @@ class PreparadorDocumentos:
 
     def __init__(
         self,
+        leitor_documental: LeitorDocumental,
         contar_tokens: Callable[[str], int],
         limite_tokens: int = LIMITE_TOKENS_TRECHO,
         overlap_tokens: int | None = None,
     ) -> None:
+        self._leitor_documental = leitor_documental
         self._contar_tokens = contar_tokens
         self._limite_tokens = limite_tokens
         self._overlap_tokens = overlap_tokens
@@ -65,52 +61,39 @@ class PreparadorDocumentos:
             raise ValueError("A fonte precisa da instituição.")
 
         if ano is not None and (
-            not isinstance(ano, int)
-            or isinstance(ano, bool)
-            or ano <= 0
+            not isinstance(ano, int) or isinstance(ano, bool) or ano <= 0
         ):
             raise ValueError("O ano da fonte precisa ser um inteiro positivo.")
 
         if url is not None and not isinstance(url, str):
             raise ValueError("A URL da fonte precisa ser textual.")
 
-        paginas_extraidas = extrair_paginas_pdf(caminho)
+        paginas_extraidas = self._leitor_documental.extrair_paginas_pdf(caminho)
 
         if not paginas_extraidas:
-            raise ValueError(
-                "O documento não possui texto extraível."
-            )
+            raise ValueError("O documento não possui texto extraível.")
 
         paginas_normalizadas = [
             {
                 "pagina": pagina["pagina"],
-                "texto": normalizar_texto(pagina["texto"]),
+                "texto": self._leitor_documental.normalizar_texto(pagina["texto"]),
             }
             for pagina in paginas_extraidas
         ]
 
         paginas_normalizadas = [
-            pagina
-            for pagina in paginas_normalizadas
-            if pagina["texto"]
+            pagina for pagina in paginas_normalizadas if pagina["texto"]
         ]
 
-        # Mantém o mesmo formato de reconstrução do pipeline original.
+        # Preserva a reconstrução original para manter a compatibilidade do hash.
         texto_integral = "\n\n".join(
             f"[Página {pagina['pagina']}]\n{pagina['texto']}"
             for pagina in paginas_extraidas
         )
+        texto_integral = self._leitor_documental.normalizar_texto(texto_integral)
 
-        texto_integral = normalizar_texto(texto_integral)
-
-        hash_texto = hashlib.sha256(
-            texto_integral.encode("utf-8")
-        ).hexdigest()
-
-        # Mantém o mesmo identificador estável do pipeline documental.
-        identificador = hashlib.sha256(
-            arquivo.encode("utf-8")
-        ).hexdigest()[:16]
+        hash_texto = hashlib.sha256(texto_integral.encode("utf-8")).hexdigest()
+        identificador = hashlib.sha256(arquivo.encode("utf-8")).hexdigest()[:16]
 
         fonte = FonteEvidencia(
             titulo=titulo,

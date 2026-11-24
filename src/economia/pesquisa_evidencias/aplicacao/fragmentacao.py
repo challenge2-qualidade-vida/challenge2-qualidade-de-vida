@@ -1,9 +1,8 @@
-
 """Fragmentação de documentos científicos em trechos recuperáveis."""
 
 from collections.abc import Callable, Sequence
 
-from economia.verificacao.dominio.modelos import TrechoEvidencia
+from economia.pesquisa_evidencias.dominio.modelos import TrechoEvidencia
 
 LIMITE_TOKENS_TRECHO = 450
 OVERLAP_TOKENS_TRECHO = 60
@@ -33,17 +32,13 @@ def dividir_paragrafo(
             continue
 
         if not parte_atual:
-            raise ValueError(
-                "Uma palavra isolada ultrapassa o limite de tokens."
-            )
+            raise ValueError("Uma palavra isolada ultrapassa o limite de tokens.")
 
         partes.append(" ".join(parte_atual))
         parte_atual = [palavra]
 
         if contar_tokens(palavra) > limite_tokens:
-            raise ValueError(
-                "Uma palavra isolada ultrapassa o limite de tokens."
-            )
+            raise ValueError("Uma palavra isolada ultrapassa o limite de tokens.")
 
     if parte_atual:
         partes.append(" ".join(parte_atual))
@@ -70,9 +65,7 @@ def _obter_overlap(
 
     for item in palavras_reversas:
         candidato = list(reversed(selecionadas + [item]))
-        texto_candidato = " ".join(
-            palavra for _, palavra in candidato
-        )
+        texto_candidato = " ".join(palavra for _, palavra in candidato)
 
         if contar_tokens(texto_candidato) > limite_overlap:
             break
@@ -147,11 +140,7 @@ def fragmentar_documento(
         numero = pagina["pagina"]
         texto = str(pagina["texto"])
 
-        if (
-            not isinstance(numero, int)
-            or isinstance(numero, bool)
-            or numero < 1
-        ):
+        if not isinstance(numero, int) or isinstance(numero, bool) or numero < 1:
             raise ValueError("O número da página precisa ser positivo.")
 
         for paragrafo in texto.split("\n\n"):
@@ -197,8 +186,7 @@ def fragmentar_documento(
 
         if (
             partes_atuais
-            and contar_tokens(_texto_das_partes(candidato))
-            > limite_tokens
+            and contar_tokens(_texto_das_partes(candidato)) > limite_tokens
         ):
             overlap = _obter_overlap(
                 partes=partes_atuais,
@@ -211,9 +199,7 @@ def fragmentar_documento(
             # Ajusta o overlap caso não exista espaço suficiente
             # para combinar o contexto anterior com o conteúdo novo.
             while overlap:
-                candidato_com_overlap = overlap + [
-                    (numero_pagina, paragrafo)
-                ]
+                candidato_com_overlap = overlap + [(numero_pagina, paragrafo)]
 
                 if (
                     contar_tokens(_texto_das_partes(candidato_com_overlap))

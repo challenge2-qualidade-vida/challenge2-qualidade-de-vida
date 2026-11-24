@@ -255,3 +255,24 @@ Funcionalidades que fazem parte do produto, mas não entram no MVP:
 ## 6. Organização do código
 
 A arquitetura (monolito modular, processos, componentes) e a organização das pastas estão na [visão geral da arquitetura](visao-geral.md). A regra que vale para todos os contextos: a camada `dominio` não importa nada de `infraestrutura`, de frameworks nem de LLM. Isso mantém as regras de negócio testáveis sem banco e sem chamadas de API.
+
+## Contexto de Pesquisa de Evidências
+
+**Pesquisa de Evidências** é um contexto separado, responsável pela ingestão,
+preparação, indexação e recuperação semântica de documentos científicos e
+fontes de orientação alimentar.
+
+Seu agente recupera trechos relevantes e preserva a proveniência das
+informações, incluindo documento de origem, referência bibliográfica,
+hash e localização no documento.
+
+A recuperação utiliza embeddings e uma coleção Qdrant exclusiva por modelo
+de embeddings. A implementação inicial utiliza
+`intfloat/multilingual-e5-base`, com vetores de 768 dimensões.
+
+**Limite com Verificação:** Pesquisa de Evidências recupera e apresenta
+fontes; Verificação (Mia) continua responsável por conferir cálculos,
+aderência aos dados, critérios e limitações das recomendações.
+
+Os contextos se comunicam por contratos da camada de aplicação, sem
+dependência direta das implementações internas de infraestrutura.

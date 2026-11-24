@@ -1,4 +1,3 @@
-
 """Repositório de evidências científicas no Qdrant."""
 
 import uuid
@@ -7,7 +6,7 @@ from typing import Any
 
 from qdrant_client import QdrantClient, models
 
-from economia.verificacao.dominio.modelos import (
+from economia.pesquisa_evidencias.dominio.modelos import (
     DocumentoEvidencia,
     EvidenciaRecuperada,
     FonteEvidencia,
@@ -31,9 +30,7 @@ def para_payload(
 ) -> dict[str, Any]:
     """Converte um trecho e seu documento de origem em payload do Qdrant."""
     if trecho.documento_id != documento.id:
-        raise ValueError(
-            "O trecho e o documento precisam ter o mesmo identificador."
-        )
+        raise ValueError("O trecho e o documento precisam ter o mesmo identificador.")
 
     return {
         "trecho_id": trecho.id,
@@ -53,7 +50,9 @@ def para_payload(
     }
 
 
-def de_payload(payload: dict[str, Any]) -> tuple[
+def de_payload(
+    payload: dict[str, Any],
+) -> tuple[
     TrechoEvidencia,
     DocumentoEvidencia,
 ]:
@@ -122,7 +121,44 @@ class RepositorioQdrant:
                 ),
             )
 
-    
+    def excluir_documento(self, documento_id: str) -> None:
+        """Remove todos os pontos associados a um documento."""
+        self._cliente.delete(
+            collection_name=self.colecao,
+            points_selector=models.FilterSelector(
+                filter=models.Filter(
+                    must=[
+                        models.FieldCondition(
+                            key="documento_id",
+                            match=models.MatchValue(value=documento_id),
+                        )
+                    ]
+                )
+            ),
+        )
+
+    def excluir_documentos_fora_da_lista(
+        self,
+        documentos_ids: Sequence[str],
+    ) -> None:
+        """Remove pontos de documentos ausentes no manifesto atual."""
+        if not documentos_ids:
+            raise ValueError("A lista de documentos ativos não pode ser vazia.")
+
+        self._cliente.delete(
+            collection_name=self.colecao,
+            points_selector=models.FilterSelector(
+                filter=models.Filter(
+                    must_not=[
+                        models.FieldCondition(
+                            key="documento_id",
+                            match=models.MatchAny(any=list(documentos_ids)),
+                        )
+                    ]
+                )
+            ),
+        )
+
     def gravar(
         self,
         trechos: Sequence[TrechoEvidencia],
@@ -130,9 +166,7 @@ class RepositorioQdrant:
         vetores: Sequence[Sequence[float]],
     ) -> None:
         """Grava trechos científicos, documentos e seus vetores."""
-        if not (
-            len(trechos) == len(documentos) == len(vetores)
-        ):
+        if not (len(trechos) == len(documentos) == len(vetores)):
             raise ValueError(
                 "A quantidade de trechos, documentos e vetores precisa ser igual."
             )
@@ -153,7 +187,6 @@ class RepositorioQdrant:
                 )
             ],
         )
-
 
     def buscar(
         self,

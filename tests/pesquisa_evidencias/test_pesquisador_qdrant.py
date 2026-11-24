@@ -1,13 +1,12 @@
-
 import pytest
 
-from economia.verificacao.dominio.modelos import (
+from economia.pesquisa_evidencias.dominio.modelos import (
     DocumentoEvidencia,
     EvidenciaRecuperada,
     FonteEvidencia,
     TrechoEvidencia,
 )
-from economia.verificacao.infraestrutura.pesquisador_qdrant import (
+from economia.pesquisa_evidencias.infraestrutura.pesquisador_qdrant import (
     PesquisadorQdrant,
 )
 

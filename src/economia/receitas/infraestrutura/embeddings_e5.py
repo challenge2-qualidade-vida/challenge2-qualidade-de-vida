@@ -1,4 +1,3 @@
-
 """Compatibilidade para o gerador E5 compartilhado."""
 
 from economia.compartilhado.infraestrutura.embeddings_e5 import (

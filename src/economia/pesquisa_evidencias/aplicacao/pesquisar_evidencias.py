@@ -1,8 +1,7 @@
-
 """Caso de uso de pesquisa de evidências científicas."""
 
-from economia.verificacao.aplicacao.portas import PesquisadorDeEvidencias
-from economia.verificacao.dominio.modelos import EvidenciaRecuperada
+from economia.pesquisa_evidencias.aplicacao.portas import PesquisadorDeEvidencias
+from economia.pesquisa_evidencias.dominio.modelos import EvidenciaRecuperada
 
 
 class PesquisarEvidencias:

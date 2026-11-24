@@ -1,4 +1,3 @@
-
 """Extração de texto de documentos da base de conhecimento."""
 
 from pathlib import Path
@@ -38,8 +37,7 @@ def extrair_pdf(caminho: Path) -> str:
     paginas = extrair_paginas_pdf(caminho)
 
     return "\n\n".join(
-        f"[Página {pagina['pagina']}]\n{pagina['texto']}"
-        for pagina in paginas
+        f"[Página {pagina['pagina']}]\n{pagina['texto']}" for pagina in paginas
     )
 
 

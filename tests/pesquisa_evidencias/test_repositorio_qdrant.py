@@ -1,11 +1,10 @@
-
-from economia.verificacao.dominio.modelos import (
+from economia.pesquisa_evidencias.dominio.modelos import (
     DocumentoEvidencia,
     EvidenciaRecuperada,
     FonteEvidencia,
     TrechoEvidencia,
 )
-from economia.verificacao.infraestrutura.repositorio_qdrant import (
+from economia.pesquisa_evidencias.infraestrutura.repositorio_qdrant import (
     de_payload,
     id_do_ponto,
     para_payload,
