@@ -22,6 +22,7 @@ O EconoMIA é um assistente de planejamento de compras de supermercado. A pessoa
 | **Preços** | Produtos, estabelecimentos, preços com data e fonte, preços de salvaguarda, comparação por unidade de medida e promoções | Cifrão | Não. Preços vêm de banco estruturado |
 | **Receitas e nutrição** | Receitas a partir dos ingredientes disponíveis, aproveitamento e conservação de alimentos, alimentação saudável, consumo e informação nutricional | Miau-ricio | Sim (receitas, Guia Alimentar, aproveitamento e conservação, consumo). TACO é consulta estruturada |
 | **Leitura de documentos** | Leitura de notas fiscais e encartes, extração de itens e revisão pelo usuário | Recibaldo | Não. Multimodal |
+| **Pesquisa de evidências** | **Proposto (24/11/2026, #75).** Ingestão, fragmentação, indexação e recuperação semântica de documentos científicos e de orientação alimentar, com a proveniência de cada trecho (documento, fonte, hash e páginas). Não classifica alegações como verdadeiras ou falsas | Research Agent | Sim (coleção exclusiva no Qdrant, uma por modelo de embeddings) |
 | **Verificação** | Conferência de cálculos, aderência aos dados e comunicação das limitações | Mia | Não. Confere a fundamentação |
 | **Conversa** | Interpretação do pedido, roteamento entre agentes e resposta final | Orquestrador | Não |
 
@@ -38,11 +39,13 @@ flowchart LR
     Verificacao[Verificação] -.->|confere| Planejamento
     Verificacao -.->|confere| Precos
     Verificacao -.->|confere| Receitas
+    Conversa -->|aciona| Evidencias[Pesquisa de evidências]
 ```
 
 - **Planejamento consome Preços:** o planejamento pede preços, e Preços define o formato da resposta.
 - **Leitura de documentos alimenta Preços e Receitas:** itens de nota fiscal revisados viram preços registrados e, quando a pessoa pede, ingredientes disponíveis para as receitas.
 - **Verificação observa os outros contextos:** não altera dados, só aponta inconsistências.
+- **Pesquisa de evidências recupera, Verificação confere:** a Pesquisa de evidências devolve trechos e fontes; conferir cálculos, aderência aos dados, critérios e limitações continua com a Mia. Os outros contextos usam a camada `aplicacao` da Pesquisa de evidências, nunca a infraestrutura dela.
 
 ## 3. Linguagem ubíqua
 
@@ -86,6 +89,10 @@ flowchart LR
 | Encarte | Folheto de promoções de um estabelecimento | Leitura de documentos | `Encarte` |
 | Item extraído | Produto, quantidade e valor lidos de uma imagem, com nível de confiança | Leitura de documentos | `ItemExtraido` |
 | Revisão | Confirmação ou correção de itens extraídos pelo usuário | Leitura de documentos | `Revisao` |
+| Fonte de evidência | **Proposto (24/11/2026, #75).** Origem bibliográfica de um documento científico: título, instituição, ano e link | Pesquisa de evidências | `FonteEvidencia` |
+| Documento de evidência | **Proposto (24/11/2026, #75).** PDF científico ou de orientação incorporado à base de evidências, com `FonteEvidencia`, caminho do arquivo e hash SHA-256 do texto | Pesquisa de evidências | `DocumentoEvidencia` |
+| Trecho de evidência | **Proposto (24/11/2026, #75).** Parte recuperável de um documento de evidência, com as páginas inicial e final e a seção | Pesquisa de evidências | `TrechoEvidencia` |
+| Evidência recuperada | **Proposto (24/11/2026, #75).** Trecho de evidência devolvido pela busca, com o documento de origem e a similaridade de cosseno com a pergunta (score entre -1 e 1). O score não é probabilidade de veracidade | Pesquisa de evidências | `EvidenciaRecuperada` |
 | Recomendação | Sugestão final ao usuário, com critérios e limitações | Verificação | `Recomendacao` |
 | Critério | Regra usada para chegar a uma recomendação | Verificação | `Criterio` |
 | Limitação | O que o sistema não sabe ou não pode garantir numa resposta | Verificação | `Limitacao` |
@@ -256,24 +263,3 @@ Funcionalidades que fazem parte do produto, mas não entram no MVP:
 ## 6. Organização do código
 
 A arquitetura (monolito modular, processos, componentes) e a organização das pastas estão na [visão geral da arquitetura](visao-geral.md). A regra que vale para todos os contextos: a camada `dominio` não importa nada de `infraestrutura`, de frameworks nem de LLM. Isso mantém as regras de negócio testáveis sem banco e sem chamadas de API.
-
-## Contexto de Pesquisa de Evidências
-
-**Pesquisa de Evidências** é um contexto separado, responsável pela ingestão,
-preparação, indexação e recuperação semântica de documentos científicos e
-fontes de orientação alimentar.
-
-Seu agente recupera trechos relevantes e preserva a proveniência das
-informações, incluindo documento de origem, referência bibliográfica,
-hash e localização no documento.
-
-A recuperação utiliza embeddings e uma coleção Qdrant exclusiva por modelo
-de embeddings. A implementação inicial utiliza
-`intfloat/multilingual-e5-base`, com vetores de 768 dimensões.
-
-**Limite com Verificação:** Pesquisa de Evidências recupera e apresenta
-fontes; Verificação (Mia) continua responsável por conferir cálculos,
-aderência aos dados, critérios e limitações das recomendações.
-
-Os contextos se comunicam por contratos da camada de aplicação, sem
-dependência direta das implementações internas de infraestrutura.

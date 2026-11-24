@@ -4,7 +4,7 @@
 | --- | --- |
 | Issue | #75 |
 | Status | Implementada |
-| Contexto delimitado | Verificação |
+| Contexto delimitado | Pesquisa de evidências (`pesquisa_evidencias`) |
 | Agente | Research Agent |
 
 ## Problema
@@ -36,7 +36,7 @@ A recuperação deve permitir que os agentes responsáveis pelas etapas posterio
 
 ## Entradas e saídas
 
-**Endpoint:** `POST /verificar`
+**Endpoint:** `POST /api/v1/verificar`, na mesma aplicação das outras rotas (`economia.api.app`).
 
 Entrada (`RequisicaoVerificacao`):
 
@@ -54,7 +54,12 @@ Cada evidência contém:
 - Trecho: identificador, texto, páginas inicial e final e seção.
 - Documento: identificador, arquivo e hash SHA-256.
 - Fonte: título, instituição, ano e URL.
-- Score: pontuação de similaridade semântica.
+- Score: similaridade de cosseno, limitada a [-1, 1] (o Qdrant pode devolver um pouco acima de 1 por arredondamento).
+
+Erros (Problem Details, RFC 9457, `application/problem+json`):
+
+- 422: pergunta vazia ou limite fora de 1 a 20, com `detail` explicando o campo.
+- 500: falha interna (Qdrant ou modelo de embeddings), sem expor detalhes no `detail`.
 
 ## Fora do escopo
 
@@ -75,7 +80,7 @@ Os cenários de recuperação, proveniência, validação de entrada e ausência
 - Issue #72: arquitetura multiagente e entrega do Second Challenge.
 - Issue #75: implementação do Research Agent.
 - Modelo `intfloat/multilingual-e5-base`.
-- Qdrant e coleção exclusiva de verificação.
+- Qdrant e coleção exclusiva de evidências (`evidencias_verificacao_<modelo>`).
 - Base de conhecimento de evidências indexadas.
 
 A integração dos modelos internos com o estado compartilhado do LangGraph depende do alinhamento dos contratos entre os agentes.
