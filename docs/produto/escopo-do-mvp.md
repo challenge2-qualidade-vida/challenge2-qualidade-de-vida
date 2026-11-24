@@ -17,11 +17,10 @@ Escala: baixa, média, alta.
 | Prioridade | Funcionalidade | Fluxos | Agente | Dificuldade | Semana do roadmap | Impacto | Situação |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Sugestão de receitas e perguntas sobre alimentação (RAG) | F13 | Miau-ricio | Média: RAG, datasets afrodite.json e RecipeNLG, catálogo de `Alimento` | 2 (primeiro RAG) e 3 (LLM × RAG) | Alto: primeiro componente integrado, base da comparação da semana 3 | MVP, [spec 15](../../specs/15-rag-receitas/spec.md) escrita |
-| 2 | Cadastro de nota fiscal, com revisão e comparação com as notas anteriores | F9 | Recibaldo | Alta: QR code da Sefaz-DF, leitura de imagem, HMAC da chave, revisão | 5 (multimodal); a leitura pelo QR code pode começar antes | Alto: alimenta o perfil, a comparação de preços e as receitas | MVP |
-| 3 | Planejador de compras pelo perfil: cadastro, lista, custo estimado e ajuste ao orçamento | F1, F2, F3, F4 | Planejamento | Média: regras determinísticas de prioridade e ajuste (RN23, RN24) | 4 (multiagente) | Alto: é o núcleo do problema de orçamento | MVP |
-| 4 | Preços dos mercados e leitura de encartes | F5, F10 | Cifrão | Alta: fontes de salvaguarda, normalização de produtos, leitura de encartes | 5 e 6 | Alto: comparação entre mercados | MVP, **bloqueado** pelas fontes de salvaguarda |
-| 5 | Chat que aciona os agentes | F15 | Orquestrador | Média: LangGraph, memória, streaming | 4 (multiagente) | Alto: demonstra o sistema multiagente | MVP |
-| 6 | Verificação de cálculos, fontes e limitações | — | Mia | Média: regras de conferência sobre dados tipados | 4 (multiagente) | Médio: garante a RN01 e a RN14 | MVP, depois do orquestrador |
+| 2 | Planejador de compras pelo perfil: cadastro, lista, custo estimado e ajuste ao orçamento | F1, F2, F3, F4 | Planejamento | Média: regras determinísticas de prioridade e ajuste (RN23, RN24) | 4 (multiagente) | Alto: é o núcleo do problema de orçamento | MVP |
+| 3 | Preços dos mercados e leitura de encartes | F5, F10 | Cifrão | Alta: fontes de salvaguarda, normalização de produtos, leitura de encartes | 5 e 6 | Alto: comparação entre mercados | MVP, **bloqueado** pelas fontes de salvaguarda |
+| 4 | Chat que aciona os agentes | F15 | Orquestrador | Média: LangGraph, memória, streaming | 4 (multiagente) | Alto: demonstra o sistema multiagente | MVP |
+| 5 | Verificação de cálculos, fontes e limitações | — | Mia | Média: regras de conferência sobre dados tipados | 4 (multiagente) | Médio: garante a RN01 e a RN14 | MVP, depois do orquestrador |
 | — | Promoção vale a pena? | F6 | Cifrão | Média: depende do preço de salvaguarda | — | Médio | Fora do MVP |
 | — | Custo de deslocamento | F7 | Cifrão | Alta: localização e rotas | — | Baixo | Fora do MVP (regra prevista no modelo de domínio) |
 | — | Histórico e tendência de preços | F8 | Cifrão | Média: precisa de semanas de dados | — | Médio | Fora do MVP |
