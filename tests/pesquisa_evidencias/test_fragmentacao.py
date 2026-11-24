@@ -1,6 +1,7 @@
 import pytest
 
 from economia.pesquisa_evidencias.aplicacao.fragmentacao import (
+    dividir_paragrafo,
     fragmentar_documento,
 )
 from economia.pesquisa_evidencias.dominio.modelos import TrechoEvidencia
@@ -279,3 +280,24 @@ def test_overlap_padrao_se_adapta_a_limite_menor():
     assert palavras_segundo[:4] == palavras_primeiro[-4:]
 
     assert all(contar_palavras(trecho.texto) <= 10 for trecho in trechos)
+
+
+def test_divide_paragrafo_longo_sem_contar_tokens_a_cada_palavra():
+    chamadas = []
+
+    def contar(texto: str) -> int:
+        chamadas.append(texto)
+        return contar_palavras(texto)
+
+    paragrafo = " ".join(f"p{numero}" for numero in range(2000))
+
+    partes = dividir_paragrafo(paragrafo, contar, limite_tokens=450)
+
+    assert [contar_palavras(parte) for parte in partes] == [450, 450, 450, 450, 200]
+    assert " ".join(partes) == paragrafo
+    assert len(chamadas) < 200
+
+
+def test_dividir_paragrafo_rejeita_palavra_maior_que_o_limite():
+    with pytest.raises(ValueError, match="palavra isolada"):
+        dividir_paragrafo("curta enorme", lambda texto: len(texto), limite_tokens=5)

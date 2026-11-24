@@ -13,6 +13,35 @@ def _texto_das_partes(partes: list[tuple[int, str]]) -> str:
     return "\n\n".join(texto for _, texto in partes)
 
 
+def _maior_quantidade_que_cabe(maximo: int, cabe: Callable[[int], bool]) -> int:
+    """Maior n em [0, maximo] com `cabe(n)`, supondo que `cabe` é monotônica.
+
+    Dobra o passo até passar do limite e depois faz busca binária. Assim, cada
+    trecho custa O(log n) contagens de tokens, e não uma contagem por palavra.
+    """
+    if maximo <= 0 or not cabe(1):
+        return 0
+
+    baixo, passo = 1, 1
+    while baixo < maximo:
+        alto = min(maximo, baixo + passo)
+        if not cabe(alto):
+            break
+        baixo, passo = alto, passo * 2
+    else:
+        return baixo
+
+    # `baixo` cabe e `alto` não cabe.
+    while alto - baixo > 1:
+        meio = (baixo + alto) // 2
+        if cabe(meio):
+            baixo = meio
+        else:
+            alto = meio
+
+    return baixo
+
+
 def dividir_paragrafo(
     paragrafo: str,
     contar_tokens: Callable[[str], int],
@@ -21,27 +50,21 @@ def dividir_paragrafo(
     """Divide um parágrafo longo em partes que respeitam o limite de tokens."""
     palavras = paragrafo.split()
     partes: list[str] = []
-    parte_atual: list[str] = []
+    inicio = 0
 
-    for palavra in palavras:
-        candidato = parte_atual + [palavra]
-        texto_candidato = " ".join(candidato)
+    while inicio < len(palavras):
 
-        if contar_tokens(texto_candidato) <= limite_tokens:
-            parte_atual.append(palavra)
-            continue
+        def cabe(quantidade: int, inicio: int = inicio) -> bool:
+            texto = " ".join(palavras[inicio : inicio + quantidade])
+            return contar_tokens(texto) <= limite_tokens
 
-        if not parte_atual:
+        quantidade = _maior_quantidade_que_cabe(len(palavras) - inicio, cabe)
+
+        if quantidade == 0:
             raise ValueError("Uma palavra isolada ultrapassa o limite de tokens.")
 
-        partes.append(" ".join(parte_atual))
-        parte_atual = [palavra]
-
-        if contar_tokens(palavra) > limite_tokens:
-            raise ValueError("Uma palavra isolada ultrapassa o limite de tokens.")
-
-    if parte_atual:
-        partes.append(" ".join(parte_atual))
+        partes.append(" ".join(palavras[inicio : inicio + quantidade]))
+        inicio += quantidade
 
     return partes
 
@@ -61,18 +84,12 @@ def _obter_overlap(
         for palavra in reversed(texto.split()):
             palavras_reversas.append((numero_pagina, palavra))
 
-    selecionadas: list[tuple[int, str]] = []
+    def cabe(quantidade: int) -> bool:
+        ultimas = reversed(palavras_reversas[:quantidade])
+        return contar_tokens(" ".join(p for _, p in ultimas)) <= limite_overlap
 
-    for item in palavras_reversas:
-        candidato = list(reversed(selecionadas + [item]))
-        texto_candidato = " ".join(palavra for _, palavra in candidato)
-
-        if contar_tokens(texto_candidato) > limite_overlap:
-            break
-
-        selecionadas.append(item)
-
-    selecionadas.reverse()
+    quantidade = _maior_quantidade_que_cabe(len(palavras_reversas), cabe)
+    selecionadas = list(reversed(palavras_reversas[:quantidade]))
 
     # Agrupa palavras consecutivas da mesma página.
     resultado: list[tuple[int, str]] = []
