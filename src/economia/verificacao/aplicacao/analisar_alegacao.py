@@ -6,9 +6,9 @@ não vira análise.
 """
 
 from collections.abc import Sequence
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, Field, ValidationError
 
 from economia.verificacao.aplicacao.portas import ModeloDeLinguagem
 from economia.verificacao.dominio.analise import (
@@ -25,7 +25,7 @@ class SaidaDaAnalise(BaseModel):
 
     classificacao: Literal["reciclada", "parcial", "nova"]
     justificativa: str
-    citacoes: list[int] = []
+    citacoes: list[Annotated[int, Field(ge=1)]] = Field(default_factory=list)
 
 
 def descrever_evidencia(numero: int, evidencia: EvidenciaRecuperada) -> str:

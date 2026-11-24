@@ -18,7 +18,7 @@ from economia.api.modelos import (
     RespostaVerificacao,
     TrechoEvidenciaResposta,
 )
-from economia.verificacao.aplicacao.pesquisar_evidencias import (
+from economia.pesquisa_evidencias.aplicacao.pesquisar_evidencias import (
     PesquisarEvidencias,
 )
 

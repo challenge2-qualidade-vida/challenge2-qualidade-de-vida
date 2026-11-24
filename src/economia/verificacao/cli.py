@@ -1,13 +1,14 @@
 """Linha de comando da verificação de alegações (spec 79).
 
 Uso:
-    poetry run python -m economia.verificacao.cli avaliar \\
-        --casos data/avaliacao/verificacao/casos_v1.json \\
+    poetry run python -m economia.verificacao.cli avaliar \
+        --casos data/avaliacao/verificacao/casos_v1.json \
         --saida data/avaliacao/verificacao/resultados_v1.json [--llm gemma3:12b]
 
-Roda Research → Analysis → Validation em cada alegação, com até 2 retornos, grava o resultado
-e imprime a tabela em Markdown. Com as chaves do Langfuse, cada alegação vira um trace com um
-span por agente e as chamadas ao LLM ligadas aos prompts.
+Roda Research → Analysis → Validation em cada alegação, com até 2 retornos,
+grava o resultado e imprime a tabela em Markdown. Com as chaves do Langfuse,
+cada alegação vira um trace com um span por agente e as chamadas ao LLM
+ligadas aos prompts.
 """
 
 import argparse
@@ -23,7 +24,8 @@ from economia.compartilhado.configuracao import Configuracao, obter_configuracao
 AGENTE = "verificacao"
 PROMPT_DE_ANALISE = "analise"
 PROMPT_DE_VALIDACAO = "validacao"
-# na avaliação, a mesma alegação gera a mesma análise
+
+# Na avaliação, a mesma alegação gera a mesma análise.
 TEMPERATURA_DA_AVALIACAO = 0.0
 SEMENTE_DA_AVALIACAO = 42
 
@@ -33,25 +35,35 @@ def descrever_maquina() -> str:
 
 
 def criar_pesquisar(configuracao: Configuracao):
-    """Research Agent da #75: e5 e a coleção de evidências no Qdrant."""
+    """Cria o Research Agent oficial da #75 com E5 e Qdrant."""
+
     from economia.compartilhado.infraestrutura.embeddings_e5 import GeradorE5
-    from economia.verificacao.aplicacao.pesquisar_evidencias import (
+    from economia.pesquisa_evidencias.aplicacao.pesquisar_evidencias import (
         PesquisarEvidencias,
     )
-    from economia.verificacao.infraestrutura.pesquisador_qdrant import (
+    from economia.pesquisa_evidencias.infraestrutura.pesquisador_qdrant import (
         PesquisadorQdrant,
     )
-    from economia.verificacao.infraestrutura.repositorio_qdrant import (
+    from economia.pesquisa_evidencias.infraestrutura.repositorio_qdrant import (
         RepositorioQdrant,
     )
 
     pesquisador = PesquisadorQdrant(
-        gerador=GeradorE5(dispositivo=configuracao.dispositivo_embeddings),
+        gerador=GeradorE5(
+            dispositivo=configuracao.dispositivo_embeddings,
+        ),
         repositorio=RepositorioQdrant.conectar(
-            url=configuracao.qdrant_url, colecao=configuracao.colecao_verificacao
+            url=configuracao.qdrant_url,
+            colecao=configuracao.colecao_verificacao,
         ),
     )
-    return PesquisarEvidencias(pesquisador).executar
+
+    caso_de_uso = PesquisarEvidencias(
+        pesquisador=pesquisador,
+        limiar_similaridade=configuracao.limiar_similaridade,
+    )
+
+    return caso_de_uso.executar
 
 
 def criar_llm(configuracao: Configuracao, ao_gerar=None):
@@ -70,12 +82,16 @@ def criar_llm(configuracao: Configuracao, ao_gerar=None):
 
 
 def criar_agentes(configuracao: Configuracao, llm, prompts):
-    """Analysis e Validation com os prompts do Langfuse (rótulo `production`)."""
+    """Cria Analysis e Validation com prompts do Langfuse."""
+
     from economia.verificacao.aplicacao.analisar_alegacao import AnalisarAlegacao
     from economia.verificacao.aplicacao.validar_analise import ValidarAnalise
 
     return (
-        AnalisarAlegacao(llm, prompts.carregar(AGENTE, PROMPT_DE_ANALISE)),
+        AnalisarAlegacao(
+            llm,
+            prompts.carregar(AGENTE, PROMPT_DE_ANALISE),
+        ),
         ValidarAnalise(
             llm,
             prompts.carregar(AGENTE, PROMPT_DE_VALIDACAO),
@@ -99,35 +115,52 @@ def comando_avaliar(args: argparse.Namespace) -> None:
     )
 
     configuracao = obter_configuracao()
+
     if args.llm:
         configuracao = configuracao.model_copy(update={"ollama_modelo": args.llm})
+
     casos = carregar_casos(args.casos)
+
     if args.limite_de_casos:
         casos = casos[: args.limite_de_casos]
 
     langfuse = criar_cliente(configuracao)
     prompts = PromptsDoLangfuse(langfuse)
+
     registro = RegistroDeGeracoes(langfuse, prompts.prompts_lidos) if langfuse else None
+
     llm = criar_llm(configuracao, ao_gerar=registro)
     analisar, validar = criar_agentes(configuracao, llm, prompts)
+
     observador = None
+
     if langfuse:
         from economia.verificacao.infraestrutura.observabilidade_langfuse import (
             ObservadorLangfuse,
         )
 
-        observador = ObservadorLangfuse(langfuse, tags=("verificacao", "avaliacao"))
+        observador = ObservadorLangfuse(
+            langfuse,
+            tags=("verificacao", "avaliacao"),
+        )
 
-    print(f"{len(casos)} alegações | LLM {configuracao.ollama_modelo}", flush=True)
+    print(
+        f"{len(casos)} alegações | LLM {configuracao.ollama_modelo}",
+        flush=True,
+    )
 
     def progresso(n, total, r) -> None:
         marca = "ok " if r.acertou else "ERR"
+
         retornos = (
             f"{r.retornos} retorno(s) {','.join(r.destinos)}" if r.retornos else ""
         )
+
         print(
-            f"[{n:>2}/{total}] {marca} {r.id:<5} esperada={r.esperada:<9} "
-            f"obtida={r.obtida!s:<11} {'aprovada' if r.aprovado else 'reprovada'} "
+            f"[{n:>2}/{total}] {marca} {r.id:<5} "
+            f"esperada={r.esperada:<9} "
+            f"obtida={r.obtida!s:<11} "
+            f"{'aprovada' if r.aprovado else 'reprovada'} "
             f"{r.segundos:6.1f} s {retornos}",
             flush=True,
         )
@@ -142,6 +175,7 @@ def comando_avaliar(args: argparse.Namespace) -> None:
         observador=observador,
         ao_progredir=progresso,
     )
+
     if langfuse:
         langfuse.flush()
 
@@ -160,35 +194,58 @@ def comando_avaliar(args: argparse.Namespace) -> None:
         "versoes_dos_prompts": dict(prompts.versoes),
         **asdict(resumo),
     }
+
     args.saida.parent.mkdir(parents=True, exist_ok=True)
+
     args.saida.write_text(
-        json.dumps(dados, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        json.dumps(dados, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
     )
+
     print("\n" + tabela_markdown(resumo))
     print(f"\nResultado gravado em {args.saida}")
 
 
 def criar_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="economia.verificacao.cli")
+
     comandos = parser.add_subparsers(required=True)
 
     avaliar = comandos.add_parser(
         "avaliar",
         help="Roda Research → Analysis → Validation num conjunto de alegações",
     )
+
     avaliar.add_argument("--casos", type=Path, required=True)
     avaliar.add_argument("--saida", type=Path, required=True)
-    avaliar.add_argument("--llm", help="Modelo do Ollama (padrão: OLLAMA_MODELO)")
+
     avaliar.add_argument(
-        "--limite", type=int, default=5, help="Evidências na primeira busca (padrão 5)"
+        "--llm",
+        help="Modelo do Ollama (padrão: OLLAMA_MODELO)",
     )
+
     avaliar.add_argument(
-        "--retornos", type=int, default=2, help="Limite de retornos por caso (padrão 2)"
+        "--limite",
+        type=int,
+        default=5,
+        help="Evidências na primeira busca (padrão 5)",
     )
+
     avaliar.add_argument(
-        "--limite-de-casos", type=int, help="Roda só os primeiros N casos (piloto)"
+        "--retornos",
+        type=int,
+        default=2,
+        help="Limite de retornos por caso (padrão 2)",
     )
+
+    avaliar.add_argument(
+        "--limite-de-casos",
+        type=int,
+        help="Roda só os primeiros N casos (piloto)",
+    )
+
     avaliar.set_defaults(funcao=comando_avaliar)
+
     return parser
 
 
@@ -198,6 +255,7 @@ def main(argv: list[str] | None = None) -> None:
     )
 
     args = criar_parser().parse_args(argv)
+
     try:
         args.funcao(args)
     except PromptIndisponivel as erro:
