@@ -1,4 +1,4 @@
-"""Communication Agent com um LLM de respostas prontas (spec 72)."""
+"""Communication Agent com um LLM de respostas prontas (spec 83)."""
 
 from economia.verificacao.aplicacao.comunicar_veredito import (
     ComunicarVeredito,

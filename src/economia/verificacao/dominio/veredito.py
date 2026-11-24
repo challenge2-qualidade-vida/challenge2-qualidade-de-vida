@@ -1,4 +1,4 @@
-"""Veredito da verificação, adaptado ao perfil de leitura (spec 72).
+"""Veredito da verificação, adaptado ao perfil de leitura (spec 83).
 
 As fontes, a fonte principal e a aprovação são montadas aqui, pelo código (RN01, RN10). O LLM
 só redige o texto da mensagem, na camada de aplicação.

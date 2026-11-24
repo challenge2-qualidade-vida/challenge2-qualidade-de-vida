@@ -1,4 +1,4 @@
-"""Regras do veredito: fontes, fonte principal, frases e marcadores (spec 72)."""
+"""Regras do veredito: fontes, fonte principal, frases e marcadores (spec 83)."""
 
 import pytest
 

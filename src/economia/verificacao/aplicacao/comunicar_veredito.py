@@ -1,4 +1,4 @@
-"""Communication Agent: transforma a análise validada no veredito para a pessoa (spec 72).
+"""Communication Agent: transforma a análise validada no veredito para a pessoa (spec 83).
 
 O LLM só redige a mensagem, no tamanho do perfil de leitura. A classificação, as fontes e a
 aprovação vêm do código (RN01, RN10). Sem análise aprovada, o veredito é um texto fixo, sem

@@ -1,4 +1,4 @@
-"""Passos dos cenários do Communication Agent (specs/72-communication-agent)."""
+"""Passos dos cenários do Communication Agent (specs/83-communication-agent)."""
 
 import json
 
@@ -24,7 +24,7 @@ from economia.verificacao.dominio.veredito import (
     PerfilDeLeitura,
 )
 
-scenarios("72-communication-agent/cenarios.feature")
+scenarios("83-communication-agent/cenarios.feature")
 
 PROMPT = "<prompt verificacao/comunicacao>"
 DOCUMENTO = DocumentoEvidencia(
