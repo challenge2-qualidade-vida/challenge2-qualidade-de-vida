@@ -1,0 +1,20 @@
+{
+  "descricao": "Alegações fictícias sobre alimentação para avaliar o Analysis Agent e o Validation Agent (spec 79). A classificação esperada mede o quanto a base de 21 documentos da #75 cobre a alegação, não se ela é verdadeira: reciclada (a base cobre), parcial (a base cobre só uma parte) e nova (a base não cobre). Classificação proposta em 24/11/2026, a revisar pela equipe.",
+  "casos": [
+    {"id": "v01", "alegacao": "Alimentos ultraprocessados devem ser evitados.", "classificacao_esperada": "reciclada", "base": "Guia Alimentar para a População Brasileira (2014), regra de ouro"},
+    {"id": "v02", "alegacao": "Até os seis meses, o bebê deve receber só leite materno.", "classificacao_esperada": "reciclada", "base": "Guia Alimentar para Crianças Brasileiras Menores de Dois Anos"},
+    {"id": "v03", "alegacao": "Crianças menores de dois anos não devem comer açúcar.", "classificacao_esperada": "reciclada", "base": "Guia Alimentar para Crianças Brasileiras Menores de Dois Anos"},
+    {"id": "v04", "alegacao": "Óleos, gorduras, sal e açúcar devem ser usados em pequenas quantidades no preparo dos alimentos.", "classificacao_esperada": "reciclada", "base": "Guia Alimentar para a População Brasileira (2014)"},
+    {"id": "v05", "alegacao": "Comer com regularidade, devagar e em companhia faz parte de uma alimentação adequada.", "classificacao_esperada": "reciclada", "base": "Guia Alimentar para a População Brasileira (2014)"},
+    {"id": "v06", "alegacao": "Ultraprocessados devem ser evitados porque causam câncer em poucas semanas de consumo.", "classificacao_esperada": "parcial", "base": "o Guia cobre evitar ultraprocessados; nada sobre câncer em semanas"},
+    {"id": "v07", "alegacao": "A pandemia de COVID-19 aumentou a insegurança alimentar no Brasil porque as pessoas passaram a comer mais em casa.", "classificacao_esperada": "parcial", "base": "artigo da pandemia e insegurança alimentar (2020) cobre o aumento; não a causa citada"},
+    {"id": "v08", "alegacao": "O feijão tem fibra alimentar e por isso cura o diabetes.", "classificacao_esperada": "parcial", "base": "a TACO cobre a fibra do feijão; nada sobre curar diabetes"},
+    {"id": "v09", "alegacao": "Aplicativos de doação reduzem o desperdício de alimentos e baixam o preço da comida no supermercado.", "classificacao_esperada": "parcial", "base": "artigo de economia compartilhada (2021) cobre as plataformas; nada sobre preço"},
+    {"id": "v10", "alegacao": "Comer em companhia faz parte de uma alimentação adequada e faz emagrecer mais rápido.", "classificacao_esperada": "parcial", "base": "o Guia cobre comer em companhia; nada sobre emagrecer"},
+    {"id": "v11", "alegacao": "O jejum intermitente acelera o metabolismo.", "classificacao_esperada": "nova", "base": "a base não trata de jejum intermitente"},
+    {"id": "v12", "alegacao": "Suplementos de colágeno rejuvenescem a pele.", "classificacao_esperada": "nova", "base": "a base não trata de colágeno"},
+    {"id": "v13", "alegacao": "Beber água com limão em jejum desintoxica o fígado.", "classificacao_esperada": "nova", "base": "o limão aparece só na TACO e em listas de frutas"},
+    {"id": "v14", "alegacao": "Comer manga com leite faz mal à saúde.", "classificacao_esperada": "nova", "base": "a manga aparece só em cardápios e listas de frutas"},
+    {"id": "v15", "alegacao": "Cortar o glúten emagrece quem não tem doença celíaca.", "classificacao_esperada": "nova", "base": "o glúten aparece só na rotulagem e na TACO"}
+  ]
+}
