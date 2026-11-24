@@ -338,11 +338,48 @@ O ganho não está no tamanho do modelo. Está no prompt (exemplos de `parcial`)
 4. **As parciais são o ponto fraco.** Na v09, o modelo viu que a base fala de plataformas de doação, mas classificou como `nova` porque a parte do preço não aparece. A fronteira entre `parcial` e `nova` precisa de exemplos no prompt.
 5. **Bug encontrado e corrigido pela avaliação.** Na primeira execução, o retorno ao Research repassava ao Analysis os motivos sobre o score, e o LLM passou a comentar a reprovação em vez de analisar. Num caso, escreveu "confiança ajustada para 0,846", um valor que o LLM não deveria produzir (RN01). A correção está no commit `1349bbb`. Na primeira execução, a acurácia já era de 67% e a aprovação ao fim dos retornos era de 73%.
 
-**Próximos passos** (valem para os dois modelos):
+### Ajustes testados com o `qwen2.5:7b`
 
-- Limitar a busca do retorno ao Research a 10 trechos, ou repetir a alegação no fim da mensagem, e medir de novo.
-- Pôr no prompt `verificacao/analise` (v2) um exemplo de cada classificação e a instrução de manter a classificação quando o retorno pede só a fonte.
-- Revisar com a equipe a classificação esperada dos 15 casos e calibrar o limiar com mais casos.
+Para atacar os achados 2, 3 e 4, testei duas mudanças, primeiro separadas e depois juntas:
+
+- **Teto da busca:** a busca do retorno ao Research para em 10 trechos, e não em 20 (`--limite-maximo 10`).
+- **Prompt `verificacao/analise` v2** (rótulo `v2` no Langfuse; o `production` continua na v1). O v2 traz:
+  - a instrução de separar a alegação nas afirmações que ela faz;
+  - um exemplo de cada classificação, com alegações fora do conjunto de casos;
+  - a regra de manter a classificação quando o retorno pede só a fonte.
+
+| Variante | Acurácia | Aprovação direta | Aprovação final | Média de retornos | Latência média |
+| --- | --- | --- | --- | --- | --- |
+| Original (teto 20, prompt v1) | 67% | 60% | 80% | 0,67 | 23,4 s |
+| A: teto 10, prompt v1 | 80% | 60% | 73% | 0,67 | 47,5 s |
+| B: teto 20, prompt v2 | 73% | 73% | 87% | 0,47 | 48,4 s |
+| **C: teto 10, prompt v2** | **87%** | **73%** | **80%** | **0,47** | **23,7 s** |
+
+Arquivos: [teto10](../../data/avaliacao/verificacao/resultados_v1_teto10.json), [prompt-v2](../../data/avaliacao/verificacao/resultados_v1_prompt-v2.json) e [teto10 + prompt-v2](../../data/avaliacao/verificacao/resultados_v1_teto10_prompt-v2.json).
+
+As latências das variantes A e B foram medidas com a máquina carregada e não são comparáveis às outras duas.
+
+| Caso | Esperada | Original | A | B | C |
+| --- | --- | --- | --- | --- | --- |
+| v05 | reciclada | reciclada, reprovada | reciclada, reprovada | reciclada, reprovada | reciclada, reprovada |
+| v06 | parcial | nova | parcial, reprovada | nova | parcial, reprovada |
+| v07 | parcial | parcial (1 retorno) | parcial (1 retorno) | parcial | parcial |
+| v08 | parcial | reciclada, reprovada | parcial, reprovada | reciclada, reprovada | parcial, reprovada |
+| v09 | parcial | nova | nova | nova | nova |
+| v14 | nova | parcial (1 retorno) | parcial (1 retorno) | parcial (1 retorno) | parcial (1 retorno) |
+| v15 | nova | reciclada, reprovada | parcial, reprovada | nova | nova |
+
+Os outros 8 casos acertaram nas quatro variantes. O que se vê nas quatro execuções:
+
+- **As duas mudanças corrigem erros diferentes:** o teto corrige a v06 e a v08 (com 20 trechos, o modelo deixava de analisar a alegação), e o prompt corrige a v15. Juntas, somam os ganhos.
+- **O que sobra na variante C é, na maior parte, limiar e não análise.** A v05, a v06 e a v08 têm a classificação certa e justificativas corretas, por exemplo na v08: "a evidência [1] menciona que o feijão é rico em fibras..., mas não afirma que ele cura o diabetes". Mesmo assim, terminam reprovadas porque o maior score fica em 0,842, 0,837 e 0,840, abaixo de 0,845. Um limiar de 0,835 aprovaria as três, mas escolher o limiar olhando estes mesmos 15 casos seria ajustar ao teste. A calibração precisa de casos novos.
+- **Dois casos têm a fronteira discutível.** Na v14, a evidência [2] cita a manga, e o modelo chamou de `parcial` uma alegação esperada como `nova`. Na v09, as evidências falam de plataformas digitais contra o desperdício, mas não de "aplicativos de doação", e o modelo chamou de `nova` uma alegação esperada como `parcial`. A equipe pode rever essas duas classificações esperadas.
+
+**Próximos passos:**
+
+- Adotar a variante C: mudar a regra 8 da spec 79 (teto de 10 trechos) e mover o rótulo `production` do `verificacao/analise` para a v2. Depende da decisão da equipe.
+- Calibrar o limiar de confiança com um conjunto novo de casos, separado deste.
+- Rodar a variante C com o `gemma3:12b`, para confirmar a escolha do modelo.
 
 ## 10. Roteiro da demo
 
