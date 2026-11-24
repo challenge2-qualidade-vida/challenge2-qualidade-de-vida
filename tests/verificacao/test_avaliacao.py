@@ -217,3 +217,14 @@ def test_carregar_casos(tmp_path):
     assert carregar_casos(arquivo) == [
         CasoDeVerificacao("v01", "A", ClassificacaoDaAlegacao.PARCIAL)
     ]
+
+
+def test_retorno_ao_research_analisa_de_novo_sem_os_motivos(
+    fazer_evidencias, llm_roteirizado
+):
+    llm = llm_roteirizado(analise=[_reciclada(1)], validacao=[SEM_CONTRADICAO])
+    pesquisa = PesquisaFalsa(fazer_evidencias(0.80), fazer_evidencias(0.88))
+
+    avaliar_caso(CASO, pesquisa, *_agentes(llm))
+
+    assert "reprovada" not in llm.chamadas_de(ANALISE)[1]

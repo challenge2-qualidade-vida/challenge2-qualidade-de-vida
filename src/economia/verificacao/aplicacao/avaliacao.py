@@ -171,11 +171,15 @@ def avaliar_caso(
                 break
             assert resultado.retornar_para is not None
             destinos.append(resultado.retornar_para)
-            motivos = resultado.motivos
-            motivos_por_retorno.append(motivos)
+            motivos_por_retorno.append(resultado.motivos)
             if resultado.retornar_para is DestinoDoRetorno.RESEARCH:
+                # evidências novas, análise do zero: os motivos falam do score, que o
+                # Analysis não corrige, e com eles o LLM comenta a reprovação em vez de analisar
                 limite = min(limite * 2, LIMITE_MAXIMO)
                 evidencias = buscar(limite)
+                motivos = ()
+            else:
+                motivos = resultado.motivos
 
         obtida = str(analise.classificacao) if analise else None
         resultado_do_caso = ResultadoDoCaso(
