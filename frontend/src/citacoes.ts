@@ -1,0 +1,49 @@
+// Separa o texto da resposta em partes de texto e citações [n], para ligar cada citação à fonte.
+
+export type Parte = { tipo: "texto"; valor: string } | { tipo: "citacao"; numero: number };
+
+const CITACAO = /\[(\d+)\]/g;
+
+/** Divide um parágrafo em texto e citações. Números sem fonte correspondente ficam como texto. */
+export function separarCitacoes(texto: string, fontesExistentes: Set<number>): Parte[] {
+  const partes: Parte[] = [];
+  let inicio = 0;
+  for (const encontrado of texto.matchAll(CITACAO)) {
+    const numero = Number(encontrado[1]);
+    const posicao = encontrado.index ?? 0;
+    if (!fontesExistentes.has(numero)) continue;
+    if (posicao > inicio) partes.push({ tipo: "texto", valor: texto.slice(inicio, posicao) });
+    partes.push({ tipo: "citacao", numero });
+    inicio = posicao + encontrado[0].length;
+  }
+  if (inicio < texto.length) partes.push({ tipo: "texto", valor: texto.slice(inicio) });
+  return partes;
+}
+
+/**
+ * Parágrafos da resposta: linhas em branco separam parágrafos; quebras simples são mantidas.
+ * O bloco "Ingredientes que faltam:" que a API acrescenta ao texto sai, porque a tela mostra
+ * a mesma informação numa seção própria.
+ */
+export function paragrafos(texto: string): string[] {
+  return texto
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter((p) => p && !p.startsWith("Ingredientes que faltam:"));
+}
+
+export type Trecho = { valor: string; negrito: boolean };
+
+/** Separa o negrito em Markdown (**texto**), que o LLM às vezes usa, para a tela mostrar sem asteriscos. */
+export function separarNegrito(texto: string): Trecho[] {
+  const partes: Trecho[] = [];
+  let inicio = 0;
+  for (const encontrado of texto.matchAll(/\*\*(.+?)\*\*/g)) {
+    const posicao = encontrado.index ?? 0;
+    if (posicao > inicio) partes.push({ valor: texto.slice(inicio, posicao), negrito: false });
+    partes.push({ valor: encontrado[1], negrito: true });
+    inicio = posicao + encontrado[0].length;
+  }
+  if (inicio < texto.length) partes.push({ valor: texto.slice(inicio), negrito: false });
+  return partes;
+}

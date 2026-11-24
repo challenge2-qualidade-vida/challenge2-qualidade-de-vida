@@ -1,0 +1,240 @@
+{
+  "modo": "rag",
+  "run": "rag-gemma3:12b-resposta_com_fontes_v2-e5",
+  "maquina": "Darwin arm64, 10 CPUs lógicas",
+  "data": "2026-11-17T10:08:09",
+  "perguntas_arquivo": "data/avaliacao/perguntas_rag_v3.json",
+  "colecao": "base_conhecimento_e5",
+  "modelo_embeddings": "e5",
+  "modelo_llm": "gemma3:12b",
+  "llm": {
+    "digest": "b92b218582c521ba287f38f1d6057dcd3c6cbff036f13cac97b5d861f5e58ec3",
+    "quantizacao": "Q4_K_M",
+    "parametros": "11.8B",
+    "familia": "gemma3"
+  },
+  "limiar": 0.845,
+  "prompt_de_resposta": "resposta_com_fontes_v2",
+  "resposta_estruturada": true,
+  "segunda_tentativa_de_citacao": true,
+  "temperatura": 0.0,
+  "semente": 42,
+  "contexto": 8192,
+  "saida_maxima": 2048,
+  "raciocinio": false,
+  "langfuse_run": "https://us.cloud.langfuse.com/project/cmwi1cz2h00jhad0ezbr3zov1/experiments/results?baseline=6d10bc1c000efdb8",
+  "perguntas": 10,
+  "acuracia": 0.9,
+  "taxa_de_resposta": 0.9,
+  "recusa_correta": null,
+  "aviso_de_preco": null,
+  "fonte_esperada": 0.7777777777777778,
+  "rouge_1": 0.3307090121476177,
+  "rouge_l": 0.22799153216257279,
+  "cosseno": 0.8322939974018867,
+  "hit": 0.8,
+  "falsas_recusas": [
+    "r06"
+  ],
+  "respostas_indevidas": [],
+  "latencia_media": 50.235401591799885,
+  "latencia_maxima": 74.60722887499969,
+  "por_categoria": {
+    "receita_entre_idiomas": {
+      "perguntas": 2,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.5,
+      "rouge_1": 0.18395397927778404,
+      "rouge_l": 0.12755603538568136,
+      "cosseno": 0.9101721088376221,
+      "hit": 0.5
+    },
+    "receita_pt": {
+      "perguntas": 8,
+      "acuracia": 0.875,
+      "taxa_de_resposta": 0.875,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.8571428571428571,
+      "rouge_1": 0.36739777036507615,
+      "rouge_l": 0.25310040635679565,
+      "cosseno": 0.812824469542953,
+      "hit": 0.875
+    }
+  },
+  "resultados": [
+    {
+      "id": "r01",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 61.98794733399973,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b08"
+      ],
+      "texto": "Para fazer um bolo de cenoura no micro-ondas, você pode seguir a receita de Bolo de Cenoura de Micro-ondas [1]. Primeiro, bata no liquidificador dois ovos, meia xícara (chá) de óleo e 250g de cenouras médias sem casca até formar uma mistura homogênea. Depois, misture em uma tigela uma xícara (chá) de farinha de trigo, uma xícara (chá) de açúcar, meia colher (sopa) de fermento em pó e a mistura do liquidificador. Coloque a massa em uma forma para micro-ondas untada com manteiga e leve ao micro-ondas por 8 minutos na potência máxima [1].\n\nIngredientes que faltam:\n- Bolo de Cenoura de Micro-ondas [1]: Calda, - 6 colheres (sopa) de chocolate em pó- 400 ml de leite- 1 colher (sopa) de manteiga- 4 colheres (sopa) de açúcar- 2 colheres (sopa) de amido de milho",
+      "rouge_1": 0.6457399103139013,
+      "rouge_l": 0.5650224215246636,
+      "cosseno": 0.9689867590361058,
+      "hit": 1
+    },
+    {
+      "id": "r02",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 63.13132533399994,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c7478aa",
+        "afrodite:5744eff20ca7832b5c7477e6",
+        "afrodite:5744eff20ca7832b5c745b23",
+        "afrodite:5744eff20ca7832b5c745b55"
+      ],
+      "texto": "Existem algumas opções de receitas que usam pão como base: Pão Doce - Romeu e Julieta [1], Pão de queijo rápido [2], Falso Pastel (de pão) [3] e Pão com linguiça [4]. O Pão Doce - Romeu e Julieta leva farinha de trigo, fermento, açúcar, margarina, ovos, sal, vanilina, água, queijo fresco e goiabada. Já o Pão de queijo rápido usa ovos, leite, óleo de milho, queijo parmesão ralado, sal, azeite, polvilho doce e pode ser recheado com queijo cremoso ou cheddar. O Falso Pastel (de pão) é feito com fatias de pão de forma, queijo muçarela, orégano, gema, clara temperada e farinha de rosca. Por fim, o Pão com linguiça leva linguiça sem a pele, queijo bola, alecrim, alho, requeijão, muçarela ralada e sopa de cebola.\n\nIngredientes que faltam:\n- Pão Doce - Romeu e Julieta [1]: nenhum\n- Pão de queijo rápido [2]: nenhum\n- Falso Pastel (de pão) [3]: 6 fatias de pão de forma sem casca, orégano a gosto, 1 gema, farinha de rosca a gosto para empanar\n- Pão com linguiça [4]: 600g de linguiça sem a pele, (1 2/3 xícara de chá) alecrim picadinho, 1 cabeça de alho cortada uma tampa da parte de cima, 220g de requeijão (1 xícara de chá), 100g de muçarela ralada no ralo fino (1 xícara de chá), 2 colheres (sopa) de sopa de cebola, 8 pães franceses cortados ao meio no sentido do comprimento",
+      "rouge_1": 0.2569444444444444,
+      "rouge_l": 0.1388888888888889,
+      "cosseno": 0.876243987546803,
+      "hit": 0
+    },
+    {
+      "id": "r03",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 57.29533929199988,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745e7a",
+        "afrodite:5744eff20ca7832b5c745abb"
+      ],
+      "texto": "Para fazer bolinho de bacalhau, você pode refogar cebola picadinha em azeite e misturar com batata amassada, bacalhau desfiado, gemas, sal, pimenta-do-reino, salsinha e a cebola refogada [1]. Modele os bolinhos e frite em óleo quente. Outra opção é cozinhar batatas em cubos pequenos, fazer um purê, refogar cebola e alho, misturar com bacalhau, temperar e enrolar em pequenas porções de bacalhau, passando na farinha de rosca e fritando [2].",
+      "rouge_1": 0.45945945945945943,
+      "rouge_l": 0.27027027027027023,
+      "cosseno": 0.9427591053076557,
+      "hit": 1
+    },
+    {
+      "id": "r04",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 45.100066083,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b27"
+      ],
+      "texto": "Sim, dá para fazer um arroz no forno! Você pode preparar o Arroz de Forno, que leva arroz cozido, tomate, ovos mexidos, azeitonas, cenoura, carne desfiada e queijo parmesão [1]. Primeiro, refogue o arroz com tomate e alho. Depois, misture com os outros ingredientes e leve ao forno para gratinar [1].\n\nIngredientes que faltam:\n- Arroz de forno [1]: 1 dente de alho amassado, 2 colheres (sopa) de manteiga, 4 ovos mexidos feitos no azeite, 6 azeitonas verdes sem caroço picadas, 6 azeitonas pretas sem caroço picadas, 3 colheres (sopa) de cebolinha verde picada, salsinha picadinha a gosto, 2 cenouras cortadas em cubos médios e cozidas al dente, 1 pacote de batata palha (140g), 500g de carne cozida e desfiada (acém ou pá)",
+      "rouge_1": 0.4065934065934066,
+      "rouge_l": 0.24175824175824176,
+      "cosseno": 0.9388211588274694,
+      "hit": 1
+    },
+    {
+      "id": "r05",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 74.60722887499969,
+      "documentos_citados": [
+        "taco-2011",
+        "afrodite:5744eff20ca7832b5c745aae"
+      ],
+      "texto": "Para preparar a feijoada, comece pesando 3 kg de feijão preto limpo [1]. Coloque o feijão em 6 litros de água fria e deixe de remolho por 12 horas [1]. Depois, cozinhe o feijão em 9 litros de água fria por aproximadamente 2 horas ou até que esteja macio [1]. Para as carnes, pese 300g de orelha de porco, 300g de rabo de porco, 300g de pé de porco, 300g de costelinha de porco salgada, 150g de lombo de porco, 300g de paio fatiado, 450g de linguiça portuguesa e 100g de carne seca [1]. Coloque as carnes em água para dessalgar por 12 horas, trocando a água a cada 3 horas [1]. Outra opção é usar a receita da Feijoada a la Vidigal, que inclui 1 kg de feijão preto, 500g de linguiça calabresa, 500g de carne seca, 500g de lombo, paios em rodelas, costela e bacon picado [2]. Cozinhe o feijão na panela de pressão por cerca de 20 minutos e adicione as carnes dessalgadas para finalizar o cozimento [2].\n\nIngredientes que faltam:\n- Feijoada a la Vidigal [2]: 500g de lombo, 2 paios em rodelas, 500g de costela, 1Kg de farinha de mandioca, 2 colheres (sopa) de margarina, 300g de bacon picado, 1 maço de couve cortada em tiras bem fininhas, 1 Kg de arroz branco, 1 laranja descascada e separada em gomos, 3 cabeças de alho descascadas e picadas, (divida esta quantidade em 3 partes para usar na feijoada, no arroz e na farofa)",
+      "rouge_1": 0.3343653250773994,
+      "rouge_l": 0.2105263157894737,
+      "cosseno": 0.9361808979088606,
+      "hit": 1
+    },
+    {
+      "id": "r06",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.02713362500026051,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": 0.0,
+      "rouge_l": 0.0,
+      "cosseno": 0.0,
+      "hit": 1
+    },
+    {
+      "id": "r07",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 58.4491109999999,
+      "documentos_citados": [
+        "taco-2011",
+        "afrodite:5744eff20ca7832b5c745b2f"
+      ],
+      "texto": "Para fazer uma omelete assada no forno com muitos ovos, você pode usar a receita de [2]. Ela usa 10 ovos, ½ xícara (chá) de leite, sal e pimenta-do-reino a gosto. Você pode adicionar os ingredientes de recheio que preferir, como tomate, cheiro verde, azeitona, peito de peru, queijo minas padrão ralado, queijo parmesão ralado, presunto, salame, bacon e linguiça calabresa. Bata bem todos os ingredientes até ficar homogêneo e coloque em uma forma para cupcake. Leve ao forno alto pré-aquecido a 200° C por cerca de 13 minutos se gostar da omelete cremosa ou 20 minutos se preferir mais durinha [2].\n\nA receita [1] indica que você pode selecionar 9 dúzias de ovos (5400g) e separá-los em amostras de 20 unidades cada (1000g).\n\nIngredientes que faltam:\n- Omelete de forno [2]: ½ xícara (chá) de leite, Recheio a gosto, tomate sem semente picadinho, cheiro verde picadinho, azeitona verde picadinha, peito de peru picadinho, blanquet picadinho, queijo minas padrão ralado, queijo parmesão ralado, presunto picadinho, presunto parma picadinho, salame picadinho, bacon picadinho e frito, linguiça calabresa ralada e frita, milho, ervilha",
+      "rouge_1": 0.4163265306122449,
+      "rouge_l": 0.3020408163265306,
+      "cosseno": 0.9138667758341033,
+      "hit": 1
+    },
+    {
+      "id": "r08",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 45.020970333999685,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b03",
+        "afrodite:5744eff20ca7832b5c745b7e",
+        "afrodite:5744eff20ca7832b5c745ce5"
+      ],
+      "texto": "Para fazer o pastel de carne, você vai precisar de creme de leite com soro, farinha de trigo e sal a gosto para a massa [1]. O recheio pode ser feito com carne moída misturada com molho inglês, tempero completo com pimenta e caldo de carne [2], ou então usar uma receita de bolo de carne úmido que leva carne moída, cebola, ovos, aveia, bacon, azeite, extrato de tomate e tomates [3]. Para preparar a massa, misture os ingredientes secos, adicione o creme de leite com soro, amasse bem, leve para gelar e depois abra a massa em discos para rechear e fritar [1].",
+      "rouge_1": 0.4197530864197531,
+      "rouge_l": 0.2962962962962963,
+      "cosseno": 0.925737071882626,
+      "hit": 1
+    },
+    {
+      "id": "e01",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 39.75470629099982,
+      "documentos_citados": [
+        "recipenlg:370774",
+        "recipenlg:155539",
+        "recipenlg:38479"
+      ],
+      "texto": "Existem várias receitas de Banana Bread! Uma delas leva açúcar, um ovo, 1 e ½ xícara de farinha, ¼ de xícara de manteiga derretida, 1 colher de chá de soda, ½ colher de chá de sal, 3 bananas amassadas e nozes picadas (opcional) [1]. Outra receita usa manteiga ou margarina amolecida, dois ovos grandes, casca de laranja ralada, bananas amassadas, farinha, buttermilk, nozes e pedaços de chocolate meio amargo [2]. Uma terceira opção inclui leite azedo, fermento em pó, gordura vegetal, açúcar, ovos, farinha, sal, canela, noz-moscada, bananas amassadas e nozes (opcional) [3].\n\nIngredientes que faltam:\n- Banana Bread [1]: sugar, egg, flour, butter, soda, nuts\n- Banana Bread [2]: 1/4 c. (1 stick) butter or margarine, softened, 2 large eggs, 1 tsp. grated orange peel, 2 c. unsifted flour, 1/2 c. buttermilk, 1 c. chopped walnuts, 1 c. semi-sweet chocolate piece\n- Banana Bread [3]: 1/2 c. sour milk, 1 tsp. baking soda, 1/2 c. shortening, 1 c. sugar, 2 eggs, 2 c. flour, 1 tsp. cinnamon, 1/4 tsp. nutmeg, Nuts (optional)",
+      "rouge_1": 0.18340611353711792,
+      "rouge_l": 0.1222707423580786,
+      "cosseno": 0.9028504603850976,
+      "hit": 1
+    },
+    {
+      "id": "e02",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 56.980187749999914,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745afb",
+        "afrodite:5744eff20ca7832b5c745dac",
+        "afrodite:5744eff20ca7832b5c745d9f"
+      ],
+      "texto": "Você pode preparar um Frango Assado ao Leite, que leva 1 frango inteiro, alho amassado, pimenta-do-reino, sálvia, leite, sal e rodelas de limão siciliano [1]. O modo de preparo inclui marinar o frango em uma mistura de leite e temperos por um dia na geladeira, assar no forno a 220°C por cerca de 40 minutos e finalizar com mais 40 minutos no forno desligado [1].\n\nOutra opção é o Frango ao molho de laranja, que usa 1 kg de frango (peito, coxa e sobrecoxa), cebola picada, alho amassado, sal, pimenta do reino e suco de 3 laranjas [2]. O modo de preparo envolve assar o frango com o papel alumínio por 40 minutos e depois retirar o papel para dourar por mais 20 minutos [2].\n\nPara um toque cítrico extra, você pode usar o Tempero Cítrico, que leva casca de limão siciliano, casca de limão verde, tomilho, dill picado (funcho), alho laminado e raspas de limão siciliano [3].\n\nIngredientes que faltam:\n- Frango Assado ao Leite [1]: - 6 dentes de alho levemente amassados, - 20 pimentas-do-reino em grãos levemente amassadas, - ½ maço de sálvia, - 1 litro de leite\n- Frango ao molho de laranja [2]: 1 cebola picada, 3 dentes de alho amassados, Suco de 3 laranjas\n- Tempero Cítrico [3]: 1/3 de maço de tomilho, ½ xícara (chá) de dill picado (funcho), 1 dente de alho laminado, Casca do dente de alho",
+      "rouge_1": 0.18450184501845016,
+      "rouge_l": 0.13284132841328414,
+      "cosseno": 0.9174937572901466,
+      "hit": 0
+    }
+  ]
+}

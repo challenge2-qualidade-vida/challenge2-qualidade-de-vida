@@ -1,0 +1,231 @@
+{
+  "modo": "rag",
+  "run": "rag-qwen2.5:7b-resposta_com_fontes_v2-e5",
+  "maquina": "Darwin arm64, 10 CPUs lógicas",
+  "data": "2026-11-17T09:55:22",
+  "perguntas_arquivo": "data/avaliacao/perguntas_rag_v3.json",
+  "colecao": "base_conhecimento_e5",
+  "modelo_embeddings": "e5",
+  "modelo_llm": "qwen2.5:7b",
+  "llm": {
+    "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+    "quantizacao": "Q4_K_M",
+    "parametros": "7.6B",
+    "familia": "qwen2"
+  },
+  "limiar": 0.845,
+  "prompt_de_resposta": "resposta_com_fontes_v2",
+  "resposta_estruturada": true,
+  "segunda_tentativa_de_citacao": true,
+  "temperatura": 0.0,
+  "semente": 42,
+  "contexto": 8192,
+  "saida_maxima": 2048,
+  "raciocinio": false,
+  "langfuse_run": "https://us.cloud.langfuse.com/project/cmwi1cz2h00jhad0ezbr3zov1/experiments/results?baseline=17e0829a82dd8953",
+  "perguntas": 10,
+  "acuracia": 0.9,
+  "taxa_de_resposta": 0.9,
+  "recusa_correta": null,
+  "aviso_de_preco": null,
+  "fonte_esperada": 0.5555555555555556,
+  "rouge_1": 0.3832376213455813,
+  "rouge_l": 0.26259633936479143,
+  "cosseno": 0.8422340563152458,
+  "hit": 0.8,
+  "falsas_recusas": [
+    "r06"
+  ],
+  "respostas_indevidas": [],
+  "latencia_media": 20.751344249900058,
+  "latencia_maxima": 29.411751874999936,
+  "por_categoria": {
+    "receita_entre_idiomas": {
+      "perguntas": 2,
+      "acuracia": 1.0,
+      "taxa_de_resposta": 1.0,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.0,
+      "rouge_1": 0.3404594506213211,
+      "rouge_l": 0.22457488554610858,
+      "cosseno": 0.9382545315855113,
+      "hit": 0.5
+    },
+    "receita_pt": {
+      "perguntas": 8,
+      "acuracia": 0.875,
+      "taxa_de_resposta": 0.875,
+      "recusa_correta": null,
+      "aviso_de_preco": null,
+      "fonte_esperada": 0.7142857142857143,
+      "rouge_1": 0.3939321640266464,
+      "rouge_l": 0.2721017028194621,
+      "cosseno": 0.8182289374976794,
+      "hit": 0.875
+    }
+  },
+  "resultados": [
+    {
+      "id": "r01",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 28.542540458000076,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745d8d"
+      ],
+      "texto": "Para fazer bolo de cenoura no micro-ondas, você pode seguir a Receita: Bolo Nutritivo de Microondas [1]. Nela, você precisa de 1 colher (sopa) de margarina em temperatura ambiente, 2 colheres (sopa) de açúcar, 2 colheres (sopa) de farelo de trigo, 1 colher (chá) de fermento, 1 ovo, 1 colher (sopa) de creme de leite de caixinha. Misture todos os ingredientes e despeje em uma tigela para micro-ondas forrada com açúcar e canela, distribuindo ½ maçã vermelha cortada em fatias não muito finas. Leve ao micro-ondas na potência alta por 4 minutos [1].\n\nIngredientes que faltam:\n- Bolo Nutritivo de Microondas [1]: 1 colher (sopa) de margarina em temperatura ambiente, 2 colheres (sopa) de açúcar, 2 colheres (sopa) de farelo de trigo, 1 colher (chá) de fermento, 1 ovo, 1 colher (sopa) de creme de leite de caixinha, Açúcar e canela a gosto, ½ maçã vermelha sem casca cortada em fatias não muito finas, 1 colher (chá) de passas, 2 castanhas-do-pará picadas, 1 colher (sopa) de suco de limão (ou suco de laranja), 1 colher (sopa) de açúcar de confeiteiro, 1 colher (café) de margarina, 50 g de goiabada",
+      "rouge_1": 0.3857142857142857,
+      "rouge_l": 0.2357142857142857,
+      "cosseno": 0.9226179341064874,
+      "hit": 1
+    },
+    {
+      "id": "r02",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 22.507395124999675,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745af3"
+      ],
+      "texto": "Aqui está uma receita de Pão de Queijo: Em uma tigela, misture 2 xícaras (chá) de queijo prato ralado no ralo grosso, 2 xícaras (chá) de queijo gruyère ralado no ralo grosso, 1 ½ xícara (chá) de queijo parmesão ralado no ralo fino, 2 ovos levemente batidos, 4 colheres (sopa) de farinha de trigo e 1 colher (chá) de fermento em pó. Espere a massa firmar no freezer por cerca de 1 hora, corte em pedaços e frite até dourar [1].\n\nIngredientes que faltam:\n- Quadradinho de queijo [1]: nenhum",
+      "rouge_1": 0.3841059602649007,
+      "rouge_l": 0.22516556291390727,
+      "cosseno": 0.9189338799386781,
+      "hit": 0
+    },
+    {
+      "id": "r03",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 19.51804729200012,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745e7a",
+        "afrodite:5744eff20ca7832b5c745abb"
+      ],
+      "texto": "Para fazer bolinho de bacalhau, você pode seguir a receita do Bolinho de Bacalhau Mais Você [1] ou a Receita: Bolinho de bacalhau [2]. Ambas usam batata, bacalhau, gemas e temperos. A primeira é mais simples, enquanto a segunda envolve mais etapas.\n\nIngredientes que faltam:\n- Bolinho de Bacalhau Mais Você [1]: nenhum\n- Bolinho de bacalhau [2]: nenhum",
+      "rouge_1": 0.19847328244274806,
+      "rouge_l": 0.16793893129770993,
+      "cosseno": 0.9169660080599452,
+      "hit": 1
+    },
+    {
+      "id": "r04",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 23.662853667000036,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b27"
+      ],
+      "texto": "Você pode fazer um arroz de forno com o arroz que sobrou, tomate e queijo [1]. Neste modo de preparo, você refoga o arroz com tomates e outros ingredientes, mistura tudo e leva ao forno para dourar.\n\nIngredientes que faltam:\n- Arroz de forno [1]: 1 dente de alho amassado, 2 colheres (sopa) de manteiga, 4 ovos mexidos feitos no azeite, 6 azeitonas verdes sem caroço picadas, 6 azeitonas pretas sem caroço picadas, 3 colheres (sopa) de cebolinha verde picada, salsinha picadinha a gosto, 2 cenouras cortadas em cubos médios e cozidas al dente, 1 pacote de batata palha (140g), 500g de carne cozida e desfiada (acém ou pá)",
+      "rouge_1": 0.3905325443786982,
+      "rouge_l": 0.24852071005917162,
+      "cosseno": 0.9411828392776536,
+      "hit": 1
+    },
+    {
+      "id": "r05",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 24.410093250000045,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745aae"
+      ],
+      "texto": "Para preparar a feijoada com feijão preto, linguiça e carne seca, siga estes passos [1]: 1) Cozinhe o feijão por cerca de 20 minutos após pegar pressão. 2) Deixe as carnes dessalgar durante algumas horas, trocando a água de vez em quando. 3) Adicione as carnes ao feijão e deixe cozinhar mais 10 minutos. 4) Refogue o bacon picado e doure alho e couve na frigideira. 5) Para a farofa, frite a farinha de mandioca com margarina até ficar dourada.\n\nIngredientes que faltam:\n- Feijoada a la Vidigal [1]: 500g de lombo, 2 paios em rodelas, 500g de costela, 1Kg de farinha de mandioca, 2 colheres (sopa) de margarina, 300g de bacon picado, 1 maço de couve cortada em tiras bem fininhas, 1 Kg de arroz branco, 1 laranja descascada e separada em gomos, 3 cabeças de alho descascadas e picadas, (divida esta quantidade em 3 partes para usar na feijoada, no arroz e na farofa)",
+      "rouge_1": 0.5110132158590308,
+      "rouge_l": 0.29955947136563876,
+      "cosseno": 0.9402116008186464,
+      "hit": 1
+    },
+    {
+      "id": "r06",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "nao_encontrar",
+      "fonte_esperada": null,
+      "segundos": 0.033632833000410756,
+      "documentos_citados": [],
+      "texto": "Não encontrei essa informação na base de conhecimento. Prefiro não responder a inventar uma resposta.",
+      "rouge_1": 0.0,
+      "rouge_l": 0.0,
+      "cosseno": 0.0,
+      "hit": 1
+    },
+    {
+      "id": "r07",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 23.775596167000003,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b2f"
+      ],
+      "texto": "Para fazer um omelete assado no forno com muitos ovos, você pode seguir a receita do Omelete de forno [1]. Nela, são usados 10 ovos e diversos recheios. Bata os ovos com leite, sal e pimenta-do-reino, espalhe os ingredientes escolhidos no fundo da forma para cupcake e leve ao forno pré-aquecido a 200°C por cerca de 13 minutos para uma omelete cremosa ou 20 minutos para uma mais firme.\n\nIngredientes que faltam:\n- Omelete de forno [1]: ½ xícara (chá) de leite, Recheio a gosto, tomate sem semente picadinho, cheiro verde picadinho, azeitona verde picadinha, peito de peru picadinho, blanquet picadinho, queijo minas padrão ralado, queijo parmesão ralado, presunto picadinho, presunto parma picadinho, salame picadinho, bacon picadinho e frito, linguiça calabresa ralada e frita, milho, ervilha",
+      "rouge_1": 0.5396825396825397,
+      "rouge_l": 0.3386243386243386,
+      "cosseno": 0.9421755862466301,
+      "hit": 1
+    },
+    {
+      "id": "r08",
+      "categoria": "receita_pt",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": true,
+      "segundos": 29.411751874999936,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745b03"
+      ],
+      "texto": "Para fazer pastel de carne, misture 1 lata de creme de leite com soro (300g), 2 ¼ xícaras (chá) de farinha de trigo (320g) e sal a gosto até formar uma massa homogênea. Abra a massa em um disco, coloque recheio e feche em meia lua. Frite em óleo quente até dourar [1].\n\nIngredientes que faltam:\n- Pastel de carne [1]: nenhum",
+      "rouge_1": 0.7419354838709677,
+      "rouge_l": 0.6612903225806451,
+      "cosseno": 0.9637436515333946,
+      "hit": 1
+    },
+    {
+      "id": "e01",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 13.367627041000105,
+      "documentos_citados": [
+        "recipenlg:370774",
+        "recipenlg:155539",
+        "recipenlg:579077"
+      ],
+      "texto": "Para fazer o pão de banana, você pode seguir uma das receitas listadas [1], [2] ou [3]. Aqui está um resumo com base na receita do [1]: Misture açúcar e manteiga derretida. Adicione um ovo e bata bem. Adicione bananas amassadas. Misture farinha e combine bem. Adicione nozes (opcional). Despeje em forma untada e assar por 1 hora a 350°F.\n\nIngredientes que faltam:\n- Banana Bread [1]: sugar, egg, flour, butter, soda, nuts\n- Banana Bread [2]: 1/4 c. (1 stick) butter or margarine, softened, 2 large eggs, 1 tsp. grated orange peel, 2 c. unsifted flour, 1/2 c. buttermilk, 1 c. chopped walnuts, 1 c. semi-sweet chocolate piece\n- Banana Bread [3]: margarine, sugar, vanilla, lemon juice, eggs, flour, baking powder, baking soda, sour cream, nuts",
+      "rouge_1": 0.3068181818181818,
+      "rouge_l": 0.20454545454545456,
+      "cosseno": 0.9485628123664586,
+      "hit": 1
+    },
+    {
+      "id": "e02",
+      "categoria": "receita_entre_idiomas",
+      "esperado": "responder",
+      "obtido": "responder",
+      "fonte_esperada": false,
+      "segundos": 22.283904791000168,
+      "documentos_citados": [
+        "afrodite:5744eff20ca7832b5c745afb"
+      ],
+      "texto": "Aqui está uma receita de frango assado com limão siciliano: Coloque 1 frango inteiro na marinada feita com leite, sal e 1 limão siciliano cortado em rodelas. Deixe marinar por um dia, retire o frango da marinada, peneire o leite e regue o frango com os temperos que ficaram na peneira. Em seguida, assar no forno a 220°C por cerca de 1 hora e 20 minutos [1].\n\nIngredientes que faltam:\n- Frango Assado ao Leite [1]: - 6 dentes de alho levemente amassados, - 20 pimentas-do-reino em grãos levemente amassadas, - ½ maço de sálvia, - 1 litro de leite",
+      "rouge_1": 0.37410071942446044,
+      "rouge_l": 0.2446043165467626,
+      "cosseno": 0.9279462508045642,
+      "hit": 0
+    }
+  ]
+}

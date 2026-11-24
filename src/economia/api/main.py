@@ -1,4 +1,4 @@
-"""Aplicação principal da API EconoMIA."""
+"""Ponto de entrada da API EconoMIA (Dockerfile e README). A aplicação fica em `app.py`."""
 
 from http import HTTPStatus
 from typing import Annotated
