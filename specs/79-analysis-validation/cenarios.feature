@@ -31,11 +31,19 @@ Funcionalidade: Análise e validação de alegações
     Então a confiança é 0,80
     E a validação é reprovada com retorno para o "research"
 
-  Cenário: Alegação nova com evidência forte reprova e volta para o Analysis
+  Cenário: Alegação nova sem citar a evidência forte reprova e volta para o Analysis
     Dado duas evidências recuperadas, a primeira com score 0,92
     E o LLM classifica como "nova" sem citar evidências
     Quando o Analysis Agent analisa e o Validation Agent valida
     Então a validação é reprovada com retorno para o "analysis"
+
+  Cenário: Alegação nova que cita a evidência forte e explica por que não cobre é aprovada
+    Dado duas evidências recuperadas, a primeira com score 0,92
+    E o LLM classifica como "nova" citando a evidência 1
+    E o LLM não aponta contradição
+    Quando o Analysis Agent analisa e o Validation Agent valida
+    Então a análise cita o trecho da evidência 1
+    E a validação é aprovada sem retorno
 
   Cenário: Alegação nova sem evidência relevante é aprovada
     Dado duas evidências recuperadas, a maior com score 0,78

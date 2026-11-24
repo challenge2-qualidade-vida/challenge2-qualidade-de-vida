@@ -26,7 +26,7 @@ Termos propostos no [modelo de domínio](../../docs/arquitetura/modelo-de-domini
 ## Regras de negócio
 
 - **RN01:** a confiança e todas as conferências da validação são calculadas pelo código. O LLM só classifica, justifica e aponta contradições.
-- **RN10:** toda análise `reciclada` ou `parcial` cita ao menos uma evidência recuperada. Uma análise `nova` pode não citar nenhuma.
+- **RN10:** toda análise se apoia em fonte. `reciclada` e `parcial` citam ao menos uma evidência recuperada. Uma análise `nova` também cita, sempre que a busca trouxe evidência no limiar mínimo ou acima: precisa mostrar as evidências que examinou e explicar por que elas não cobrem a alegação. A `nova` fica sem citação só quando nenhuma evidência chega ao limiar.
 - **RN30:** o que vai ao Langfuse passa pelo mascaramento. As alegações da avaliação são fictícias.
 
 Regras desta funcionalidade:
@@ -43,7 +43,7 @@ Regras desta funcionalidade:
    | Todas as citações existem entre as evidências | Analysis |
    | `reciclada` ou `parcial` cita ao menos uma evidência | Analysis |
    | `reciclada` ou `parcial` com a confiança no limiar mínimo ou acima | Research |
-   | `nova` sem nenhuma evidência no limiar mínimo ou acima | Analysis |
+   | `nova`, quando há evidência no limiar mínimo ou acima, cita ao menos uma dessas evidências | Analysis |
    | A justificativa não contradiz as evidências citadas (LLM) | Analysis |
 
 5. Quando há motivos para os dois destinos, o trabalho volta para o **Research**: sem evidência suficiente, refazer a análise não resolve.
@@ -116,5 +116,6 @@ Cenários em [cenarios.feature](cenarios.feature).
 
 - **A confiança é o score da busca,** que fica quase sempre entre 0,7 e 0,9 com o e5. O limiar precisa de calibração, e 10 a 20 casos são pouco para isso.
 - **A conferência de contradição depende do LLM local** e pode errar nos dois sentidos.
+- **O score alto não prova que a evidência cobre a alegação,** só que o tema é próximo. Por isso uma `nova` com evidência forte não é reprovada pelo score: é reprovada quando não cita essa evidência, e a conferência de contradição avalia se a explicação se sustenta.
 - **As fronteiras entre `reciclada` e `parcial` são subjetivas:** a classificação esperada de cada caso é uma decisão da equipe.
 - **As alegações são fictícias,** e a base tem só 21 documentos.
