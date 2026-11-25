@@ -56,11 +56,11 @@ Cada regra da spec, com os testes que a cobrem. **Situação:** ✅ coberto; ⚠
 | Retorno ao Analysis mantém as evidências e repassa os motivos (regra 3) | `test_retorno_ao_analysis_mantem_as_evidencias_e_repassa_os_motivos`, cenário correspondente | ✅ |
 | Limite de retornos leva ao veredito não conclusivo (regra 4) | `test_no_limite_de_retornos_vai_para_o_communication`, `test_limite_de_retornos_da_veredito_nao_conclusivo_sem_chamar_o_communication`, cenário correspondente | ✅ |
 | Zero retornos permitidos | `test_sem_retornos_permitidos_a_reprovacao_vai_direto_ao_communication` | ✅ |
-| Busca sem limiar de score no fluxo (regra 6) | — | ❌ o código de `criar_verificar_alegacao` (CLI) monta a busca sem o limiar, mas nenhum teste confere isso |
+| Busca sem limiar de score no fluxo (regra 6) | `test_busca_do_fluxo_vai_sem_o_limiar_de_similaridade` (`test_cli.py`) | ✅ |
 | Histórico na ordem, com os nós repetidos (regra 7) | Cenários "Análise aprovada direto" e "Limite de retornos" | ✅ |
 | Motivos e destino na etapa do Validation (regra 7) | `test_retorno_ao_research_guarda_os_motivos_e_o_destino_na_etapa` | ✅ |
 | Segundos de cada etapa | `test_cada_etapa_tem_os_segundos_do_relogio` | ✅ |
-| Histórico sem o texto dos trechos | — | ❌ `descrever_evidencias` devolve só `trecho` e `score`, mas nenhum teste confere isso |
+| Histórico sem o texto dos trechos | `test_historico_leva_so_os_ids_e_os_scores_dos_trechos`, nos dois motores | ✅ |
 | Falha do LLM ou do Qdrant interrompe (regra 8) | `test_falha_do_llm_interrompe_a_verificacao`, `test_falha_do_research_interrompe_a_verificacao` | ✅ |
 | Saída inválida do LLM não é falha (regra 8) | `test_saida_invalida_do_analysis_nao_e_falha` | ✅ |
 | Perfil chega ao Communication | Cenário "O perfil de leitura chega ao Communication" | ✅ |
@@ -73,12 +73,12 @@ Cada regra da spec, com os testes que a cobrem. **Situação:** ✅ coberto; ⚠
 | Trace por verificação e span por nó | `test_verificacao_avulsa_abre_o_trace_da_alegacao`, `test_observador_registra_a_verificacao_e_cada_etapa` | ✅ |
 | Retorno visível no trace (motivos e destino) | `test_validacao_reprovada_leva_os_motivos_e_o_destino_no_metadado` | ✅ |
 | Falha do Langfuse não interrompe | `test_falha_do_langfuse_nao_interrompe_a_verificacao` | ✅ |
-| Mascaramento RN30 no trace da verificação | `tests/compartilhado/test_observabilidade_langfuse.py` (cliente com `mask`) | ⚠️ a API usa o cliente de `obter_langfuse` (com o `mask`), mas nenhum teste da verificação confere isso |
+| Mascaramento RN30 no trace da verificação | `test_orquestrador_da_api_usa_o_cliente_do_langfuse_com_mascaramento` (a API passa o cliente de `obter_langfuse`) e `tests/compartilhado/test_observabilidade_langfuse.py` (o cliente tem o `mask`) | ✅ |
 | Grafo com um nó por agente e a aresta condicional | `test_grafo_tem_um_no_por_agente_e_a_aresta_condicional` | ✅ |
 | Domínio e aplicação sem LangGraph | `test_dominio_e_aplicacao_nao_importam_o_langgraph` | ✅ |
 | Verificação sem o domínio do Research | `test_independencia_dos_contextos.py` | ✅ |
 | Os dois motores dão o mesmo resultado | Fixture `motor` (`laco` e `langgraph`) em `test_verificar_alegacao.py` e nos passos BDD | ✅ |
-| Avaliação pelo orquestrador mantém as métricas | `test_avaliacao.py`, `test_cli.py` | ⚠️ `test_retorno_ao_research_dobra_o_limite_ate_20` ainda fala no teto de 20; conferir o nome com o padrão novo, de 10 |
+| Avaliação pelo orquestrador mantém as métricas | `test_avaliacao.py`, `test_cli.py` (`test_retorno_ao_research_dobra_o_limite_ate_20` passa o teto de 20 de forma explícita, e `test_padroes_seguem_a_spec` confere o padrão de 10) | ✅ |
 | Contrato dos quatro prompts | `test_prompts_no_langfuse.py -m langfuse` | ⚠️ roda só com as chaves; precisa rodar antes do PR |
 
 ## 5. Dados de teste
@@ -101,7 +101,7 @@ Cada regra da spec, com os testes que a cobrem. **Situação:** ✅ coberto; ⚠
 | Testes automáticos | Sem `.env`: nada de Ollama, Qdrant ou Langfuse |
 | Integração e evidência | Ollama com o `qwen2.5:7b`, Qdrant com a coleção `evidencias_verificacao_e5` e as chaves do Langfuse no `.env` |
 
-**Bloqueio encontrado:** o ambiente virtual local (`economia-egS4NZvn-py3.14`) ainda não tem o `langgraph`. Hoje, `test_verificar_alegacao.py` e `test_orquestrador_verificacao.py` falham na coleta, e `test_cli.py::test_orquestrador_da_api_usa_o_grafo_e_os_quatro_prompts` falha. Os outros 152 testes de `tests/verificacao` e `tests/api` passam. É preciso rodar `poetry install` antes de executar este plano.
+**Ambiente local:** em 25/11/2026, o `langgraph` 1.2.24 e as 18 dependências dele foram instalados no ambiente virtual local (`economia-egS4NZvn-py3.14`), pelas versões do `poetry.lock`. Com isso, a suíte passa inteira: 607 testes, sem os marcados com `langfuse`. Quem usa outro ambiente precisa rodar `poetry install`.
 
 ## 7. Integração local (manual)
 
@@ -129,7 +129,7 @@ Roda depois dos testes automáticos, na máquina com o Ollama e o Qdrant.
 **Para abrir o PR:**
 
 - Todos os testes automáticos passando com `poetry run pytest -m "not langfuse"`, nos dois motores.
-- Os itens ❌ da matriz resolvidos (busca sem limiar e histórico sem o texto dos trechos).
+- Nenhum item ❌ ou ⚠️ na matriz, fora o contrato dos prompts, que depende das chaves.
 - `ruff check` e `ruff format --check` sem apontamentos.
 - `scripts/verificar-commits.sh origin/main HEAD` e `scripts/verificar-branch.sh` sem erros.
 
