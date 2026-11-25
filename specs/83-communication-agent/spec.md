@@ -37,10 +37,10 @@ Regras desta funcionalidade:
 
 1. **Fontes:** uma por documento citado, sem repetir, na ordem das citações da análise.
 2. **Fonte principal:** a fonte da evidência citada com o maior score. Em empate, a primeira citada. No perfil rápido, ela é a única fonte do veredito.
-3. **Classificação `nova` sem citação:** o veredito não tem fontes, e a mensagem diz que a base não tem evidência sobre a alegação (RN11).
-4. **Validação reprovada ou sem análise:** `aprovado_pela_validacao` é `false` e a mensagem é um texto fixo do código, sem chamar o LLM, dizendo que a verificação não foi conclusiva. O veredito não tem fontes, porque elas não foram confirmadas pela validação. Com análise, a classificação é a da análise, para o registro. Sem análise, o veredito não tem classificação.
-5. **Saída inválida do LLM** (não é JSON, está fora do esquema ou a mensagem é vazia): a mensagem passa a ser a justificativa da análise, sem os marcadores `[n]`. O veredito não falha por causa do texto.
-6. **Tamanho no perfil rápido:** se a mensagem do LLM passar de 2 frases, o código fica com as 2 primeiras.
+3. **Classificação `nova` sem citação:** o veredito não tem fontes, e a mensagem é um texto fixo do código, sem chamar o LLM, dizendo que a base não tem evidência sobre a alegação (RN11). O veredito sai aprovado pela validação.
+4. **Validação reprovada ou sem análise:** `aprovado_pela_validacao` é `false` e a mensagem é um texto fixo do código, sem chamar o LLM, dizendo que a verificação não foi conclusiva. O texto não diz o motivo da reprovação, que pode ser falta de evidência, contradição ou citação inválida. O veredito não tem fontes, porque elas não foram confirmadas pela validação. Com análise, a classificação é a da análise, para o registro. Sem análise, o veredito não tem classificação.
+5. **Saída inválida do LLM** (não é JSON, está fora do esquema ou a mensagem é vazia): a mensagem passa a ser a justificativa da análise, sem os marcadores `[n]`. O veredito não falha por causa do texto. Falha do adaptador do LLM (tempo esgotado, Ollama fora do ar) não é saída inválida: o erro sobe para o orquestrador da #82.
+6. **Tamanho no perfil rápido:** se a mensagem do LLM passar de 2 frases, o código fica com as 2 primeiras. Um ponto seguido de minúscula ou número ("Min. da Saúde", "2,5 g. por dia") não fecha a frase.
 7. **Sem "verdadeiro" nem "falso":** a classificação mede o quanto a base cobre a alegação, não se ela é verdadeira. O prompt pede isso.
 
 ## Entradas e saídas
@@ -70,13 +70,15 @@ Saída (`Veredito`), como na seção 5.4 da arquitetura:
 
 Saída pedida ao LLM (esquema JSON): `{"mensagem": "..."}`.
 
-**Prompt:** `verificacao/comunicacao` no prompt management do Langfuse (versão 1 criada em 24/11/2026, rótulos `production` e `latest`), lido pelo rótulo `production`, com a cópia local usada pelos prompts da #79. A mensagem ao LLM leva o perfil, a alegação, a classificação, a justificativa e as evidências citadas, numeradas. O contrato do prompt (campo `mensagem`) entra em `tests/contrato/test_prompts_no_langfuse.py`.
+**Prompt:** `verificacao/comunicacao` no prompt management do Langfuse (versão 1 criada em 24/11/2026, rótulos `production` e `latest`), lido pelo rótulo `production`. A mensagem ao LLM leva o perfil, a alegação, a classificação, a justificativa e as evidências citadas, numeradas, e pede para citar só essas fontes. O contrato do prompt (campo `mensagem`) entra em `tests/contrato/test_prompts_no_langfuse.py`.
 
-**Arquivos novos** (nenhum arquivo da #75, da #79 ou da #82 é alterado; o único arquivo existente que muda é o contrato dos prompts, com uma linha):
+**Arquivos novos** (além deles, muda uma linha do contrato dos prompts):
 
 - `src/economia/verificacao/dominio/veredito.py`: `PerfilDeLeitura`, `Veredito`, montagem das fontes e escolha da fonte principal.
 - `src/economia/verificacao/aplicacao/comunicar_veredito.py`: o caso de uso `ComunicarVeredito`.
 - `tests/verificacao/test_veredito.py`, `tests/verificacao/test_comunicar_veredito.py` e `tests/bdd/test_communication_agent.py`.
+
+**Independência da Pesquisa de evidências:** a `main` separou o Research no contexto `pesquisa_evidencias`, e o modelo de domínio pede que os outros contextos usem só a camada `aplicacao` dele. Por isso, nesta branch, a verificação (inclusive o código da #79) ganhou os próprios modelos de evidência em `verificacao/dominio/evidencias.py` e um adaptador em `verificacao/infraestrutura/pesquisa_de_evidencias.py`, que traduz o que o caso de uso do Research devolve. Só a CLI, que monta as peças, chama a pesquisa. O teste `tests/verificacao/test_independencia_dos_contextos.py` confere que as camadas da verificação não importam `economia.pesquisa_evidencias`.
 
 ## Fora do escopo
 
@@ -92,7 +94,7 @@ Cenários em [cenarios.feature](cenarios.feature).
 ## Dependências
 
 - **#79 (Analysis e Validation):** `Alegacao`, `AnaliseDaAlegacao`, `ResultadoDaValidacao`, `ClassificacaoDaAlegacao` e a porta `ModeloDeLinguagem`. Esta branch traz a #79 até ela entrar na `main`.
-- **#75 (Research):** `EvidenciaRecuperada` e a `FonteEvidencia`.
+- **#75 (Research):** o caso de uso `PesquisarEvidencias`, chamado pelo adaptador da verificação.
 - **#82 (Orquestrador):** a porta do Communication Agent. A assinatura acima é a proposta para o orquestrador chamar.
 - **#69:** o adaptador do Ollama com saída JSON e os prompts no prompt management do Langfuse.
 
@@ -105,5 +107,7 @@ Cenários em [cenarios.feature](cenarios.feature).
 ## Riscos e limitações
 
 - **O LLM pode reescrever a justificativa com um sentido diferente** (ponto 3 da revisão).
-- **A contagem de frases é aproximada:** abreviações como "Min." podem cortar uma frase no meio.
-- **A qualidade do texto depende do LLM local** e não tem métrica automática nesta issue. É conferida nos casos da avaliação da #79.
+- **O texto pode citar uma fonte que não foi recuperada** (ex.: "segundo a OMS"). As `fontes` do veredito continuam vindo do código, e a mensagem ao LLM pede para citar só as evidências listadas, mas o código não confere o texto. Uma versão 2 do prompt `verificacao/comunicacao` no Langfuse com a mesma regra reforça isso.
+- **O comando `avaliar` da #79 ainda não chama o Communication Agent:** a qualidade do texto só é conferida depois do orquestrador (#82).
+- **A contagem de frases é aproximada:** uma abreviação seguida de maiúscula ("Dr. Silva") ainda corta a frase.
+- **A qualidade do texto depende do LLM local** e não tem métrica automática nesta issue.

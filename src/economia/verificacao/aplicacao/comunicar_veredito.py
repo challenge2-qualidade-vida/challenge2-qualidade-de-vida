@@ -2,19 +2,21 @@
 
 O LLM só redige a mensagem, no tamanho do perfil de leitura. A classificação, as fontes e a
 aprovação vêm do código (RN01, RN10). Sem análise aprovada, o veredito é um texto fixo, sem
-chamar o LLM (RN11). Saída do LLM fora do esquema não derruba o veredito: a mensagem passa a
-ser a justificativa da análise.
+chamar o LLM (RN11); o mesmo vale para a alegação `nova` sem evidência citada. Saída do LLM
+fora do esquema não derruba o veredito: a mensagem passa a ser a justificativa da análise.
+Falha do adaptador do LLM (tempo esgotado, Ollama fora do ar) sobe para o orquestrador (#82).
 """
 
 from collections.abc import Sequence
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 
 from economia.verificacao.aplicacao.analisar_alegacao import descrever_evidencia
 from economia.verificacao.aplicacao.portas import ModeloDeLinguagem
 from economia.verificacao.dominio.analise import (
     Alegacao,
     AnaliseDaAlegacao,
+    ClassificacaoDaAlegacao,
     ResultadoDaValidacao,
     evidencias_citadas,
 )
@@ -28,15 +30,17 @@ from economia.verificacao.dominio.veredito import (
     limitar_frases,
     remover_marcadores_de_citacao,
     veredito_nao_conclusivo,
+    veredito_sem_evidencia,
 )
 
 INSTRUCAO_DO_PERFIL = {
     PerfilDeLeitura.CONSUMIDOR_GERAL: (
         "consumidor_geral: explicação completa, em linguagem simples, citando as fontes "
-        "pelo título."
+        "pelo título. Cite só as fontes das evidências abaixo."
     ),
     PerfilDeLeitura.CONSUMIDOR_RAPIDO: (
-        f"consumidor_rapido: no máximo {MAXIMO_DE_FRASES_NO_PERFIL_RAPIDO} frases curtas."
+        f"consumidor_rapido: no máximo {MAXIMO_DE_FRASES_NO_PERFIL_RAPIDO} frases curtas. "
+        "Cite só as fontes das evidências abaixo."
     ),
 }
 
@@ -85,6 +89,10 @@ class ComunicarVeredito:
         """Veredito no perfil de leitura pedido."""
         if analise is None or not validacao.aprovado:
             return veredito_nao_conclusivo(analise)
+        if analise.classificacao is ClassificacaoDaAlegacao.NOVA and not (
+            evidencias_citadas(analise, evidencias)
+        ):
+            return veredito_sem_evidencia()
 
         mensagem = self._redigir(alegacao, analise, evidencias, perfil)
         if perfil is PerfilDeLeitura.CONSUMIDOR_RAPIDO:
@@ -117,7 +125,7 @@ class ComunicarVeredito:
                     SaidaDaComunicacao.model_json_schema(),
                 )
             )
-        except (ValidationError, ValueError):
+        except ValueError:  # não é JSON ou está fora do esquema (ValidationError)
             saida = None
         if saida is not None and saida.mensagem.strip():
             return saida.mensagem.strip()

@@ -44,10 +44,11 @@ Funcionalidade: Communication Agent
     Dado nenhuma evidência recuperada
     E uma análise "nova" sem citações
     E uma validação aprovada
-    E o LLM escreve a mensagem "A base não traz informação sobre isso."
     Quando o Communication Agent monta o veredito para o perfil "consumidor_geral"
     Então o veredito não tem fontes
     E o veredito tem a classificação "nova"
+    E a mensagem diz que a base não tem evidência sobre a alegação
+    E o LLM não é chamado
 
   Cenário: Saída inválida do LLM usa a justificativa da análise
     Dado duas evidências recuperadas, com scores 0,87 e 0,80

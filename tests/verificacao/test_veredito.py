@@ -106,6 +106,11 @@ def test_fonte_principal_em_empate_fica_com_a_primeira_citada():
         ("Uma frase só.", 2, "Uma frase só."),
         ("Pode? Pode! E mais uma.", 2, "Pode? Pode!"),
         ("  Com espaços.   Muitos.  ", 1, "Com espaços."),
+        (
+            "Segundo o Min. da Saúde, sim. Até 2,5 g. por dia. Fim.",
+            2,
+            "Segundo o Min. da Saúde, sim. Até 2,5 g. por dia.",
+        ),
     ],
 )
 def test_limitar_frases(texto, maximo, esperado):
@@ -118,6 +123,7 @@ def test_limitar_frases(texto, maximo, esperado):
         ("O Guia trata de ovos [1].", "O Guia trata de ovos."),
         ("Em parte [1, 2], mas não [3].", "Em parte, mas não."),
         ("Sem marcador.", "Sem marcador."),
+        ("Vale para adultos [1-3].", "Vale para adultos."),
     ],
 )
 def test_remover_marcadores_de_citacao(texto, esperado):

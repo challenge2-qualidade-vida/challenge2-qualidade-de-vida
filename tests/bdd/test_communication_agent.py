@@ -21,6 +21,7 @@ from economia.verificacao.dominio.evidencias import (
 )
 from economia.verificacao.dominio.veredito import (
     MENSAGEM_NAO_CONCLUSIVA,
+    MENSAGEM_SEM_EVIDENCIA,
     PerfilDeLeitura,
 )
 
@@ -183,6 +184,11 @@ def _mensagem_e(contexto, mensagem):
 @then("a mensagem diz que a verificação não foi conclusiva")
 def _mensagem_nao_conclusiva(contexto):
     assert contexto["veredito"].mensagem == MENSAGEM_NAO_CONCLUSIVA
+
+
+@then("a mensagem diz que a base não tem evidência sobre a alegação")
+def _mensagem_sem_evidencia(contexto):
+    assert contexto["veredito"].mensagem == MENSAGEM_SEM_EVIDENCIA
 
 
 @then("o LLM não é chamado")

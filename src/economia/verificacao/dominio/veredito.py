@@ -16,16 +16,23 @@ from economia.verificacao.dominio.analise import (
 )
 from economia.verificacao.dominio.evidencias import EvidenciaRecuperada, FonteEvidencia
 
+# a validação pode reprovar por falta de evidência, por contradição ou por citação inválida:
+# o texto não diz qual foi o motivo, só que não há resposta confiável
 MENSAGEM_NAO_CONCLUSIVA = (
-    "Não foi possível concluir a verificação desta alegação. As evidências da nossa base "
-    "não foram suficientes para uma resposta confiável."
+    "Não foi possível concluir a verificação desta alegação. Não chegamos a uma resposta "
+    "confiável com as evidências da nossa base."
+)
+MENSAGEM_SEM_EVIDENCIA = (
+    "A nossa base de evidências não traz informação sobre esta alegação. Isso não quer "
+    "dizer que ela seja verdadeira nem falsa."
 )
 MAXIMO_DE_FRASES_NO_PERFIL_RAPIDO = 2
 
-# fim de frase: ponto, exclamação ou interrogação seguidos de espaço
-_FIM_DE_FRASE = re.compile(r"(?<=[.!?])\s+")
-# marcadores de citação do Analysis: [1], [1, 2], [1,2]
-_MARCADOR_DE_CITACAO = re.compile(r"\s*\[\d+(?:\s*,\s*\d+)*\]")
+# fim de frase: ponto, exclamação ou interrogação seguidos de espaço, desde que o texto não
+# continue em minúscula ou número ("Min. da Saúde", "2,5 g. por dia" não cortam a frase)
+_FIM_DE_FRASE = re.compile(r"(?<=[.!?])\s+(?![a-zà-ÿ0-9])")
+# marcadores de citação do Analysis: [1], [1, 2], [1,2], [1-3]
+_MARCADOR_DE_CITACAO = re.compile(r"\s*\[\d+(?:\s*[,–-]\s*\d+)*\]")
 
 
 class PerfilDeLeitura(StrEnum):
@@ -99,4 +106,16 @@ def veredito_nao_conclusivo(analise: AnaliseDaAlegacao | None) -> Veredito:
     return Veredito(
         classificacao=analise.classificacao if analise else None,
         mensagem=MENSAGEM_NAO_CONCLUSIVA,
+    )
+
+
+def veredito_sem_evidencia() -> Veredito:
+    """Veredito de uma alegação `nova` sem evidência citada (regra 3, RN11).
+
+    A análise foi aprovada, mas não há o que explicar: o texto é fixo e não há fontes.
+    """
+    return Veredito(
+        classificacao=ClassificacaoDaAlegacao.NOVA,
+        mensagem=MENSAGEM_SEM_EVIDENCIA,
+        aprovado_pela_validacao=True,
     )

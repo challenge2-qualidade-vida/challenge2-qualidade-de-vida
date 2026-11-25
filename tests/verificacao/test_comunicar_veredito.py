@@ -1,5 +1,7 @@
 """Communication Agent com um LLM de respostas prontas (spec 83)."""
 
+import pytest
+
 from economia.verificacao.aplicacao.comunicar_veredito import (
     ComunicarVeredito,
     montar_mensagem,
@@ -13,6 +15,7 @@ from economia.verificacao.dominio.analise import (
 )
 from economia.verificacao.dominio.veredito import (
     MENSAGEM_NAO_CONCLUSIVA,
+    MENSAGEM_SEM_EVIDENCIA,
     PerfilDeLeitura,
 )
 
@@ -176,7 +179,7 @@ def test_justificativa_so_com_marcador_vai_como_veio(fazer_evidencias, llm_rotei
     assert veredito.mensagem == "[1]"
 
 
-def test_alegacao_nova_sem_evidencia_nao_tem_fontes(llm_roteirizado):
+def test_alegacao_nova_sem_evidencia_tem_texto_fixo_sem_chamar_o_llm(llm_roteirizado):
     llm = llm_roteirizado(
         **{PROMPT: [{"mensagem": "A base não traz informação sobre isso."}]}
     )
@@ -191,6 +194,25 @@ def test_alegacao_nova_sem_evidencia_nao_tem_fontes(llm_roteirizado):
 
     assert veredito.classificacao == ClassificacaoDaAlegacao.NOVA
     assert veredito.fontes == ()
+    assert veredito.mensagem == MENSAGEM_SEM_EVIDENCIA
+    assert veredito.aprovado_pela_validacao
+    assert llm.chamadas == []
+
+
+def test_falha_do_adaptador_do_llm_sobe_para_o_orquestrador(fazer_evidencias):
+    class LLMForaDoAr:
+        def gerar_json(self, sistema, mensagem, esquema):
+            raise TimeoutError("Ollama não respondeu")
+
+    evidencias = fazer_evidencias(0.9)
+    with pytest.raises(TimeoutError):
+        _agente(LLMForaDoAr()).executar(
+            ALEGACAO,
+            _analise(evidencias, [1], "parcial", "Justificativa [1]."),
+            APROVADA,
+            evidencias,
+            PerfilDeLeitura.CONSUMIDOR_GERAL,
+        )
 
 
 def test_mensagem_ao_llm_leva_o_perfil_e_so_as_evidencias_citadas(
