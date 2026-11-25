@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | Issue | #82 |
-| Status | Em revisão |
+| Status | Implementada (falta a evidência dos traces reais) |
 | Contexto delimitado | Verificação |
 | Agente | Orquestrador (LangGraph), com Research, Analysis, Validation e Communication |
 

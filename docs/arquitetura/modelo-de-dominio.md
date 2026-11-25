@@ -103,6 +103,8 @@ flowchart LR
 | Resultado da validação | **Proposto (19/11/2026, #72).** Aprovação ou reprovação da análise, com os motivos e, quando reprovada, o agente que refaz o trabalho (Research ou Analysis) | Verificação | `ResultadoDaValidacao` |
 | Veredito | **Proposto (19/11/2026, #72).** Resposta final da verificação, adaptada ao perfil de leitura, com a classificação, a explicação e as fontes | Verificação | `Veredito` |
 | Perfil de leitura | **Proposto (19/11/2026, #72).** Forma de apresentar o veredito: `consumidor_geral` (explicação completa) ou `consumidor_rapido` (resposta curta) | Verificação | `PerfilDeLeitura` |
+| Estado da verificação | **Proposto (25/11/2026, #82).** O que os agentes leem e escrevem durante uma verificação: a alegação, o perfil, o limite da busca, as evidências, a análise, a validação, os motivos da reprovação, os retornos, o histórico e o veredito | Verificação | `EstadoDaVerificacao` |
+| Etapa da verificação | **Proposto (25/11/2026, #82).** Registro de um nó executado pelo orquestrador: o agente, a entrada, a saída e os segundos. A lista de etapas é o histórico que a interface mostra | Verificação | `EtapaDaVerificacao` |
 | Pedido | Mensagem do usuário em linguagem natural | Conversa | `Pedido` |
 | Intenção | O que o usuário quer fazer, identificado a partir do pedido | Conversa | `Intencao` |
 | Conversa | Sequência de pedidos e respostas entre a pessoa e o orquestrador. A memória da conversa vale por 24 horas | Conversa | `Conversa` |
