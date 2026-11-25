@@ -1,8 +1,10 @@
 """Registro da verificação no Langfuse: um trace por alegação e um span por agente.
 
-As chamadas ao LLM entram como gerações dentro do span do agente, pelo `RegistroDeGeracoes`.
-Os dados passam pelo mascaramento do cliente (RN30). Uma falha do Langfuse não interrompe
-a verificação.
+Serve à avaliação (`caso`, com a classificação esperada) e ao orquestrador (`verificacao`,
+uma alegação avulsa). As chamadas ao LLM entram como gerações dentro do span do agente, pelo
+`RegistroDeGeracoes`. O span do Validation leva os motivos e o destino no metadado, para o
+retorno aparecer no trace. Os dados passam pelo mascaramento do cliente (RN30). Uma falha do
+Langfuse não interrompe a verificação.
 """
 
 import logging
@@ -24,7 +26,12 @@ class ObservadorLangfuse:
 
     @contextmanager
     def _observacao(
-        self, nome: str, tipo: str, entrada: dict, propagar: bool = False
+        self,
+        nome: str,
+        tipo: str,
+        entrada: dict,
+        propagar: bool = False,
+        metadado: Callable[[dict], dict | None] = lambda saida: None,
     ) -> Iterator[Callable[[dict], None]]:
         with ExitStack() as pilha:
             observacao = None
@@ -49,7 +56,11 @@ class ObservadorLangfuse:
                 if observacao is None:
                     return
                 try:
-                    observacao.update(output=saida)
+                    extra = metadado(saida)
+                    if extra:
+                        observacao.update(output=saida, metadata=extra)
+                    else:
+                        observacao.update(output=saida)
                 except Exception:
                     logger.warning(
                         "Falha ao registrar a saída de %s", nome, exc_info=True
@@ -69,6 +80,21 @@ class ObservadorLangfuse:
             propagar=True,
         )
 
+    def verificacao(self, entrada: dict):
+        """Trace de uma alegação avulsa, sem a classificação esperada (orquestrador, #82)."""
+        return self._observacao(NOME_DO_REGISTRO, "chain", entrada, propagar=True)
+
     def etapa(self, nome: str, entrada: dict):
         tipo = "retriever" if nome == "research" else "agent"
-        return self._observacao(f"verificacao.{nome}", tipo, entrada)
+        metadado = _retorno_da_validacao if nome == "validation" else lambda saida: None
+        return self._observacao(f"verificacao.{nome}", tipo, entrada, metadado=metadado)
+
+
+def _retorno_da_validacao(saida: dict) -> dict | None:
+    """Motivos e destino de uma validação reprovada, para o retorno aparecer no trace."""
+    if saida.get("aprovado", True):
+        return None
+    return {
+        "motivos": saida.get("motivos", []),
+        "retornar_para": saida.get("retornar_para"),
+    }

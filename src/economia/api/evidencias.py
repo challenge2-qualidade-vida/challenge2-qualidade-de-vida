@@ -60,6 +60,10 @@ def _detalhe_da_validacao(erro: RequestValidationError) -> str:
         return "A pergunta não pode ser vazia."
     if "limite" in campos:
         return "O limite de evidências deve estar entre 1 e 20."
+    if "alegacao" in campos:
+        return "A alegação precisa ter de 1 a 500 caracteres."
+    if "perfil" in campos:
+        return "O perfil de leitura deve ser consumidor_geral ou consumidor_rapido."
     return "Os dados enviados não atendem aos requisitos da solicitação."
 
 
@@ -90,7 +94,7 @@ class RotaComProblemDetails(APIRoute):
                     headers=erro.headers,
                 )
             except Exception:
-                logger.exception("Falha ao pesquisar evidências")
+                logger.exception("Falha inesperada em %s", request.url.path)
                 return criar_problema(
                     request,
                     status=500,

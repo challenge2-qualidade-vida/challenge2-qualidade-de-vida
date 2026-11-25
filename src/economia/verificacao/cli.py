@@ -5,9 +5,10 @@ Uso:
         --casos data/avaliacao/verificacao/casos_v1.json \\
         --saida data/avaliacao/verificacao/resultados_v1.json [--llm gemma3:12b]
 
-Roda Research → Analysis → Validation em cada alegação, com até 2 retornos, grava o resultado
-e imprime a tabela em Markdown. Com as chaves do Langfuse, cada alegação vira um trace com um
-span por agente e as chamadas ao LLM ligadas aos prompts.
+Roda cada alegação pelo orquestrador (Research → Analysis → Validation → Communication), com
+até 2 retornos e teto de 10 trechos, grava o resultado e imprime a tabela em Markdown. Com as
+chaves do Langfuse, cada alegação vira um trace com um span por agente e as chamadas ao LLM
+ligadas aos prompts.
 """
 
 import argparse
@@ -23,6 +24,7 @@ from economia.compartilhado.configuracao import Configuracao, obter_configuracao
 AGENTE = "verificacao"
 PROMPT_DE_ANALISE = "analise"
 PROMPT_DE_VALIDACAO = "validacao"
+PROMPT_DE_COMUNICACAO = "comunicacao"
 # na avaliação, a mesma alegação gera a mesma análise
 TEMPERATURA_DA_AVALIACAO = 0.0
 SEMENTE_DA_AVALIACAO = 42
@@ -101,6 +103,49 @@ def criar_agentes(
     )
 
 
+def criar_comunicar(llm, prompts, prompt_de_comunicacao: str = PROMPT_DE_COMUNICACAO):
+    """Communication com o prompt do Langfuse (rótulo `production` por padrão)."""
+    from economia.verificacao.aplicacao.comunicar_veredito import ComunicarVeredito
+
+    return ComunicarVeredito(llm, prompts.carregar(AGENTE, prompt_de_comunicacao))
+
+
+def criar_verificar_alegacao(configuracao: Configuracao, langfuse=None):
+    """Orquestrador da verificação (#82) para a API: o grafo LangGraph com os quatro agentes.
+
+    A busca vai sem o limiar de similaridade (spec 82, regra 6): quem decide se a evidência
+    basta é o Validation. Com o Langfuse, cada verificação vira um trace com um span por nó, e
+    as chamadas ao LLM entram como gerações ligadas à versão do prompt.
+    """
+    from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
+        RegistroDeGeracoes,
+    )
+    from economia.compartilhado.infraestrutura.prompts_langfuse import (
+        PromptsDoLangfuse,
+    )
+    from economia.verificacao.aplicacao.orquestracao import ParametrosDaOrquestracao
+    from economia.verificacao.aplicacao.verificar_alegacao import VerificarAlegacao
+    from economia.verificacao.infraestrutura.grafo_langgraph import GrafoLangGraph
+    from economia.verificacao.infraestrutura.observabilidade_langfuse import (
+        ObservadorLangfuse,
+    )
+
+    prompts = PromptsDoLangfuse(langfuse)
+    registro = RegistroDeGeracoes(langfuse, prompts.prompts_lidos) if langfuse else None
+    llm = criar_llm(configuracao, ao_gerar=registro)
+    analisar, validar = criar_agentes(configuracao, llm, prompts)
+    parametros = ParametrosDaOrquestracao()
+    return VerificarAlegacao(
+        criar_pesquisar(configuracao),
+        analisar,
+        validar,
+        criar_comunicar(llm, prompts),
+        parametros=parametros,
+        motor=GrafoLangGraph(parametros.maximo_de_retornos),
+        observador=ObservadorLangfuse(langfuse) if langfuse else None,
+    )
+
+
 def comando_avaliar(args: argparse.Namespace) -> None:
     from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
         RegistroDeGeracoes,
@@ -161,6 +206,7 @@ def comando_avaliar(args: argparse.Namespace) -> None:
         limite_maximo=args.limite_maximo,
         observador=observador,
         ao_progredir=progresso,
+        comunicar=criar_comunicar(llm, prompts),
     )
     if langfuse:
         langfuse.flush()
@@ -171,7 +217,7 @@ def comando_avaliar(args: argparse.Namespace) -> None:
         "casos_arquivo": str(args.casos),
         "modelo_llm": configuracao.ollama_modelo,
         "modelo_embeddings": configuracao.modelo_embeddings,
-        "colecao": configuracao.colecao_verificacao,
+        "colecao": configuracao.colecao_pesquisa_evidencias,
         "limiar_confianca": configuracao.limiar_confianca_verificacao,
         "limite_inicial": args.limite,
         "maximo_de_retornos": args.retornos,
@@ -211,8 +257,8 @@ def criar_parser() -> argparse.ArgumentParser:
     avaliar.add_argument(
         "--limite-maximo",
         type=int,
-        default=20,
-        help="Teto da busca nos retornos ao Research, que dobram o limite (padrão 20)",
+        default=10,
+        help="Teto da busca nos retornos ao Research, que dobram o limite (padrão 10)",
     )
     avaliar.add_argument(
         "--prompt-analise",

@@ -48,22 +48,23 @@ flowchart LR
 | Research | Busca semântica das evidências na base (top-k com scores) | Não | Isabel | Implementado na #75 (branch `feat/75-research-agent`) |
 | Analysis | Classifica a alegação e escreve a justificativa citando as evidências | Sim | Paulo Vitor | Implementado na #79 (branch `feat/79-analysis-validation`) |
 | Validation | Confere as citações, as contradições e a confiança mínima; aprova ou devolve | Conferências no código; contradição com LLM | Paulo Vitor | Implementado na #79 (branch `feat/79-analysis-validation`) |
-| Communication | Adapta o veredito ao perfil de leitura | Sim | Guilherme | A implementar |
-| Orquestrador | Grafo LangGraph, estado compartilhado, roteamento e ciclo de retorno | Não | Pedro Lucas | A implementar |
+| Communication | Adapta o veredito ao perfil de leitura | Sim | Guilherme | Implementado na #83 |
+| Orquestrador | Grafo LangGraph, estado compartilhado, roteamento e ciclo de retorno | Não | Pedro Lucas | Implementado na #82 (`verificacao/aplicacao/verificar_alegacao.py` e `infraestrutura/grafo_langgraph.py`) |
 
-## 4. Estado compartilhado (proposta)
+## 4. Estado compartilhado
 
-O estado é um modelo Pydantic da camada `aplicacao` do contexto `verificacao`, lido e escrito pelos nós do grafo. Cada agente lê só os campos de que precisa e devolve só os campos que produz.
+O estado é o `EstadoDaVerificacao`, um dataclass imutável da camada `aplicacao` do contexto `verificacao` (`aplicacao/orquestracao.py`), lido e escrito pelos nós do grafo. Cada nó recebe o estado e devolve o estado seguinte, com a sua etapa no histórico. O roteamento (`proximo_no`) e o retorno (`preparar_retorno`) são funções puras do mesmo módulo, usadas pelo laço simples e pelo grafo LangGraph.
 
 | Campo | Tipo | Quem escreve |
 | --- | --- | --- |
 | `alegacao` | `str` | Entrada |
 | `perfil` | `consumidor_geral` ou `consumidor_rapido` | Entrada |
-| `limite` | `int`, de 1 a 20 (padrão 5) | Entrada; o Research aumenta no retorno |
+| `limite` | `int` (padrão 5, teto 10) | Orquestrador; dobra no retorno ao Research, até o teto |
 | `evidencias` | lista de `EvidenciaRecuperada` (contrato da #75) | Research |
 | `analise` | `AnaliseDaAlegacao` ou `null` | Analysis |
 | `validacao` | `ResultadoDaValidacao` ou `null` | Validation |
-| `retornos` | `int` | Orquestrador |
+| `motivos` | lista de `str` | Orquestrador; os da reprovação, num retorno ao Analysis |
+| `retornos` | `int` (no máximo 2) | Orquestrador |
 | `historico` | lista de `{agente, entrada, saida, segundos}` | Orquestrador |
 | `veredito` | `Veredito` ou `null` | Communication |
 
@@ -174,7 +175,7 @@ Saída (`Veredito`):
 
 ### 5.5 API
 
-`POST /verificar` executa o fluxo completo. Na #75, a rota devolve só as evidências do Research. Com o orquestrador, ela passa a receber `{alegacao, perfil}` e a devolver o `Veredito` e o `historico` (as saídas intermediárias que a interface mostra).
+`POST /api/v1/verificacoes` executa o fluxo completo (#82): recebe `{alegacao, perfil}` e devolve o `veredito`, os `retornos` e o `historico` (as etapas que a interface mostra, com os ids dos trechos e os scores, sem o texto). Os erros seguem Problem Details: 422 para alegação vazia, com mais de 500 caracteres ou perfil desconhecido; 503 com o LLM ou o Qdrant fora do ar; 500 sem detalhes internos. A rota `POST /api/v1/verificar` da #75 continua devolvendo só as evidências do Research, com o limiar de similaridade.
 
 ## 6. Diagrama de sequência
 
@@ -317,9 +318,9 @@ A preencher (checklist de Scrum & Documentação): passo a passo com prints da i
 
 ## 11. Pontos abertos
 
-1. Travar o estado compartilhado e os contratos das seções 4 e 5 (Pedro Lucas e responsáveis de cada agente).
+1. ~~Travar o estado compartilhado e os contratos das seções 4 e 5.~~ Resolvido na #82: estado da seção 4 e rota da seção 5.5.
 2. Escolher a alegação-exemplo da demo.
 3. Confirmar a definição de reciclada, parcial e nova no modelo de domínio.
-4. Rota da API: `POST /verificar` (como na #75) ou `POST /api/v1/verificacoes`, no padrão da API atual. A #75 também cria a aplicação em `api/main.py`, separada de `api/app.py`.
-5. Limiares: confiança mínima, score mínimo das evidências e limite de retornos.
+4. ~~Rota da API.~~ Resolvido na #82: `POST /api/v1/verificacoes`, no padrão de `/api/v1`.
+5. Limiares: o limite de retornos (2) e o teto da busca (10 trechos) foram fixados na #82, e o fluxo busca sem o score mínimo das evidências (spec 82, regra 6). A confiança mínima (0,845) continua em calibração na avaliação da #79.
 6. Descrição do contexto Verificação (Mia) no modelo de domínio, agora com RAG.

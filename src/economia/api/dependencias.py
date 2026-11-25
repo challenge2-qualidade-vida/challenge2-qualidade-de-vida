@@ -13,6 +13,7 @@ from economia.pesquisa_evidencias.infraestrutura.pesquisador_qdrant import (
 from economia.pesquisa_evidencias.infraestrutura.repositorio_qdrant import (
     RepositorioQdrant,
 )
+from economia.verificacao.aplicacao.verificar_alegacao import VerificarAlegacao
 
 
 @lru_cache(maxsize=1)
@@ -38,3 +39,15 @@ def obter_pesquisar_evidencias() -> PesquisarEvidencias:
         pesquisador=pesquisador,
         limiar_similaridade=configuracao.limiar_similaridade,
     )
+
+
+@lru_cache(maxsize=1)
+def obter_verificar_alegacao() -> VerificarAlegacao:
+    """Orquestrador da verificação (#82): e5, Qdrant, Ollama e os prompts `production`.
+
+    Usa as mesmas fábricas da CLI. Criado uma vez por processo.
+    """
+    from economia.api.app import obter_langfuse
+    from economia.verificacao.cli import criar_verificar_alegacao
+
+    return criar_verificar_alegacao(obter_configuracao(), obter_langfuse())

@@ -91,7 +91,14 @@ def test_retorno_ao_research_dobra_o_limite_ate_20(fazer_evidencias, llm_roteiri
     llm = llm_roteirizado(analise=[_reciclada(1)], validacao=[SEM_CONTRADICAO])
     pesquisa = PesquisaFalsa(fazer_evidencias(0.80))
 
-    r = avaliar_caso(CASO, pesquisa, *_agentes(llm), limite=12, maximo_de_retornos=2)
+    r = avaliar_caso(
+        CASO,
+        pesquisa,
+        *_agentes(llm),
+        limite=12,
+        maximo_de_retornos=2,
+        limite_maximo=20,
+    )
 
     assert pesquisa.limites == [12, 20, 20]
     assert r.destinos == ("research", "research")
@@ -160,6 +167,7 @@ def test_observador_registra_o_caso_e_cada_etapa(fazer_evidencias, llm_roteiriza
         "research",
         "analysis",
         "validation",
+        "communication",
         "caso",
     ]
     assert registros[2][1]["aprovado"] is True

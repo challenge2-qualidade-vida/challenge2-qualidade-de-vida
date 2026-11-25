@@ -16,6 +16,7 @@ dependencies = [
     "pydantic-settings (>=2.16.2,<3.0.0)",
     "pyarrow (>=26.0.1,<27.0.0)",
     "langfuse (>=5.2.0,<6.0.0)",
+    "langgraph (>=1.2.24,<2.0.0)",
 ]
 
 [tool.poetry]
@@ -55,6 +56,8 @@ addopts = "--import-mode=importlib -m 'not langfuse'"
 filterwarnings = [
     # o Qdrant em memória, usado nos testes, ignora os índices de payload
     "ignore:Payload indexes have no effect:UserWarning",
+    # o langsmith, que vem com o LangGraph, ainda usa uma API do asyncio obsoleta no 3.14
+    "ignore:'asyncio.iscoroutinefunction' is deprecated:DeprecationWarning:langsmith",
 ]
 bdd_features_base_dir = "specs/"
 markers = [
