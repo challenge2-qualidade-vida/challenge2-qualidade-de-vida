@@ -1,17 +1,17 @@
-
 """Testes do indexador de evidências científicas."""
 
+import hashlib
 from pathlib import Path
 from typing import Any
 
 import pytest
 
-from economia.verificacao.dominio.modelos import (
+from economia.pesquisa_evidencias.dominio.modelos import (
     DocumentoEvidencia,
     FonteEvidencia,
     TrechoEvidencia,
 )
-from economia.verificacao.infraestrutura.indexador import (
+from economia.pesquisa_evidencias.infraestrutura.indexador import (
     IndexadorEvidencias,
 )
 
@@ -25,7 +25,7 @@ class PreparadorFalso:
         metadados: dict[str, Any],
     ) -> tuple[DocumentoEvidencia, list[TrechoEvidencia]]:
         documento = DocumentoEvidencia(
-            id=f"id-{metadados['arquivo']}",
+            id=hashlib.sha256(metadados["arquivo"].encode("utf-8")).hexdigest()[:16],
             fonte=FonteEvidencia(
                 titulo=metadados["titulo"],
                 instituicao=metadados["instituicao"],
@@ -64,10 +64,7 @@ class GeradorFalso:
     ) -> list[list[float]]:
         self.textos_recebidos.extend(textos)
 
-        return [
-            [float(indice), 0.1, 0.2]
-            for indice, _ in enumerate(textos)
-        ]
+        return [[float(indice), 0.1, 0.2] for indice, _ in enumerate(textos)]
 
 
 class RepositorioFalso:
@@ -83,6 +80,17 @@ class RepositorioFalso:
                 list[list[float]],
             ]
         ] = []
+        self.documentos_excluidos: list[str] = []
+        self.documentos_ativos: list[str] = []
+
+    def excluir_documento(self, documento_id: str) -> None:
+        self.documentos_excluidos.append(documento_id)
+
+    def excluir_documentos_fora_da_lista(
+        self,
+        documentos_ids: list[str],
+    ) -> None:
+        self.documentos_ativos = list(documentos_ids)
 
     def preparar(self, dimensao: int, recriar: bool = False) -> None:
         self.dimensao_preparada = dimensao
@@ -94,9 +102,7 @@ class RepositorioFalso:
         documentos: list[DocumentoEvidencia],
         vetores: list[list[float]],
     ) -> None:
-        self.lotes_gravados.append(
-            (list(trechos), list(documentos), list(vetores))
-        )
+        self.lotes_gravados.append((list(trechos), list(documentos), list(vetores)))
 
 
 @pytest.fixture
@@ -163,6 +169,19 @@ def test_indexa_documentos_e_trechos(ambiente: dict[str, Any]) -> None:
         "trechos": 5,
         "lotes": 3,
     }
+
+
+def test_sincroniza_documentos_do_manifesto(
+    ambiente: dict[str, Any],
+) -> None:
+    """Informa ao repositório quais documentos continuam ativos."""
+    ambiente["indexador"].executar()
+
+    repositorio = ambiente["repositorio"]
+
+    assert len(repositorio.documentos_ativos) == 2
+    assert len(repositorio.documentos_excluidos) == 2
+    assert repositorio.documentos_excluidos == repositorio.documentos_ativos
 
 
 def test_prepara_colecao_sem_recriar(

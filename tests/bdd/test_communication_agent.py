@@ -5,6 +5,12 @@ import json
 import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 
+from economia.pesquisa_evidencias.dominio.modelos import (
+    DocumentoEvidencia,
+    EvidenciaRecuperada,
+    FonteEvidencia,
+    TrechoEvidencia,
+)
 from economia.verificacao.aplicacao.comunicar_veredito import ComunicarVeredito
 from economia.verificacao.dominio.analise import (
     Alegacao,
@@ -12,12 +18,6 @@ from economia.verificacao.dominio.analise import (
     DestinoDoRetorno,
     ResultadoDaValidacao,
     montar_analise,
-)
-from economia.verificacao.dominio.modelos import (
-    DocumentoEvidencia,
-    EvidenciaRecuperada,
-    FonteEvidencia,
-    TrechoEvidencia,
 )
 from economia.verificacao.dominio.veredito import (
     MENSAGEM_NAO_CONCLUSIVA,

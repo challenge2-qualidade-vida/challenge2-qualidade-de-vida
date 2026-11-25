@@ -22,13 +22,13 @@ Funcionalidade: Recuperação semântica de evidências científicas
 
   Cenário: Rejeitar pergunta vazia
     Dado que a pergunta está vazia ou contém somente espaços
-    Quando envio uma solicitação para o endpoint "/verificar"
+    Quando envio uma solicitação para o endpoint "/api/v1/verificar"
     Então a API deve retornar HTTP 422
     E informar que a pergunta não pode ser vazia
 
   Cenário: Rejeitar limite de evidências inválido
     Dado que solicito um limite menor que 1 ou maior que 20
-    Quando envio uma solicitação para o endpoint "/verificar"
+    Quando envio uma solicitação para o endpoint "/api/v1/verificar"
     Então a API deve retornar HTTP 422
 
   Cenário: Retornar resposta sem evidências

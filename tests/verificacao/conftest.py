@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from economia.verificacao.dominio.modelos import (
+from economia.pesquisa_evidencias.dominio.modelos import (
     DocumentoEvidencia,
     EvidenciaRecuperada,
     FonteEvidencia,

@@ -1,4 +1,3 @@
-
 """Testes do endpoint de pesquisa de evidências."""
 
 import pytest
@@ -6,12 +5,14 @@ from fastapi.testclient import TestClient
 
 from economia.api.dependencias import obter_pesquisar_evidencias
 from economia.api.main import app
-from economia.verificacao.dominio.modelos import (
+from economia.pesquisa_evidencias.dominio.modelos import (
     DocumentoEvidencia,
     EvidenciaRecuperada,
     FonteEvidencia,
     TrechoEvidencia,
 )
+
+ROTA = "/api/v1/verificar"
 
 
 class CasoDeUsoFalso:
@@ -26,6 +27,15 @@ class CasoDeUsoFalso:
         self.pergunta_recebida = pergunta
         self.limite_recebido = limite
         return self.resultados
+
+
+@pytest.fixture
+def cliente():
+    """Disponibiliza um cliente HTTP com limpeza das dependências."""
+    try:
+        yield TestClient(app)
+    finally:
+        app.dependency_overrides.clear()
 
 
 @pytest.fixture
@@ -59,23 +69,36 @@ def evidencia():
     )
 
 
-def test_verificar_retorna_evidencias_com_proveniencia(evidencia):
-    caso_de_uso = CasoDeUsoFalso(resultados=[evidencia])
-    app.dependency_overrides[obter_pesquisar_evidencias] = (
-        lambda: caso_de_uso
-    )
+def registrar_caso_de_uso(caso_de_uso):
+    """Substitui a dependência real por um caso de uso falso."""
+    app.dependency_overrides[obter_pesquisar_evidencias] = lambda: caso_de_uso
 
-    try:
-        client = TestClient(app)
-        response = client.post(
-            "/verificar",
-            json={
-                "pergunta": "segurança alimentar",
-                "limite": 5,
-            },
-        )
-    finally:
-        app.dependency_overrides.clear()
+
+def verificar_problem_details(response, status, detalhe):
+    """Confere o formato de erro definido pela RFC 9457."""
+    assert response.status_code == status
+    assert response.headers["content-type"].startswith("application/problem+json")
+
+    problema = response.json()
+
+    assert problema["type"] == "about:blank"
+    assert problema["status"] == status
+    assert problema["title"]
+    assert problema["detail"] == detalhe
+    assert problema["instance"] == ROTA
+
+
+def test_verificar_retorna_evidencias_com_proveniencia(cliente, evidencia):
+    caso_de_uso = CasoDeUsoFalso(resultados=[evidencia])
+    registrar_caso_de_uso(caso_de_uso)
+
+    response = cliente.post(
+        ROTA,
+        json={
+            "pergunta": "segurança alimentar",
+            "limite": 5,
+        },
+    )
 
     assert response.status_code == 200
 
@@ -83,76 +106,111 @@ def test_verificar_retorna_evidencias_com_proveniencia(evidencia):
 
     assert dados["pergunta"] == "segurança alimentar"
     assert dados["total_evidencias"] == 1
+    assert dados["evidencias"][0]["trecho"]["id"] == "doc_001_p1_t01"
     assert dados["evidencias"][0]["trecho"]["texto"] == (
         "A alimentação adequada é um direito humano."
     )
     assert dados["evidencias"][0]["trecho"]["pagina_inicial"] == 1
+    assert dados["evidencias"][0]["trecho"]["pagina_final"] == 1
+    assert dados["evidencias"][0]["documento"]["id"] == "doc_001"
+    assert dados["evidencias"][0]["documento"]["arquivo"] == ("alimentacao.pdf")
+    assert dados["evidencias"][0]["documento"]["hash_sha256"] == "a" * 64
     assert dados["evidencias"][0]["documento"]["fonte"]["titulo"] == (
         "Alimentação adequada e direitos humanos"
+    )
+    assert dados["evidencias"][0]["documento"]["fonte"]["instituicao"] == (
+        "Organização de Pesquisa"
     )
     assert dados["evidencias"][0]["score"] == 0.92
     assert caso_de_uso.pergunta_recebida == "segurança alimentar"
     assert caso_de_uso.limite_recebido == 5
 
 
-@pytest.mark.parametrize("pergunta", ["", " ", "   "])
-def test_verificar_rejeita_pergunta_vazia(pergunta):
-    caso_de_uso = CasoDeUsoFalso()
-    app.dependency_overrides[obter_pesquisar_evidencias] = (
-        lambda: caso_de_uso
+def test_verificar_normaliza_espacos_da_pergunta(cliente, evidencia):
+    caso_de_uso = CasoDeUsoFalso(resultados=[evidencia])
+    registrar_caso_de_uso(caso_de_uso)
+
+    response = cliente.post(
+        ROTA,
+        json={"pergunta": "  segurança alimentar  "},
     )
 
-    try:
-        client = TestClient(app)
-        response = client.post(
-            "/verificar",
-            json={"pergunta": pergunta},
-        )
-    finally:
-        app.dependency_overrides.clear()
+    assert response.status_code == 200
+    assert response.json()["pergunta"] == "segurança alimentar"
+    assert caso_de_uso.pergunta_recebida == "segurança alimentar"
 
-    assert response.status_code == 422
+
+@pytest.mark.parametrize("pergunta", ["", " ", "   "])
+def test_verificar_rejeita_pergunta_vazia(cliente, pergunta):
+    caso_de_uso = CasoDeUsoFalso()
+    registrar_caso_de_uso(caso_de_uso)
+
+    response = cliente.post(
+        ROTA,
+        json={"pergunta": pergunta},
+    )
+
+    verificar_problem_details(
+        response,
+        422,
+        "A pergunta não pode ser vazia.",
+    )
     assert caso_de_uso.pergunta_recebida is None
 
 
 @pytest.mark.parametrize("limite", [0, -1, 21])
-def test_verificar_rejeita_limite_invalido(limite):
+def test_verificar_rejeita_limite_invalido(cliente, limite):
     caso_de_uso = CasoDeUsoFalso()
-    app.dependency_overrides[obter_pesquisar_evidencias] = (
-        lambda: caso_de_uso
+    registrar_caso_de_uso(caso_de_uso)
+
+    response = cliente.post(
+        ROTA,
+        json={
+            "pergunta": "segurança alimentar",
+            "limite": limite,
+        },
     )
 
-    try:
-        client = TestClient(app)
-        response = client.post(
-            "/verificar",
-            json={
-                "pergunta": "segurança alimentar",
-                "limite": limite,
-            },
-        )
-    finally:
-        app.dependency_overrides.clear()
-
-    assert response.status_code == 422
+    verificar_problem_details(
+        response,
+        422,
+        "O limite de evidências deve estar entre 1 e 20.",
+    )
     assert caso_de_uso.pergunta_recebida is None
 
 
-def test_verificar_retorna_lista_vazia_sem_evidencias():
+def test_verificar_retorna_lista_vazia_sem_evidencias(cliente):
     caso_de_uso = CasoDeUsoFalso()
-    app.dependency_overrides[obter_pesquisar_evidencias] = (
-        lambda: caso_de_uso
+    registrar_caso_de_uso(caso_de_uso)
+
+    response = cliente.post(
+        ROTA,
+        json={"pergunta": "tema sem evidências"},
     )
 
-    try:
-        client = TestClient(app)
-        response = client.post(
-            "/verificar",
-            json={"pergunta": "tema sem evidências"},
-        )
-    finally:
-        app.dependency_overrides.clear()
-
     assert response.status_code == 200
+    assert response.json()["pergunta"] == "tema sem evidências"
     assert response.json()["total_evidencias"] == 0
     assert response.json()["evidencias"] == []
+
+
+def test_rota_esta_na_app_do_dockerfile():
+    from economia.api.app import app as app_servida
+
+    assert ROTA in app_servida.openapi()["paths"]
+
+
+def test_verificar_responde_500_em_problem_details_numa_falha_interna(cliente):
+    class CasoDeUsoQuebrado:
+        def executar(self, pergunta, limite=5):
+            raise ValueError("score fora do intervalo")
+
+    registrar_caso_de_uso(CasoDeUsoQuebrado())
+
+    response = cliente.post(ROTA, json={"pergunta": "segurança alimentar"})
+
+    verificar_problem_details(
+        response,
+        500,
+        "Ocorreu uma falha inesperada ao processar a solicitação.",
+    )

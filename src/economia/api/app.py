@@ -1,4 +1,5 @@
-"""API HTTP do EconoMIA. Por enquanto, a rota de saúde e a pergunta ao Miau-ricio (RAG, #24).
+"""API HTTP do EconoMIA: a rota de saúde, a pergunta ao Miau-ricio (RAG, #24) e a
+pesquisa de evidências (#75, em `evidencias.py`).
 
 Rodar: poetry run uvicorn economia.api.app:app --port 8000
 Documentação interativa: http://localhost:8000/docs
@@ -13,6 +14,7 @@ from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
 
+from economia.api.evidencias import roteador as roteador_de_evidencias
 from economia.api.observabilidade import ObservadorDePerguntas
 from economia.compartilhado.infraestrutura.prompts_langfuse import PromptIndisponivel
 from economia.conversa.dominio.identificadores import (
@@ -172,9 +174,10 @@ def obter_observador() -> ObservadorDePerguntas:
 
 app = FastAPI(
     title="EconoMIA",
-    description="API do EconoMIA. Nesta versão, só a pergunta ao Miau-ricio (RAG de receitas e alimentação).",
+    description="API do EconoMIA: a pergunta ao Miau-ricio (RAG de receitas e alimentação) e a pesquisa de evidências.",
     version="0.1.0",
 )
+app.include_router(roteador_de_evidencias)
 
 
 @app.exception_handler(PromptIndisponivel)

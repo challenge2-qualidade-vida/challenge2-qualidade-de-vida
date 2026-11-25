@@ -1,13 +1,15 @@
+import pytest
 
-from economia.verificacao.dominio.modelos import (
+from economia.pesquisa_evidencias.dominio.modelos import (
     DocumentoEvidencia,
     EvidenciaRecuperada,
     FonteEvidencia,
     TrechoEvidencia,
 )
-from economia.verificacao.infraestrutura.repositorio_qdrant import (
+from economia.pesquisa_evidencias.infraestrutura.repositorio_qdrant import (
     de_payload,
     id_do_ponto,
+    limitar_score,
     para_payload,
 )
 
@@ -108,3 +110,11 @@ def test_para_payload_rejeita_documento_incompativel():
         pass
     else:
         raise AssertionError("Era esperado ValueError para documentos incompatíveis.")
+
+
+@pytest.mark.parametrize(
+    ("score", "esperado"),
+    [(1.0000001, 1.0), (-1.0000001, -1.0), (0.83, 0.83)],
+)
+def test_limitar_score_corrige_o_arredondamento_do_cosseno(score, esperado):
+    assert limitar_score(score) == esperado

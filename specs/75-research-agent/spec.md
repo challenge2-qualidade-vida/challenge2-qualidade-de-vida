@@ -4,7 +4,7 @@
 | --- | --- |
 | Issue | #75 |
 | Status | Implementada |
-| Contexto delimitado | Verificação |
+| Contexto delimitado | Pesquisa de evidências (`pesquisa_evidencias`) |
 | Agente | Research Agent |
 
 ## Problema
@@ -32,11 +32,12 @@ A recuperação deve permitir que os agentes responsáveis pelas etapas posterio
 - A API aceita limite entre 1 e 20, com padrão 5.
 - Os resultados devem preservar a identificação do documento e a proveniência da fonte.
 - O score representa similaridade semântica, não probabilidade de veracidade.
+- Só voltam evidências com score igual ou acima do limiar de similaridade do modelo de embeddings configurado (`limiar_similaridade`, o mesmo da RN11: 0,845 para o E5). Se nenhuma passar, a lista vem vazia e `total_evidencias` é zero. O limite é aplicado antes do limiar, então a API pode devolver menos evidências que o pedido.
 - A recuperação não classifica a alegação como verdadeira ou falsa.
 
 ## Entradas e saídas
 
-**Endpoint:** `POST /verificar`
+**Endpoint:** `POST /api/v1/verificar`, na mesma aplicação das outras rotas (`economia.api.app`).
 
 Entrada (`RequisicaoVerificacao`):
 
@@ -54,7 +55,12 @@ Cada evidência contém:
 - Trecho: identificador, texto, páginas inicial e final e seção.
 - Documento: identificador, arquivo e hash SHA-256.
 - Fonte: título, instituição, ano e URL.
-- Score: pontuação de similaridade semântica.
+- Score: similaridade de cosseno, limitada a [-1, 1] (o Qdrant pode devolver um pouco acima de 1 por arredondamento).
+
+Erros (Problem Details, RFC 9457, `application/problem+json`):
+
+- 422: pergunta vazia ou limite fora de 1 a 20, com `detail` explicando o campo.
+- 500: falha interna (Qdrant ou modelo de embeddings), sem expor detalhes no `detail`.
 
 ## Fora do escopo
 
@@ -75,7 +81,7 @@ Os cenários de recuperação, proveniência, validação de entrada e ausência
 - Issue #72: arquitetura multiagente e entrega do Second Challenge.
 - Issue #75: implementação do Research Agent.
 - Modelo `intfloat/multilingual-e5-base`.
-- Qdrant e coleção exclusiva de verificação.
+- Qdrant e coleção exclusiva de evidências (`evidencias_verificacao_<modelo>`).
 - Base de conhecimento de evidências indexadas.
 
 A integração dos modelos internos com o estado compartilhado do LangGraph depende do alinhamento dos contratos entre os agentes.

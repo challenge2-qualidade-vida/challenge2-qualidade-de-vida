@@ -1,13 +1,12 @@
-
 import pytest
 
-from economia.verificacao.dominio.modelos import (
+from economia.pesquisa_evidencias.dominio.modelos import (
     DocumentoEvidencia,
     EvidenciaRecuperada,
     FonteEvidencia,
     TrechoEvidencia,
 )
-from economia.verificacao.infraestrutura.pesquisador_qdrant import (
+from economia.pesquisa_evidencias.infraestrutura.pesquisador_qdrant import (
     PesquisadorQdrant,
 )
 
@@ -84,42 +83,3 @@ def test_pesquisa_encaminha_pergunta_e_retorna_evidencias(evidencia):
     assert repositorio.vetor_recebido == [0.1, 0.2, 0.3]
     assert repositorio.limite_recebido == 5
     assert resultado == [evidencia]
-
-
-def test_pesquisa_remove_espacos_da_pergunta(evidencia):
-    gerador = GeradorFalso()
-    repositorio = RepositorioFalso([evidencia])
-
-    pesquisador = PesquisadorQdrant(gerador, repositorio)
-
-    pesquisador.pesquisar(
-        pergunta="   alimentação adequada   ",
-        limite=3,
-    )
-
-    assert gerador.perguntas_recebidas == ["alimentação adequada"]
-
-
-@pytest.mark.parametrize("pergunta", ["", " ", "   "])
-def test_pesquisa_rejeita_pergunta_vazia(pergunta):
-    pesquisador = PesquisadorQdrant(
-        gerador=GeradorFalso(),
-        repositorio=RepositorioFalso([]),
-    )
-
-    with pytest.raises(ValueError):
-        pesquisador.pesquisar(pergunta=pergunta, limite=5)
-
-
-@pytest.mark.parametrize("limite", [0, -1, -5])
-def test_pesquisa_rejeita_limite_invalido(limite):
-    pesquisador = PesquisadorQdrant(
-        gerador=GeradorFalso(),
-        repositorio=RepositorioFalso([]),
-    )
-
-    with pytest.raises(ValueError):
-        pesquisador.pesquisar(
-            pergunta="alimentação adequada",
-            limite=limite,
-        )

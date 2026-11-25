@@ -1,6 +1,6 @@
 """Modelos HTTP da API EconoMIA."""
 
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field, HttpUrl, field_validator
 
 
 class RequisicaoVerificacao(BaseModel):
@@ -8,6 +8,15 @@ class RequisicaoVerificacao(BaseModel):
 
     pergunta: str = Field(min_length=1)
     limite: int = Field(default=5, ge=1, le=20)
+
+    @field_validator("pergunta")
+    @classmethod
+    def validar_pergunta(cls, valor: str) -> str:
+        """Remove espaços externos e rejeita perguntas vazias."""
+        pergunta = valor.strip()
+        if not pergunta:
+            raise ValueError("A pergunta não pode ser vazia.")
+        return pergunta
 
 
 class FonteEvidenciaResposta(BaseModel):

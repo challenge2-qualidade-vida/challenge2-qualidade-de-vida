@@ -10,6 +10,7 @@ from collections.abc import Sequence
 
 from pydantic import BaseModel, ValidationError
 
+from economia.pesquisa_evidencias.dominio.modelos import EvidenciaRecuperada
 from economia.verificacao.aplicacao.analisar_alegacao import descrever_evidencia
 from economia.verificacao.aplicacao.portas import ModeloDeLinguagem
 from economia.verificacao.dominio.analise import (
@@ -18,7 +19,6 @@ from economia.verificacao.dominio.analise import (
     ResultadoDaValidacao,
     evidencias_citadas,
 )
-from economia.verificacao.dominio.modelos import EvidenciaRecuperada
 from economia.verificacao.dominio.veredito import (
     MAXIMO_DE_FRASES_NO_PERFIL_RAPIDO,
     PerfilDeLeitura,

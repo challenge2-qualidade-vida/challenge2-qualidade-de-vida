@@ -1,4 +1,3 @@
-
 """Modelos de domínio da pesquisa de evidências científicas."""
 
 from dataclasses import dataclass

@@ -9,12 +9,15 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import StrEnum
 
+from economia.pesquisa_evidencias.dominio.modelos import (
+    EvidenciaRecuperada,
+    FonteEvidencia,
+)
 from economia.verificacao.dominio.analise import (
     AnaliseDaAlegacao,
     ClassificacaoDaAlegacao,
     evidencias_citadas,
 )
-from economia.verificacao.dominio.modelos import EvidenciaRecuperada, FonteEvidencia
 
 MENSAGEM_NAO_CONCLUSIVA = (
     "Não foi possível concluir a verificação desta alegação. As evidências da nossa base "

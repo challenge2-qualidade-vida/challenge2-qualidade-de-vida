@@ -34,7 +34,7 @@ priority = "explicit"
 [tool.poetry.dependencies]
 torch = [
     { markers = "sys_platform == 'linux'", source = "pytorch-cpu" },
-    { markers = "sys_platform == 'darwin'", source = "pypi" },
+    { markers = "sys_platform == 'darwin'" },
 ]
 
 [dependency-groups]

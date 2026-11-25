@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Protocol
 
+from economia.pesquisa_evidencias.dominio.modelos import EvidenciaRecuperada
 from economia.verificacao.aplicacao.analisar_alegacao import AnalisarAlegacao
 from economia.verificacao.aplicacao.validar_analise import ValidarAnalise
 from economia.verificacao.dominio.analise import (
@@ -21,7 +22,6 @@ from economia.verificacao.dominio.analise import (
     ClassificacaoDaAlegacao,
     DestinoDoRetorno,
 )
-from economia.verificacao.dominio.modelos import EvidenciaRecuperada
 
 LIMITE_INICIAL = 5
 LIMITE_MAXIMO = 20

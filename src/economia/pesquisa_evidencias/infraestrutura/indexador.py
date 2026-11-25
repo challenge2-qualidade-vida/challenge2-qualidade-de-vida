@@ -1,58 +1,23 @@
-
 """Indexação da base científica da Research Agent no Qdrant."""
 
+import hashlib
 from pathlib import Path
-from typing import Any, Protocol
 
-from economia.leitura_documentos.infraestrutura.ingestao.pipeline import (
-    carregar_manifesto,
+from economia.pesquisa_evidencias.aplicacao.portas import (
+    GeradorDeEmbeddings,
+    PreparadorDeDocumentos,
+    RepositorioDeEvidencias,
 )
-from economia.verificacao.dominio.modelos import (
+from economia.pesquisa_evidencias.dominio.modelos import (
     DocumentoEvidencia,
     TrechoEvidencia,
+)
+from economia.pesquisa_evidencias.infraestrutura.manifesto import (
+    carregar_manifesto,
 )
 
 TAMANHO_LOTE_INDEXACAO = 64
 
-
-class GeradorDeEmbeddings(Protocol):
-    """Contrato para geração de embeddings de trechos."""
-
-    dimensao: int
-
-    def gerar_para_trechos(
-        self,
-        textos: list[str],
-    ) -> list[list[float]]:
-        """Gera vetores para uma lista de textos."""
-        ...
-
-
-class RepositorioDeEvidencias(Protocol):
-    """Contrato para persistência de evidências."""
-
-    def preparar(self, dimensao: int, recriar: bool = False) -> None:
-        """Prepara a coleção de vetores."""
-
-    def gravar(
-        self,
-        trechos: list[TrechoEvidencia],
-        documentos: list[DocumentoEvidencia],
-        vetores: list[list[float]],
-    ) -> None:
-        """Persiste trechos, documentos e vetores."""
-
-
-class PreparadorDeDocumentos(Protocol):
-    """Contrato para preparação dos documentos científicos."""
-
-    def preparar(
-        self,
-        caminho: Path,
-        metadados: dict[str, Any],
-    ) -> tuple[DocumentoEvidencia, list[TrechoEvidencia]]:
-        """Extrai e fragmenta um documento."""
-        
 
 class IndexadorEvidencias:
     """Coordena preparação, vetorização e persistência da base científica."""
@@ -88,6 +53,12 @@ class IndexadorEvidencias:
             recriar=False,
         )
 
+        documentos_ativos = [
+            hashlib.sha256(arquivo.encode("utf-8")).hexdigest()[:16]
+            for arquivo in fontes
+        ]
+        self._repositorio.excluir_documentos_fora_da_lista(documentos_ativos)
+
         total_documentos = 0
         total_trechos = 0
         total_lotes = 0
@@ -99,9 +70,7 @@ class IndexadorEvidencias:
             caminho = self._pasta_base / arquivo
 
             if not caminho.is_file():
-                raise FileNotFoundError(
-                    f"Documento não encontrado: {caminho}"
-                )
+                raise FileNotFoundError(f"Documento não encontrado: {caminho}")
 
             documento, trechos = self._preparador.preparar(
                 caminho=caminho,
@@ -109,10 +78,9 @@ class IndexadorEvidencias:
             )
 
             if not trechos:
-                raise ValueError(
-                    f"O documento não gerou trechos: {arquivo}"
-                )
+                raise ValueError(f"O documento não gerou trechos: {arquivo}")
 
+            self._repositorio.excluir_documento(documento.id)
             total_documentos += 1
 
             for trecho in trechos:
@@ -120,10 +88,7 @@ class IndexadorEvidencias:
                 documentos_lote.append(documento)
 
                 if len(trechos_lote) >= self._tamanho_lote:
-                    self._gravar_lote(
-                        trechos_lote,
-                        documentos_lote,
-                    )
+                    self._gravar_lote(trechos_lote, documentos_lote)
                     total_trechos += len(trechos_lote)
                     total_lotes += 1
                     trechos_lote = []
@@ -147,7 +112,6 @@ class IndexadorEvidencias:
     ) -> None:
         """Gera embeddings e persiste um lote de trechos."""
         textos = [trecho.texto for trecho in trechos]
-
         vetores = self._gerador.gerar_para_trechos(textos)
 
         if len(vetores) != len(trechos):

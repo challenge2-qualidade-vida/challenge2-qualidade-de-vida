@@ -35,20 +35,20 @@ def descrever_maquina() -> str:
 def criar_pesquisar(configuracao: Configuracao):
     """Research Agent da #75: e5 e a coleção de evidências no Qdrant."""
     from economia.compartilhado.infraestrutura.embeddings_e5 import GeradorE5
-    from economia.verificacao.aplicacao.pesquisar_evidencias import (
+    from economia.pesquisa_evidencias.aplicacao.pesquisar_evidencias import (
         PesquisarEvidencias,
     )
-    from economia.verificacao.infraestrutura.pesquisador_qdrant import (
+    from economia.pesquisa_evidencias.infraestrutura.pesquisador_qdrant import (
         PesquisadorQdrant,
     )
-    from economia.verificacao.infraestrutura.repositorio_qdrant import (
+    from economia.pesquisa_evidencias.infraestrutura.repositorio_qdrant import (
         RepositorioQdrant,
     )
 
     pesquisador = PesquisadorQdrant(
         gerador=GeradorE5(dispositivo=configuracao.dispositivo_embeddings),
         repositorio=RepositorioQdrant.conectar(
-            url=configuracao.qdrant_url, colecao=configuracao.colecao_verificacao
+            url=configuracao.qdrant_url, colecao=configuracao.colecao_pesquisa_evidencias
         ),
     )
     return PesquisarEvidencias(pesquisador).executar

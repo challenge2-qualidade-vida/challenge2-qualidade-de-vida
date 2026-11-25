@@ -4,13 +4,13 @@ from functools import lru_cache
 
 from economia.compartilhado.configuracao import obter_configuracao
 from economia.compartilhado.infraestrutura.embeddings_e5 import GeradorE5
-from economia.verificacao.aplicacao.pesquisar_evidencias import (
+from economia.pesquisa_evidencias.aplicacao.pesquisar_evidencias import (
     PesquisarEvidencias,
 )
-from economia.verificacao.infraestrutura.pesquisador_qdrant import (
+from economia.pesquisa_evidencias.infraestrutura.pesquisador_qdrant import (
     PesquisadorQdrant,
 )
-from economia.verificacao.infraestrutura.repositorio_qdrant import (
+from economia.pesquisa_evidencias.infraestrutura.repositorio_qdrant import (
     RepositorioQdrant,
 )
 
@@ -26,7 +26,7 @@ def obter_pesquisar_evidencias() -> PesquisarEvidencias:
 
     repositorio = RepositorioQdrant.conectar(
         url=configuracao.qdrant_url,
-        colecao=configuracao.colecao_verificacao,
+        colecao=configuracao.colecao_pesquisa_evidencias,
     )
 
     pesquisador = PesquisadorQdrant(
@@ -36,4 +36,5 @@ def obter_pesquisar_evidencias() -> PesquisarEvidencias:
 
     return PesquisarEvidencias(
         pesquisador=pesquisador,
+        limiar_similaridade=configuracao.limiar_similaridade,
     )

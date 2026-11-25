@@ -1,12 +1,11 @@
-
 """Valida a busca semântica real da Research Agent."""
 
 from economia.compartilhado.configuracao import obter_configuracao
 from economia.compartilhado.infraestrutura.embeddings_e5 import GeradorE5
-from economia.verificacao.infraestrutura.pesquisador_qdrant import (
+from economia.pesquisa_evidencias.infraestrutura.pesquisador_qdrant import (
     PesquisadorQdrant,
 )
-from economia.verificacao.infraestrutura.repositorio_qdrant import (
+from economia.pesquisa_evidencias.infraestrutura.repositorio_qdrant import (
     RepositorioQdrant,
 )
 
@@ -20,7 +19,7 @@ def main() -> None:
 
     repositorio = RepositorioQdrant.conectar(
         url=configuracao.qdrant_url,
-        colecao=configuracao.colecao_verificacao,
+        colecao=configuracao.colecao_pesquisa_evidencias,
     )
 
     pesquisador = PesquisadorQdrant(
@@ -53,10 +52,7 @@ def main() -> None:
         print(f"Instituição: {documento.fonte.instituicao}")
         print(f"Ano: {documento.fonte.ano}")
         print(f"Arquivo: {documento.arquivo}")
-        print(
-            f"Páginas: {trecho.pagina_inicial} "
-            f"a {trecho.pagina_final}"
-        )
+        print(f"Páginas: {trecho.pagina_inicial} a {trecho.pagina_final}")
         print(f"URL: {documento.fonte.url}")
         print(f"Trecho: {trecho.texto[:700]}")
         print()

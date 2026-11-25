@@ -2,16 +2,16 @@
 
 import pytest
 
-from economia.verificacao.dominio.analise import (
-    AnaliseDaAlegacao,
-    ClassificacaoDaAlegacao,
-    montar_analise,
-)
-from economia.verificacao.dominio.modelos import (
+from economia.pesquisa_evidencias.dominio.modelos import (
     DocumentoEvidencia,
     EvidenciaRecuperada,
     FonteEvidencia,
     TrechoEvidencia,
+)
+from economia.verificacao.dominio.analise import (
+    AnaliseDaAlegacao,
+    ClassificacaoDaAlegacao,
+    montar_analise,
 )
 from economia.verificacao.dominio.veredito import (
     MENSAGEM_NAO_CONCLUSIVA,

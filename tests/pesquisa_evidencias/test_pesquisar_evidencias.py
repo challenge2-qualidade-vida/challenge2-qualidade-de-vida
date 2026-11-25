@@ -1,12 +1,11 @@
-
 """Testes do caso de uso de pesquisa de evidências."""
 
 import pytest
 
-from economia.verificacao.aplicacao.pesquisar_evidencias import (
+from economia.pesquisa_evidencias.aplicacao.pesquisar_evidencias import (
     PesquisarEvidencias,
 )
-from economia.verificacao.dominio.modelos import (
+from economia.pesquisa_evidencias.dominio.modelos import (
     DocumentoEvidencia,
     EvidenciaRecuperada,
     FonteEvidencia,
@@ -26,7 +25,6 @@ class PesquisadorFalso:
         self.pergunta_recebida = pergunta
         self.limite_recebido = limite
         return self.resultados
-
 
 
 @pytest.fixture
@@ -110,3 +108,58 @@ def test_retorna_lista_vazia_quando_nao_encontra_evidencias():
     resultado = caso_de_uso.executar("tema sem evidências")
 
     assert resultado == []
+
+
+def test_filtra_evidencias_abaixo_do_limiar(evidencia):
+    evidencia_baixa = EvidenciaRecuperada(
+        trecho=evidencia.trecho,
+        documento=evidencia.documento,
+        score=0.80,
+    )
+
+    pesquisador = PesquisadorFalso(resultados=[evidencia, evidencia_baixa])
+    caso_de_uso = PesquisarEvidencias(
+        pesquisador,
+        limiar_similaridade=0.845,
+    )
+
+    resultado = caso_de_uso.executar("segurança alimentar")
+
+    assert resultado == [evidencia]
+
+
+def test_retorna_lista_vazia_quando_todas_evidencias_estao_abaixo_do_limiar(
+    evidencia,
+):
+    evidencia_baixa = EvidenciaRecuperada(
+        trecho=evidencia.trecho,
+        documento=evidencia.documento,
+        score=0.80,
+    )
+
+    pesquisador = PesquisadorFalso(resultados=[evidencia_baixa])
+    caso_de_uso = PesquisarEvidencias(
+        pesquisador,
+        limiar_similaridade=0.845,
+    )
+
+    resultado = caso_de_uso.executar("tema sem evidências")
+
+    assert resultado == []
+
+
+def test_retorna_todas_evidencias_quando_limiar_nao_configurado(evidencia):
+    pesquisador = PesquisadorFalso(resultados=[evidencia])
+    caso_de_uso = PesquisarEvidencias(pesquisador)
+
+    resultado = caso_de_uso.executar("segurança alimentar")
+
+    assert resultado == [evidencia]
+
+
+@pytest.mark.parametrize("limiar", [-0.1, 1.1])
+def test_rejeita_limiar_invalido(limiar):
+    pesquisador = PesquisadorFalso()
+
+    with pytest.raises(ValueError, match="limiar de similaridade"):
+        PesquisarEvidencias(pesquisador, limiar_similaridade=limiar)

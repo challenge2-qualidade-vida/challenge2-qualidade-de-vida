@@ -102,7 +102,7 @@ class Configuracao(BaseSettings):
         return f"base_conhecimento_{self.modelo_embeddings}{sufixo}"
 
     @property
-    def colecao_verificacao(self) -> str:
+    def colecao_pesquisa_evidencias(self) -> str:
         """Coleção exclusiva das evidências científicas da Research Agent."""
         return f"evidencias_verificacao_{self.modelo_embeddings}"
 

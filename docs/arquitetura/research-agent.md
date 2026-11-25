@@ -28,7 +28,7 @@ A implementação está organizada em camadas:
 
 ## 4. Endpoint e fluxo de execução
 
-Endpoint: `POST /verificar`
+Endpoint: `POST /api/v1/verificar` (erros em Problem Details, RFC 9457)
 
 A requisição recebe uma pergunta e um limite de evidências.
 
@@ -79,6 +79,7 @@ Cada item de `evidencias` contém:
 
 - Pontuação de similaridade retornada pela recuperação semântica.
 - É utilizada para ordenar e comparar a relevância dos resultados.
+- Evidências com score abaixo do limiar de similaridade do modelo configurado (`limiar_similaridade`, 0,845 para o E5) são descartadas pelo caso de uso `PesquisarEvidencias`.
 - Não representa probabilidade de veracidade.
 
 ## 6. Tecnologias e recuperação semântica
@@ -118,7 +119,7 @@ Ela também apresenta a relação:
 
 `PerguntaDeConhecimento` → `RespostaComFontes`
 
-O endpoint `/verificar` e seus modelos HTTP atuais representam a interface da implementação de recuperação, mas ainda não devem ser considerados equivalentes aos contratos internos do LangGraph.
+O endpoint `/api/v1/verificar` e seus modelos HTTP atuais representam a interface da implementação de recuperação, mas ainda não devem ser considerados equivalentes aos contratos internos do LangGraph.
 
 A adaptação entre a implementação atual e o estado compartilhado do orquestrador deverá respeitar os modelos e campos definidos pela equipe.
 
@@ -149,7 +150,7 @@ Resultados registrados na implementação:
 - Verificação estática com Ruff aprovada.
 - Indexação de 21 documentos, totalizando 1.810 trechos.
 - Recuperação semântica testada com Qdrant.
-- Endpoint `/verificar` exercitado por requisição HTTP real.
+- Endpoint `/api/v1/verificar` exercitado por requisição HTTP real.
 
 Esses resultados correspondem à execução registrada durante o desenvolvimento da implementação.
 

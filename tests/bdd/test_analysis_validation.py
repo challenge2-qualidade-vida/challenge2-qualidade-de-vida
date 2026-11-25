@@ -5,16 +5,16 @@ import json
 import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 
-from economia.verificacao.aplicacao.analisar_alegacao import AnalisarAlegacao
-from economia.verificacao.aplicacao.avaliacao import CasoDeVerificacao, avaliar_caso
-from economia.verificacao.aplicacao.validar_analise import ValidarAnalise
-from economia.verificacao.dominio.analise import Alegacao, ClassificacaoDaAlegacao
-from economia.verificacao.dominio.modelos import (
+from economia.pesquisa_evidencias.dominio.modelos import (
     DocumentoEvidencia,
     EvidenciaRecuperada,
     FonteEvidencia,
     TrechoEvidencia,
 )
+from economia.verificacao.aplicacao.analisar_alegacao import AnalisarAlegacao
+from economia.verificacao.aplicacao.avaliacao import CasoDeVerificacao, avaliar_caso
+from economia.verificacao.aplicacao.validar_analise import ValidarAnalise
+from economia.verificacao.dominio.analise import Alegacao, ClassificacaoDaAlegacao
 
 scenarios("79-analysis-validation/cenarios.feature")
 
