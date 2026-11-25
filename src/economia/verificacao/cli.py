@@ -23,6 +23,7 @@ from economia.compartilhado.configuracao import Configuracao, obter_configuracao
 AGENTE = "verificacao"
 PROMPT_DE_ANALISE = "analise"
 PROMPT_DE_VALIDACAO = "validacao"
+PROMPT_DE_COMUNICACAO = "comunicacao"
 # na avaliação, a mesma alegação gera a mesma análise
 TEMPERATURA_DA_AVALIACAO = 0.0
 SEMENTE_DA_AVALIACAO = 42
@@ -98,6 +99,49 @@ def criar_agentes(
             prompts.carregar(AGENTE, prompt_de_validacao),
             configuracao.limiar_confianca_verificacao,
         ),
+    )
+
+
+def criar_comunicar(llm, prompts, prompt_de_comunicacao: str = PROMPT_DE_COMUNICACAO):
+    """Communication com o prompt do Langfuse (rótulo `production` por padrão)."""
+    from economia.verificacao.aplicacao.comunicar_veredito import ComunicarVeredito
+
+    return ComunicarVeredito(llm, prompts.carregar(AGENTE, prompt_de_comunicacao))
+
+
+def criar_verificar_alegacao(configuracao: Configuracao, langfuse=None):
+    """Orquestrador da verificação (#82) para a API: o grafo LangGraph com os quatro agentes.
+
+    A busca vai sem o limiar de similaridade (spec 82, regra 6): quem decide se a evidência
+    basta é o Validation. Com o Langfuse, cada verificação vira um trace com um span por nó, e
+    as chamadas ao LLM entram como gerações ligadas à versão do prompt.
+    """
+    from economia.compartilhado.infraestrutura.observabilidade_langfuse import (
+        RegistroDeGeracoes,
+    )
+    from economia.compartilhado.infraestrutura.prompts_langfuse import (
+        PromptsDoLangfuse,
+    )
+    from economia.verificacao.aplicacao.orquestracao import ParametrosDaOrquestracao
+    from economia.verificacao.aplicacao.verificar_alegacao import VerificarAlegacao
+    from economia.verificacao.infraestrutura.grafo_langgraph import GrafoLangGraph
+    from economia.verificacao.infraestrutura.observabilidade_langfuse import (
+        ObservadorLangfuse,
+    )
+
+    prompts = PromptsDoLangfuse(langfuse)
+    registro = RegistroDeGeracoes(langfuse, prompts.prompts_lidos) if langfuse else None
+    llm = criar_llm(configuracao, ao_gerar=registro)
+    analisar, validar = criar_agentes(configuracao, llm, prompts)
+    parametros = ParametrosDaOrquestracao()
+    return VerificarAlegacao(
+        criar_pesquisar(configuracao),
+        analisar,
+        validar,
+        criar_comunicar(llm, prompts),
+        parametros=parametros,
+        motor=GrafoLangGraph(parametros.maximo_de_retornos),
+        observador=ObservadorLangfuse(langfuse) if langfuse else None,
     )
 
 
