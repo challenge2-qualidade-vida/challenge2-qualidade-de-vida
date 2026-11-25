@@ -5,9 +5,10 @@ Uso:
         --casos data/avaliacao/verificacao/casos_v1.json \\
         --saida data/avaliacao/verificacao/resultados_v1.json [--llm gemma3:12b]
 
-Roda Research → Analysis → Validation em cada alegação, com até 2 retornos, grava o resultado
-e imprime a tabela em Markdown. Com as chaves do Langfuse, cada alegação vira um trace com um
-span por agente e as chamadas ao LLM ligadas aos prompts.
+Roda cada alegação pelo orquestrador (Research → Analysis → Validation → Communication), com
+até 2 retornos e teto de 10 trechos, grava o resultado e imprime a tabela em Markdown. Com as
+chaves do Langfuse, cada alegação vira um trace com um span por agente e as chamadas ao LLM
+ligadas aos prompts.
 """
 
 import argparse
@@ -205,6 +206,7 @@ def comando_avaliar(args: argparse.Namespace) -> None:
         limite_maximo=args.limite_maximo,
         observador=observador,
         ao_progredir=progresso,
+        comunicar=criar_comunicar(llm, prompts),
     )
     if langfuse:
         langfuse.flush()
@@ -255,8 +257,8 @@ def criar_parser() -> argparse.ArgumentParser:
     avaliar.add_argument(
         "--limite-maximo",
         type=int,
-        default=20,
-        help="Teto da busca nos retornos ao Research, que dobram o limite (padrão 20)",
+        default=10,
+        help="Teto da busca nos retornos ao Research, que dobram o limite (padrão 10)",
     )
     avaliar.add_argument(
         "--prompt-analise",

@@ -18,7 +18,7 @@ def test_padroes_seguem_a_spec(tmp_path):
         ["avaliar", "--casos", "c.json", "--saida", str(tmp_path / "s.json")]
     )
 
-    assert (args.limite, args.retornos, args.limite_maximo) == (5, 2, 20)
+    assert (args.limite, args.retornos, args.limite_maximo) == (5, 2, 10)
     assert (args.prompt_analise, args.prompt_validacao) == ("analise", "validacao")
 
 
