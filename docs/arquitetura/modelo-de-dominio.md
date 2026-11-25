@@ -97,7 +97,7 @@ flowchart LR
 | Critério | Regra usada para chegar a uma recomendação | Verificação | `Criterio` |
 | Limitação | O que o sistema não sabe ou não pode garantir numa resposta | Verificação | `Limitacao` |
 | Alegação | **Proposto (19/11/2026, #72).** Afirmação sobre alimentação enviada para verificação (ex.: "ovo aumenta o colesterol") | Verificação | `Alegacao` |
-| Evidência recuperada | **Proposto (#75).** Trecho de um documento de evidência devolvido pela busca semântica, com a fonte e o score de similaridade. O score não é probabilidade de veracidade | Verificação | `EvidenciaRecuperada` |
+| Evidência recuperada | **Proposto (#75, #83).** Evidência recuperada pela Pesquisa de evidências como a Verificação a enxerga: trecho, seção, fonte e score. Um adaptador da Verificação traduz o que o caso de uso da Pesquisa de evidências devolve, e a Verificação não importa o domínio dela. O score não é probabilidade de veracidade | Verificação | `EvidenciaRecuperada` |
 | Classificação da alegação | **Proposto (19/11/2026, #72).** Quanto a base já cobre a alegação: **reciclada** (a base já tem checagem ou evidência que cobre a alegação inteira), **parcial** (a base cobre só uma parte) ou **nova** (a base não cobre) | Verificação | `ClassificacaoDaAlegacao` |
 | Análise da alegação | **Proposto (19/11/2026, #72).** Classificação, justificativa ancorada nas evidências citadas e confiança, produzidas pelo Analysis Agent | Verificação | `AnaliseDaAlegacao` |
 | Resultado da validação | **Proposto (19/11/2026, #72).** Aprovação ou reprovação da análise, com os motivos e, quando reprovada, o agente que refaz o trabalho (Research ou Analysis) | Verificação | `ResultadoDaValidacao` |
