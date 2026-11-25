@@ -2,16 +2,16 @@
 
 import pytest
 
-from economia.pesquisa_evidencias.dominio.modelos import (
-    DocumentoEvidencia,
-    EvidenciaRecuperada,
-    FonteEvidencia,
-    TrechoEvidencia,
-)
 from economia.verificacao.dominio.analise import (
     AnaliseDaAlegacao,
     ClassificacaoDaAlegacao,
     montar_analise,
+)
+from economia.verificacao.dominio.evidencias import (
+    DocumentoEvidencia,
+    EvidenciaRecuperada,
+    FonteEvidencia,
+    TrechoEvidencia,
 )
 from economia.verificacao.dominio.veredito import (
     MENSAGEM_NAO_CONCLUSIVA,
@@ -33,8 +33,6 @@ def _evidencia(numero: int, fonte: FonteEvidencia, score: float) -> EvidenciaRec
     documento = DocumentoEvidencia(
         id=fonte.titulo.lower().replace(" ", "-"),
         fonte=fonte,
-        arquivo="documento.pdf",
-        hash_sha256="abc",
     )
     return EvidenciaRecuperada(
         trecho=TrechoEvidencia(

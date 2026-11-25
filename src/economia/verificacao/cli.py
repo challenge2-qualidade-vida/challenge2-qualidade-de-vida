@@ -33,7 +33,11 @@ def descrever_maquina() -> str:
 
 
 def criar_pesquisar(configuracao: Configuracao):
-    """Research Agent da #75: e5 e a coleção de evidências no Qdrant."""
+    """Research Agent da #75: e5 e a coleção de evidências no Qdrant.
+
+    A CLI é o ponto de entrada que monta as peças: chama o caso de uso da Pesquisa de
+    evidências e entrega à avaliação as evidências já traduzidas para a verificação.
+    """
     from economia.compartilhado.infraestrutura.embeddings_e5 import GeradorE5
     from economia.pesquisa_evidencias.aplicacao.pesquisar_evidencias import (
         PesquisarEvidencias,
@@ -44,14 +48,18 @@ def criar_pesquisar(configuracao: Configuracao):
     from economia.pesquisa_evidencias.infraestrutura.repositorio_qdrant import (
         RepositorioQdrant,
     )
+    from economia.verificacao.infraestrutura.pesquisa_de_evidencias import (
+        PesquisaDeEvidencias,
+    )
 
     pesquisador = PesquisadorQdrant(
         gerador=GeradorE5(dispositivo=configuracao.dispositivo_embeddings),
         repositorio=RepositorioQdrant.conectar(
-            url=configuracao.qdrant_url, colecao=configuracao.colecao_pesquisa_evidencias
+            url=configuracao.qdrant_url,
+            colecao=configuracao.colecao_pesquisa_evidencias,
         ),
     )
-    return PesquisarEvidencias(pesquisador).executar
+    return PesquisaDeEvidencias(PesquisarEvidencias(pesquisador).executar)
 
 
 def criar_llm(configuracao: Configuracao, ao_gerar=None):

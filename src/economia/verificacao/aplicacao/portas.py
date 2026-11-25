@@ -1,6 +1,7 @@
 """Contratos da camada de aplicação da verificação.
 
-As portas do Research (pesquisa de evidências) ficam em `economia.pesquisa_evidencias`.
+A busca de evidências chega pelo `Pesquisar` de `avaliacao.py`, já traduzida para o modelo
+da verificação pelo adaptador de `infraestrutura/pesquisa_de_evidencias.py`.
 """
 
 from typing import Protocol

@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from economia.pesquisa_evidencias.dominio.modelos import (
+from economia.verificacao.dominio.evidencias import (
     DocumentoEvidencia,
     EvidenciaRecuperada,
     FonteEvidencia,
@@ -17,7 +17,7 @@ FONTE = FonteEvidencia(
     ano=2014,
 )
 DOCUMENTO = DocumentoEvidencia(
-    id="guia-alimentar", fonte=FONTE, arquivo="guia.pdf", hash_sha256="abc123"
+    id="guia-alimentar", fonte=FONTE
 )
 
 

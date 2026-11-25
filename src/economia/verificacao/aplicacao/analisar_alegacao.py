@@ -10,7 +10,6 @@ from typing import Literal
 
 from pydantic import BaseModel, ValidationError
 
-from economia.pesquisa_evidencias.dominio.modelos import EvidenciaRecuperada
 from economia.verificacao.aplicacao.portas import ModeloDeLinguagem
 from economia.verificacao.dominio.analise import (
     Alegacao,
@@ -18,6 +17,7 @@ from economia.verificacao.dominio.analise import (
     ClassificacaoDaAlegacao,
     montar_analise,
 )
+from economia.verificacao.dominio.evidencias import EvidenciaRecuperada
 
 
 class SaidaDaAnalise(BaseModel):

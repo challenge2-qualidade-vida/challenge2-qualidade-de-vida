@@ -8,7 +8,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import StrEnum
 
-from economia.pesquisa_evidencias.dominio.modelos import EvidenciaRecuperada
+from economia.verificacao.dominio.evidencias import EvidenciaRecuperada
 
 
 @dataclass(frozen=True)
