@@ -1,5 +1,5 @@
 {
-  "descricao": "Alegações fictícias sobre alimentação para avaliar o Analysis Agent e o Validation Agent (spec 79). A classificação esperada mede o quanto a base de 21 documentos da #75 cobre a alegação, não se ela é verdadeira: reciclada (a base cobre), parcial (a base cobre só uma parte) e nova (a base não cobre). Classificação proposta em 24/11/2026, a revisar pela equipe.",
+  "descricao": "Alegações fictícias sobre alimentação para avaliar o Analysis Agent e o Validation Agent (spec 79). A classificação esperada mede o quanto a base de 21 documentos da #75 cobre a alegação, não se ela é verdadeira: reciclada (a base cobre), parcial (a base cobre só uma parte) e nova (a base não cobre). Classificação revisada pela equipe em 24/11/2026.",
   "casos": [
     {"id": "v01", "alegacao": "Alimentos ultraprocessados devem ser evitados.", "classificacao_esperada": "reciclada", "base": "Guia Alimentar para a População Brasileira (2014), regra de ouro"},
     {"id": "v02", "alegacao": "Até os seis meses, o bebê deve receber só leite materno.", "classificacao_esperada": "reciclada", "base": "Guia Alimentar para Crianças Brasileiras Menores de Dois Anos"},
