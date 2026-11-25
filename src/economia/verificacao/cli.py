@@ -217,7 +217,7 @@ def comando_avaliar(args: argparse.Namespace) -> None:
         "casos_arquivo": str(args.casos),
         "modelo_llm": configuracao.ollama_modelo,
         "modelo_embeddings": configuracao.modelo_embeddings,
-        "colecao": configuracao.colecao_verificacao,
+        "colecao": configuracao.colecao_pesquisa_evidencias,
         "limiar_confianca": configuracao.limiar_confianca_verificacao,
         "limite_inicial": args.limite,
         "maximo_de_retornos": args.retornos,

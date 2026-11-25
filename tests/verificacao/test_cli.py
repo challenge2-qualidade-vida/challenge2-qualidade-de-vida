@@ -111,3 +111,60 @@ def test_busca_do_fluxo_vai_sem_o_limiar_de_similaridade(monkeypatch):
     assert [e.trecho.id for e in evidencias] == ["guia-0001"]
     assert evidencias[0].score == 0.5
 
+
+def test_avaliar_grava_o_resultado_com_a_colecao_das_evidencias(
+    tmp_path, monkeypatch, fazer_evidencias
+):
+    import json
+
+    from economia.compartilhado.infraestrutura import prompts_langfuse
+    from economia.verificacao import cli
+
+    class LLMFalso:
+        def gerar_json(self, sistema, mensagem, esquema):
+            if "analise" in sistema:
+                return {
+                    "classificacao": "reciclada",
+                    "justificativa": "J [1]",
+                    "citacoes": [1],
+                }
+            if "validacao" in sistema:
+                return {"contradiz": False}
+            return {"mensagem": "Sim, a base já cobre a alegação."}
+
+    prompts = PromptsFalsos()
+    prompts.prompts_lidos, prompts.versoes = {}, {}
+    configuracao = Configuracao(_env_file=None)
+    monkeypatch.setattr(cli, "obter_configuracao", lambda: configuracao)
+    monkeypatch.setattr(prompts_langfuse, "PromptsDoLangfuse", lambda cliente: prompts)
+    monkeypatch.setattr(
+        cli, "criar_llm", lambda configuracao, ao_gerar=None: LLMFalso()
+    )
+    monkeypatch.setattr(
+        cli,
+        "criar_pesquisar",
+        lambda configuracao: lambda texto, limite: fazer_evidencias(0.9),
+    )
+    casos = tmp_path / "casos.json"
+    casos.write_text(
+        json.dumps(
+            {
+                "casos": [
+                    {
+                        "id": "v01",
+                        "alegacao": "A",
+                        "classificacao_esperada": "reciclada",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    saida = tmp_path / "resultado.json"
+
+    cli.main(["avaliar", "--casos", str(casos), "--saida", str(saida)])
+
+    dados = json.loads(saida.read_text(encoding="utf-8"))
+    assert dados["colecao"] == configuracao.colecao_pesquisa_evidencias
+    assert (dados["acuracia"], dados["limite_maximo"]) == (1.0, 10)
+    assert dados["resultados"][0]["mensagem"] == "Sim, a base já cobre a alegação."
