@@ -8,11 +8,12 @@ export type Funcionalidade =
   | "nutricao"      // anéis das metas nutricionais, calculadas pela TACO (F14)
   | "perto"         // tela Perto de mim: mercados no raio, proteínas e mapa (depende de F5 e F7)
   | "precos"        // tabela de preços (histórico e tendência, F8)
-  | "verificacao";  // tela Verificar: demo do fluxo multiagente da semana 4 (#98)
+  | "verificacao"   // tela Verificar: demo do fluxo multiagente da semana 4 (#98)
+  | "documentos";   // tela Documento: envio de imagem ou PDF com pergunta, semana 5 (#95)
 
 // Ficam fora de "todas": a comparação visual com o site antigo liga "todas", e o site antigo não tem
 // estas telas. Ligam só pelo nome (npm run dev:demo).
-const FORA_DE_TODAS: Funcionalidade[] = ["verificacao"];
+const FORA_DE_TODAS: Funcionalidade[] = ["verificacao", "documentos"];
 
 const pedidas = (import.meta.env.VITE_FUNCIONALIDADES ?? "").split(",").map((s: string) => s.trim()).filter(Boolean);
 

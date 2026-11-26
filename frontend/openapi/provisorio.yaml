@@ -310,6 +310,26 @@ paths:
               schema: { $ref: "#/components/schemas/ResultadoDaVerificacao" }
         default: { $ref: "#/components/responses/Problema" }
 
+  /documentos:
+    post:
+      summary: Recebe uma pergunta com uma imagem ou um PDF de nota fiscal (rota da #92, proposta na #95; flag "documentos")
+      description: >
+        Proposta da #95, a alinhar com a #92. A API valida extensão, MIME, conteúdo e tamanho
+        (até 10 MB), encaminha ao extrator de imagem ou de PDF e só informa a extração concluída
+        quando tiver o resultado.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema: { $ref: "#/components/schemas/EnvioDeDocumento" }
+      responses:
+        "200":
+          description: Documento recebido, com a etapa alcançada
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ResultadoDoDocumento" }
+        default: { $ref: "#/components/responses/Problema" }
+
 components:
   securitySchemes:
     tokenDeAcesso:
@@ -776,3 +796,38 @@ components:
         veredito: { $ref: "#/components/schemas/Veredito" }
         retornos: { type: integer, minimum: 0, description: Quantas vezes o Validation mandou voltar }
         historico: { type: array, items: { $ref: "#/components/schemas/PassoDoAgente" } }
+
+    EnvioDeDocumento:
+      type: object
+      required: [pergunta, arquivo]
+      properties:
+        pergunta: { type: string, minLength: 1 }
+        arquivo: { type: string, format: binary, description: "Imagem (JPEG, PNG ou WebP) ou PDF, até 10 MB" }
+
+    EtapaDoDocumento:
+      type: string
+      enum: [recebido, validado, encaminhado, extraido]
+
+    ItemDoDocumento:
+      type: object
+      required: [descricao, quantidade, unidade, valor_total, confianca, revisar]
+      properties:
+        descricao: { type: string }
+        quantidade: { type: number }
+        unidade: { type: string }
+        valor_total: { type: integer, description: Centavos }
+        confianca: { type: number, minimum: 0, maximum: 1 }
+        revisar: { type: boolean, description: "Confiança abaixo de 0,85: a pessoa confere (RN09). Decidido pela API." }
+
+    ResultadoDoDocumento:
+      type: object
+      required: [documento_id, tipo, etapa, resposta, itens]
+      properties:
+        documento_id: { type: string }
+        tipo: { type: string, enum: [imagem, pdf] }
+        etapa: { $ref: "#/components/schemas/EtapaDoDocumento" }
+        resposta: { type: [string, "null"], description: "Resposta à pergunta; null até a etapa extraido" }
+        itens:
+          oneOf:
+            - { type: array, items: { $ref: "#/components/schemas/ItemDoDocumento" } }
+            - { type: "null" }

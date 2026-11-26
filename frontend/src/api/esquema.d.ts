@@ -852,6 +852,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/documentos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Recebe uma pergunta com uma imagem ou um PDF de nota fiscal (rota da
+         * @description Proposta da #95, a alinhar com a #92. A API valida extensão, MIME, conteúdo e tamanho (até 10 MB), encaminha ao extrator de imagem ou de PDF e só informa a extração concluída quando tiver o resultado.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "multipart/form-data": components["schemas"]["EnvioDeDocumento"];
+                };
+            };
+            responses: {
+                /** @description Documento recebido, com a etapa alcançada */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ResultadoDoDocumento"];
+                    };
+                };
+                default: components["responses"]["Problema"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1218,6 +1262,35 @@ export interface components {
             /** @description Quantas vezes o Validation mandou voltar */
             retornos: number;
             historico: components["schemas"]["PassoDoAgente"][];
+        };
+        EnvioDeDocumento: {
+            pergunta: string;
+            /**
+             * Format: binary
+             * @description Imagem (JPEG, PNG ou WebP) ou PDF, até 10 MB
+             */
+            arquivo: string;
+        };
+        /** @enum {string} */
+        EtapaDoDocumento: "recebido" | "validado" | "encaminhado" | "extraido";
+        ItemDoDocumento: {
+            descricao: string;
+            quantidade: number;
+            unidade: string;
+            /** @description Centavos */
+            valor_total: number;
+            confianca: number;
+            /** @description Confiança abaixo de 0,85: a pessoa confere (RN09). Decidido pela API. */
+            revisar: boolean;
+        };
+        ResultadoDoDocumento: {
+            documento_id: string;
+            /** @enum {string} */
+            tipo: "imagem" | "pdf";
+            etapa: components["schemas"]["EtapaDoDocumento"];
+            /** @description Resposta à pergunta; null até a etapa extraido */
+            resposta: string | null;
+            itens: components["schemas"]["ItemDoDocumento"][] | null;
         };
     };
     responses: {

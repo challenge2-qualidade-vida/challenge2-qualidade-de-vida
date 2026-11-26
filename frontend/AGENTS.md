@@ -46,7 +46,7 @@ Use os termos do [modelo de domínio](../docs/arquitetura/modelo-de-dominio.md) 
 ```bash
 npm install
 npm run dev:falso       # dados falsos e todas as funcionalidades ligadas
-npm run dev:demo        # igual ao dev:falso, com a tela Verificar (demo da semana 4)
+npm run dev:demo        # igual ao dev:falso, com as telas Verificar (semana 4) e Documento (semana 5)
 npm run verificar       # checagem de tipos
 npm run teste           # testes de unidade (Vitest)
 npm run teste:visual    # comparação visual com o site antigo (Playwright)
