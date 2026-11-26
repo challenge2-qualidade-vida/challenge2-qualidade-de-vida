@@ -119,7 +119,7 @@ export function Documento({ visivel }: { visivel: boolean }) {
       <div className="cartao">
         <ComoFunciona chave="documento" passos={PASSOS_DO_DOCUMENTO} />
         <p className="nota">Aceita imagem (JPEG, PNG ou WebP) ou PDF, até 10 MB. A nota não fica guardada no aparelho.</p>
-        <form id="form-documento" onSubmit={(e) => enviar(e)}>
+        <form id="form-documento" className="formulario" onSubmit={(e) => enviar(e)}>
           <label className="foto-cupom">
             <input type="file" name="arquivo" accept={ACEITA} onChange={(e) => setArquivo(e.target.files?.[0] ?? null)} />
             <GatoVivo nome="recibaldo" src="img/recibaldo.webp" className="foto-gato" />
@@ -133,7 +133,7 @@ export function Documento({ visivel }: { visivel: boolean }) {
           <button type="submit" className="botao largo" disabled={estado.tipo === "enviando"}>Enviar</button>
         </form>
         {estado.tipo === "vazio" && (
-          <p id="exemplo-documento" className="nota">
+          <p id="exemplo-documento" className="nota exemplos">
             Não tem uma nota aqui agora?{" "}
             <button type="button" className="link" onClick={() => void testarComExemplo()}>Testar com uma nota de exemplo</button>
           </p>
