@@ -102,7 +102,7 @@ export function Verificar({ visivel }: { visivel: boolean }) {
       <CabecalhoDaTela gato="mia" titulo="Verificar alegação" nota="Os agentes buscam na base, analisam, validam e explicam." />
       <div className="cartao">
         <ComoFunciona chave="verificar" passos={PASSOS_DA_VERIFICACAO} />
-        <form id="form-verificar" onSubmit={(e) => verificar(e)}>
+        <form id="form-verificar" className="formulario" onSubmit={(e) => verificar(e)}>
           <label className="campo">
             <span className="rotulo">O que você ouviu sobre alimentação?</span>
             <input type="text" name="alegacao" maxLength={TAMANHO_MAXIMO_DA_ALEGACAO} placeholder="Ex.: alimentos ultraprocessados devem ser evitados" value={alegacao} onChange={(e) => setAlegacao(e.target.value)} />
@@ -118,7 +118,7 @@ export function Verificar({ visivel }: { visivel: boolean }) {
           <button type="submit" className="botao largo" disabled={estado.tipo === "carregando"}>Verificar</button>
         </form>
         {estado.tipo === "vazio" && (
-          <p id="exemplos-verificar" className="nota">
+          <p id="exemplos-verificar" className="nota exemplos">
             Não sabe o que perguntar? Teste com um exemplo:{" "}
             {EXEMPLOS_DE_ALEGACAO.map((exemplo, i) => (
               <span key={exemplo}>
