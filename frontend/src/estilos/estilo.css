@@ -558,6 +558,7 @@ input:focus, select:focus { outline: none; border-color: var(--marca); }
 .como-funciona { margin-bottom: 16px; }
 .como-funciona .dica:first-child { margin-top: 0; }
 .exemplos { margin: 14px 0 0; }
+#form-verificar legend { margin-bottom: 10px; }
 
 /* ---------- Navegação de baixo ---------- */
 .nav-baixo {
