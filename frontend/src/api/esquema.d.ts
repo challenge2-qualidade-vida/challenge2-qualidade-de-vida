@@ -808,6 +808,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/verificacoes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verifica uma alegação pelo fluxo multiagente (rota da
+         * @description Research, Analysis, Validation (com retorno) e Communication. Devolve o veredito e o histórico de cada agente, na ordem em que rodaram (docs/semana-4/arquitetura-agentes.md).
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["PedidoDeVerificacao"];
+                };
+            };
+            responses: {
+                /** @description Veredito e histórico dos agentes */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ResultadoDaVerificacao"];
+                    };
+                };
+                default: components["responses"]["Problema"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1136,6 +1180,44 @@ export interface components {
             /** Format: date-time */
             criada_em: string;
             lida: boolean;
+        };
+        /** @enum {string} */
+        PerfilDeLeitura: "consumidor_geral" | "consumidor_rapido";
+        PedidoDeVerificacao: {
+            alegacao: string;
+            perfil?: components["schemas"]["PerfilDeLeitura"];
+        };
+        /** @enum {string} */
+        ClassificacaoDaAlegacao: "reciclada" | "parcial" | "nova";
+        FonteDoVeredito: {
+            titulo: string;
+            instituicao: string;
+            ano?: number | null;
+            url?: string | null;
+        };
+        Veredito: {
+            classificacao: components["schemas"]["ClassificacaoDaAlegacao"] | null;
+            mensagem: string;
+            fontes: components["schemas"]["FonteDoVeredito"][];
+            aprovado_pela_validacao: boolean;
+        };
+        /** @description Um nó do grafo. A saída segue o contrato de cada agente (#82): Research devolve {evidencias: [{trecho, score}]}, sem o texto; Analysis {classificacao, justificativa, citacoes, confianca}; Validation {aprovado, motivos, retornar_para}; Communication {classificacao, aprovado_pela_validacao}. */
+        PassoDoAgente: {
+            /** @enum {string} */
+            agente: "research" | "analysis" | "validation" | "communication";
+            entrada: {
+                [key: string]: unknown;
+            };
+            saida: {
+                [key: string]: unknown;
+            };
+            segundos: number;
+        };
+        ResultadoDaVerificacao: {
+            veredito: components["schemas"]["Veredito"];
+            /** @description Quantas vezes o Validation mandou voltar */
+            retornos: number;
+            historico: components["schemas"]["PassoDoAgente"][];
         };
     };
     responses: {

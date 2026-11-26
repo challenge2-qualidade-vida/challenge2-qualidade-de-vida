@@ -18,12 +18,16 @@ import { Cupom } from "./telas/Cupom";
 import { Inicio } from "./telas/Inicio";
 import { Perto } from "./telas/Perto";
 import { Precos } from "./telas/Precos";
+import { Verificar } from "./telas/Verificar";
 
 function Telas({ dados }: { dados: DadosDaApi }) {
   const { aba } = useNavegacao();
   useNotificacoes(true);
   useEffect(() => { prepararAnimacoes(); iniciarCena3d(); }, []);
-  const escondidas = funcionalidadeLigada("perto") ? [] : (["perto"] as const);
+  const escondidas = [
+    ...(funcionalidadeLigada("perto") ? [] : (["perto"] as const)),
+    ...(funcionalidadeLigada("verificacao") ? [] : (["verificar"] as const)),
+  ];
   return (
     <>
       <BarraDoTopo llm={dados.llm} />
@@ -36,9 +40,10 @@ function Telas({ dados }: { dados: DadosDaApi }) {
         <Conversa visivel={aba === "chat"} />
         {funcionalidadeLigada("precos") && <Precos visivel={aba === "precos"} />}
         <Cupom visivel={aba === "cupom"} />
+        {funcionalidadeLigada("verificacao") && <Verificar visivel={aba === "verificar"} />}
         <Rodape />
       </main>
-      <NavegacaoPrincipal escondidas={[...escondidas]} />
+      <NavegacaoPrincipal escondidas={escondidas} />
     </>
   );
 }

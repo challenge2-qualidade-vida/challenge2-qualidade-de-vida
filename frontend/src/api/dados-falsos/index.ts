@@ -12,6 +12,7 @@ import opcoes from "./gravacoes/opcoes.json";
 import precos from "./gravacoes/precos.json";
 import proximos from "./gravacoes/proximos.json";
 import regioes from "./gravacoes/regioes.json";
+import { verificacaoFalsa } from "./verificacao";
 
 type Esquemas = components["schemas"];
 
@@ -151,6 +152,13 @@ export async function responderComDadosFalsos(pedido: Request): Promise<Response
     }
     case "POST /conversas": return json({ id: `conversa-${Date.now()}` }, 201);
     case "GET /notificacoes": return json([] satisfies Esquemas["Notificacao"][]);
+    case "POST /verificacoes": {
+      const { alegacao, perfil }: Esquemas["PedidoDeVerificacao"] = await pedido.json();
+      const texto = (alegacao ?? "").trim();
+      if (!texto || texto.length > 500) return problema(422, "Alegação inválida", "A alegação precisa ter de 1 a 500 caracteres.");
+      await esperar(900);
+      return json(verificacaoFalsa(texto, perfil));
+    }
   }
   if (pedido.method === "POST" && /^\/conversas\/[^/]+\/mensagens$/.test(caminho)) {
     const { texto } = await pedido.json();

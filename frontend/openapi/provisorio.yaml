@@ -291,6 +291,25 @@ paths:
         "204": { description: Marcada }
         default: { $ref: "#/components/responses/Problema" }
 
+  /verificacoes:
+    post:
+      summary: Verifica uma alegação pelo fluxo multiagente (rota da #82; flag "verificacao")
+      description: >
+        Research, Analysis, Validation (com retorno) e Communication. Devolve o veredito e o
+        histórico de cada agente, na ordem em que rodaram (docs/semana-4/arquitetura-agentes.md).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PedidoDeVerificacao" }
+      responses:
+        "200":
+          description: Veredito e histórico dos agentes
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ResultadoDaVerificacao" }
+        default: { $ref: "#/components/responses/Problema" }
+
 components:
   securitySchemes:
     tokenDeAcesso:
@@ -700,3 +719,60 @@ components:
         texto: { type: string }
         criada_em: { type: string, format: date-time }
         lida: { type: boolean }
+
+    PerfilDeLeitura:
+      type: string
+      enum: [consumidor_geral, consumidor_rapido]
+
+    PedidoDeVerificacao:
+      type: object
+      required: [alegacao]
+      properties:
+        alegacao: { type: string, minLength: 1, maxLength: 500 }
+        perfil: { $ref: "#/components/schemas/PerfilDeLeitura" }
+
+    ClassificacaoDaAlegacao:
+      type: string
+      enum: [reciclada, parcial, nova]
+
+    FonteDoVeredito:
+      type: object
+      required: [titulo, instituicao]
+      properties:
+        titulo: { type: string }
+        instituicao: { type: string }
+        ano: { type: [integer, "null"] }
+        url: { type: [string, "null"] }
+
+    Veredito:
+      type: object
+      required: [classificacao, mensagem, fontes, aprovado_pela_validacao]
+      properties:
+        classificacao:
+          oneOf:
+            - { $ref: "#/components/schemas/ClassificacaoDaAlegacao" }
+            - { type: "null" }
+        mensagem: { type: string }
+        fontes: { type: array, items: { $ref: "#/components/schemas/FonteDoVeredito" } }
+        aprovado_pela_validacao: { type: boolean }
+
+    PassoDoAgente:
+      type: object
+      required: [agente, entrada, saida, segundos]
+      description: >
+        Um nó do grafo. A saída segue o contrato de cada agente (#82): Research devolve
+        {evidencias: [{trecho, score}]}, sem o texto; Analysis {classificacao, justificativa, citacoes, confianca};
+        Validation {aprovado, motivos, retornar_para}; Communication {classificacao, aprovado_pela_validacao}.
+      properties:
+        agente: { type: string, enum: [research, analysis, validation, communication] }
+        entrada: { type: object, additionalProperties: true }
+        saida: { type: object, additionalProperties: true }
+        segundos: { type: number }
+
+    ResultadoDaVerificacao:
+      type: object
+      required: [veredito, retornos, historico]
+      properties:
+        veredito: { $ref: "#/components/schemas/Veredito" }
+        retornos: { type: integer, minimum: 0, description: Quantas vezes o Validation mandou voltar }
+        historico: { type: array, items: { $ref: "#/components/schemas/PassoDoAgente" } }
