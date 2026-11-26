@@ -5,8 +5,9 @@ import { useState, type FormEvent } from "react";
 import { api, exigir } from "../api/cliente";
 import { mensagemDoProblema } from "../api/problemas";
 import { CabecalhoDaTela } from "../componentes/CabecalhoDaTela";
+import { ComoFunciona } from "../componentes/ComoFunciona";
 import {
-  AGENTES, CLASSIFICACOES, PERFIS, TAMANHO_MAXIMO_DA_ALEGACAO,
+  AGENTES, CLASSIFICACOES, EXEMPLOS_DE_ALEGACAO, PASSOS_DA_VERIFICACAO, PERFIS, TAMANHO_MAXIMO_DA_ALEGACAO,
   destinoDoRetorno, problemaDaAlegacao, resumirPasso, segundos,
   type Perfil, type ResultadoDaVerificacao,
 } from "../util/verificacao";
@@ -80,16 +81,16 @@ export function Verificar({ visivel }: { visivel: boolean }) {
   const [perfil, setPerfil] = useState<Perfil>("consumidor_geral");
   const [estado, setEstado] = useState<Estado>({ tipo: "vazio" });
 
-  async function verificar(evento: FormEvent) {
-    evento.preventDefault();
-    const aviso = problemaDaAlegacao(alegacao);
+  async function verificar(evento?: FormEvent, texto = alegacao) {
+    evento?.preventDefault();
+    const aviso = problemaDaAlegacao(texto);
     if (aviso) {
       setEstado({ tipo: "erro", texto: aviso });
       return;
     }
     setEstado({ tipo: "carregando" });
     try {
-      const resultado = await exigir(api.POST("/verificacoes", { body: { alegacao: alegacao.trim(), perfil } }));
+      const resultado = await exigir(api.POST("/verificacoes", { body: { alegacao: texto.trim(), perfil } }));
       setEstado({ tipo: "pronto", resultado });
     } catch (e) {
       setEstado({ tipo: "erro", texto: mensagemDoProblema(e) });
@@ -100,7 +101,8 @@ export function Verificar({ visivel }: { visivel: boolean }) {
     <section id="aba-verificar" className="painel" hidden={!visivel}>
       <CabecalhoDaTela gato="mia" titulo="Verificar alegação" nota="Os agentes buscam na base, analisam, validam e explicam." />
       <div className="cartao">
-        <form id="form-verificar" onSubmit={verificar}>
+        <ComoFunciona chave="verificar" passos={PASSOS_DA_VERIFICACAO} />
+        <form id="form-verificar" onSubmit={(e) => verificar(e)}>
           <label className="campo">
             <span className="rotulo">O que você ouviu sobre alimentação?</span>
             <input type="text" name="alegacao" maxLength={TAMANHO_MAXIMO_DA_ALEGACAO} placeholder="Ex.: alimentos ultraprocessados devem ser evitados" value={alegacao} onChange={(e) => setAlegacao(e.target.value)} />
@@ -115,6 +117,17 @@ export function Verificar({ visivel }: { visivel: boolean }) {
           </fieldset>
           <button type="submit" className="botao largo" disabled={estado.tipo === "carregando"}>Verificar</button>
         </form>
+        {estado.tipo === "vazio" && (
+          <p id="exemplos-verificar" className="nota">
+            Não sabe o que perguntar? Teste com um exemplo:{" "}
+            {EXEMPLOS_DE_ALEGACAO.map((exemplo, i) => (
+              <span key={exemplo}>
+                {i > 0 && " ou "}
+                <button type="button" className="link" onClick={() => { setAlegacao(exemplo); void verificar(undefined, exemplo); }}>{`“${exemplo}”`}</button>
+              </span>
+            ))}
+          </p>
+        )}
       </div>
       {estado.tipo === "carregando" && <div className="carregando" role="status">Os agentes estão verificando…</div>}
       {estado.tipo === "erro" && <div id="erro-verificar" className="erro" role="alert">{estado.texto}</div>}

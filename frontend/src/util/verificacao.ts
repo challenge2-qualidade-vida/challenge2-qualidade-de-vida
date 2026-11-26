@@ -19,6 +19,19 @@ export function problemaDaAlegacao(texto: string): string | null {
   return null;
 }
 
+/** Passos do "Como funciona" da tela. */
+export const PASSOS_DA_VERIFICACAO = [
+  { emoji: "✍️", titulo: "Escreva o que você ouviu", texto: "Uma frase sobre alimentação, como as que circulam em grupos e redes sociais." },
+  { emoji: "🔎", titulo: "Os agentes conferem", texto: "Um busca na base de conhecimento, outro analisa, outro valida. Se algo não fecha, eles refazem." },
+  { emoji: "💬", titulo: "Você recebe o veredito", texto: "Quanto a base cobre a frase, com as fontes. Sem fonte, a resposta diz que não foi conclusiva." },
+];
+
+/** Alegações de exemplo para quem chega sem uma pergunta pronta. */
+export const EXEMPLOS_DE_ALEGACAO = [
+  "Alimentos ultraprocessados devem ser evitados",
+  "O feijão tem fibra e por isso cura o diabetes",
+];
+
 export const PERFIS: { valor: Perfil; rotulo: string }[] = [
   { valor: "consumidor_geral", rotulo: "Explicação completa" },
   { valor: "consumidor_rapido", rotulo: "Resposta rápida" },
