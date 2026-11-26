@@ -15,6 +15,7 @@ import { Cesta } from "./telas/Cesta";
 import { Configuracoes } from "./telas/Configuracoes";
 import { Conversa } from "./telas/Conversa";
 import { Cupom } from "./telas/Cupom";
+import { Documento } from "./telas/Documento";
 import { Inicio } from "./telas/Inicio";
 import { Perto } from "./telas/Perto";
 import { Precos } from "./telas/Precos";
@@ -27,6 +28,7 @@ function Telas({ dados }: { dados: DadosDaApi }) {
   const escondidas = [
     ...(funcionalidadeLigada("perto") ? [] : (["perto"] as const)),
     ...(funcionalidadeLigada("verificacao") ? [] : (["verificar"] as const)),
+    ...(funcionalidadeLigada("documentos") ? [] : (["documento"] as const)),
   ];
   return (
     <>
@@ -41,6 +43,7 @@ function Telas({ dados }: { dados: DadosDaApi }) {
         {funcionalidadeLigada("precos") && <Precos visivel={aba === "precos"} />}
         <Cupom visivel={aba === "cupom"} />
         {funcionalidadeLigada("verificacao") && <Verificar visivel={aba === "verificar"} />}
+        {funcionalidadeLigada("documentos") && <Documento visivel={aba === "documento"} />}
         <Rodape />
       </main>
       <NavegacaoPrincipal escondidas={escondidas} />

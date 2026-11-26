@@ -35,6 +35,7 @@ const ABAS: { aba: NomeDaAba; classe?: string; rotulo?: string; desenho: React.R
   { aba: "perto", desenho: <><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.5" /></>, texto: <span>Perto</span> },
   { aba: "chat", desenho: <path d="M4 5h16v11H9l-5 4z" />, texto: <span>Mia</span> },
   { aba: "verificar", desenho: <><path d="M12 3 4 6v6c0 4.5 3.4 8.2 8 9 4.6-.8 8-4.5 8-9V6z" /><path d="m8.5 12 2.5 2.5 4.5-5" /></>, texto: <span>Verificar</span> },
+  { aba: "documento", desenho: <><path d="M6 3h8l4 4v14H6z" /><path d="M14 3v4h4" /><path d="M9 13h6M9 17h4" /></>, texto: <span>Documento</span> },
 ];
 
 export function NavegacaoPrincipal({ escondidas }: { escondidas: NomeDaAba[] }) {

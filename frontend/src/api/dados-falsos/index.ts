@@ -12,6 +12,7 @@ import opcoes from "./gravacoes/opcoes.json";
 import precos from "./gravacoes/precos.json";
 import proximos from "./gravacoes/proximos.json";
 import regioes from "./gravacoes/regioes.json";
+import { conferirEnvioFalso, documentoFalso } from "./documentos";
 import { verificacaoFalsa } from "./verificacao";
 
 type Esquemas = components["schemas"];
@@ -152,6 +153,13 @@ export async function responderComDadosFalsos(pedido: Request): Promise<Response
     }
     case "POST /conversas": return json({ id: `conversa-${Date.now()}` }, 201);
     case "GET /notificacoes": return json([] satisfies Esquemas["Notificacao"][]);
+    case "POST /documentos": {
+      const formulario = await pedido.formData();
+      const conferido = conferirEnvioFalso(formulario.get("pergunta"), formulario.get("arquivo"));
+      if (!("tipo" in conferido)) return problema(conferido.status, conferido.title, conferido.detail);
+      await esperar(1200);
+      return json(documentoFalso(String(formulario.get("pergunta")), conferido.tipo));
+    }
     case "POST /verificacoes": {
       const { alegacao, perfil }: Esquemas["PedidoDeVerificacao"] = await pedido.json();
       const texto = (alegacao ?? "").trim();
