@@ -6,12 +6,14 @@ import { useState, type FormEvent } from "react";
 import { api, exigir } from "../api/cliente";
 import { mensagemDoProblema } from "../api/problemas";
 import { CabecalhoDaTela } from "../componentes/CabecalhoDaTela";
+import { ComoFunciona } from "../componentes/ComoFunciona";
 import { GatoVivo } from "../componentes/GatoVivo";
 import {
-  ACEITA, ETAPAS, avisoDaEtapa, etapasAlcancadas, problemaDoEnvio, quantidade, tamanhoDoArquivo,
+  ACEITA, ETAPAS, PASSOS_DO_DOCUMENTO, avisoDaEtapa, etapasAlcancadas, problemaDoEnvio, quantidade, tamanhoDoArquivo,
   tipoDoArquivo, type ResultadoDoDocumento,
 } from "../util/documentos";
 import { reais } from "../util/formato";
+import { PERGUNTA_DE_EXEMPLO, criarNotaDeExemplo } from "../util/nota-de-exemplo";
 
 type Estado =
   | { tipo: "vazio" }
@@ -74,10 +76,10 @@ export function Documento({ visivel }: { visivel: boolean }) {
   const [arquivo, setArquivo] = useState<File | null>(null);
   const [estado, setEstado] = useState<Estado>({ tipo: "vazio" });
 
-  async function enviar(evento: FormEvent) {
-    evento.preventDefault();
-    const aviso = problemaDoEnvio(pergunta, arquivo);
-    if (aviso || !arquivo) {
+  async function enviar(evento?: FormEvent, texto = pergunta, doc = arquivo) {
+    evento?.preventDefault();
+    const aviso = problemaDoEnvio(texto, doc);
+    if (aviso || !doc) {
       setEstado({ tipo: "erro", texto: aviso ?? "Escolha uma imagem ou um PDF." });
       return;
     }
@@ -85,15 +87,26 @@ export function Documento({ visivel }: { visivel: boolean }) {
     try {
       const resultado = await exigir(api.POST("/documentos", {
         // O tipo gerado descreve o multipart como texto; o corpo de verdade é montado aqui.
-        body: { pergunta: pergunta.trim(), arquivo: arquivo.name },
+        body: { pergunta: texto.trim(), arquivo: doc.name },
         bodySerializer: () => {
           const f = new FormData();
-          f.append("pergunta", pergunta.trim());
-          f.append("arquivo", arquivo);
+          f.append("pergunta", texto.trim());
+          f.append("arquivo", doc);
           return f;
         },
       }));
       setEstado({ tipo: "pronto", resultado });
+    } catch (e) {
+      setEstado({ tipo: "erro", texto: mensagemDoProblema(e) });
+    }
+  }
+
+  async function testarComExemplo() {
+    try {
+      const nota = await criarNotaDeExemplo();
+      setArquivo(nota);
+      setPergunta(PERGUNTA_DE_EXEMPLO);
+      await enviar(undefined, PERGUNTA_DE_EXEMPLO, nota);
     } catch (e) {
       setEstado({ tipo: "erro", texto: mensagemDoProblema(e) });
     }
@@ -104,8 +117,9 @@ export function Documento({ visivel }: { visivel: boolean }) {
     <section id="aba-documento" className="painel" hidden={!visivel}>
       <CabecalhoDaTela gato="recibaldo" titulo="Perguntar sobre a nota" nota="Envie a foto ou o PDF da nota e o Recibaldo responde." />
       <div className="cartao">
+        <ComoFunciona chave="documento" passos={PASSOS_DO_DOCUMENTO} />
         <p className="nota">Aceita imagem (JPEG, PNG ou WebP) ou PDF, até 10 MB. A nota não fica guardada no aparelho.</p>
-        <form id="form-documento" onSubmit={enviar}>
+        <form id="form-documento" onSubmit={(e) => enviar(e)}>
           <label className="foto-cupom">
             <input type="file" name="arquivo" accept={ACEITA} onChange={(e) => setArquivo(e.target.files?.[0] ?? null)} />
             <GatoVivo nome="recibaldo" src="img/recibaldo.webp" className="foto-gato" />
@@ -118,6 +132,12 @@ export function Documento({ visivel }: { visivel: boolean }) {
           </label>
           <button type="submit" className="botao largo" disabled={estado.tipo === "enviando"}>Enviar</button>
         </form>
+        {estado.tipo === "vazio" && (
+          <p id="exemplo-documento" className="nota">
+            Não tem uma nota aqui agora?{" "}
+            <button type="button" className="link" onClick={() => void testarComExemplo()}>Testar com uma nota de exemplo</button>
+          </p>
+        )}
       </div>
       {estado.tipo === "enviando" && <div className="carregando" role="status">Enviando o documento…</div>}
       {estado.tipo === "erro" && <div id="erro-documento" className="erro" role="alert">{estado.texto}</div>}

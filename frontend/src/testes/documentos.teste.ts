@@ -115,3 +115,11 @@ describe("Tela desligada por padrão", () => {
     expect(await ligada("todas,documentos")).toBe(true);
   });
 });
+
+describe("Nota de exemplo para o primeiro uso", () => {
+  it("a pergunta de exemplo é aceita e responde sobre hortifrúti", async () => {
+    const { PERGUNTA_DE_EXEMPLO } = await import("../util/nota-de-exemplo");
+    expect(problemaDoEnvio(PERGUNTA_DE_EXEMPLO, { name: "nota-de-exemplo.png", size: 20_000, type: "image/png" })).toBeNull();
+    expect(documentoFalso(PERGUNTA_DE_EXEMPLO, "imagem").resposta).toMatch(/hortifrúti/);
+  });
+});

@@ -48,6 +48,13 @@ export function tamanhoDoArquivo(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toLocaleString("pt-BR", { maximumFractionDigits: 1 })} MB`;
 }
 
+/** Passos do "Como funciona" da tela. */
+export const PASSOS_DO_DOCUMENTO = [
+  { emoji: "📸", titulo: "Envie a nota", texto: "Foto do cupom do mercado ou o PDF da NFC-e, até 10 MB." },
+  { emoji: "❓", titulo: "Faça uma pergunta", texto: "Por exemplo: quanto gastei com hortifrúti? Qual foi o item mais caro?" },
+  { emoji: "🐱", titulo: "O Recibaldo lê e responde", texto: "Ele lista os itens da nota e marca com ⚠️ o que você deve conferir." },
+];
+
 export const ETAPAS: { etapa: EtapaDoDocumento; texto: string }[] = [
   { etapa: "recebido", texto: "Documento recebido" },
   { etapa: "validado", texto: "Formato e tamanho conferidos" },
