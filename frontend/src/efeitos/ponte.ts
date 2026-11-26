@@ -2,7 +2,7 @@
 // Os efeitos foram escritos fora do React e ouvem eventos no `document`. A ponte guarda
 // o estado que eles leem e dispara os mesmos eventos do site antigo.
 
-export type NomeDaAba = "inicio" | "cesta" | "perto" | "chat" | "cupom" | "config" | "precos" | "entrar" | "cadastro";
+export type NomeDaAba = "inicio" | "cesta" | "perto" | "chat" | "cupom" | "config" | "precos" | "verificar" | "entrar" | "cadastro";
 
 export interface CestaDaCena {
   /** Ids dos alimentos, um por unidade (no máximo duas unidades de cada). */

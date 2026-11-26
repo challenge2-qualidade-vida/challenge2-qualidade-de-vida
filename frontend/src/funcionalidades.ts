@@ -7,10 +7,15 @@ export type Funcionalidade =
   | "deslocamento"  // custo de deslocamento e custo por km (F7)
   | "nutricao"      // anéis das metas nutricionais, calculadas pela TACO (F14)
   | "perto"         // tela Perto de mim: mercados no raio, proteínas e mapa (depende de F5 e F7)
-  | "precos";       // tabela de preços (histórico e tendência, F8)
+  | "precos"        // tabela de preços (histórico e tendência, F8)
+  | "verificacao";  // tela Verificar: demo do fluxo multiagente da semana 4 (#98)
+
+// Ficam fora de "todas": a comparação visual com o site antigo liga "todas", e o site antigo não tem
+// estas telas. Ligam só pelo nome (npm run dev:demo).
+const FORA_DE_TODAS: Funcionalidade[] = ["verificacao"];
 
 const pedidas = (import.meta.env.VITE_FUNCIONALIDADES ?? "").split(",").map((s: string) => s.trim()).filter(Boolean);
 
 export function funcionalidadeLigada(nome: Funcionalidade): boolean {
-  return pedidas.includes("todas") || pedidas.includes(nome);
+  return pedidas.includes(nome) || (pedidas.includes("todas") && !FORA_DE_TODAS.includes(nome));
 }
